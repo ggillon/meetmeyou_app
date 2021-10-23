@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "119476151911",
+    "project_id": "meetmeyou-9fd90",
+    "storage_bucket": "meetmeyou-9fd90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119476151911:android:0fa8063e9d3ea0367656c2",
+        "android_client_info": {
+          "package_name": "com.meetmeyou.meetmeyou"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119476151911-k3bcl7mgla78gd44g9gm5f7n3rb93cnd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meetmeyou.meetmeyou",
+            "certificate_hash": "7aea44a452745855bd3fa49dab360e63f9189f77"
+          }
+        },
+        {
+          "client_id": "119476151911-l83o95volvcju3klj2q83su0gcdttpna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meetmeyou.meetmeyou",
+            "certificate_hash": "3b528a0b3a50e8b76caf9d5ff5614b9d7de07dc8"
+          }
+        },
+        {
+          "client_id": "119476151911-k9gq4uapklc03mpeevh7vfdo0vrjskjt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCaCKMyC4usOs5IYHJZiWpvTRjF007bjE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119476151911-k9gq4uapklc03mpeevh7vfdo0vrjskjt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "119476151911-qk5pqbaggb3655ge1cs25kft1odekuva.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.meetmeyou.meetmeyou"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

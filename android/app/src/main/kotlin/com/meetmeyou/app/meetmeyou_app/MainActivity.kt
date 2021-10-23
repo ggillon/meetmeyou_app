@@ -1,4 +1,4 @@
-package com.meetmeyou.app.meetmeyou_app
+package com.meetmeyou.meetmeyou
 
 import io.flutter.embedding.android.FlutterActivity
 
