@@ -185,7 +185,7 @@ Future<void> inviteProfile(AuthBase auth, {required String uid}) async {
   Database db = FirestoreDB(uid: auth.currentUser!.uid);
 
   // Add an invited contact to current user
-  Contact invited = contactFromProfile(await db.getProfile(uid), uid: auth.currentUser!.uid);
+  Contact invited = contactFromProfile((await db.getProfile(uid))!, uid: auth.currentUser!.uid);
   invited.status = CONTACT_INVITED; // change status to invited contact
   await db.setContact(invited);
 
@@ -229,8 +229,8 @@ Future<void> respondProfile(AuthBase auth, {required String cid, required bool a
 // Linking two profile - happens when one invites the second one to an event, they become linked
 Future<void> linkProfiles(AuthBase auth, {required String uid,}) async {
   Database db = FirestoreDB(uid: auth.currentUser!.uid);
-  Contact contact1 = contactFromProfile(await db.getProfile(uid), uid: auth.currentUser!.uid);
-  Contact contact2 = contactFromProfile(await db.getProfile(auth.currentUser!.uid), uid: uid);
+  Contact contact1 = contactFromProfile((await db.getProfile(uid))!, uid: auth.currentUser!.uid);
+  Contact contact2 = contactFromProfile((await db.getProfile(auth.currentUser!.uid))!, uid: uid);
   await db.setContact(contact1);
   await db.setContact(contact2);
 }

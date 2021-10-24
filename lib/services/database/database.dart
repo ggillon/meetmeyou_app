@@ -16,7 +16,7 @@ abstract class Database {
 
   // Profile DB Functions
   Future<void> setProfile(Profile profile);
-  Future<Profile> getProfile(String uid);
+  Future<Profile?> getProfile(String uid);
   Future<void> deleteProfile(String uid);
   Future<List<Profile>> queryProfiles({required String field, required String query});
 
@@ -43,7 +43,7 @@ class FirestoreDB implements Database {
     );
   }
 
-  Future<Profile> getProfile(String uid) async {
+  Future<Profile?> getProfile(String uid) async {
     return _service.getData(
       path: APIPath.profile(uid),
       builder: (data) {return Profile.fromMap(data);},

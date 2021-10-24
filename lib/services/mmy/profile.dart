@@ -4,9 +4,14 @@ import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 
 
-// Use to get the user profile
+// Use to get the user profile, if non exist will create one from user in auth.
 Future<Profile> getUserProfile({required AuthBase auth}) async {
-  return await FirestoreDB(uid: auth.currentUser!.uid).getProfile(auth.currentUser!.uid);
+  final profile = await FirestoreDB(uid: auth.currentUser!.uid).getProfile(auth.currentUser!.uid);
+  if (profile != null) {
+    return profile;
+  } else {
+    return await createProfileFromUser(auth.currentUser!);
+  }
 }
 
 // Create Profile from user Auth data, store it in Firebase
@@ -97,15 +102,17 @@ Future<Profile> createMMYUser(AuthBase auth, {String? displayName, String? first
 }
 
 // Update whatever fields are not null
-Future<Profile> updateProfile(AuthBase auth, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
+Future<Profile> updateProfile(AuthBase auth, {String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
 
   Database db = FirestoreDB(uid: auth.currentUser!.uid);
 
-  final oldProfile = await db.getProfile(auth.currentUser!.uid);
+  final oldProfile = (await db.getProfile(auth.currentUser!.uid))!;
+
+  String displayName = (firstName ?? oldProfile.firstName ?? '') + ' ' + (lastName ?? oldProfile.lastName ?? '');
 
   Profile profile = Profile(
     uid: auth.currentUser!.uid,
-    displayName: displayName ?? oldProfile.displayName ?? '',
+    displayName: displayName,
     firstName: firstName ?? oldProfile.firstName ?? '',
     lastName: lastName ?? oldProfile.lastName ?? '',
     email: email ?? oldProfile.email ?? '',
@@ -125,7 +132,7 @@ Future<Profile> updateProfile(AuthBase auth, {String? displayName, String? first
 
 Future<Profile> setProfileParameter(AuthBase auth, {required String param, required dynamic value}) async {
   Database db = FirestoreDB(uid: auth.currentUser!.uid);
-  final profile = await db.getProfile(auth.currentUser!.uid);
+  final profile = (await db.getProfile(auth.currentUser!.uid))!;
   profile.parameters![param] = value;
   await db.setProfile(profile);
   return profile;

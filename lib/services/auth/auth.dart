@@ -13,9 +13,11 @@ abstract class AuthBase {
   Future<User?> signInWithGoogle();
   Future<User?> signInWithFacebook();
   Future<User?> signInWithApple();
+  Future<String> emailCheckCode(String email);
   Future<void> signOut();
   Stream<User?> authStateChanges();
   Future<void> deleteUser(User user);
+
 
 }
 
@@ -139,6 +141,15 @@ class Auth implements AuthBase {
       throw FirebaseAuthException(
           message: 'Apple sign in failed', code: 'ERROR_APPLE_SIGN_IN');
     }
+  }
+
+  @override
+  Future<String> emailCheckCode(String email) async {
+    final precode = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
+    final code = precode.substring(precode.length-4, precode.length);
+    print(code);
+    //TODO: code to email code
+    return code;
   }
 
   @override
