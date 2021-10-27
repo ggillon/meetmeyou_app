@@ -32,9 +32,5 @@ class LandingPage extends StatelessWidget {
           return TestShowSignIn(context);
         });
   }
-
-
-
-
 }
 
