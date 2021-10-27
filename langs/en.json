@@ -1,0 +1,26 @@
+{
+  "next": "Next",
+  "getStarted": "Get started",
+  "welcome": "Welcome!",
+  "continue_google": "Continue with Google",
+  "continue_apple": "Continue with Apple",
+  "continue_fb": "Continue with Facebook",
+  "continue_email": "Continue with E mail",
+  "find_events_connect": "Find events and connect with your friends",
+  "more_options": "More Options",
+  "back": "Back",
+  "email": "Email",
+  "password": "Password",
+  "already_an_account": "Already have an account?",
+  "not_receive_code": "Didn’t receive your code?",
+  "incorrect_verification": "Verification code is not correct",
+  "sign_in_different_account": "Sign in to a different account",
+  "verify_identity": "Verify your identity",
+  "enter_code_email_address": "Enter the code we sent  to your email address.",
+  "name": "Name",
+  "phone_number": "Phone Number",
+  "address": "Address"
+
+
+
+}
