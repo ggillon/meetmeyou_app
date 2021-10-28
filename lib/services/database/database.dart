@@ -21,7 +21,7 @@ abstract class Database {
   Future<List<Profile>> queryProfiles({required String field, required String query});
 
   // Contact DB Functions
-  Future<void> setContact(Contact contact);
+  Future<void> setContact(String uid, Contact contact);
   Future<Contact> getContact(String uid, String cid);
   Future<void> deleteContact(String uid, String cid);
   Future<List<Contact>> getContacts(String uid);
@@ -66,9 +66,9 @@ class FirestoreDB implements Database {
   }
 
   // Contact METHODS
-  Future<void> setContact(Contact contact) async {
+  Future<void> setContact(String uid, Contact contact) async {
     _service.setData(
-      path: APIPath.userContact(contact.uid, contact.cid),
+      path: APIPath.userContact(uid, contact.cid),
       data: contact.toMap(),
     );
   }
@@ -80,7 +80,7 @@ class FirestoreDB implements Database {
     );
   }
 
-  Future<List<Contact>> getContacts(String uid,) async {
+  Future<List<Contact>> getContacts(String uid,) {
     return _service.getListData(
         path: APIPath.userContacts(uid),
         builder: (data) => Contact.fromMap(data)

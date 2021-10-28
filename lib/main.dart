@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:provider/provider.dart';
-import 'app/landing_page.dart';
+import 'app/test_landing_page.dart';
 import 'test.dart';
 
 void main() async {

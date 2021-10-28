@@ -1,7 +1,7 @@
 class Contact {
   Contact({required this.cid, required this.uid, required this.displayName, required this.firstName, required this.lastName, required this.email, this.countryCode, this.phoneNumber, required this.photoURL, required this.addresses, required this.about, required this.other, this.group, required this.status});
   String cid;
-  String uid;
+  String? uid;
   String? displayName;
   String? firstName;
   String? lastName;
@@ -17,7 +17,7 @@ class Contact {
 
   factory Contact.fromMap(Map<String, dynamic> data) {
     final String cid= data['cid'];
-    final String uid= data['uid'];
+    final String? uid= data['uid'];
     final String? displayName = data['displayName'];
     final String? firstName= data['firstName'];
     final String? lastName = data['lastName'];
@@ -28,8 +28,8 @@ class Contact {
     final Map? addresses = data['addresses'];
     final String? about = data['about'];
     final Map? other = data['other'];
-    final String status = data['status'];
-    final Map group = data['group'];
+    final String? status = data['status'];
+    final Map? group = data['group'];
 
 
     return Contact(cid: cid, uid: uid, displayName: displayName, firstName: firstName, lastName: lastName, email: email, countryCode: countryCode, phoneNumber: phoneNumber, photoURL: photoURL, addresses: addresses, other: other, status: status, group: group, about: about);
@@ -37,7 +37,7 @@ class Contact {
 
   Contact getFromMap(Map<String, dynamic> data) {
     final String cid= data['cid'];
-    final String uid= data['uid'];
+    final String? uid= data['uid'];
     final String? displayName = data['displayName'];
     final String? firstName= data['firstName'];
     final String? lastName = data['lastName'];
@@ -48,8 +48,8 @@ class Contact {
     final Map? addresses = data['addresses'];
     final String? about = data['about'];
     final Map? other = data['other'];
-    final String status = data['status'];
-    final Map group = data['group'];
+    final String? status = data['status'];
+    final Map? group = data['group'];
 
 
     return Contact(cid: cid, uid: uid, displayName: displayName, firstName: firstName, lastName: lastName, email: email, countryCode: countryCode, phoneNumber: phoneNumber, photoURL: photoURL, addresses: addresses, other: other, status: status, group: group, about: about);
