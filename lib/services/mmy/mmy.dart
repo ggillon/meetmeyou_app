@@ -7,10 +7,15 @@ import 'contact.dart' as contactLib;
 
 abstract class MMYEngine {
 
-  /// Get the user profile
+  /// Get the user profile or create new one
   Future<Profile> getUserProfile();
   /// Update the user profile
   Future<Profile> updateProfile({String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters});
+  /// Get the user profile or create new one, leveraging the Auth user info
+  Future<Profile> createUserProfile();
+  /// Checks if profile exists
+  Future<bool> isNew();
+
 
   /// Get a contact from contact list
   Future<Contact> getContact(String cid);
@@ -36,13 +41,23 @@ class MMY implements MMYEngine {
   final AuthBase _auth;
 
   @override
-  Future<Profile> getUserProfile() async {
+  Future<Profile> getUserProfile() {
     return profileLib.getUserProfile(auth: _auth);
   }
 
   @override
   Future<Profile> updateProfile({String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
     return profileLib.updateProfile(_auth, firstName: firstName, lastName: lastName, email: email, countryCode: countryCode, phoneNumber: phoneNumber, photoUrl: photoUrl, homeAddress: homeAddress, about: about, other: other, parameters: parameters);
+  }
+
+  @override
+  Future<Profile> createUserProfile() {
+    return profileLib.createProfileFromUser(_auth.currentUser!);
+  }
+
+  @override
+  Future<bool> isNew() {
+    return profileLib.isNewProfile(auth: _auth);
   }
 
   @override

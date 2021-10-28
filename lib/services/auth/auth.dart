@@ -14,6 +14,7 @@ abstract class AuthBase {
   Future<User?> signInWithFacebook();
   Future<User?> signInWithApple();
   Future<String> emailCheckCode(String email);
+  Future<String> generateOTP(String email);
   Future<void> signOut();
   Stream<User?> authStateChanges();
   Future<void> deleteUser(User user);
@@ -147,6 +148,15 @@ class Auth implements AuthBase {
   Future<String> emailCheckCode(String email) async {
     final precode = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
     final code = precode.substring(precode.length-4, precode.length);
+    print(code);
+    //TODO: code to email code
+    return code;
+  }
+
+  @override
+  Future<String> generateOTP(String email) async {
+    final seed = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
+    final code = seed.substring(seed.length-4, seed.length);
     print(code);
     //TODO: code to email code
     return code;

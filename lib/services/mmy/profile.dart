@@ -14,6 +14,22 @@ Future<Profile> getUserProfile({required AuthBase auth}) async {
   }
 }
 
+// Check if profile exists
+Future<bool> isNewProfile({required AuthBase auth}) async {
+  final profile = await FirestoreDB(uid: auth.currentUser!.uid).getProfile(auth.currentUser!.uid);
+  if (profile == null) {
+    return true;
+  } else {
+    if (profile.parameters != null) {
+      if (profile.parameters!.containsKey('New'))
+        if (profile.parameters!['New'] == true)
+          return true;
+    }
+    return false;
+  }
+}
+
+
 // Create Profile from user Auth data, store it in Firebase
 Future<Profile> createProfileFromUser(User user) async {
 
