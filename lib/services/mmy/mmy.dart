@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
@@ -37,63 +38,63 @@ abstract class MMYEngine {
 class MMY implements MMYEngine {
   /// Creates a MMYEngine class with access to features
 
-  MMY(this._auth);
-  final AuthBase _auth;
+  MMY(this._currentUser);
+  final User _currentUser;
 
   @override
   Future<Profile> getUserProfile() {
-    return profileLib.getUserProfile(auth: _auth);
+    return profileLib.getUserProfile(_currentUser);
   }
 
   @override
   Future<Profile> updateProfile({String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
-    return profileLib.updateProfile(_auth, firstName: firstName, lastName: lastName, email: email, countryCode: countryCode, phoneNumber: phoneNumber, photoUrl: photoUrl, homeAddress: homeAddress, about: about, other: other, parameters: parameters);
+    return profileLib.updateProfile(_currentUser, firstName: firstName, lastName: lastName, email: email, countryCode: countryCode, phoneNumber: phoneNumber, photoUrl: photoUrl, homeAddress: homeAddress, about: about, other: other, parameters: parameters);
   }
 
   @override
   Future<Profile> createUserProfile() {
-    return profileLib.createProfileFromUser(_auth.currentUser!);
+    return profileLib.createProfileFromUser(_currentUser);
   }
 
   @override
   Future<bool> isNew() {
-    return profileLib.isNewProfile(auth: _auth);
+    return profileLib.isNewProfile(_currentUser);
   }
 
   @override
   Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, String about = ''}) async {
-    final contact =  await contactLib.createNewGroupContact(_auth, displayName: name);
-    return contactLib.updateGroupContact(_auth, contact.cid,photoURL: photoURL, about: about);
+    final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
+    return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
   }
 
   @override
   Future<Contact> getContact(String cid) {
-    return contactLib.getContact(_auth, cid: cid);
+    return contactLib.getContact(_currentUser, cid: cid);
   }
 
   @override
   Future<List<String>> getContactIDs() {
-    return contactLib.getContactsCIDs(_auth);
+    return contactLib.getContactsCIDs(_currentUser);
   }
 
   @override
   Future<List<Contact>> getContacts() {
-    return contactLib.getContacts(_auth);
+    return contactLib.getContacts(_currentUser);
   }
 
   @override
   Future<void> inviteProfile(String uid) {
-    return contactLib.inviteProfile(_auth, uid: uid);
+    return contactLib.inviteProfile(_currentUser, uid: uid);
   }
 
   @override
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about}) {
-    return contactLib.updateGroupContact(_auth, cid, displayName: displayName, photoURL: photoURL, about: about);
+    return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
   }
 
   @override
   Future<void> respondInvitation(String cid, bool accept) {
-    return contactLib.respondProfile(_auth, cid: cid, accept: accept);
+    return contactLib.respondProfile(_currentUser, cid: cid, accept: accept);
   }
 
 }
