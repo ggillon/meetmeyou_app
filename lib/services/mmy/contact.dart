@@ -15,6 +15,8 @@ const CONTACT_REJECTED = 'Rejected invitation';
 const CONTACT_GROUP = 'Contact Group';
 const CONTACT_PROFILE = 'Listed profile';
 
+const GROUP_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
+
 // Create a new contact
 Future<Contact> createNewPrivateContact(AuthBase auth, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
   Contact contact = Contact(
@@ -34,7 +36,7 @@ Future<Contact> createNewPrivateContact(AuthBase auth, {String? displayName, Str
     status: CONTACT_PRIVATE,
   );
 
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(contact);
+  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, contact);
 
   return contact;
 }
@@ -84,7 +86,7 @@ Future<Contact> updatePrivateContact(AuthBase auth, String cid, {String? display
     group: oldContact.group,
   );
 
-  await db.setContact(contact);
+  await db.setContact(auth.currentUser!.uid, contact);
 
   return contact;
 }
@@ -128,7 +130,7 @@ Future<Contact> createNewGroupContact(AuthBase auth, {required String displayNam
     status: CONTACT_PRIVATE,
   );
 
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(contact);
+  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, contact);
 
   return contact;
 }
@@ -138,7 +140,7 @@ Future<Contact> createNewGroupContact(AuthBase auth, {required String displayNam
 // Group contact functions : update a group contact
 Future<Contact> updateGroupContact(AuthBase auth, String cid, {String? displayName, String? photoURL, String? about}) async {
   Contact contact = await updatePrivateContact(auth, cid, displayName: displayName, photoUrl: photoURL, about: about);
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(contact);
+  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, contact);
   return contact;
 }
 
@@ -155,7 +157,7 @@ Future<Contact> addToGroup(AuthBase auth, String cid, {String? contactCid, List<
       group.group!.addAll({contact.cid: contact.displayName});
     }
   }
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(group);
+  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, group);
   return group;
 }
 
@@ -174,7 +176,7 @@ Future<Contact> removeFromGroup(AuthBase auth, String cid, {String? contactCid, 
       }
     }
   }
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(group);
+  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, group);
   return group;
 }
 
@@ -187,12 +189,12 @@ Future<void> inviteProfile(AuthBase auth, {required String uid}) async {
   // Add an invited contact to current user
   Contact invited = contactFromProfile((await db.getProfile(uid))!, uid: auth.currentUser!.uid);
   invited.status = CONTACT_INVITED; // change status to invited contact
-  await db.setContact(invited);
+  await db.setContact(auth.currentUser!.uid, invited);
 
   // Add an invitation to invited profile
   Contact invitation = contactFromProfile(await getUserProfile(auth: auth), uid: uid);
   invitation.status = CONTACT_INVITATION; // change status to invitation contact
-  await db.setContact(invitation);
+  await db.setContact(auth.currentUser!.uid, invitation);
 }
 
 Future<void> respondProfile(AuthBase auth, {required String cid, required bool accept}) async {
@@ -202,14 +204,14 @@ Future<void> respondProfile(AuthBase auth, {required String cid, required bool a
     Contact invitation = await db.getContact(auth.currentUser!.uid, cid);
     if (invitation.status == CONTACT_INVITATION) {
       invitation.status = CONTACT_PROFILE; // change to MMY Profile contact
-      await db.setContact(invitation);
+      await db.setContact(auth.currentUser!.uid, invitation);
     }
 
     // Convert invited contact of profile sending invitation into a profile contact
     Contact invited = await db.getContact(cid, auth.currentUser!.uid);
     if (invited.status == CONTACT_INVITED) {
       invited.status = CONTACT_PROFILE; // change to MMY Profile contact
-      await db.setContact(invitation);
+      await db.setContact(auth.currentUser!.uid, invitation);
     }
   } else {
     // Delete invitation
@@ -221,7 +223,7 @@ Future<void> respondProfile(AuthBase auth, {required String cid, required bool a
     Contact invited = await db.getContact(cid, auth.currentUser!.uid);
     if (invited.status == CONTACT_INVITED) {
       invited.status = CONTACT_REJECTED; // change to a rejected contact
-      await db.setContact(invitation);
+      await db.setContact(auth.currentUser!.uid, invitation);
     }
   }
 }
@@ -231,6 +233,6 @@ Future<void> linkProfiles(AuthBase auth, {required String uid,}) async {
   Database db = FirestoreDB(uid: auth.currentUser!.uid);
   Contact contact1 = contactFromProfile((await db.getProfile(uid))!, uid: auth.currentUser!.uid);
   Contact contact2 = contactFromProfile((await db.getProfile(auth.currentUser!.uid))!, uid: uid);
-  await db.setContact(contact1);
-  await db.setContact(contact2);
+  await db.setContact(auth.currentUser!.uid, contact1);
+  await db.setContact(contact1.uid!, contact2);
 }
