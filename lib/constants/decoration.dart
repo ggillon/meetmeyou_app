@@ -10,17 +10,17 @@ class ViewDecoration{
   static InputDecoration inputDecorationWithCurve(
       String fieldName, ScreenScaler scaler,Color color,{IconData? icon}) {
     return InputDecoration(
-        prefixIcon: icon==null?null:Icon(
+        suffixIcon: icon==null?null:Icon(
           icon,
           size: scaler.getTextSize(12),
-          color: color,
+          color: ColorConstants.colorBlack,
         ),
 
         hintText: fieldName,
         hintStyle: textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorGray),
         filled: true,
         isDense: true,
-        contentPadding: icon==null?scaler.getPaddingLTRB(1, 1,1, 1):scaler.getPaddingLTRB(0.1, 0.1, 0.1, 0.1),
+        contentPadding: icon==null?scaler.getPaddingLTRB(1, 1,1, 1):scaler.getPaddingLTRB(1, 0.1, 0.1, 0.1),
         fillColor: ColorConstants.colorLightGray,
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: ColorConstants.colorLightGray, width: 1),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
@@ -8,6 +10,8 @@ import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:google_maps_webservice/places.dart';
+
 class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
   final nameController = TextEditingController();
@@ -36,10 +40,14 @@ class SignUpPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   child: Stack(
                     children: [
-                      Container(color: ColorConstants.primaryColor,width: scaler.getWidth(20),height: scaler.getWidth(20),),
+                      Container(
+                        color: ColorConstants.primaryColor,
+                        width: scaler.getWidth(20),
+                        height: scaler.getWidth(20),
+                      ),
                       Positioned(
                         right: 5,
-                        top:5,
+                        top: 5,
                         child: CircleAvatar(
                           radius: scaler.getWidth(2),
                           child: ClipOval(
@@ -63,12 +71,18 @@ class SignUpPage extends StatelessWidget {
                 SizedBox(
                   height: scaler.getHeight(5),
                 ),
-                Align(alignment: Alignment.bottomLeft,child: Text("name".tr()).boldText(
-                    Colors.black, scaler.getTextSize(9.5), TextAlign.center),),
-                SizedBox(height: scaler.getHeight(0.2),),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text("name".tr()).boldText(
+                      Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+                ),
+                SizedBox(
+                  height: scaler.getHeight(0.2),
+                ),
                 TextFormField(
                   controller: nameController,
-                  style: ViewDecoration.textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorBlack),
+                  style: ViewDecoration.textFieldStyle(
+                      scaler.getTextSize(9.5), ColorConstants.colorBlack),
                   decoration: ViewDecoration.inputDecorationWithCurve(
                       "Cody Fisher", scaler, ColorConstants.primaryColor),
                   onFieldSubmitted: (data) {
@@ -78,16 +92,21 @@ class SignUpPage extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {},
                 ),
-
                 SizedBox(
                   height: scaler.getHeight(1),
                 ),
-                Align(alignment: Alignment.bottomLeft,child: Text("email".tr()).boldText(
-                    Colors.black, scaler.getTextSize(9.5), TextAlign.center),),
-                SizedBox(height: scaler.getHeight(0.2),),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text("email".tr()).boldText(
+                      Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+                ),
+                SizedBox(
+                  height: scaler.getHeight(0.2),
+                ),
                 TextFormField(
                   controller: emailController,
-                  style: ViewDecoration.textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorBlack),
+                  style: ViewDecoration.textFieldStyle(
+                      scaler.getTextSize(9.5), ColorConstants.colorBlack),
                   decoration: ViewDecoration.inputDecorationWithCurve(
                       "sample@gmail.com", scaler, ColorConstants.primaryColor),
                   onFieldSubmitted: (data) {
@@ -97,17 +116,21 @@ class SignUpPage extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {},
                 ),
-
                 SizedBox(
                   height: scaler.getHeight(1),
                 ),
-
-                Align(alignment: Alignment.bottomLeft,child: Text("password".tr()).boldText(
-                    Colors.black, scaler.getTextSize(9.5), TextAlign.center),),
-                SizedBox(height: scaler.getHeight(0.2),),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text("password".tr()).boldText(
+                      Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+                ),
+                SizedBox(
+                  height: scaler.getHeight(0.2),
+                ),
                 TextFormField(
                   controller: passwordController,
-                  style: ViewDecoration.textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorBlack),
+                  style: ViewDecoration.textFieldStyle(
+                      scaler.getTextSize(9.5), ColorConstants.colorBlack),
                   decoration: ViewDecoration.inputDecorationWithCurve(
                       "", scaler, ColorConstants.primaryColor),
                   onFieldSubmitted: (data) {
@@ -118,47 +141,86 @@ class SignUpPage extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   validator: (value) {},
                 ),
-
                 SizedBox(
                   height: scaler.getHeight(1),
                 ),
-                Align(alignment: Alignment.bottomLeft,child: Text("phone_number".tr()).boldText(
-                    Colors.black, scaler.getTextSize(9.5), TextAlign.center),),
-                SizedBox(height: scaler.getHeight(0.2),),
-                TextFormField(
-                  controller: phoneController,
-                  style: ViewDecoration.textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorBlack),
-                  decoration: ViewDecoration.inputDecorationWithCurve(
-                      "+917814474403", scaler, ColorConstants.primaryColor),
-                  onFieldSubmitted: (data) {
-                    // FocusScope.of(context).requestFocus(nodes[1]);
-                  },
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {},
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text("phone_number".tr()).boldText(
+                      Colors.black, scaler.getTextSize(9.5), TextAlign.center),
                 ),
-
-
+                SizedBox(
+                  height: scaler.getHeight(0.2),
+                ),
+                CustomShape(
+                  bgColor: ColorConstants.colorLightGray,
+                  radius: scaler.getBorderRadiusCircular(7),
+                  child: IntlPhoneField(
+                    showCountryFlag: true,
+                    style: ViewDecoration.textFieldStyle(
+                        scaler.getTextSize(9.5), ColorConstants.colorBlack),
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      counterText: '',
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 2.0, horizontal: 2.0),
+                      border: InputBorder.none,
+                    ),
+                    initialCountryCode: 'US',
+                    onCountryChanged: (code) {
+                      // countryCode = code.countryCode.toString();
+                    },
+                    onChanged: (phone) {
+                      // number = phone.number!;
+                    },
+                  ),
+                ),
                 SizedBox(
                   height: scaler.getHeight(1),
                 ),
-                Align(alignment: Alignment.bottomLeft,child: Text("address".tr()).boldText(
-                    Colors.black, scaler.getTextSize(9.5), TextAlign.center),),
-                SizedBox(height: scaler.getHeight(0.2),),
-                TextFormField(
-                  controller: addressController,
-                  style: ViewDecoration.textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorBlack),
-                  decoration: ViewDecoration.inputDecorationWithCurve(
-                      "Madison Square Garden", scaler, ColorConstants.primaryColor),
-                  onFieldSubmitted: (data) {
-                    // FocusScope.of(context).requestFocus(nodes[1]);
-                  },
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.streetAddress,
-                  validator: (value) {},
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text("address".tr()).boldText(
+                      Colors.black, scaler.getTextSize(9.5), TextAlign.center),
                 ),
+                SizedBox(
+                  height: scaler.getHeight(0.2),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pushNamed(context,
+                        RoutesConstants.autoComplete)
+                        .then((value) {
+                      if (value != null) {
+                        Map<String, String> detail = value as Map<String , String>;
+                        final lat = value["latitude"];
+                        final lng = value["longitude"];
+                        final selectedAddress = detail["address"];
+                        addressController.text=selectedAddress!=null?selectedAddress:"";
+                      }
+                    });
+                  },
+                  child: TextFormField(
+                    enabled: false,
+                    controller: addressController,
+                    style: ViewDecoration.textFieldStyle(
+                        scaler.getTextSize(9.5), ColorConstants.colorBlack),
+                    decoration: ViewDecoration.inputDecorationWithCurve(
+                        "enter_address".tr(),
+                        scaler,
+                        ColorConstants.primaryColor,icon: Icons.map),
 
-                SizedBox(height: scaler.getHeight(5),),
+                    onFieldSubmitted: (data) {
+                      // FocusScope.of(context).requestFocus(nodes[1]);
+                    },
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.streetAddress,
+                    validator: (value) {},
+                  ),
+                ),
+                SizedBox(
+                  height: scaler.getHeight(5),
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, RoutesConstants.verifyPage);
@@ -175,7 +237,9 @@ class SignUpPage extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                   ),
                 ),
-                SizedBox(height: scaler.getHeight(3),),
+                SizedBox(
+                  height: scaler.getHeight(3),
+                ),
                 Container(
                   width: scaler.getWidth(70),
                   height: scaler.getHeight(0.02),
@@ -186,12 +250,12 @@ class SignUpPage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.popUntil(
-                        context, (Route<dynamic> route) => route.isFirst);
+                    Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
                   },
-                  child: Text("sign_in_different_account".tr())
-                      .semiBoldText(ColorConstants.primaryColor,
-                      scaler.getTextSize(9.5), TextAlign.center),
+                  child: Text("sign_in_different_account".tr()).semiBoldText(
+                      ColorConstants.primaryColor,
+                      scaler.getTextSize(9.5),
+                      TextAlign.center),
                 )
               ],
             ),

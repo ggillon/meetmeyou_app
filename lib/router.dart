@@ -7,6 +7,7 @@ import 'package:meetmeyou_app/view/login_options/loginOptionsPage.dart';
 import 'package:meetmeyou_app/view/signup/signupPage.dart';
 import 'package:meetmeyou_app/view/verify_screen/verifyScreen.dart';
 
+import 'autoCompletePlaces.dart';
 import 'constants/routes_constants.dart';
 
 class Router {
@@ -31,6 +32,10 @@ class Router {
       case RoutesConstants.verifyPage:
         return MaterialPageRoute(
             builder: (_) => VerifyScreen(), settings: settings);
+
+      case RoutesConstants.autoComplete:
+        return MaterialPageRoute(
+            builder: (_) => CustomSearchScaffold(), settings: settings);
 
       case RoutesConstants.signUpPage:
         return MaterialPageRoute(

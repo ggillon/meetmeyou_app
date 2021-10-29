@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
       );
   }
 
-  MaterialColor color = const MaterialColor(0xFF7ac142, <int, Color>{
+  MaterialColor color = const MaterialColor(0xFF00B9A7, <int, Color>{
     50: Color(0xFF00B9A7),
     100: Color(0xFF00B9A7),
     200: Color(0xFF00B9A7),

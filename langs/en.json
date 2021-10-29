@@ -19,8 +19,8 @@
   "enter_code_email_address": "Enter the code we sent  to your email address.",
   "name": "Name",
   "phone_number": "Phone Number",
-  "address": "Address"
-
+  "address": "Address",
+  "enter_address": "Enter your address"
 
 
 }

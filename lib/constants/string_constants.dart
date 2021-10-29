@@ -1,5 +1,6 @@
 class StringConstants {
   static String appName = "MeetMeYou";
+  static String googleApiKey = "AIzaSyBFvr1DFlTePVoOx7fviESX9kZTZHSiXtw";
 
   static const spProDisplay = "SP Pro Display";
   static const createEvents = "Create Events";
