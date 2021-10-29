@@ -13,13 +13,11 @@ abstract class AuthBase {
   Future<User?> signInWithGoogle();
   Future<User?> signInWithFacebook();
   Future<User?> signInWithApple();
-  Future<String> emailCheckCode(String email);
+  bool emailCheckCode(String email, String OTP);
   Future<String> generateOTP(String email);
   Future<void> signOut();
   Stream<User?> authStateChanges();
   Future<void> deleteUser(User user);
-
-
 }
 
 class Auth implements AuthBase {
@@ -145,12 +143,10 @@ class Auth implements AuthBase {
   }
 
   @override
-  Future<String> emailCheckCode(String email) async {
-    final precode = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
-    final code = precode.substring(precode.length-4, precode.length);
-    print(code);
-    //TODO: code to email code
-    return code;
+  bool emailCheckCode(String email, String OTP) {
+    final seed = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
+    final code = seed.substring(seed.length-4, seed.length);
+    return (email == OTP);
   }
 
   @override
