@@ -73,7 +73,7 @@ Widget TestShowSignIn(BuildContext context) {
                 onPressed: () => auth.signInTestUser(),
                 child: Text('Sign-in with TestUser email')),
             ElevatedButton(
-                onPressed: () => auth.emailCheckCode('ggillon@gmail.com'),
+                onPressed: () => auth.generateOTP('ggillon@gmail.com'),
                 child: Text('Get email code')),
           ],
         ),

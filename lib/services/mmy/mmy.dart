@@ -2,9 +2,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
-import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'dart:io';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
+import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 
 abstract class MMYEngine {
 
@@ -16,7 +17,8 @@ abstract class MMYEngine {
   Future<Profile> createUserProfile();
   /// Checks if profile exists
   Future<bool> isNew();
-
+  /// Update the profile Profile
+  Future<Profile> updateProfilePicture(File file);
 
   /// Get a contact from contact list
   Future<Contact> getContact(String cid);
@@ -59,6 +61,12 @@ class MMY implements MMYEngine {
   @override
   Future<bool> isNew() {
     return profileLib.isNewProfile(_currentUser);
+  }
+
+  @override
+  Future<Profile> updateProfilePicture(File file) async {
+   String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
+   return profileLib.updateProfile(_currentUser, photoUrl: photoURL);
   }
 
   @override

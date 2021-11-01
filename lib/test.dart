@@ -14,7 +14,7 @@ void testGoogleSignIn() async {
   AuthBase auth = Auth();
   User? user = await auth.signInWithGoogle();
   if (user != null) {
-    Profile profile = await getUserProfile(user);
+    Profile profile = await getUserProfile(auth.currentUser!);
     print(profile.displayName);
   } else {
     print('error');
@@ -25,7 +25,7 @@ void testFacebookSignIn() async {
   AuthBase auth = Auth();
   User? user = await auth.signInWithFacebook();
   if (user != null) {
-    Profile profile = await getUserProfile(user);
+    Profile profile = await getUserProfile(auth.currentUser!);
     print(profile.displayName);
   } else {
     print('error');
@@ -36,7 +36,7 @@ void testAppleSignIn() async {
   AuthBase auth = Auth();
   User? user = await auth.signInWithApple();
   if (user != null) {
-    Profile profile = await getUserProfile(user);
+    Profile profile = await getUserProfile(auth.currentUser!);
     print(profile.displayName);
   } else {
     print('error');
