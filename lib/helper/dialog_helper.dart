@@ -56,10 +56,10 @@ class DialogHelper {
     );
   }
 
-  static showMessage(BuildContext context, String message,Color color) {
+  static showMessage(BuildContext context, String message) {
     Flushbar(
       message: message,
-      backgroundColor: color,
+      backgroundColor: ColorConstants.primaryColor,
       duration: Duration(seconds: 2),
     )..show(context);
   }

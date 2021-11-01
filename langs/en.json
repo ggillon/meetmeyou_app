@@ -26,7 +26,13 @@
   "choose_from": "Choose From",
   "phone_gallery": "Phone Gallery",
   "camera": "Camera",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "email_required": "Email is required",
+  "invalid_email": "Invalid Email",
+  "first_name_required": "First name is required",
+  "last_name_required": "Last name is required",
+  "password_required": "Password is required",
+  "invalid_password_format": "Password should have minimum 8 chars with uppercase,lowercase,number & special chars"
 
 
 }

@@ -65,7 +65,6 @@ Future<Profile> createProfileFromUser(User user) async {
 
 // Create Profile from fields, if fields are null they will be set to default value
 Future<Profile> createProfile(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
-
   Profile profile = Profile(
     uid: currentUser.uid,
     displayName: displayName ?? '',

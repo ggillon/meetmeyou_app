@@ -20,6 +20,7 @@ class ViewDecoration{
         hintStyle: textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorGray),
         filled: true,
         isDense: true,
+        errorMaxLines: 3,
         contentPadding: icon==null?scaler.getPaddingLTRB(1, 1,1, 1):scaler.getPaddingLTRB(1, 0.1, 0.1, 0.1),
         fillColor: ColorConstants.colorLightGray,
         enabledBorder: OutlineInputBorder(
