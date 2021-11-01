@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
@@ -18,10 +19,10 @@ const CONTACT_PROFILE = 'Listed profile';
 const GROUP_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 
 // Create a new contact
-Future<Contact> createNewPrivateContact(AuthBase auth, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
+Future<Contact> createNewPrivateContact(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
   Contact contact = Contact(
     cid: cidGenerator(),
-    uid: auth.currentUser!.uid,
+    uid: currentUser.uid,
     displayName: displayName ?? '',
     firstName: firstName ?? '',
     lastName: lastName ?? '',
@@ -36,25 +37,25 @@ Future<Contact> createNewPrivateContact(AuthBase auth, {String? displayName, Str
     status: CONTACT_PRIVATE,
   );
 
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, contact);
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
 
   return contact;
 }
 
 // Get a particular contact
-Future<Contact> getContact(AuthBase auth, {required String cid}) async {
-  return await FirestoreDB(uid: auth.currentUser!.uid).getContact(auth.currentUser!.uid, cid);
+Future<Contact> getContact(User currentUser, {required String cid}) async {
+  return await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
 }
 
 // Get all contacts
-Future<List<Contact>> getContacts(AuthBase auth,) async {
-  return await FirestoreDB(uid: auth.currentUser!.uid).getContacts(auth.currentUser!.uid);
+Future<List<Contact>> getContacts(User currentUser,) async {
+  return await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
 }
 
 // Get all contacts CIDs
-Future<List<String>> getContactsCIDs(AuthBase auth,) async {
+Future<List<String>> getContactsCIDs(User currentUser,) async {
   List<String> CIDs = [];
-  final contactList = await FirestoreDB(uid: auth.currentUser!.uid).getContacts(auth.currentUser!.uid);
+  final contactList = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
   for(Contact contact in contactList) {
     CIDs.add(contact.cid);
   }
@@ -63,14 +64,14 @@ Future<List<String>> getContactsCIDs(AuthBase auth,) async {
 
 
 // Update a contact, with whatever field is not null
-Future<Contact> updatePrivateContact(AuthBase auth, String cid, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, String? status,}) async {
+Future<Contact> updatePrivateContact(User currentUser, String cid, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, String? status,}) async {
 
-  Database db = FirestoreDB(uid: auth.currentUser!.uid);
+  Database db = FirestoreDB(uid: currentUser.uid);
 
-  final oldContact = await db.getContact(auth.currentUser!.uid, cid);
+  final oldContact = await db.getContact(currentUser.uid, cid);
 
   Contact contact = Contact(
-    uid: auth.currentUser!.uid,
+    uid: currentUser.uid,
     cid: cid,
     displayName: displayName ?? oldContact.displayName ?? '',
     firstName: firstName ?? oldContact.firstName ?? '',
@@ -86,7 +87,7 @@ Future<Contact> updatePrivateContact(AuthBase auth, String cid, {String? display
     group: oldContact.group,
   );
 
-  await db.setContact(auth.currentUser!.uid, contact);
+  await db.setContact(currentUser.uid, contact);
 
   return contact;
 }
@@ -112,10 +113,10 @@ Contact contactFromProfile(Profile profile, {String? uid}) {
 }
 
 // Group contact functions : create
-Future<Contact> createNewGroupContact(AuthBase auth, {required String displayName, String? photoURL, String? about}) async {
+Future<Contact> createNewGroupContact(User currentUser, {required String displayName, String? photoURL, String? about}) async {
   Contact contact = Contact(
     cid: cidGenerator(),
-    uid: auth.currentUser!.uid,
+    uid: currentUser.uid,
     displayName: displayName,
     firstName: '',
     lastName: '',
@@ -130,7 +131,7 @@ Future<Contact> createNewGroupContact(AuthBase auth, {required String displayNam
     status: CONTACT_PRIVATE,
   );
 
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, contact);
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
 
   return contact;
 }
@@ -138,32 +139,32 @@ Future<Contact> createNewGroupContact(AuthBase auth, {required String displayNam
 /* GROUP CONTACT FUCNTIONS*/
 
 // Group contact functions : update a group contact
-Future<Contact> updateGroupContact(AuthBase auth, String cid, {String? displayName, String? photoURL, String? about}) async {
-  Contact contact = await updatePrivateContact(auth, cid, displayName: displayName, photoUrl: photoURL, about: about);
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, contact);
+Future<Contact> updateGroupContact(User currentUser, String cid, {String? displayName, String? photoURL, String? about}) async {
+  Contact contact = await updatePrivateContact(currentUser, cid, displayName: displayName, photoUrl: photoURL, about: about);
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
   return contact;
 }
 
 // Group contact functions : add one or more contacts, returns the group as contact
-Future<Contact> addToGroup(AuthBase auth, String cid, {String? contactCid, List<String>? contactListCids}) async {
-  Contact group = await getContact(auth, cid: cid);
+Future<Contact> addToGroup(User currentUser, String cid, {String? contactCid, List<String>? contactListCids}) async {
+  Contact group = await getContact(currentUser, cid: cid);
   if(contactCid != null && group.group != null) {
-    Contact contact = await getContact(auth, cid: contactCid);
+    Contact contact = await getContact(currentUser, cid: contactCid);
     group.group!.addAll({contact.cid: contact.displayName});
   }
   if(contactListCids != null && group.group != null) {
     for(String contactCid in contactListCids) {
-      Contact contact = await getContact(auth, cid: contactCid);
+      Contact contact = await getContact(currentUser, cid: contactCid);
       group.group!.addAll({contact.cid: contact.displayName});
     }
   }
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, group);
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, group);
   return group;
 }
 
 // Group contact functions : remove one or more contacts, returns the group as contact
-Future<Contact> removeFromGroup(AuthBase auth, String cid, {String? contactCid, List<String>? contactListCids}) async {
-  Contact group = await getContact(auth, cid: cid);
+Future<Contact> removeFromGroup(User currentUser, String cid, {String? contactCid, List<String>? contactListCids}) async {
+  Contact group = await getContact(currentUser, cid: cid);
   if(contactCid != null && group.group != null) {
     if(group.group!.containsKey(contactCid)) {
       group.group!.remove(contactCid);
@@ -176,63 +177,63 @@ Future<Contact> removeFromGroup(AuthBase auth, String cid, {String? contactCid, 
       }
     }
   }
-  await FirestoreDB(uid: auth.currentUser!.uid).setContact(auth.currentUser!.uid, group);
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, group);
   return group;
 }
 
 /* INVITE CONTACT FUNCTIONS*/
 
 // Invite a profile, send an invitation
-Future<void> inviteProfile(AuthBase auth, {required String uid}) async {
-  Database db = FirestoreDB(uid: auth.currentUser!.uid);
+Future<void> inviteProfile(User currentUser, {required String uid}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
 
   // Add an invited contact to current user
-  Contact invited = contactFromProfile((await db.getProfile(uid))!, uid: auth.currentUser!.uid);
+  Contact invited = contactFromProfile((await db.getProfile(uid))!, uid: currentUser.uid);
   invited.status = CONTACT_INVITED; // change status to invited contact
-  await db.setContact(auth.currentUser!.uid, invited);
+  await db.setContact(currentUser.uid, invited);
 
   // Add an invitation to invited profile
-  Contact invitation = contactFromProfile(await getUserProfile(auth: auth), uid: uid);
+  Contact invitation = contactFromProfile(await getUserProfile(currentUser), uid: uid);
   invitation.status = CONTACT_INVITATION; // change status to invitation contact
-  await db.setContact(auth.currentUser!.uid, invitation);
+  await db.setContact(currentUser.uid, invitation);
 }
 
-Future<void> respondProfile(AuthBase auth, {required String cid, required bool accept}) async {
-  Database db = FirestoreDB(uid: auth.currentUser!.uid);
+Future<void> respondProfile(User currentUser, {required String cid, required bool accept}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
   if (accept) { // Accepted invitation
     // Convert invitation into a contact
-    Contact invitation = await db.getContact(auth.currentUser!.uid, cid);
+    Contact invitation = await db.getContact(currentUser.uid, cid);
     if (invitation.status == CONTACT_INVITATION) {
       invitation.status = CONTACT_PROFILE; // change to MMY Profile contact
-      await db.setContact(auth.currentUser!.uid, invitation);
+      await db.setContact(currentUser.uid, invitation);
     }
 
     // Convert invited contact of profile sending invitation into a profile contact
-    Contact invited = await db.getContact(cid, auth.currentUser!.uid);
+    Contact invited = await db.getContact(cid, currentUser.uid);
     if (invited.status == CONTACT_INVITED) {
       invited.status = CONTACT_PROFILE; // change to MMY Profile contact
-      await db.setContact(auth.currentUser!.uid, invitation);
+      await db.setContact(currentUser.uid, invitation);
     }
   } else {
     // Delete invitation
-    Contact invitation = await db.getContact(auth.currentUser!.uid, cid);
+    Contact invitation = await db.getContact(currentUser.uid, cid);
     if (invitation.status == CONTACT_INVITATION) {
-      await db.deleteContact(auth.currentUser!.uid, cid);
+      await db.deleteContact(currentUser.uid, cid);
     }
     // Convert invited contact to rejected contact
-    Contact invited = await db.getContact(cid, auth.currentUser!.uid);
+    Contact invited = await db.getContact(cid, currentUser.uid);
     if (invited.status == CONTACT_INVITED) {
       invited.status = CONTACT_REJECTED; // change to a rejected contact
-      await db.setContact(auth.currentUser!.uid, invitation);
+      await db.setContact(currentUser.uid, invitation);
     }
   }
 }
 
 // Linking two profile - happens when one invites the second one to an event, they become linked
-Future<void> linkProfiles(AuthBase auth, {required String uid,}) async {
-  Database db = FirestoreDB(uid: auth.currentUser!.uid);
-  Contact contact1 = contactFromProfile((await db.getProfile(uid))!, uid: auth.currentUser!.uid);
-  Contact contact2 = contactFromProfile((await db.getProfile(auth.currentUser!.uid))!, uid: uid);
-  await db.setContact(auth.currentUser!.uid, contact1);
+Future<void> linkProfiles(User currentUser, {required String uid,}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Contact contact1 = contactFromProfile((await db.getProfile(uid))!, uid: currentUser.uid);
+  Contact contact2 = contactFromProfile((await db.getProfile(currentUser.uid))!, uid: uid);
+  await db.setContact(currentUser.uid, contact1);
   await db.setContact(contact1.uid!, contact2);
 }

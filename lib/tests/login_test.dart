@@ -15,7 +15,7 @@ Widget TestShowProfile(BuildContext context) {
   final auth = Provider.of<AuthBase>(context, listen: false);
 
   return Provider<MMYEngine>(
-    create: (_) => MMY(auth),
+    create: (_) => MMY(auth.currentUser!),
     builder: (context,mmy) => Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<Profile>(

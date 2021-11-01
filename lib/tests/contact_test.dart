@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
-import 'package:meetmeyou_app/services/mmy/contact.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:provider/provider.dart';
 
@@ -78,7 +77,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
   final auth = Provider.of<AuthBase>(context, listen: false);
 
   return Provider<MMYEngine>(
-      create: (_) => MMY(auth),
+      create: (_) => MMY(auth.currentUser!),
       builder: (context,_) {
 
         final mmy = Provider.of<MMYEngine>(context, listen: false);

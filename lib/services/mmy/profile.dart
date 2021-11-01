@@ -1,22 +1,21 @@
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 
 
 // Use to get the user profile, if non exist will create one from user in auth.
-Future<Profile> getUserProfile({required AuthBase auth}) async {
-  final profile = await FirestoreDB(uid: auth.currentUser!.uid).getProfile(auth.currentUser!.uid);
+Future<Profile> getUserProfile(User currentUser) async {
+  final profile = await FirestoreDB(uid: currentUser.uid).getProfile(currentUser.uid);
   if (profile != null) {
     return profile;
   } else {
-    return await createProfileFromUser(auth.currentUser!);
+    return await createProfileFromUser(currentUser);
   }
 }
 
 // Check if profile exists
-Future<bool> isNewProfile({required AuthBase auth}) async {
-  final profile = await FirestoreDB(uid: auth.currentUser!.uid).getProfile(auth.currentUser!.uid);
+Future<bool> isNewProfile(User currentUser) async {
+  final profile = await FirestoreDB(uid: currentUser.uid).getProfile(currentUser.uid);
   if (profile == null) {
     return true;
   } else {
@@ -65,10 +64,10 @@ Future<Profile> createProfileFromUser(User user) async {
 
 
 // Create Profile from fields, if fields are null they will be set to default value
-Future<Profile> createProfile(AuthBase auth, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
+Future<Profile> createProfile(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
 
   Profile profile = Profile(
-    uid: auth.currentUser!.uid,
+    uid: currentUser.uid,
     displayName: displayName ?? '',
     firstName: firstName ?? '',
     lastName: lastName ?? '',
@@ -82,52 +81,23 @@ Future<Profile> createProfile(AuthBase auth, {String? displayName, String? first
     parameters: <String, dynamic>{'New': true},
   );
 
-  await FirestoreDB(uid: auth.currentUser!.uid).setProfile(profile);
+  await FirestoreDB(uid: currentUser.uid).setProfile(profile);
 
   return profile;
 }
 
-
-
-
-// Create MMY Email user and profile in one go
-Future<Profile> createMMYUser(AuthBase auth, {String? displayName, String? firstName, String? lastName, required String email, required String password, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
-
-  User? user = await auth.createEmailUser(email, password);
-
-  Profile profile = Profile(
-    uid: auth.currentUser!.uid,
-    displayName: displayName ?? '',
-    firstName: firstName ?? '',
-    lastName: lastName ?? '',
-    email: email,
-    countryCode: countryCode ?? '',
-    phoneNumber: phoneNumber ?? '',
-    photoURL: photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-    addresses: <String, dynamic>{'Home': homeAddress ?? ''},
-    about: about ?? '',
-    other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true},
-  );
-
-  if (user != null) {
-    await FirestoreDB(uid: auth.currentUser!.uid).setProfile(profile);
-  }
-
-  return profile;
-}
 
 // Update whatever fields are not null
-Future<Profile> updateProfile(AuthBase auth, {String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
+Future<Profile> updateProfile(User currentUser, {String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
 
-  Database db = FirestoreDB(uid: auth.currentUser!.uid);
+  Database db = FirestoreDB(uid: currentUser.uid);
 
-  final oldProfile = (await db.getProfile(auth.currentUser!.uid))!;
+  final oldProfile = (await db.getProfile(currentUser.uid))!;
 
   String displayName = (firstName ?? oldProfile.firstName ?? '') + ' ' + (lastName ?? oldProfile.lastName ?? '');
 
   Profile profile = Profile(
-    uid: auth.currentUser!.uid,
+    uid: currentUser.uid,
     displayName: displayName,
     firstName: firstName ?? oldProfile.firstName ?? '',
     lastName: lastName ?? oldProfile.lastName ?? '',
@@ -146,24 +116,24 @@ Future<Profile> updateProfile(AuthBase auth, {String? firstName, String? lastNam
   return profile;
 }
 
-Future<Profile> setProfileParameter(AuthBase auth, {required String param, required dynamic value}) async {
-  Database db = FirestoreDB(uid: auth.currentUser!.uid);
-  final profile = (await db.getProfile(auth.currentUser!.uid))!;
+Future<Profile> setProfileParameter(User currentUser, {required String param, required dynamic value}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  final profile = (await db.getProfile(currentUser.uid))!;
   profile.parameters![param] = value;
   await db.setProfile(profile);
   return profile;
 }
 
 
-Future<void> deleteProfile(AuthBase auth) async {
-  await FirestoreDB(uid: auth.currentUser!.uid).deleteProfile(auth.currentUser!.uid);
-  await auth.currentUser!.delete();
+Future<void> deleteProfile(User currentUser) async {
+  await FirestoreDB(uid: currentUser.uid).deleteProfile(currentUser.uid);
+  await currentUser.delete();
 }
 
 // searches for Profiles in the database
-Future<List<Profile>> searchProfiles(AuthBase auth, {required String searchText}) async {
+Future<List<Profile>> searchProfiles(User currentUser, {required String searchText}) async {
   List<Profile> results = [];
-  Database db = await FirestoreDB(uid: auth.currentUser!.uid);
+  Database db = await FirestoreDB(uid: currentUser.uid);
   final searchWords = searchText.split(" ");
   List<String> searchFields = ['displayName', 'firstName', 'lastName', 'email', 'phoneNumber'];
   for (String field in searchFields) {
