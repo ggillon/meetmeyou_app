@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
 import 'package:meetmeyou_app/view/login/loginPage.dart';
@@ -31,7 +33,7 @@ class Router {
 
       case RoutesConstants.verifyPage:
         return MaterialPageRoute(
-            builder: (_) => VerifyScreen(), settings: settings);
+            builder: (_) => VerifyScreen(userDetail: settings.arguments as UserDetail,), settings: settings);
 
       case RoutesConstants.autoComplete:
         return MaterialPageRoute(
@@ -40,6 +42,10 @@ class Router {
       case RoutesConstants.signUpPage:
         return MaterialPageRoute(
             builder: (_) => SignUpPage(), settings: settings);
+
+      case RoutesConstants.homePage:
+        return MaterialPageRoute(
+            builder: (_) => HomePage(), settings: settings);
 
 
 

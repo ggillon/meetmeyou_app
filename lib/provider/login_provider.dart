@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meetmeyou_app/enum/viewstate.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -14,6 +15,11 @@ class LoginProvider extends BaseProvider{
       DialogHelper.showMessage(context, e.message);
     });
     setState(ViewState.Idle);
+
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(
+        RoutesConstants.homePage,
+            (route) => false);
    /* if(user!=null){
       var displayName=firstName!+" "+lastName!;
       createProfile(user,displayName:displayName,firstName: firstName,lastName: lastName,email: email,countryCode: countryCode,phoneNumber: phone,homeAddress: address);

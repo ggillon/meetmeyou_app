@@ -1,30 +1,54 @@
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meetmeyou_app/enum/viewstate.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SignUpProvider extends BaseProvider{
   File? image;
-  AuthBase _auth = locator<AuthBase>();
+
   String countryCode="+1";
+  String phone="";
 
 
-  Future<void> authRegister(BuildContext context,String? email,String? password,String? firstName,String? lastName,String? countryCode,String? phone,String? address) async {
-    setState(ViewState.Busy);
-    var user=await _auth.createEmailUser(email!, password!).catchError((e){
-      setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
-    });
-    if(user!=null){
-      var displayName=firstName!+" "+lastName!;
-      createProfile(user,displayName:displayName,firstName: firstName,lastName: lastName,email: email,countryCode: countryCode,phoneNumber: phone,homeAddress: address);
-      setState(ViewState.Idle);
+
+
+  void sendOtpToMail(String email){
+    auth.generateOTP(email);
+  }
+
+  Future<bool> permissionCheck() async {
+    var status=await Permission.storage.status;
+    if (Platform.isAndroid) {
+      var androidInfo =
+      await DeviceInfoPlugin().androidInfo;
+      var release = androidInfo.version.release;
+      if (int.parse(release) > 10) {
+        status = await Permission.manageExternalStorage.request();
+      } else {
+        status = await Permission.storage.request();
+      }
+    } else {
+      status = await Permission.storage.request();
+    }
+    if(status.isGranted){
+      return true;
+    }else if(status.isDenied){
+      Permission.storage.request();
+      return false;
+    }else if(status.isPermanentlyDenied){
+      openAppSettings();
+      return false;
+    }else{
+      return false;
     }
   }
 

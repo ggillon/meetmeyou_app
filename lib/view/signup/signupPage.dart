@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
@@ -7,8 +8,9 @@ import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/constants/validations.dart';
-import 'package:meetmeyou_app/enum/viewstate.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -22,7 +24,6 @@ class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
-  final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -66,22 +67,25 @@ class SignUpPage extends StatelessWidget {
                                       fit: BoxFit.cover,
                                       height: scaler.getWidth(20),
                                     ),
-                              onTap: () {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        CustomDialog(
-                                          cameraClick: () {
-                                            provider.getImage(context, 1);
-                                          },
-                                          galleryClick: () {
-                                            provider.getImage(context, 2);
-                                          },
-                                          cancelClick: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ));
+                              onTap: () async {
+                                var value=await provider.permissionCheck();
+                                if(value){
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          CustomDialog(
+                                            cameraClick: () {
+                                              provider.getImage(context, 1);
+                                            },
+                                            galleryClick: () {
+                                              provider.getImage(context, 2);
+                                            },
+                                            cancelClick: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ));
+                                }
                               },
                             ),
                             Positioned(
@@ -253,6 +257,7 @@ class SignUpPage extends StatelessWidget {
                         bgColor: ColorConstants.colorLightGray,
                         radius: scaler.getBorderRadiusCircular(7),
                         child: IntlPhoneField(
+                          autoValidate: false,
                           showCountryFlag: true,
                           style: ViewDecoration.textFieldStyle(
                               scaler.getTextSize(9.5),
@@ -269,7 +274,7 @@ class SignUpPage extends StatelessWidget {
                             provider.countryCode = code.countryCode!;
                           },
                           onChanged: (phone) {
-                            // number = phone.number!;
+                            provider.phone=phone.number!;
                           },
                         ),
                       ),
@@ -327,10 +332,20 @@ class SignUpPage extends StatelessWidget {
                         onTap: () {
                           hideKeyboard(context);
                           if (_formKey.currentState!.validate()) {
-                             provider.authRegister(context,emailController.text, passwordController.text, firstNameController.text, lastNameController.text,provider.countryCode, phoneController.text, addressController.text);
+                            var userDetail=UserDetail();
+                            userDetail.email=emailController.text;
+                            userDetail.firstName=firstNameController.text;
+                            userDetail.lastName=lastNameController.text;
+                            userDetail.countryCode=provider.countryCode;
+                            userDetail.phone=provider.phone;
+                            userDetail.password=passwordController.text;
+                            userDetail.profileFile=provider.image;
+                            userDetail.address=addressController.text;
+                            provider.sendOtpToMail(emailController.text.toString());
+                            Navigator.pushNamed(context, RoutesConstants.verifyPage,arguments:userDetail);
                           }
-                          /*Navigator.pushNamed(
-                              context, RoutesConstants.verifyPage);*/
+                          //var user=User();
+
                         },
                         child: CustomShape(
                           child: Center(

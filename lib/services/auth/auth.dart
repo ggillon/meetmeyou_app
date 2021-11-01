@@ -146,7 +146,7 @@ class Auth implements AuthBase {
   bool emailCheckCode(String email, String OTP) {
     final seed = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
     final code = seed.substring(seed.length-4, seed.length);
-    return (email == OTP);
+    return (code == OTP);
   }
 
   @override
