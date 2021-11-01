@@ -96,5 +96,12 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<key>NSPhotoLibraryUsageDescription</key>
+        <string>MeetMeYou Need This Permission for getting photos</string>
+
+        <key>NSCameraUsageDescription</key>
+        <string>MeetMeYou Need This Permission for use camera</string>
+
 	</dict>
 </plist>

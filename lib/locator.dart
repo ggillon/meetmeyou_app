@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
+import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/provider/verify_provider.dart';
 
 
@@ -11,6 +12,7 @@ void setupLocator() {
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
   locator.registerFactory<VerifyProvider>(() => VerifyProvider());
+  locator.registerFactory<SignUpProvider>(() => SignUpProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

@@ -53,6 +53,8 @@ dependencies:
   pin_code_fields: ^7.3.0
   intl_phone_field: ^2.1.0
   flutter_google_places: ^0.3.0
+  another_flushbar: ^1.10.24
+  image_picker: ^0.8.4
 
 
 dev_dependencies:

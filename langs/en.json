@@ -20,7 +20,13 @@
   "name": "Name",
   "phone_number": "Phone Number",
   "address": "Address",
-  "enter_address": "Enter your address"
+  "enter_address": "Enter your address",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "choose_from": "Choose From",
+  "phone_gallery": "Phone Gallery",
+  "camera": "Camera",
+  "cancel": "Cancel"
 
 
 }

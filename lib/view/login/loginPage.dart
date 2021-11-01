@@ -79,8 +79,8 @@ class LoginPage extends StatelessWidget {
                     ),
                     GestureDetector(onTap: (){
                       Navigator.pushNamed(context, RoutesConstants.signUpPage);
-                    },child: Text("already_an_account".tr()).semiBoldText(
-                        Colors.black, scaler.getTextSize(9.5), TextAlign.center),),
+                    },child: Padding(padding: scaler.getPaddingAll(3),child:Text("already_an_account".tr()).semiBoldText(
+                        Colors.black, scaler.getTextSize(9.5), TextAlign.center),) ,),
                   ],
                 ),
                 SizedBox(height: scaler.getHeight(20),),
