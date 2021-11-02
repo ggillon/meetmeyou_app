@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/constants/validations.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
@@ -123,7 +124,7 @@ class LoginPage extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(
-                                  context, RoutesConstants.signUpPage);
+                                  context, RoutesConstants.signUpPage,arguments: StringConstants.simple);
                             },
                             child: Padding(
                               padding: scaler.getPaddingAll(3),

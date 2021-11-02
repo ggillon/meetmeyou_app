@@ -5,6 +5,7 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
@@ -101,7 +102,7 @@ class LoginOptions extends StatelessWidget {
                         ),
                       ):GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, RoutesConstants.signUpPage);
+                          Navigator.pushNamed(context, RoutesConstants.signUpPage,arguments: StringConstants.social);
                         },
                         child: CustomShape(
                           child: Center(
