@@ -7,11 +7,12 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
+import 'package:meetmeyou_app/secrets.dart';
 
 class CustomSearchScaffold extends PlacesAutocompleteWidget {
   CustomSearchScaffold()
       : super(
-            apiKey: StringConstants.googleApiKey,
+            apiKey: googleApiKey,
             language: "en",
             offset: 0,
             radius: 0,
@@ -27,7 +28,7 @@ class CustomSearchScaffold extends PlacesAutocompleteWidget {
 class _CustomSearchScaffoldState extends PlacesAutocompleteState {
   final searchScaffoldKey = GlobalKey<ScaffoldState>();
   GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: StringConstants.googleApiKey);
+      GoogleMapsPlaces(apiKey: googleApiKey);
 
   @override
   Widget build(BuildContext context) {
