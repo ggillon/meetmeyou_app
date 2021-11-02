@@ -271,6 +271,7 @@ class SignUpPage extends StatelessWidget {
                           ),
                           initialCountryCode: 'US',
                           onCountryChanged: (code) {
+                            hideKeyboard(context);
                             provider.countryCode = code.countryCode!;
                           },
                           onChanged: (phone) {

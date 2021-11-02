@@ -104,7 +104,7 @@ Future<Profile> updateProfile(User currentUser, {String? firstName, String? last
     countryCode: countryCode ?? oldProfile.countryCode ?? '',
     phoneNumber: phoneNumber ?? oldProfile.phoneNumber ?? '',
     photoURL: photoUrl ?? oldProfile.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-    addresses: <String, dynamic>{'Home': homeAddress ?? ''},
+    addresses: homeAddress!=null?<String, dynamic>{'Home': homeAddress}:oldProfile.addresses,
     about: about ?? oldProfile.about ?? '',
     other: other ?? oldProfile.other ?? <String, dynamic>{},
     parameters: parameters ?? oldProfile.parameters ?? <String, dynamic>{},

@@ -47,7 +47,7 @@ class LoginOptions extends StatelessWidget {
                     children: [
                       provider.moreOption?GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, RoutesConstants.signUpPage);
+                          provider.signInWithFb(context);
                         },
                         child: CustomShape(
                           child: Center(
@@ -64,7 +64,7 @@ class LoginOptions extends StatelessWidget {
                       ):
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, RoutesConstants.signUpPage);
+                          provider.signInWithGoogle(context);
                         },
                         child: CustomShape(
                           child: Center(

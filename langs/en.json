@@ -32,7 +32,9 @@
   "first_name_required": "First name is required",
   "last_name_required": "Last name is required",
   "password_required": "Password is required",
-  "invalid_password_format": "Password should have minimum 8 chars with uppercase,lowercase,number & special chars"
+  "invalid_password_format": "Password should have minimum 8 chars with uppercase,lowercase,number & special chars",
+  "don't_have_an_account": "Don't have an account?",
+  "sign_up": "Signup"
 
 
 }

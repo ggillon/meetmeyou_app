@@ -7,6 +7,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
+import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/secrets.dart';
 
 class CustomSearchScaffold extends PlacesAutocompleteWidget {
@@ -66,6 +67,7 @@ class _CustomSearchScaffoldState extends PlacesAutocompleteState {
       value["latitude"] = lat.toString();
       value["longitude"] = lng.toString();
       value["address"] = p.description!;
+      hideKeyboard(context);
       Navigator.pop(context, value);
     }
   }

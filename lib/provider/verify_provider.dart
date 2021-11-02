@@ -39,7 +39,7 @@ class VerifyProvider extends BaseProvider {
     });
     if (user != null) {
       var displayName = userDetail!.firstName! + " " + userDetail!.lastName!;
-      createProfile(user,
+      await createProfile(user,
           displayName: displayName,
           firstName: userDetail!.firstName,
           lastName: userDetail!.lastName,
@@ -58,17 +58,14 @@ class VerifyProvider extends BaseProvider {
 
   Future<void> updateProfilePic(BuildContext context) async {
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    var value = await mmyEngine!
+    await mmyEngine!
         .updateProfilePicture(userDetail!.profileFile!)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
-    if (value != null) {
-      moveToNextScreen(context);
-    }
+    moveToNextScreen(context);
   }
-
   void moveToNextScreen(BuildContext context) {
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RoutesConstants.homePage, (route) => false);
