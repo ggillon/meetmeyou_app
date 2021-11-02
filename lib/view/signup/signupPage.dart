@@ -7,9 +7,11 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/constants/validations.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
@@ -20,6 +22,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:google_maps_webservice/places.dart';
 
+
 class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
   final firstNameController = TextEditingController();
@@ -28,7 +31,8 @@ class SignUpPage extends StatelessWidget {
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  SignUpPage({Key? key}) : super(key: key);
+  final String? signUpType;
+  SignUpPage({Key? key,@required this.signUpType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,13 @@ class SignUpPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<SignUpProvider>(
-          onModelReady: (provider) {},
+          onModelReady: (provider) {
+            if(signUpType==StringConstants.social){
+              firstNameController.text=provider.userDetail.firstName??'';
+              lastNameController.text=provider.userDetail.lastName??'';
+              emailController.text=provider.userDetail.email??'';
+            }
+          },
           builder: (context, provider, _) {
             return SingleChildScrollView(
               child: Form(

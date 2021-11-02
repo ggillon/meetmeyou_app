@@ -7,19 +7,17 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SignUpProvider extends BaseProvider{
+  UserDetail userDetail = locator<UserDetail>();
   File? image;
-
   String countryCode="+1";
   String phone="";
-
-
-
 
   void sendOtpToMail(String email){
     auth.generateOTP(email);

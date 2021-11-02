@@ -40,8 +40,9 @@ class Router {
             builder: (_) => CustomSearchScaffold(), settings: settings);
 
       case RoutesConstants.signUpPage:
+        String value=settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => SignUpPage(), settings: settings);
+            builder: (_) => SignUpPage(signUpType: value,), settings: settings);
 
       case RoutesConstants.homePage:
         return MaterialPageRoute(

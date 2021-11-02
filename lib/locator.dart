@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
@@ -13,6 +14,7 @@ GetIt locator = GetIt.instance;
 
 void setupLocator() {
   locator.registerLazySingleton<AuthBase>(() => Auth());
+  locator.registerLazySingleton<UserDetail>(() => UserDetail());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());

@@ -8,5 +8,6 @@ class UserDetail{
   String? countryCode;
   String? phone;
   File? profileFile;
+  String? profileUrl;
   String? address;
 }
