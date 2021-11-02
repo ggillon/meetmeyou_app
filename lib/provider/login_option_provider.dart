@@ -44,26 +44,26 @@ class LoginOptionProvider extends BaseProvider {
 
   Future<void> signInWithGoogle(BuildContext context) async {
     setState(ViewState.Busy);
-    await auth.signInWithGoogle().catchError((e){
+    var user=await auth.signInWithGoogle().catchError((e){
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
+    print("create user profile ${user}");
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     var value=await mmyEngine!.isNew();
-    var userProfile=await mmyEngine!.getUserProfile();
+    var userProfile=await mmyEngine!.createUserProfile();
     userDetail.email=userProfile.email;
     userDetail.firstName=userProfile.firstName;
     userDetail.lastName=userProfile.lastName;
     userDetail.profileUrl=userProfile.photoURL;
-    Navigator.pushNamed(context, RoutesConstants.signUpPage,arguments: StringConstants.social);
     setState(ViewState.Idle);
-    /*if(value){
-      Navigator.pushNamed(context, RoutesConstants.signUpPage);
+    if(value){
+      Navigator.pushNamed(context, RoutesConstants.signUpPage,arguments: StringConstants.social);
     }else{
       Navigator.of(context)
           .pushNamedAndRemoveUntil(
           RoutesConstants.homePage,
               (route) => false);
-    }*/
+    }
   }
 }
