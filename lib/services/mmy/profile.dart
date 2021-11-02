@@ -15,16 +15,21 @@ Future<Profile> getUserProfile(User currentUser) async {
 
 // Check if profile exists
 Future<bool> isNewProfile(User currentUser) async {
-  final profile = await FirestoreDB(uid: currentUser.uid).getProfile(currentUser.uid);
-  if (profile == null) {
-    return true;
-  } else {
-    if (profile.parameters != null) {
-      if (profile.parameters!.containsKey('New'))
-        if (profile.parameters!['New'] == true)
-          return true;
+  try {
+    final profile = await FirestoreDB(uid: currentUser.uid).getProfile(
+        currentUser.uid);
+    if (profile == null) {
+      return true;
+    } else {
+      if (profile.parameters != null) {
+        if (profile.parameters!.containsKey('New'))
+          if (profile.parameters!['New'] == true)
+            return true;
+      }
+      return false;
     }
-    return false;
+  } catch(e) {
+    return true;
   }
 }
 
