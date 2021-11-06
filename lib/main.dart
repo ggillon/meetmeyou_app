@@ -39,20 +39,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<AuthBase>(
-        create: (_) => Auth(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'MeetMeYou',
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: EasyLocalization.of(context).supportedLocales,
-          locale: EasyLocalization.of(context).locale,
-          theme: ThemeData(
-            primarySwatch: color,
-          ),
-          onGenerateRoute: router.Router.generateRoute,
-          initialRoute: SharedPref.prefs.getBool(SharedPref.INTRODUCTION_COMPLETE)==null?RoutesConstants.introductionPage:RoutesConstants.loginOptions,
+      create: (_) => Auth(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'MeetMeYou',
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: EasyLocalization.of(context).supportedLocales,
+        locale: EasyLocalization.of(context).locale,
+        theme: ThemeData(
+          primarySwatch: color,
         ),
-      );
+        onGenerateRoute: router.Router.generateRoute,
+        initialRoute:
+            SharedPref.prefs.getBool(SharedPref.INTRODUCTION_COMPLETE) == null
+                ? RoutesConstants.introductionPage
+                : SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) == null||SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) == false
+                    ? RoutesConstants.loginOptions
+                    : RoutesConstants.homePage,
+      ),
+    );
   }
 
   MaterialColor color = const MaterialColor(0xFF00B9A7, <int, Color>{

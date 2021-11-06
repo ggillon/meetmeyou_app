@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
@@ -16,6 +17,7 @@ class LoginProvider extends BaseProvider{
     });
     setState(ViewState.Idle);
 
+    SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
     Navigator.of(context)
         .pushNamedAndRemoveUntil(
         RoutesConstants.homePage,

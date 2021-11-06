@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -67,6 +68,7 @@ class VerifyProvider extends BaseProvider {
     moveToNextScreen(context);
   }
   void moveToNextScreen(BuildContext context) {
+    SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
     Navigator.of(context)
         .pushNamedAndRemoveUntil(RoutesConstants.homePage, (route) => false);
   }

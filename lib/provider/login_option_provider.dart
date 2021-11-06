@@ -4,6 +4,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -16,6 +17,7 @@ class LoginOptionProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
 
   bool _moreOption = false;
+
   bool get moreOption => _moreOption;
 
   void updateMoreOptions(bool value) {
@@ -24,46 +26,57 @@ class LoginOptionProvider extends BaseProvider {
   }
 
   Future<void> signInWithFb(BuildContext context) async {
-    setState(ViewState.Busy);
-    await auth.signInWithFacebook().catchError((e){
+    var user = await auth.signInWithFacebook().catchError((e) {
       setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);
     });
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    var value=await mmyEngine!.isNew();
-    setState(ViewState.Idle);
-    if(value){
-      Navigator.pushNamed(context, RoutesConstants.signUpPage,arguments: StringConstants.social);
-    }else{
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(
-          RoutesConstants.homePage,
-              (route) => false);
+    if (user != null) {
+      setState(ViewState.Busy);
+      mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+      var value = await mmyEngine!.isNew();
+      if (value) {
+        var userProfile = await mmyEngine!.createUserProfile();
+        userDetail.email = userProfile.email;
+        userDetail.firstName = userProfile.firstName;
+        userDetail.lastName = userProfile.lastName;
+        userDetail.profileUrl = userProfile.photoURL;
+        setState(ViewState.Idle);
+        Navigator.pushNamed(context, RoutesConstants.signUpPage,
+            arguments: StringConstants.social);
+      } else {
+        setState(ViewState.Idle);
+        SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            RoutesConstants.homePage, (route) => false);
+      }
     }
   }
 
   Future<void> signInWithGoogle(BuildContext context) async {
-    setState(ViewState.Busy);
-    var user=await auth.signInWithGoogle().catchError((e){
+    var user = await auth.signInWithGoogle().catchError((e) {
       setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message,
+          barrierDismissible: false);
     });
-    print("create user profile ${user}");
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    var value=await mmyEngine!.isNew();
-    var userProfile=await mmyEngine!.createUserProfile();
-    userDetail.email=userProfile.email;
-    userDetail.firstName=userProfile.firstName;
-    userDetail.lastName=userProfile.lastName;
-    userDetail.profileUrl=userProfile.photoURL;
-    setState(ViewState.Idle);
-    if(value){
-      Navigator.pushNamed(context, RoutesConstants.signUpPage,arguments: StringConstants.social);
-    }else{
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(
-          RoutesConstants.homePage,
-              (route) => false);
+    if (user != null) {
+      setState(ViewState.Busy);
+      mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+      var value = await mmyEngine!.isNew();
+      if (value) {
+        var userProfile = await mmyEngine!.createUserProfile();
+        userDetail.email = userProfile.email;
+        userDetail.firstName = userProfile.firstName;
+        userDetail.lastName = userProfile.lastName;
+        userDetail.profileUrl = userProfile.photoURL;
+        setState(ViewState.Idle);
+        Navigator.pushNamed(context, RoutesConstants.signUpPage,
+            arguments: StringConstants.social);
+      } else {
+        setState(ViewState.Idle);
+        SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            RoutesConstants.homePage, (route) => false);
+      }
     }
   }
 }

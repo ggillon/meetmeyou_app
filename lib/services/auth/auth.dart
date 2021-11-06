@@ -61,6 +61,7 @@ class Auth implements AuthBase {
 
   @override
   Future<User?> signInWithGoogle() async {
+    await signOut();
     try {
       UserCredential userCredential;
       OAuthCredential googleAuthCredential;
@@ -90,7 +91,7 @@ class Auth implements AuthBase {
 
   @override
   Future<User?> signInWithFacebook() async {
-
+    await signOut();
     if(kIsWeb) {
       // Create a new provider
       FacebookAuthProvider facebookProvider = FacebookAuthProvider();
@@ -160,6 +161,8 @@ class Auth implements AuthBase {
 
   @override
   Future<void> signOut() async {
+    await GoogleSignIn().signOut();
+    await FacebookAuth.instance.logOut();
     await _auth.signOut();
     /*final googleSignIn = GoogleSignIn();
     if (googleSignIn != null)

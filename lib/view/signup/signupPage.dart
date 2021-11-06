@@ -22,7 +22,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:google_maps_webservice/places.dart';
 
-
 class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
   final firstNameController = TextEditingController();
@@ -32,7 +31,8 @@ class SignUpPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
   final String? signUpType;
-  SignUpPage({Key? key,@required this.signUpType}) : super(key: key);
+
+  SignUpPage({Key? key, @required this.signUpType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +42,10 @@ class SignUpPage extends StatelessWidget {
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<SignUpProvider>(
           onModelReady: (provider) {
-            if(signUpType==StringConstants.social){
-              firstNameController.text=provider.userDetail.firstName??'';
-              lastNameController.text=provider.userDetail.lastName??'';
-              emailController.text=provider.userDetail.email??'';
+            if (signUpType == StringConstants.social) {
+              firstNameController.text = provider.userDetail.firstName ?? '';
+              lastNameController.text = provider.userDetail.lastName ?? '';
+              emailController.text = provider.userDetail.email ?? '';
             }
           },
           builder: (context, provider, _) {
@@ -65,58 +65,77 @@ class SignUpPage extends StatelessWidget {
                         child: Stack(
                           children: [
                             GestureDetector(
-                              child: provider.image == null
+                              child: provider.image == null &&
+                                      signUpType != StringConstants.social
                                   ? Container(
                                       color: ColorConstants.primaryColor,
                                       width: scaler.getWidth(20),
                                       height: scaler.getWidth(20),
                                     )
-                                  : ImageView(
-                                      file: provider.image,
-                                      width: scaler.getWidth(20),
-                                      fit: BoxFit.cover,
-                                      height: scaler.getWidth(20),
-                                    ),
+                                  : provider.userDetail.profileUrl != null
+                                      ? ImageView(
+                                          path: provider.userDetail.profileUrl,
+                                          width: scaler.getWidth(20),
+                                          fit: BoxFit.cover,
+                                          height: scaler.getWidth(20),
+                                        )
+                                      : provider.image == null
+                                          ? Container(
+                                              color:
+                                                  ColorConstants.primaryColor,
+                                              width: scaler.getWidth(20),
+                                              height: scaler.getWidth(20),
+                                            )
+                                          : ImageView(
+                                              file: provider.image,
+                                              width: scaler.getWidth(20),
+                                              fit: BoxFit.cover,
+                                              height: scaler.getWidth(20),
+                                            ),
                               onTap: () async {
-                                var value=await provider.permissionCheck();
-                                if(value){
-                                  showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          CustomDialog(
-                                            cameraClick: () {
-                                              provider.getImage(context, 1);
-                                            },
-                                            galleryClick: () {
-                                              provider.getImage(context, 2);
-                                            },
-                                            cancelClick: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ));
+                                if (provider.userDetail.profileUrl == null) {
+                                  var value = await provider.permissionCheck();
+                                  if (value) {
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            CustomDialog(
+                                              cameraClick: () {
+                                                provider.getImage(context, 1);
+                                              },
+                                              galleryClick: () {
+                                                provider.getImage(context, 2);
+                                              },
+                                              cancelClick: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ));
+                                  }
                                 }
                               },
                             ),
                             Positioned(
                               right: 5,
                               top: 5,
-                              child: CircleAvatar(
-                                radius: scaler.getWidth(2),
-                                child: ClipOval(
-                                  child: Container(
-                                    color: ColorConstants.colorWhite,
-                                    width: scaler.getWidth(5),
-                                    height: scaler.getHeight(5),
-                                    child: Center(
-                                      child: ImageView(
-                                        color: ColorConstants.colorBlack,
-                                        path: ImageConstants.ic_edit,
+                              child: provider.userDetail.profileUrl == null
+                                  ? CircleAvatar(
+                                      radius: scaler.getWidth(2),
+                                      child: ClipOval(
+                                        child: Container(
+                                          color: ColorConstants.colorWhite,
+                                          width: scaler.getWidth(5),
+                                          height: scaler.getHeight(5),
+                                          child: Center(
+                                            child: ImageView(
+                                              color: ColorConstants.colorBlack,
+                                              path: ImageConstants.ic_edit,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                    )
+                                  : Container(),
                             )
                           ],
                         ),
@@ -133,6 +152,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
+                        enabled: signUpType!=StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: firstNameController,
                         style: ViewDecoration.textFieldStyle(
@@ -165,6 +185,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
+                        enabled: signUpType!=StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: lastNameController,
                         style: ViewDecoration.textFieldStyle(
@@ -197,6 +218,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
+                        enabled: signUpType!=StringConstants.social,
                         controller: emailController,
                         style: ViewDecoration.textFieldStyle(
                             scaler.getTextSize(9.5), ColorConstants.colorBlack),
@@ -220,38 +242,40 @@ class SignUpPage extends StatelessWidget {
                           }
                         },
                       ),
-                      SizedBox(
-                        height: scaler.getHeight(1),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text("password".tr()).boldText(Colors.black,
-                            scaler.getTextSize(9.5), TextAlign.center),
-                      ),
-                      SizedBox(
-                        height: scaler.getHeight(0.2),
-                      ),
-                      TextFormField(
-                        controller: passwordController,
-                        style: ViewDecoration.textFieldStyle(
-                            scaler.getTextSize(9.5), ColorConstants.colorBlack),
-                        decoration: ViewDecoration.inputDecorationWithCurve(
-                            "", scaler, ColorConstants.primaryColor),
-                        onFieldSubmitted: (data) {},
-                        obscureText: true,
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.text,
-                        validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return "password_required".tr();
-                          } else if (!Validations.validateStructure(value)) {
-                            return "invalid_password_format".tr();
-                          }
-                          {
-                            return null;
-                          }
-                        },
-                      ),
+                      signUpType==StringConstants.social?Container():Column(children: [
+                        SizedBox(
+                          height: scaler.getHeight(1),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text("password".tr()).boldText(Colors.black,
+                              scaler.getTextSize(9.5), TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: scaler.getHeight(0.2),
+                        ),
+                        TextFormField(
+                          controller: passwordController,
+                          style: ViewDecoration.textFieldStyle(
+                              scaler.getTextSize(9.5), ColorConstants.colorBlack),
+                          decoration: ViewDecoration.inputDecorationWithCurve(
+                              "", scaler, ColorConstants.primaryColor),
+                          onFieldSubmitted: (data) {},
+                          obscureText: true,
+                          textInputAction: TextInputAction.done,
+                          keyboardType: TextInputType.text,
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return "password_required".tr();
+                            } else if (!Validations.validateStructure(value)) {
+                              return "invalid_password_format".tr();
+                            }
+                            {
+                              return null;
+                            }
+                          },
+                        )
+                      ],),
                       SizedBox(
                         height: scaler.getHeight(1),
                       ),
@@ -285,7 +309,7 @@ class SignUpPage extends StatelessWidget {
                             provider.countryCode = code.countryCode!;
                           },
                           onChanged: (phone) {
-                            provider.phone=phone.number!;
+                            provider.phone = phone.number!;
                           },
                         ),
                       ),
@@ -339,37 +363,48 @@ class SignUpPage extends StatelessWidget {
                       SizedBox(
                         height: scaler.getHeight(5),
                       ),
-                      provider.state==ViewState.Idle?GestureDetector(
-                        onTap: () {
-                          hideKeyboard(context);
-                          if (_formKey.currentState!.validate()) {
-                            var userDetail=UserDetail();
-                            userDetail.email=emailController.text;
-                            userDetail.firstName=firstNameController.text;
-                            userDetail.lastName=lastNameController.text;
-                            userDetail.countryCode=provider.countryCode;
-                            userDetail.phone=provider.phone;
-                            userDetail.password=passwordController.text;
-                            userDetail.profileFile=provider.image;
-                            userDetail.address=addressController.text;
-                            provider.sendOtpToMail(emailController.text.toString());
-                            Navigator.pushNamed(context, RoutesConstants.verifyPage,arguments:userDetail);
-                          }
-                          //var user=User();
-
-                        },
-                        child: CustomShape(
-                          child: Center(
-                              child: Text("next".tr()).mediumText(
-                                  ColorConstants.colorWhite,
-                                  scaler.getTextSize(10),
-                                  TextAlign.center)),
-                          bgColor: ColorConstants.primaryColor,
-                          radius: BorderRadius.all(Radius.circular(10)),
-                          height: scaler.getHeight(4),
-                          width: MediaQuery.of(context).size.width,
-                        ),
-                      ):Center(child: CircularProgressIndicator(),),
+                      provider.state == ViewState.Idle
+                          ? GestureDetector(
+                              onTap: () {
+                                hideKeyboard(context);
+                                if (_formKey.currentState!.validate()) {
+                                  if(signUpType==StringConstants.social){
+                                    provider.updateProfile(context, firstNameController.text, lastNameController.text, emailController.text, provider.countryCode, provider.phone, addressController.text);
+                                  }else{
+                                    var userDetail = UserDetail();
+                                    userDetail.email = emailController.text;
+                                    userDetail.firstName =
+                                        firstNameController.text;
+                                    userDetail.lastName = lastNameController.text;
+                                    userDetail.countryCode = provider.countryCode;
+                                    userDetail.phone = provider.phone;
+                                    userDetail.password = passwordController.text;
+                                    userDetail.profileFile = provider.image;
+                                    userDetail.address = addressController.text;
+                                    provider.sendOtpToMail(
+                                        emailController.text.toString());
+                                    Navigator.pushNamed(
+                                        context, RoutesConstants.verifyPage,
+                                        arguments: userDetail);
+                                  }
+                                }
+                                //var user=User();
+                              },
+                              child: CustomShape(
+                                child: Center(
+                                    child: Text("next".tr()).mediumText(
+                                        ColorConstants.colorWhite,
+                                        scaler.getTextSize(10),
+                                        TextAlign.center)),
+                                bgColor: ColorConstants.primaryColor,
+                                radius: BorderRadius.all(Radius.circular(10)),
+                                height: scaler.getHeight(4),
+                                width: MediaQuery.of(context).size.width,
+                              ),
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            ),
                       SizedBox(
                         height: scaler.getHeight(3),
                       ),
