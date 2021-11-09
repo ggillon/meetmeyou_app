@@ -9,7 +9,7 @@ class SharedPref {
 
 
 
-  /*static clearSharePref() async {
-    prefs.clear();
-  }*/
+  static clearSharePref() async {
+   prefs!.setBool(IS_USER_LOGIN, false);
+  }
 }

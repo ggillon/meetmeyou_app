@@ -58,6 +58,7 @@ dependencies:
   image_picker: ^0.8.4
   permission_handler: ^8.1.6
   device_info: ^2.0.2
+  sign_in_with_apple: ^3.2.0
 
 
 dev_dependencies:

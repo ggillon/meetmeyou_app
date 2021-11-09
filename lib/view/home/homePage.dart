@@ -30,7 +30,8 @@ class HomePage extends StatelessWidget {
           GestureDetector(
             onTap: () {
               auth.signOut();
-              SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, false);
+              SharedPref.clearSharePref();
+              //SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, false);
               Navigator.of(context).pushNamedAndRemoveUntil(
                   RoutesConstants.loginOptions, (route) => false);
             },

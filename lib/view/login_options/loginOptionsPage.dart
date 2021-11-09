@@ -130,10 +130,7 @@ class LoginOptions extends StatelessWidget {
                                   Platform.isIOS
                                       ? GestureDetector(
                                           onTap: () {
-                                            Navigator.pushNamed(context,
-                                                RoutesConstants.signUpPage,
-                                                arguments:
-                                                    StringConstants.social);
+                                            provider.signInWithApple(context);
                                           },
                                           child: CustomShape(
                                             child: Center(
