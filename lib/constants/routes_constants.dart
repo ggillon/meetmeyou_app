@@ -5,6 +5,8 @@ class RoutesConstants {
   static const loginOptions = "loginOptions";
   static const verifyPage = "verifyPage";
   static const signUpPage = "signUpPage";
-  static const homePage = "homePage";
+  static const dashboardPage = "dashboardPage";
   static const autoComplete = "autoComplete";
+  static const myAccountScreen = "myAccountScreen";
+  static const editProfileScreen = "editProfileScreen";
 }

@@ -36,5 +36,16 @@
   "don't_have_an_account": "Don't have an account?",
   "sign_up": "Signup",
   "ok": "Ok",
-  "error": "Error"
+  "error": "Error",
+
+  "invite_friends" : "Invite friends",
+  "history" : "History",
+  "about" : "About",
+  "logout" : "Log Out",
+  "my_account" : "My account",
+  "organized_events" : "Organized events",
+  "attend" : "Attend",
+  "phone_number_required" : "Phone number required",
+  "discard" : "Discard",
+  "save_changes" : "Save changes"
 }

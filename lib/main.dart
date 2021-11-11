@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
                 ? RoutesConstants.introductionPage
                 : SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) == null||SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) == false
                     ? RoutesConstants.loginOptions
-                    : RoutesConstants.homePage,
+                    : RoutesConstants.dashboardPage,
       ),
     );
   }

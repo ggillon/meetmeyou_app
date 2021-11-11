@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
@@ -21,6 +22,7 @@ void setupLocator() {
   locator.registerFactory<VerifyProvider>(() => VerifyProvider());
   locator.registerFactory<SignUpProvider>(() => SignUpProvider());
   locator.registerFactory<LoginProvider>(() => LoginProvider());
+  locator.registerFactory<EditProfileProvider>(() => EditProfileProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

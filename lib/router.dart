@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
+import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
 import 'package:meetmeyou_app/view/login/loginPage.dart';
 import 'package:meetmeyou_app/view/login_options/loginOptionsPage.dart';
+import 'package:meetmeyou_app/view/my_account/myAccountScreen.dart';
 import 'package:meetmeyou_app/view/signup/signupPage.dart';
 import 'package:meetmeyou_app/view/verify_screen/verifyScreen.dart';
 
@@ -44,11 +47,17 @@ class Router {
         return MaterialPageRoute(
             builder: (_) => SignUpPage(signUpType: value,), settings: settings);
 
-      case RoutesConstants.homePage:
+      case RoutesConstants.dashboardPage:
         return MaterialPageRoute(
-            builder: (_) => HomePage(), settings: settings);
+            builder: (_) => DashboardPage(), settings: settings);
 
+      case RoutesConstants.myAccountScreen:
+        return MaterialPageRoute(
+            builder: (_) => MyAccountScreen(), settings: settings);
 
+      case RoutesConstants.editProfileScreen:
+        return MaterialPageRoute(
+            builder: (_) => EditProfileScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

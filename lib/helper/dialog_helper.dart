@@ -1,8 +1,11 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class DialogHelper {
   static final border = RoundedRectangleBorder(
@@ -17,7 +20,6 @@ class DialogHelper {
     VoidCallback? positiveButtonPress,
     String negativeButtonLabel = "Cancel",
     VoidCallback? negativeButtonPress,
-
     barrierDismissible = true,
   }) {
     return showDialog(
@@ -57,22 +59,23 @@ class DialogHelper {
     );
   }
 
-
   static Future showDialogWithOneButton(
-      BuildContext context,
-      String title,
-      String content, {
-        String positiveButtonLabel = "Ok",
-        VoidCallback? positiveButtonPress,
-        barrierDismissible = true,
-      }) {
+    BuildContext context,
+    String title,
+    String content, {
+    String positiveButtonLabel = "Ok",
+    VoidCallback? positiveButtonPress,
+    barrierDismissible = true,
+  }) {
     return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext buildContext) {
         return AlertDialog(
-          title: Text(title, textAlign: TextAlign.center).semiBoldText(ColorConstants.colorBlack, 18, TextAlign.center),
-          content: Text(content).regularText(ColorConstants.colorBlack, 16, TextAlign.center),
+          title: Text(title, textAlign: TextAlign.center)
+              .semiBoldText(ColorConstants.colorBlack, 18, TextAlign.center),
+          content: Text(content)
+              .regularText(ColorConstants.colorBlack, 16, TextAlign.center),
           shape: border,
           actions: <Widget>[
             TextButton(
@@ -98,5 +101,41 @@ class DialogHelper {
       backgroundColor: ColorConstants.primaryColor,
       duration: Duration(seconds: 2),
     )..show(context);
+  }
+
+  static PreferredSizeWidget appBarWithBack(
+      ScreenScaler scaler, BuildContext context,
+      {showEdit = false, VoidCallback? editClick}) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: ColorConstants.colorWhite,
+      leadingWidth: 100,
+      leading: InkWell(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2.0, 0.0, right, bottom)
+          child: Row(
+            children: <Widget>[
+              ImageView(path: ImageConstants.ic_back_arrow),
+              SizedBox(width: scaler.getWidth(0.8)),
+              Text("back".tr()).regularText(ColorConstants.primaryColor,
+                  scaler.getTextSize(10.5), TextAlign.left),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        showEdit
+            ? InkWell(
+                onTap: editClick!,
+                child: ImageView(
+                    width: scaler.getWidth(5),
+                    height: scaler.getWidth(5),
+                    path: ImageConstants.ic_edit))
+            : Container(),
+      ],
+    );
   }
 }

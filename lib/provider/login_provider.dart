@@ -20,7 +20,7 @@ class LoginProvider extends BaseProvider{
     SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
     Navigator.of(context)
         .pushNamedAndRemoveUntil(
-        RoutesConstants.homePage,
+        RoutesConstants.dashboardPage,
             (route) => false);
    /* if(user!=null){
       var displayName=firstName!+" "+lastName!;
