@@ -29,7 +29,7 @@ class MyAccountScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: scaler.getPaddingLTRB(2, 0.0, 2, 0.0),
+                padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -46,7 +46,7 @@ class MyAccountScreen extends StatelessWidget {
                     SizedBox(height: scaler.getHeight(3)),
                     Text("organized_events".tr()).boldText(
                         ColorConstants.colorBlack,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(10),
                         TextAlign.left),
                     SizedBox(height: scaler.getHeight(1.5)),
                   ],
@@ -82,12 +82,12 @@ class MyAccountScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Jared Dudley").boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(12.5), TextAlign.left,
+                  scaler.getTextSize(12), TextAlign.left,
                   maxLines: 1, overflow: TextOverflow.ellipsis),
               SizedBox(height: scaler.getHeight(0.5)),
               Text("randomemail@random.com").mediumText(
                   ColorConstants.colorBlack,
-                  scaler.getTextSize(11),
+                  scaler.getTextSize(10),
                   TextAlign.left,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis)
@@ -109,10 +109,10 @@ class MyAccountScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(field).boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(10), TextAlign.left),
+                  scaler.getTextSize(9.5), TextAlign.left),
               SizedBox(height: scaler.getHeight(0.3)),
               Text(value).regularText(ColorConstants.colorGray,
-                  scaler.getTextSize(10), TextAlign.left,
+                  scaler.getTextSize(9.5), TextAlign.left,
                   maxLines: 1, overflow: TextOverflow.ellipsis),
             ],
           ),

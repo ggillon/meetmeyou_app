@@ -47,5 +47,6 @@
   "attend" : "Attend",
   "phone_number_required" : "Phone number required",
   "discard" : "Discard",
-  "save_changes" : "Save changes"
+  "save_changes" : "Save changes",
+  "profile_updated_successfully" : "Profile Updated Successfully"
 }

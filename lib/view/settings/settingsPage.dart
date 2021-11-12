@@ -23,14 +23,14 @@ class SettingsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Card(
+                shadowColor: ColorConstants.colorWhite,
+                elevation: 3.0,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
+                    borderRadius: scaler.getBorderRadiusCircular(10)),
                 child: CustomShape(
                   child: userDetails(scaler, context),
                   bgColor: ColorConstants.colorWhite,
-                  radius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
+                  radius: scaler.getBorderRadiusCircular(10),
                   width: MediaQuery.of(context).size.width,
                 ),
               ),
@@ -58,7 +58,7 @@ class SettingsPage extends StatelessWidget {
 
   Widget userDetails(ScreenScaler scaler, BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         Navigator.pushNamed(context, RoutesConstants.myAccountScreen);
       },
       child: Padding(
@@ -81,12 +81,12 @@ class SettingsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Darrell Steward").boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(12), TextAlign.left,
+                      scaler.getTextSize(11), TextAlign.left,
                       maxLines: 1, overflow: TextOverflow.ellipsis),
                   SizedBox(height: scaler.getHeight(0.2)),
                   Text("DarrellSteward@example.com").regularText(
                       ColorConstants.colorGray,
-                      scaler.getTextSize(10),
+                      scaler.getTextSize(9.5),
                       TextAlign.left,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis)
@@ -107,7 +107,10 @@ class SettingsPage extends StatelessWidget {
   Widget settingsPageCard(
       ScreenScaler scaler, BuildContext context, icon, String txt, bool val) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      shadowColor: ColorConstants.colorWhite,
+      elevation: 3.0,
+      shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircular(10)),
       child: CustomShape(
         child: Padding(
           padding: scaler.getPaddingAll(10.0),
@@ -116,7 +119,7 @@ class SettingsPage extends StatelessWidget {
               ImageView(path: icon),
               SizedBox(width: scaler.getWidth(2.5)),
               Text(txt).mediumText(ColorConstants.colorBlack,
-                  scaler.getTextSize(10.5), TextAlign.left),
+                  scaler.getTextSize(9.5), TextAlign.left),
               val
                   ? Expanded(
                       child: Container(
@@ -127,9 +130,7 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         bgColor: ColorConstants.colorWhite,
-        radius: BorderRadius.all(
-          Radius.circular(20),
-        ),
+        radius: scaler.getBorderRadiusCircular(10),
         width: MediaQuery.of(context).size.width,
       ),
     );
@@ -140,16 +141,14 @@ class SettingsPage extends StatelessWidget {
     BuildContext context,
   ) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: CustomShape(
         child: Center(
           child: Text("logout".tr()).mediumText(ColorConstants.colorWhite,
-              scaler.getTextSize(11), TextAlign.center),
+              scaler.getTextSize(10), TextAlign.center),
         ),
         bgColor: ColorConstants.primaryColor,
-        radius: BorderRadius.all(
-          Radius.circular(14),
-        ),
+        radius: scaler.getBorderRadiusCircular(10),
         width: MediaQuery.of(context).size.width,
         height: scaler.getHeight(5),
       ),

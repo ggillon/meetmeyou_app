@@ -115,7 +115,7 @@ class DialogHelper {
           Navigator.of(context).pop();
         },
         child: Padding(
-          padding: scaler.getPaddingLTRB(2.0, 0.0, right, bottom)
+          padding: scaler.getPaddingLTRB(2.5, 0.0, 0.0, 0.0),
           child: Row(
             children: <Widget>[
               ImageView(path: ImageConstants.ic_back_arrow),
@@ -130,10 +130,13 @@ class DialogHelper {
         showEdit
             ? InkWell(
                 onTap: editClick!,
-                child: ImageView(
-                    width: scaler.getWidth(5),
-                    height: scaler.getWidth(5),
-                    path: ImageConstants.ic_edit))
+                child: Padding(
+                  padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+                  child: ImageView(
+                      width: scaler.getWidth(4.5),
+                      height: scaler.getWidth(4.5),
+                      path: ImageConstants.ic_edit),
+                ))
             : Container(),
       ],
     );
