@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
+import 'package:meetmeyou_app/provider/my_account_provider.dart';
+import 'package:meetmeyou_app/provider/settings_provider.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/provider/verify_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
@@ -23,6 +26,9 @@ void setupLocator() {
   locator.registerFactory<SignUpProvider>(() => SignUpProvider());
   locator.registerFactory<LoginProvider>(() => LoginProvider());
   locator.registerFactory<EditProfileProvider>(() => EditProfileProvider());
+  locator.registerFactory<MyAccountProvider>(()=> MyAccountProvider());
+  locator.registerFactory<SettingsProvider>(()=> SettingsProvider());
+  locator.registerFactory<DashboardProvider>(()=> DashboardProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

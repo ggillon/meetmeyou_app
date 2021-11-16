@@ -31,7 +31,9 @@ class SignUpProvider extends BaseProvider {
     if (Platform.isAndroid) {
       var androidInfo = await DeviceInfoPlugin().androidInfo;
       var release = androidInfo.version.release;
-      if (int.parse(release) > 10) {
+      if (release.contains(".")) {
+        release = release.substring(0, 1);
+      } else if (int.parse(release) > 10) {
         status = await Permission.manageExternalStorage.request();
       } else {
         status = await Permission.storage.request();
@@ -77,15 +79,14 @@ class SignUpProvider extends BaseProvider {
       String address) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    await mmyEngine!
-        .updateProfile(
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            countryCode: phone==""?null:userDetail.countryCode,
-            phoneNumber: phone,
-            homeAddress: address,parameters: <String, dynamic>{'New': false})
-        .catchError((e) {
+    await mmyEngine!.updateProfile(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        countryCode: phone == "" ? null : userDetail.countryCode,
+        phoneNumber: phone,
+        homeAddress: address,
+        parameters: <String, dynamic>{'New': false}).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -95,7 +96,7 @@ class SignUpProvider extends BaseProvider {
 
   void moveToNextScreen(BuildContext context) {
     SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil(RoutesConstants.dashboardPage, (route) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        RoutesConstants.dashboardPage, (route) => false);
   }
 }

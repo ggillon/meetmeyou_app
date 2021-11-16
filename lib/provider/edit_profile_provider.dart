@@ -10,12 +10,14 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditProfileProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  UserDetail userDetail = locator<UserDetail>();
   String? imageUrl;
   File? image;
 
@@ -37,18 +39,15 @@ class EditProfileProvider extends BaseProvider {
       TextEditingController emailController,
       TextEditingController phoneNoController,
       TextEditingController addressController) async {
-    setState(ViewState.Busy);
-
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    var userProfile = await mmyEngine!.getUserProfile();
-    firstNameController.text = userProfile.firstName ?? "";
-    lastNameController.text = userProfile.lastName ?? "";
-    emailController.text = userProfile.email ?? "";
-    phoneNoController.text = userProfile.phoneNumber ?? "";
-    imageUrl = userProfile.photoURL ?? "";
-    addressController.text = userProfile.addresses!['Home'];
 
-    setState(ViewState.Idle);
+    firstNameController.text = userDetail.firstName ?? "";
+    lastNameController.text = userDetail.lastName ?? "";
+    emailController.text = userDetail.email ?? "";
+    phoneNoController.text = userDetail.phone ?? "";
+    imageUrl = userDetail.profileUrl ?? "";
+    addressController.text = userDetail.address ?? "";
+
     notifyListeners();
   }
 
@@ -57,7 +56,9 @@ class EditProfileProvider extends BaseProvider {
     if (Platform.isAndroid) {
       var androidInfo = await DeviceInfoPlugin().androidInfo;
       var release = androidInfo.version.release;
-      if (int.parse(release) > 10) {
+      if (release.contains(".")) {
+        release = release.substring(0, 1);
+      } else if (int.parse(release) > 10) {
         status = await Permission.manageExternalStorage.request();
       } else {
         status = await Permission.storage.request();
@@ -96,7 +97,7 @@ class EditProfileProvider extends BaseProvider {
   // This Function is used to update user details.
   Future<void> updateUserDetails(BuildContext context, String firstName,
       String lastName, String email, String phoneNumber, String address) async {
-    mmyEngine!
+    var value = await mmyEngine!
         .updateProfile(
       firstName: firstName,
       lastName: lastName,
@@ -108,16 +109,26 @@ class EditProfileProvider extends BaseProvider {
       updateLoadingStatus(false);
       DialogHelper.showMessage(context, e.message);
     });
-    updateLoadingStatus(false);
-    DialogHelper.showMessage(context, "profile_updated_successfully".tr());
-    //Navigator.pop(context);
+    if (value != null) {
+      updateLoadingStatus(false);
+      userDetail.firstName = value.firstName!;
+      userDetail.lastName = value.lastName!;
+      userDetail.email = value.email!;
+      userDetail.phone = value.phoneNumber!;
+      userDetail.address = value.addresses!['Home'];
+      userDetail.profileUrl = value.photoURL;
+      DialogHelper.showMessage(context, "profile_updated_successfully".tr());
+    }
   }
 
   Future<void> updateUserProfilePicture(BuildContext context, String firstName,
       String lastName, String email, String phoneNumber, String address) async {
     updateLoadingStatus(true);
     if (image != null) {
-      await mmyEngine!.updateProfilePicture(image!);
+      await mmyEngine!.updateProfilePicture(image!).catchError((e) {
+        updateLoadingStatus(false);
+        DialogHelper.showMessage(context, e.message);
+      });
       updateUserDetails(
           context, firstName, lastName, email, phoneNumber, address);
     } else {

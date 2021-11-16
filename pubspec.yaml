@@ -60,6 +60,7 @@ dependencies:
   device_info: ^2.0.2
   sign_in_with_apple: ^3.2.0
   carousel_slider: ^4.0.0
+  shimmer: ^2.0.0
 
 
 dev_dependencies:

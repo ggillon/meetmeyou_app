@@ -14,6 +14,8 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -29,6 +31,9 @@ class EditProfileScreen extends StatelessWidget {
   final addressController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  EditProfileProvider? provider;
+  UserDetail userDetail = locator<UserDetail>();
+
   EditProfileScreen({Key? key}) : super(key: key);
 
   @override
@@ -40,6 +45,7 @@ class EditProfileScreen extends StatelessWidget {
         appBar: DialogHelper.appBarWithBack(scaler, context),
         body: BaseView<EditProfileProvider>(
           onModelReady: (provider) {
+            this.provider = provider;
             provider.setUserDetail(firstNameController, lastNameController,
                 emailController, phoneNumberController, addressController);
           },
@@ -61,14 +67,13 @@ class EditProfileScreen extends StatelessWidget {
                                 Center(
                                   child: GestureDetector(
                                     onTap: () async {
-                                      var value = await provider
-                                          .permissionCheck();
+                                      var value =
+                                          await provider.permissionCheck();
                                       if (value) {
                                         showDialog(
                                             barrierDismissible: false,
                                             context: context,
-                                            builder: (BuildContext
-                                            context) =>
+                                            builder: (BuildContext context) =>
                                                 CustomDialog(
                                                   cameraClick: () {
                                                     provider.getImage(
@@ -79,8 +84,7 @@ class EditProfileScreen extends StatelessWidget {
                                                         context, 2);
                                                   },
                                                   cancelClick: () {
-                                                    Navigator.of(context)
-                                                        .pop();
+                                                    Navigator.of(context).pop();
                                                   },
                                                 ));
                                       }
@@ -131,8 +135,8 @@ class EditProfileScreen extends StatelessWidget {
                                                 radius: scaler.getWidth(2),
                                                 child: ClipOval(
                                                   child: Container(
-                                                    color:
-                                                        ColorConstants.colorWhite,
+                                                    color: ColorConstants
+                                                        .colorWhite,
                                                     width: scaler.getWidth(5),
                                                     height: scaler.getHeight(5),
                                                     child: Center(
@@ -389,10 +393,11 @@ class EditProfileScreen extends StatelessWidget {
                                     },
                                     child: CustomShape(
                                       child: Center(
-                                          child: Text("discard".tr()).mediumText(
-                                              ColorConstants.primaryColor,
-                                              scaler.getTextSize(10),
-                                              TextAlign.center)),
+                                          child: Text("discard".tr())
+                                              .mediumText(
+                                                  ColorConstants.primaryColor,
+                                                  scaler.getTextSize(10),
+                                                  TextAlign.center)),
                                       bgColor: ColorConstants.primaryColor
                                           .withOpacity(0.2),
                                       radius: BorderRadius.all(
@@ -403,41 +408,50 @@ class EditProfileScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: scaler.getWidth(2),),
-                                Expanded(child: provider.isLoading == false
-                                    ? GestureDetector(
-                                  onTap: () {
-                                    hideKeyboard(context);
-                                    if (_formKey.currentState!
-                                        .validate()) {
-                                      provider.updateUserProfilePicture(
-                                          context,
-                                          firstNameController.text,
-                                          lastNameController.text,
-                                          emailController.text,
-                                          phoneNumberController.text,
-                                          addressController.text);
-                                    }
-                                  },
-                                  child: CustomShape(
-                                    child: Center(
-                                        child: Text("save_changes".tr())
-                                            .mediumText(
-                                            ColorConstants.colorWhite,
-                                            scaler.getTextSize(10),
-                                            TextAlign.center)),
-                                    bgColor: ColorConstants.primaryColor,
-                                    radius: BorderRadius.all(
-                                      Radius.circular(12),
-                                    ),
-                                    width: scaler.getWidth(40),
-                                    height: scaler.getHeight(4.5),
-                                  ),
-                                )
-                                    : Center(
-                                  child: CircularProgressIndicator(),
-                                ))
-                                ,
+                                SizedBox(
+                                  width: scaler.getWidth(2),
+                                ),
+                                Expanded(
+                                    child: provider.isLoading == false
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              hideKeyboard(context);
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                provider
+                                                    .updateUserProfilePicture(
+                                                    context,
+                                                    firstNameController
+                                                        .text,
+                                                    lastNameController.text,
+                                                    emailController.text,
+                                                    phoneNumberController
+                                                        .text,
+                                                    addressController.text);
+                                              }
+                                            },
+                                            child: CustomShape(
+                                              child: Center(
+                                                  child: Text(
+                                                          "save_changes".tr())
+                                                      .mediumText(
+                                                          ColorConstants
+                                                              .colorWhite,
+                                                          scaler
+                                                              .getTextSize(10),
+                                                          TextAlign.center)),
+                                              bgColor:
+                                                  ColorConstants.primaryColor,
+                                              radius: BorderRadius.all(
+                                                Radius.circular(12),
+                                              ),
+                                              width: scaler.getWidth(40),
+                                              height: scaler.getHeight(4.5),
+                                            ),
+                                          )
+                                        : Center(
+                                            child: CircularProgressIndicator(),
+                                          )),
                               ],
                             ),
                           )

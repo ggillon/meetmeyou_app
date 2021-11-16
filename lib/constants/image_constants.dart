@@ -26,7 +26,7 @@ class ImageConstants {
   static const settings_icon = "images/ic_settings.svg";
   static const settings_icon_green = "images/ic_settings_green.svg";
   static const small_arrow_icon = "images/ic_small_arrow.svg";
-  static const person_icon = "images/ic_person.svg";
+  static const person_icon = "images/ic_person.png";
   static const dummy_img = "images/dummy.png";
   static const dummy_profile = "images/dummy_profile.png";
   static const ic_back_arrow = "images/ic_back_arrow.svg";

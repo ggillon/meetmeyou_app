@@ -112,7 +112,7 @@ class DialogHelper {
       leadingWidth: 100,
       leading: InkWell(
         onTap: () {
-          Navigator.of(context).pop();
+          Navigator.pop(context);
         },
         child: Padding(
           padding: scaler.getPaddingLTRB(2.5, 0.0, 0.0, 0.0),

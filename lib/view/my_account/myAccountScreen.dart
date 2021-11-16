@@ -7,11 +7,17 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/my_account_provider.dart';
+import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 
 class MyAccountScreen extends StatelessWidget {
-  const MyAccountScreen({Key? key}) : super(key: key);
+  MyAccountScreen({Key? key}) : super(key: key);
+  MyAccountProvider? provider;
+  UserDetail userDetail = locator<UserDetail>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,75 +28,85 @@ class MyAccountScreen extends StatelessWidget {
         backgroundColor: ColorConstants.colorWhite,
         appBar: DialogHelper.appBarWithBack(scaler, context, showEdit: true,
             editClick: () {
-          Navigator.pushNamed(context, RoutesConstants.editProfileScreen);
+          Navigator.pushNamed(context, RoutesConstants.editProfileScreen)
+              .then((value) {
+            this.provider!.updateLoadingStatus(true);
+            this.provider!.getUserDetail();
+          });
         }),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("my_account".tr()).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(16), TextAlign.left),
-                    SizedBox(height: scaler.getHeight(2)),
-                    userDetails(scaler),
-                    SizedBox(height: scaler.getHeight(3)),
-                    phoneNoAndAddressFun(scaler, ImageConstants.phone_no_icon,
-                        "phone_number".tr(), "+1 58 478 95 8"),
-                    SizedBox(height: scaler.getHeight(1.5)),
-                    phoneNoAndAddressFun(scaler, ImageConstants.address_icon,
-                        "address".tr(), "Madison Square Garden"),
-                    SizedBox(height: scaler.getHeight(3)),
-                    Text("organized_events".tr()).boldText(
-                        ColorConstants.colorBlack,
-                        scaler.getTextSize(10),
-                        TextAlign.left),
-                    SizedBox(height: scaler.getHeight(1.5)),
-                  ],
+        body: BaseView<MyAccountProvider>(onModelReady: (provider) {
+          this.provider = provider;
+          provider.getUserDetail();
+          this.provider!.updateLoadingStatus(true);
+        }, builder: (context, provider, _) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("my_account".tr()).boldText(
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(16),
+                          TextAlign.left),
+                      SizedBox(height: scaler.getHeight(2)),
+                      userDetails(scaler, provider),
+                      SizedBox(height: scaler.getHeight(3)),
+                      phoneNoAndAddressFun(scaler, ImageConstants.phone_no_icon,
+                          "phone_number".tr(), provider.phoneNumber!),
+                      SizedBox(height: scaler.getHeight(1.5)),
+                      phoneNoAndAddressFun(scaler, ImageConstants.address_icon,
+                          "address".tr(), provider.address!),
+                      SizedBox(height: scaler.getHeight(3)),
+                      Text("organized_events".tr()).boldText(
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(10),
+                          TextAlign.left),
+                      SizedBox(height: scaler.getHeight(1.5)),
+                    ],
+                  ),
                 ),
-              ),
-              OrganizedEventsCard(
-                showAttendBtn: true,
-              ),
-            ],
-          ),
-        ),
+                OrganizedEventsCard(
+                  showAttendBtn: true,
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget userDetails(ScreenScaler scaler) {
+  Widget userDetails(ScreenScaler scaler, MyAccountProvider provider) {
     return Row(
       children: [
-        // Container(
-        //   decoration: BoxDecoration(
-        //       border: Border.all(
-        //         color: ColorConstants.primaryColor,
-        //       ),
-        //       color: ColorConstants.primaryColor,
-        //       borderRadius: BorderRadius.all(Radius.circular(12))),
-        //   width: scaler.getWidth(20),
-        //   height: scaler.getWidth(20),
-        // ),
-        ImageView(path: ImageConstants.dummy_profile),
+        ClipRRect(
+          borderRadius: scaler.getBorderRadiusCircular(10.0),
+          child: ImageView(
+            path: provider.userProfilePic,
+            width: scaler.getWidth(22),
+            height: scaler.getWidth(22),
+            fit: BoxFit.cover,
+          ),
+        ),
         SizedBox(width: scaler.getWidth(2.5)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Jared Dudley").boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(12), TextAlign.left,
-                  maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text(provider.firstName.toString() +
+                      " " +
+                      provider.lastName.toString())
+                  .boldText(ColorConstants.colorBlack, scaler.getTextSize(12),
+                      TextAlign.left,
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
               SizedBox(height: scaler.getHeight(0.5)),
-              Text("randomemail@random.com").mediumText(
-                  ColorConstants.colorBlack,
-                  scaler.getTextSize(10),
-                  TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis)
+              Text(provider.email!).mediumText(ColorConstants.colorBlack,
+                  scaler.getTextSize(10), TextAlign.left,
+                  maxLines: 1, overflow: TextOverflow.ellipsis)
             ],
           ),
         ),

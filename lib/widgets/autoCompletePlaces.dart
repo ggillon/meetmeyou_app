@@ -28,15 +28,17 @@ class CustomSearchScaffold extends PlacesAutocompleteWidget {
 
 class _CustomSearchScaffoldState extends PlacesAutocompleteState {
   final searchScaffoldKey = GlobalKey<ScaffoldState>();
-  GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: googleApiKey);
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: googleApiKey);
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     final appBar = AppBar(
         backgroundColor: ColorConstants.colorWhite,
-        title: AppBarPlacesAutoCompleteTextField(textStyle: ViewDecoration.textFieldStyle(scaler.getTextSize(9.5),ColorConstants.colorBlack),));
+        title: AppBarPlacesAutoCompleteTextField(
+          textStyle: ViewDecoration.textFieldStyle(
+              scaler.getTextSize(9.5), ColorConstants.colorBlack),
+        ));
     final body = PlacesAutocompleteResult(
       onTap: (p) {
         displayPrediction(p);

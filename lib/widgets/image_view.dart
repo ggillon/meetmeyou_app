@@ -91,7 +91,7 @@ class ImageView extends StatelessWidget {
       );
     } else {
       imageWidget = Image.file(
-        File(path!),
+        File(path.toString()),
         width: width,
         height: height,
         fit: fit,

@@ -5,103 +5,129 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/provider/settings_provider.dart';
+import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:meetmeyou_app/widgets/shimmer/userProfileCardShimmer.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  SettingsPage({Key? key}) : super(key: key);
+  SettingsProvider? provider;
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Card(
-                shadowColor: ColorConstants.colorWhite,
-                elevation: 3.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: scaler.getBorderRadiusCircular(10)),
-                child: CustomShape(
-                  child: userDetails(scaler, context),
-                  bgColor: ColorConstants.colorWhite,
-                  radius: scaler.getBorderRadiusCircular(10),
-                  width: MediaQuery.of(context).size.width,
-                ),
+        body: BaseView<SettingsProvider>(
+          onModelReady: (provider) {
+            this.provider = provider;
+            provider.getUserDetail(context);
+          },
+          builder: (context, provider, _) {
+            return Padding(
+              padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Card(
+                    shadowColor: ColorConstants.colorWhite,
+                    elevation: 3.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: scaler.getBorderRadiusCircular(10)),
+                    child: CustomShape(
+                      child: userDetails(scaler, context, provider),
+                      bgColor: ColorConstants.colorWhite,
+                      radius: scaler.getBorderRadiusCircular(10),
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                  ),
+                  SizedBox(height: scaler.getHeight(2.5)),
+                  settingsPageCard(scaler, context, ImageConstants.person_icon,
+                      "invite_friends".tr(), true),
+                  SizedBox(height: scaler.getHeight(1)),
+                  settingsPageCard(scaler, context, ImageConstants.archive_icon,
+                      "history".tr(), true),
+                  SizedBox(height: scaler.getHeight(1)),
+                  settingsPageCard(scaler, context, ImageConstants.about_icon,
+                      "about".tr(), false),
+                  Expanded(
+                    child: Container(
+                        alignment: Alignment.bottomCenter,
+                        child: logoutBtn(scaler, context)),
+                  ),
+                  SizedBox(height: scaler.getHeight(2.5)),
+                ],
               ),
-              SizedBox(height: scaler.getHeight(2.5)),
-              settingsPageCard(scaler, context, ImageConstants.person_icon,
-                  "invite_friends".tr(), true),
-              SizedBox(height: scaler.getHeight(1)),
-              settingsPageCard(scaler, context, ImageConstants.archive_icon,
-                  "history".tr(), true),
-              SizedBox(height: scaler.getHeight(1)),
-              settingsPageCard(scaler, context, ImageConstants.about_icon,
-                  "about".tr(), false),
-              Expanded(
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: logoutBtn(scaler, context)),
-              ),
-              SizedBox(height: scaler.getHeight(2.5)),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget userDetails(ScreenScaler scaler, BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, RoutesConstants.myAccountScreen);
-      },
-      child: Padding(
-        padding: scaler.getPaddingAll(10.0),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: ColorConstants.primaryColor,
-                  ),
-                  color: ColorConstants.primaryColor,
-                  borderRadius: BorderRadius.all(Radius.circular(12))),
-              width: scaler.getWidth(20),
-              height: scaler.getWidth(20),
-            ),
-            SizedBox(width: scaler.getWidth(2.5)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+  Widget userDetails(
+      ScreenScaler scaler, BuildContext context, SettingsProvider provider) {
+    return provider.state == ViewState.Busy
+        ? UserProfileCardShimmer()
+        : InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, RoutesConstants.myAccountScreen)
+                  .then((value) {
+                this.provider!.updateLoadingStatus(true);
+                this.provider!.getUserDetail(context);
+              });
+            },
+            child: Padding(
+              padding: scaler.getPaddingAll(10.0),
+              child: Row(
                 children: [
-                  Text("Darrell Steward").boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(11), TextAlign.left,
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                  SizedBox(height: scaler.getHeight(0.2)),
-                  Text("DarrellSteward@example.com").regularText(
-                      ColorConstants.colorGray,
-                      scaler.getTextSize(9.5),
-                      TextAlign.left,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis)
+                  Container(
+                    width: scaler.getWidth(22),
+                    height: scaler.getWidth(22),
+                    child: ClipRRect(
+                      borderRadius: scaler.getBorderRadiusCircular(10.0),
+                      child: ImageView(
+                        path: provider.userDetail.profileUrl,
+                        width: scaler.getWidth(22),
+                        height: scaler.getWidth(22),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: scaler.getWidth(2.5)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(provider.userDetail.firstName.toString() +
+                                " " +
+                                provider.userDetail.lastName.toString())
+                            .boldText(ColorConstants.colorBlack,
+                                scaler.getTextSize(11), TextAlign.left,
+                                maxLines: 1, overflow: TextOverflow.ellipsis),
+                        SizedBox(height: scaler.getHeight(0.2)),
+                        Text(provider.userDetail.email.toString()).regularText(
+                            ColorConstants.colorGray,
+                            scaler.getTextSize(9.5),
+                            TextAlign.left,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis)
+                      ],
+                    ),
+                  ),
+                  moveIcon(ImageConstants.arrow_icon)
                 ],
               ),
             ),
-            moveIcon(ImageConstants.arrow_icon)
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   Widget moveIcon(String icon) {
-    return SvgPicture.asset(icon);
+    return ImageView(path: icon);
   }
 
   Widget settingsPageCard(
@@ -116,7 +142,7 @@ class SettingsPage extends StatelessWidget {
           padding: scaler.getPaddingAll(10.0),
           child: Row(
             children: [
-              ImageView(path: icon),
+              ImageView(path: icon, height: 30, width: 30),
               SizedBox(width: scaler.getWidth(2.5)),
               Text(txt).mediumText(ColorConstants.colorBlack,
                   scaler.getTextSize(9.5), TextAlign.left),
