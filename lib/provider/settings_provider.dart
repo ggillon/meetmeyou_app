@@ -32,7 +32,12 @@ class SettingsProvider extends BaseProvider {
     userDetail.lastName = userProfile.lastName ?? "";
     userDetail.email = userProfile.email ?? "";
     userDetail.phone = userProfile.phoneNumber ?? "";
-    userDetail.address = userProfile.addresses!['Home'];
+
+    userDetail.address = '';
+    if(userProfile.addresses != null)
+      if(userProfile.addresses!.containsKey('Home'))
+        userDetail.address = userProfile.addresses!['Home'];
+
     userDetail.profileUrl = userProfile.photoURL ?? "";
 
     setState(ViewState.Idle);
