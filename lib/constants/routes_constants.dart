@@ -9,4 +9,9 @@ class RoutesConstants {
   static const autoComplete = "autoComplete";
   static const myAccountScreen = "myAccountScreen";
   static const editProfileScreen = "editProfileScreen";
+  static const aboutPage = "aboutPage";
+  static const privacyPolicyAndTermsPage = "privacyPolicyAndTermsPage";
+  static const inviteFriendsScreen = "inviteFriendsScreen";
+  static const historyScreen = "historyScreen";
+  static const calendarSettingsScreen = "calendarSettingsScreen";
 }

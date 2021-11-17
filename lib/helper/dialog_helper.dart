@@ -5,11 +5,12 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class DialogHelper {
   static final border = RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(30),
   );
 
   static Future showDialogWithTwoButtons(
@@ -28,8 +29,10 @@ class DialogHelper {
       builder: (BuildContext buildContext) {
         return AlertDialog(
           title: Text(title, textAlign: TextAlign.center),
-          content: Text(content),
-          shape: border,
+          content: Text(content, textAlign: TextAlign.center),
+          shape:  RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
           actions: <Widget>[
             TextButton(
               child: Text(negativeButtonLabel).mediumText(
@@ -139,6 +142,27 @@ class DialogHelper {
                 ))
             : Container(),
       ],
+    );
+  }
+
+ static Widget btnWidget(ScreenScaler scaler, BuildContext context, String txt, Color color,
+      {VoidCallback? funOnTap}) {
+    return GestureDetector(
+      onTap: funOnTap,
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: CustomShape(
+          child: Center(
+            child: Text(txt).mediumText(ColorConstants.colorWhite,
+                scaler.getTextSize(10), TextAlign.center),
+          ),
+          bgColor: color,
+          radius: scaler.getBorderRadiusCircular(10),
+          width: MediaQuery.of(context).size.width,
+          height: scaler.getHeight(5),
+        ),
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
 
 extension ExtendPedding on Widget {
-  addAllSidePadding(EdgeInsetsGeometry  padding) {
+  addAllSidePadding(EdgeInsetsGeometry padding) {
     return Padding(
       padding: padding,
       child: this,
@@ -48,21 +48,25 @@ extension ExtendPedding on Widget {
 }
 
 extension ExtendText on Text {
-  regularText(Color color, double textSize,TextAlign alignment,{maxLines,overflow}) {
+  regularText(Color color, double textSize, TextAlign alignment,
+      {maxLines, overflow, bool underline = false}) {
     return Text(
       this.data!,
       maxLines: maxLines,
       overflow: overflow,
       textAlign: alignment,
       style: TextStyle(
-          color: color,
-          fontFamily: StringConstants.spProDisplay,
-          fontWeight: FontWeight.w400,
-          fontSize: textSize),
+        color: color,
+        fontFamily: StringConstants.spProDisplay,
+        fontWeight: FontWeight.w400,
+        fontSize: textSize,
+        decoration: underline ? TextDecoration.underline : TextDecoration.none,
+      ),
     );
   }
 
-  mediumText(Color color, double textSize, TextAlign alignment, {maxLines,overflow}) {
+  mediumText(Color color, double textSize, TextAlign alignment,
+      {maxLines, overflow}) {
     return Text(
       this.data!,
       maxLines: maxLines,
@@ -75,7 +79,8 @@ extension ExtendText on Text {
     );
   }
 
-  semiBoldText(Color color, double textSize, TextAlign alignment, {maxLines,overflow}) {
+  semiBoldText(Color color, double textSize, TextAlign alignment,
+      {maxLines, overflow}) {
     return Text(
       this.data!,
       maxLines: maxLines,
@@ -89,7 +94,8 @@ extension ExtendText on Text {
     );
   }
 
-  boldText(Color color, double textSize, TextAlign alignment, {maxLines,overflow}) {
+  boldText(Color color, double textSize, TextAlign alignment,
+      {maxLines, overflow}) {
     return Text(
       this.data!,
       maxLines: maxLines,
@@ -103,8 +109,6 @@ extension ExtendText on Text {
     );
   }
 }
-
-
 
 extension Decoration on Widget {
 /*  Widget boxDecoration(
@@ -123,5 +127,11 @@ extension Decoration on Widget {
               bottomRight: Radius.circular(ScreenUtil().setHeight(bottomRight)))),
     );
   }*/
+
 }
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}

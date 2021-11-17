@@ -48,5 +48,12 @@
   "phone_number_required" : "Phone number required",
   "discard" : "Discard",
   "save_changes" : "Save changes",
-  "profile_updated_successfully" : "Profile Updated Successfully"
+  "profile_updated_successfully" : "Profile Updated Successfully",
+  "terms_and_conditions" : "Terms & Conditions",
+  "privacy_policy" : "Privacy Policy",
+  "application_version" : "Application Version",
+  "calender_settings" : "Calendar settings",
+  "delete_user" : "Delete user",
+  "invite" : "Invite"
+
 }

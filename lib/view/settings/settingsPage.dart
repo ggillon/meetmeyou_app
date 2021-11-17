@@ -7,7 +7,11 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/settings_provider.dart';
+import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -16,6 +20,7 @@ import 'package:meetmeyou_app/widgets/shimmer/userProfileCardShimmer.dart';
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key? key}) : super(key: key);
   SettingsProvider? provider;
+  AuthBase auth = locator<AuthBase>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,19 +52,54 @@ class SettingsPage extends StatelessWidget {
                   ),
                   SizedBox(height: scaler.getHeight(2.5)),
                   settingsPageCard(scaler, context, ImageConstants.person_icon,
-                      "invite_friends".tr(), true),
+                      "invite_friends".tr(), true, onTapCard: () {
+                    Navigator.pushNamed(
+                        context, RoutesConstants.inviteFriendsScreen);
+                  }),
                   SizedBox(height: scaler.getHeight(1)),
                   settingsPageCard(scaler, context, ImageConstants.archive_icon,
-                      "history".tr(), true),
+                      "history".tr(), true, onTapCard: () {
+                    Navigator.pushNamed(context, RoutesConstants.historyScreen);
+                  }),
+                  SizedBox(height: scaler.getHeight(1)),
+                  settingsPageCard(
+                      scaler,
+                      context,
+                      ImageConstants.calendar_icon,
+                      "calender_settings".tr(),
+                      true, onTapCard: () {
+                    Navigator.pushNamed(
+                        context, RoutesConstants.calendarSettingsScreen);
+                  }),
                   SizedBox(height: scaler.getHeight(1)),
                   settingsPageCard(scaler, context, ImageConstants.about_icon,
-                      "about".tr(), false),
+                      "about".tr(), false, onTapCard: () {
+                    Navigator.pushNamed(context, RoutesConstants.aboutPage);
+                  }),
                   Expanded(
-                    child: Container(
-                        alignment: Alignment.bottomCenter,
-                        child: logoutBtn(scaler, context)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        DialogHelper.btnWidget(
+                            scaler,
+                            context,
+                            "logout".tr(),
+                            ColorConstants.primaryColor, funOnTap: () {
+                          auth.signOut();
+                          SharedPref.clearSharePref();
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              RoutesConstants.loginOptions,
+                              (route) => false);
+                        }),
+                        DialogHelper.btnWidget(scaler, context,
+                            "delete_user".tr(), ColorConstants.colorRed,
+                            funOnTap: () {
+                          DialogHelper.showDialogWithTwoButtons(context, "Delete User", "Are you sure you want to delete user?");
+                            }),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: scaler.getHeight(2.5)),
+                  SizedBox(height: scaler.getHeight(2)),
                 ],
               ),
             );
@@ -131,52 +171,41 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget settingsPageCard(
-      ScreenScaler scaler, BuildContext context, icon, String txt, bool val) {
-    return Card(
-      shadowColor: ColorConstants.colorWhite,
-      elevation: 3.0,
-      shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(10)),
-      child: CustomShape(
-        child: Padding(
-          padding: scaler.getPaddingAll(10.0),
-          child: Row(
-            children: [
-              ImageView(path: icon, height: 30, width: 30),
-              SizedBox(width: scaler.getWidth(2.5)),
-              Text(txt).mediumText(ColorConstants.colorBlack,
-                  scaler.getTextSize(9.5), TextAlign.left),
-              val
-                  ? Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: moveIcon(ImageConstants.small_arrow_icon)))
-                  : Container()
-            ],
+      ScreenScaler scaler, BuildContext context, icon, String txt, bool val,
+      {VoidCallback? onTapCard}) {
+    return GestureDetector(
+      onTap: onTapCard,
+      child: Card(
+        shadowColor: ColorConstants.colorWhite,
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(10)),
+        child: CustomShape(
+          child: Padding(
+            padding: scaler.getPaddingAll(9.0),
+            child: Row(
+              children: [
+                ImageView(
+                    path: icon,
+                    height: 30,
+                    width: 30,
+                    color: ColorConstants.colorBlack),
+                SizedBox(width: scaler.getWidth(2.5)),
+                Text(txt).mediumText(ColorConstants.colorBlack,
+                    scaler.getTextSize(9.5), TextAlign.left),
+                val
+                    ? Expanded(
+                        child: Container(
+                            alignment: Alignment.centerRight,
+                            child: moveIcon(ImageConstants.small_arrow_icon)))
+                    : Container()
+              ],
+            ),
           ),
+          bgColor: ColorConstants.colorWhite,
+          radius: scaler.getBorderRadiusCircular(10),
+          width: MediaQuery.of(context).size.width,
         ),
-        bgColor: ColorConstants.colorWhite,
-        radius: scaler.getBorderRadiusCircular(10),
-        width: MediaQuery.of(context).size.width,
-      ),
-    );
-  }
-
-  Widget logoutBtn(
-    ScreenScaler scaler,
-    BuildContext context,
-  ) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: CustomShape(
-        child: Center(
-          child: Text("logout".tr()).mediumText(ColorConstants.colorWhite,
-              scaler.getTextSize(10), TextAlign.center),
-        ),
-        bgColor: ColorConstants.primaryColor,
-        radius: scaler.getBorderRadiusCircular(10),
-        width: MediaQuery.of(context).size.width,
-        height: scaler.getHeight(5),
       ),
     );
   }

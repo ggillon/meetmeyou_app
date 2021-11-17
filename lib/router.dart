@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/view/about/aboutPage.dart';
+import 'package:meetmeyou_app/view/calendar_settings/calendarSettingsScreen.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
+import 'package:meetmeyou_app/view/history/historyScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
+import 'package:meetmeyou_app/view/invite_friends/inviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
 import 'package:meetmeyou_app/view/login/loginPage.dart';
 import 'package:meetmeyou_app/view/login_options/loginOptionsPage.dart';
 import 'package:meetmeyou_app/view/my_account/myAccountScreen.dart';
+import 'package:meetmeyou_app/view/privacy_policy_and_terms/privacyPolicyAndTerms.dart';
 import 'package:meetmeyou_app/view/signup/signupPage.dart';
 import 'package:meetmeyou_app/view/verify_screen/verifyScreen.dart';
 
@@ -36,16 +41,22 @@ class Router {
 
       case RoutesConstants.verifyPage:
         return MaterialPageRoute(
-            builder: (_) => VerifyScreen(userDetail: settings.arguments as UserDetail,), settings: settings);
+            builder: (_) => VerifyScreen(
+                  userDetail: settings.arguments as UserDetail,
+                ),
+            settings: settings);
 
       case RoutesConstants.autoComplete:
         return MaterialPageRoute(
             builder: (_) => CustomSearchScaffold(), settings: settings);
 
       case RoutesConstants.signUpPage:
-        String value=settings.arguments as String;
+        String value = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => SignUpPage(signUpType: value,), settings: settings);
+            builder: (_) => SignUpPage(
+                  signUpType: value,
+                ),
+            settings: settings);
 
       case RoutesConstants.dashboardPage:
         return MaterialPageRoute(
@@ -58,6 +69,28 @@ class Router {
       case RoutesConstants.editProfileScreen:
         return MaterialPageRoute(
             builder: (_) => EditProfileScreen(), settings: settings);
+
+      case RoutesConstants.aboutPage:
+        return MaterialPageRoute(
+            builder: (_) => AboutPage(), settings: settings);
+
+      case RoutesConstants.privacyPolicyAndTermsPage:
+        return MaterialPageRoute(
+            builder: (_) => PrivacyPolicyAndTermsPage(
+                privacyPolicy: settings.arguments as bool),
+            settings: settings);
+
+      case RoutesConstants.inviteFriendsScreen:
+        return MaterialPageRoute(
+            builder: (_) => InviteFriendsScreen(), settings: settings);
+
+      case RoutesConstants.historyScreen:
+        return MaterialPageRoute(
+            builder: (_) => HistoryScreen(), settings: settings);
+
+      case RoutesConstants.calendarSettingsScreen:
+        return MaterialPageRoute(
+            builder: (_) => CalendarSettingsScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

@@ -4,6 +4,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
+import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
 import 'package:meetmeyou_app/provider/my_account_provider.dart';
@@ -29,6 +30,7 @@ void setupLocator() {
   locator.registerFactory<MyAccountProvider>(()=> MyAccountProvider());
   locator.registerFactory<SettingsProvider>(()=> SettingsProvider());
   locator.registerFactory<DashboardProvider>(()=> DashboardProvider());
+  locator.registerFactory<InviteFriendsProvider>(()=> InviteFriendsProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

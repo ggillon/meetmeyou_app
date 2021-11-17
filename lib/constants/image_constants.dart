@@ -31,5 +31,6 @@ class ImageConstants {
   static const dummy_profile = "images/dummy_profile.png";
   static const ic_back_arrow = "images/ic_back_arrow.svg";
   static const beach_dummy = "images/beach_dummy.jpeg";
+  static const search_icon = "images/ic_search.svg";
 
 }
