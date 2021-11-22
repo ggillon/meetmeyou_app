@@ -44,7 +44,7 @@ class FirestoreDB implements Database {
   }
 
   Future<Profile?> getProfile(String uid) async {
-    return _service.getData(
+    return await _service.getData(
       path: APIPath.profile(uid),
       builder: (data) {return Profile.fromMap(data);},
     );

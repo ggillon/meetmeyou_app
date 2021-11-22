@@ -15,16 +15,21 @@ Future<Profile> getUserProfile(User currentUser) async {
 
 // Check if profile exists
 Future<bool> isNewProfile(User currentUser) async {
-  final profile = await FirestoreDB(uid: currentUser.uid).getProfile(currentUser.uid);
-  if (profile == null) {
-    return true;
-  } else {
-    if (profile.parameters != null) {
-      if (profile.parameters!.containsKey('New'))
-        if (profile.parameters!['New'] == true)
-          return true;
+  try {
+    final profile = await FirestoreDB(uid: currentUser.uid).getProfile(
+        currentUser.uid);
+    if (profile == null) {
+      return true;
+    } else {
+      if (profile.parameters != null) {
+        if (profile.parameters!.containsKey('New'))
+          if (profile.parameters!['New'] == true)
+            return true;
+      }
+      return false;
     }
-    return false;
+  } catch(e) {
+    return true;
   }
 }
 
@@ -65,7 +70,6 @@ Future<Profile> createProfileFromUser(User user) async {
 
 // Create Profile from fields, if fields are null they will be set to default value
 Future<Profile> createProfile(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
-
   Profile profile = Profile(
     uid: currentUser.uid,
     displayName: displayName ?? '',
@@ -105,7 +109,7 @@ Future<Profile> updateProfile(User currentUser, {String? firstName, String? last
     countryCode: countryCode ?? oldProfile.countryCode ?? '',
     phoneNumber: phoneNumber ?? oldProfile.phoneNumber ?? '',
     photoURL: photoUrl ?? oldProfile.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-    addresses: <String, dynamic>{'Home': homeAddress ?? ''},
+    addresses: homeAddress!=null?<String, dynamic>{'Home': homeAddress}:oldProfile.addresses,
     about: about ?? oldProfile.about ?? '',
     other: other ?? oldProfile.other ?? <String, dynamic>{},
     parameters: parameters ?? oldProfile.parameters ?? <String, dynamic>{},
@@ -171,4 +175,7 @@ Profile createNoDBProfile({required String uid, String? displayName, String? fir
 
   return profile;
 }
+
+
+
 

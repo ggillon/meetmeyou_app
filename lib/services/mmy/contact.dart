@@ -5,6 +5,8 @@ import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/database/id_gen.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
+import 'package:contacts_service/contacts_service.dart' as Phone;
+import 'package:permission_handler/permission_handler.dart';
 
 //Contact Status
 const CONTACT_NEW = 'New contact';
@@ -42,9 +44,34 @@ Future<Contact> createNewPrivateContact(User currentUser, {String? displayName, 
   return contact;
 }
 
+Contact createLocalContact(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) {
+  Contact contact = Contact(
+    cid: cidGenerator(),
+    uid: currentUser.uid,
+    displayName: displayName ?? '',
+    firstName: firstName ?? '',
+    lastName: lastName ?? '',
+    email: email ?? '',
+    countryCode: countryCode ?? '',
+    phoneNumber: phoneNumber ?? '',
+    photoURL: photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    addresses: <String, dynamic>{'Home': homeAddress ?? ''},
+    about: about ?? '',
+    other: <String, dynamic>{},
+    group: null,
+    status: CONTACT_PRIVATE,
+  );
+  return contact;
+}
+
 // Get a particular contact
 Future<Contact> getContact(User currentUser, {required String cid}) async {
   return await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
+}
+
+// Delete a particular contact
+Future<void> deleteContact(User currentUser, {required String cid}) async {
+  return await FirestoreDB(uid: currentUser.uid).deleteContact(currentUser.uid, cid);
 }
 
 // Get all contacts
@@ -123,12 +150,12 @@ Future<Contact> createNewGroupContact(User currentUser, {required String display
     email: '',
     countryCode: 'NA',
     phoneNumber: '',
-    photoURL: photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    photoURL: photoURL ?? 'https://i2.wp.com/9to5google.com/wp-content/uploads/sites/4/2021/07/new-google-groups-logo.png?ssl=1',
     addresses: <String, dynamic>{'Home': ''},
     about: about ?? '',
     other: <String, dynamic>{},
     group: <String, dynamic>{},
-    status: CONTACT_PRIVATE,
+    status: CONTACT_GROUP,
   );
 
   await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
@@ -150,12 +177,12 @@ Future<Contact> addToGroup(User currentUser, String cid, {String? contactCid, Li
   Contact group = await getContact(currentUser, cid: cid);
   if(contactCid != null && group.group != null) {
     Contact contact = await getContact(currentUser, cid: contactCid);
-    group.group!.addAll({contact.cid: contact.displayName});
+    group.group!.addAll(<String, dynamic>{contact.cid: contact.displayName});
   }
   if(contactListCids != null && group.group != null) {
     for(String contactCid in contactListCids) {
       Contact contact = await getContact(currentUser, cid: contactCid);
-      group.group!.addAll({contact.cid: contact.displayName});
+      group.group!.addAll(<String, dynamic>{contact.cid: contact.displayName});
     }
   }
   await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, group);
@@ -195,7 +222,7 @@ Future<void> inviteProfile(User currentUser, {required String uid}) async {
   // Add an invitation to invited profile
   Contact invitation = contactFromProfile(await getUserProfile(currentUser), uid: uid);
   invitation.status = CONTACT_INVITATION; // change status to invitation contact
-  await db.setContact(currentUser.uid, invitation);
+  await db.setContact(uid, invitation);
 }
 
 Future<void> respondProfile(User currentUser, {required String cid, required bool accept}) async {
@@ -204,28 +231,29 @@ Future<void> respondProfile(User currentUser, {required String cid, required boo
     // Convert invitation into a contact
     Contact invitation = await db.getContact(currentUser.uid, cid);
     if (invitation.status == CONTACT_INVITATION) {
-      invitation.status = CONTACT_PROFILE; // change to MMY Profile contact
+      invitation.status = CONTACT_CONFIRMED; // change to MMY Profile contact
       await db.setContact(currentUser.uid, invitation);
     }
 
     // Convert invited contact of profile sending invitation into a profile contact
     Contact invited = await db.getContact(cid, currentUser.uid);
     if (invited.status == CONTACT_INVITED) {
-      invited.status = CONTACT_PROFILE; // change to MMY Profile contact
-      await db.setContact(currentUser.uid, invitation);
+      invited.status = CONTACT_CONFIRMED; // change to MMY Profile contact
+      await db.setContact(cid, invited);
     }
   } else {
     // Delete invitation
     Contact invitation = await db.getContact(currentUser.uid, cid);
     if (invitation.status == CONTACT_INVITATION) {
-      await db.deleteContact(currentUser.uid, cid);
+      invitation.status = CONTACT_REJECTED; // change to a rejected contact
+      await db.setContact(currentUser.uid, invitation);
     }
     // Convert invited contact to rejected contact
-    Contact invited = await db.getContact(cid, currentUser.uid);
+    /*Contact invited = await db.getContact(cid, currentUser.uid);
     if (invited.status == CONTACT_INVITED) {
       invited.status = CONTACT_REJECTED; // change to a rejected contact
       await db.setContact(currentUser.uid, invitation);
-    }
+    }*/
   }
 }
 
@@ -236,4 +264,33 @@ Future<void> linkProfiles(User currentUser, {required String uid,}) async {
   Contact contact2 = contactFromProfile((await db.getProfile(currentUser.uid))!, uid: uid);
   await db.setContact(currentUser.uid, contact1);
   await db.setContact(contact1.uid!, contact2);
+}
+
+Future<List<Contact>> getPhoneContacts(User currentUser) async {
+  print('importing');
+  List<Contact> phoneContactList = [];
+  Iterable<Phone.Contact> phoneContacts;
+
+  if (await Permission.contacts.request().isGranted) {
+    // Get all contacts on device
+    phoneContacts = await Phone.ContactsService.getContacts();
+
+    for (Phone.Contact phoneContact in phoneContacts) {
+      if(phoneContact.displayName != null && (phoneContact.emails!.length>0)) {
+        Contact contact = createLocalContact(currentUser);
+        contact.displayName = phoneContact.displayName;
+        contact.email = phoneContact.emails!.first.value;
+        if(phoneContact.phones!.length>0)
+          contact.phoneNumber = phoneContact.phones!.first.value;
+        contact.countryCode = null;
+        phoneContactList.add(contact);
+      }
+    }
+  } else {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.contacts,
+    ].request();
+    //throw('No access to phone contacts');
+  }
+  return phoneContactList;
 }
