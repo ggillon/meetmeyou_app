@@ -20,12 +20,14 @@ abstract class MMYEngine {
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
 
-  /// Get a contact from contact list
+  /// Get a contact, invitation or group from DB
   Future<Contact> getContact(String cid);
+  /// Get a contact, invitation or group from DB
+  Future<void> deleteContact(String cid);
   /// Get all contacts from contact list
-  Future<List<Contact>> getContacts();
-  /// Get all the CIDs (Contact IDs) in contact list
-  Future<List<String>> getContactIDs();
+  Future<List<Contact>> getContacts({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false});
+  /// Get all groups from contact list
+  Future<List<String>> getContactIDs({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false});
   /// Invite a Profile from DB
   Future<void> inviteProfile(String uid);
   /// Accept an invitation
@@ -34,7 +36,16 @@ abstract class MMYEngine {
   Future<Contact> newGroupContact(String name, {String photoURL, String about});
   /// Update a Group of contacts
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about});
-
+  /// Add contact(s) to group
+  Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
+  /// Remove contact(s) from group
+  Future<Contact> removeContactsFromGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
+  /// Search for profiles
+  Future<List<Contact>> searchProfiles(String searchText);
+  /// Import phone Contacts
+  Future<List<Contact>> getPhoneContacts();
+  /// Invite phone Contacts
+  Future<void> invitePhoneContacts(List<Contact> contacts);
 }
 
 class MMY implements MMYEngine {
@@ -81,13 +92,41 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<String>> getContactIDs() {
-    return contactLib.getContactsCIDs(_currentUser);
+  Future<void> deleteContact(String cid) async {
+    return contactLib.deleteContact(_currentUser, cid: cid);
   }
 
   @override
-  Future<List<Contact>> getContacts() {
-    return contactLib.getContacts(_currentUser);
+  Future<List<String>> getContactIDs({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false}) async {
+    List<String> cidList = [];
+    for(Contact contact in await getContacts(confirmedContacts: confirmedContacts, groups: groups, invitedContacts: invitedContacts, invitations: invitations, rejectedContacts: rejectedContacts)) {
+      cidList.add(contact.cid);
+    }
+    return cidList;
+  }
+
+  @override
+  Future<List<Contact>> getContacts({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false}) async {
+    List<Contact> contactList = [];
+    List<String> filter = [];
+    if(confirmedContacts) filter.add(contactLib.CONTACT_CONFIRMED);
+    if(groups) filter.add(contactLib.CONTACT_GROUP);
+    if(invitedContacts) filter.add(contactLib.CONTACT_INVITED);
+    if(invitations) filter.add(contactLib.CONTACT_INVITATION);
+    if(rejectedContacts) filter.add(contactLib.CONTACT_INVITED);
+    //if(private) filter.add(contactLib.CONTACT_PRIVATE);
+
+    if(filter.isEmpty) { // by default, return confirmed contacts
+      filter.add(contactLib.CONTACT_CONFIRMED);
+      filter.add(contactLib.CONTACT_PRIVATE);
+    }
+
+    for(Contact contact in await contactLib.getContacts(_currentUser)) {
+      if (filter.contains(contact.status)) {
+        contactList.add(contact);
+      }
+    }
+    return contactList;
   }
 
   @override
@@ -104,5 +143,38 @@ class MMY implements MMYEngine {
   Future<void> respondInvitation(String cid, bool accept) {
     return contactLib.respondProfile(_currentUser, cid: cid, accept: accept);
   }
+
+  @override
+  Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String>? contactsCIDs}) {
+    return contactLib.addToGroup(_currentUser, groupCID, contactCid: contactCID, contactListCids: contactsCIDs);
+  }
+
+  @override
+  Future<Contact> removeContactsFromGroup(String groupCID, {String? contactCID, List<String>? contactsCIDs}) {
+    return contactLib.removeFromGroup(_currentUser, groupCID, contactCid: contactCID, contactListCids: contactsCIDs);
+  }
+
+  @override
+  Future<List<Contact>> searchProfiles(String searchText) async {
+    List<Contact> contactList = [];
+    for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
+      contactList.add(contactLib.contactFromProfile(profile, uid: profile.uid));
+    }
+    return contactList;
+  }
+
+  @override
+  Future<List<Contact>> getPhoneContacts() async {
+    List<Contact> contactList = [];
+    return contactLib.getPhoneContacts(_currentUser);
+  }
+
+  @override
+  Future<void> invitePhoneContacts(List<Contact> contacts) async {
+    //TODO: invite contacts
+  }
+
+
+
 
 }
