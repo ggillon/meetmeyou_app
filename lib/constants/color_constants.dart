@@ -7,5 +7,7 @@ class ColorConstants {
   static var colorGray = Color(0xFF979797);
   static var colorWhitishGray = Color(0xFFE5E5E5);
   static var colorLightGray = Color(0xFFF6F6F6);
+  static var colorMediumGray = Color(0XFFEFEFF0);
   static var colorRed = Color(0xFFD83737);
+  static var colorWhiteDown = Color(0xFFF5F5F5);
 }

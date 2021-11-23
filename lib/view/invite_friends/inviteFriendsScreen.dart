@@ -22,12 +22,12 @@ class InviteFriendsScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: ColorConstants.colorWhite,
         appBar: DialogHelper.appBarWithBack(scaler, context),
-        floatingActionButton: Padding(
-          padding: scaler.getPaddingAll(10.0),
-          child: DialogHelper.btnWidget(
-              scaler, context, "invite".tr(), ColorConstants.primaryColor),
-        ),
-        floatingActionButtonLocation:  FloatingActionButtonLocation.centerFloat,
+        // floatingActionButton: Padding(
+        //   padding: scaler.getPaddingAll(10.0),
+        //   child: DialogHelper.btnWidget(
+        //       scaler, context, "invite".tr(), ColorConstants.primaryColor),
+        // ),
+        // floatingActionButtonLocation:  FloatingActionButtonLocation.centerFloat,
         body: BaseView<InviteFriendsProvider>(
           onModelReady: (provider) {
             provider.isChecked =
@@ -35,25 +35,27 @@ class InviteFriendsScreen extends StatelessWidget {
             provider.sortContactList();
           },
           builder: (context, provider, _) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 2.5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text("invite_friends".tr()).boldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
-                          TextAlign.left),
-                    ),
-                    SizedBox(height: scaler.getHeight(1)),
-                    searchBar(scaler, provider),
-                    SizedBox(height: scaler.getHeight(1)),
-                    inviteFriendList(scaler, "sample@gmail.com", provider)
-                  ],
-                ),
+            return Padding(
+              padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("invite_friends".tr()).boldText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(16),
+                        TextAlign.left),
+                  ),
+                  SizedBox(height: scaler.getHeight(1)),
+                  searchBar(scaler, provider),
+                  SizedBox(height: scaler.getHeight(1)),
+                  inviteFriendList(scaler, "sample@gmail.com", provider),
+                  Container(
+                    child: DialogHelper.btnWidget(
+                        scaler, context, "invite".tr(), ColorConstants.primaryColor),
+                  )
+                ],
               ),
             );
           },
@@ -96,30 +98,34 @@ class InviteFriendsScreen extends StatelessWidget {
 
   Widget inviteFriendList(
       ScreenScaler scaler, String friendEmail, InviteFriendsProvider provider) {
-    return ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: provider.myContactListName.length,
-        itemBuilder: (context, index) {
-          String currentHeader =
-              provider.myContactListName[index].capitalize().substring(0, 1);
-          String header = index == 0
-              ? provider.myContactListName[index].capitalize().substring(0, 1)
-              : provider.myContactListName[index - 1]
-                  .capitalize()
-                  .substring(0, 1);
-          if (searchBarController.text.isEmpty) {
-            return aToZHeader(
-                provider, currentHeader, header, index, scaler, friendEmail);
-          } else if (provider.myContactListName[index]
-              .toLowerCase()
-              .contains(searchBarController.text)) {
-            return inviteFriendProfileCard(
-                scaler, friendEmail, provider, index);
-          } else {
-            return Container();
-          }
-        });
+    return Expanded(
+      child: SingleChildScrollView(
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: provider.myContactListName.length,
+            itemBuilder: (context, index) {
+              String currentHeader =
+                  provider.myContactListName[index].capitalize().substring(0, 1);
+              String header = index == 0
+                  ? provider.myContactListName[index].capitalize().substring(0, 1)
+                  : provider.myContactListName[index - 1]
+                      .capitalize()
+                      .substring(0, 1);
+              if (searchBarController.text.isEmpty) {
+                return aToZHeader(
+                    provider, currentHeader, header, index, scaler, friendEmail);
+              } else if (provider.myContactListName[index]
+                  .toLowerCase()
+                  .contains(searchBarController.text)) {
+                return inviteFriendProfileCard(
+                    scaler, friendEmail, provider, index);
+              } else {
+                return Container();
+              }
+            }),
+      ),
+    );
   }
 
   aToZHeader(InviteFriendsProvider provider, String cHeader, String header,
@@ -182,7 +188,7 @@ class InviteFriendsScreen extends StatelessWidget {
                   onChanged: (bool? value) {
                     provider.setCheckBoxValue(value!, index);
                   },
-                ), //
+                ),
               ],
             ),
           ),

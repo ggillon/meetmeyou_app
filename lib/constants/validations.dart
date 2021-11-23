@@ -10,4 +10,11 @@ class Validations {
     RegExp regExp = new RegExp(pattern);
     return regExp.hasMatch(value);
   }
+
+  static bool validateMobile(String value) {
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = new RegExp(pattern);
+
+    return regExp.hasMatch(value);
+  }
 }

@@ -1,12 +1,6 @@
-import 'package:meetmeyou_app/locator.dart';
-import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
-import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
-class InviteFriendsProvider extends BaseProvider {
-  MMYEngine? mmyEngine;
-  List<Contact> contactList = [];
-
+class ContactsProvider extends BaseProvider{
   bool _value = false;
 
   bool get value => _value;
@@ -15,25 +9,6 @@ class InviteFriendsProvider extends BaseProvider {
     _value = value;
     notifyListeners();
   }
-
-  late List<bool> _isChecked;
-
-  List<bool> get isChecked => _isChecked;
-
-  set isChecked(List<bool> value) {
-    _isChecked = value;
-  }
-
-  setCheckBoxValue(bool value, int index) {
-    _isChecked[index] = value;
-    notifyListeners();
-  }
-
-  // Future<void> getPhoneContacts() async {
-  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-  //   contactList = await mmyEngine!.getContacts();
-  //   notifyListeners();
-  // }
 
   List<String> _myContactListName = [
     'jenny wilson',
@@ -68,5 +43,14 @@ class InviteFriendsProvider extends BaseProvider {
         .toList();
     _myContactListName.sort();
     return _myContactListName;
+  }
+
+  bool _toggle = true;
+
+  bool get toggle => _toggle;
+
+  updateToggle(){
+   _toggle = !_toggle;
+   notifyListeners();
   }
 }

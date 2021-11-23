@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/settings/settingsPage.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -23,8 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
     Text('Add Page',
         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-    Text('Invite Friends Page',
-        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    ContactsScreen(),
     SettingsPage()
   ];
 

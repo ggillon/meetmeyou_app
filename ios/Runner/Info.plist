@@ -103,5 +103,10 @@
         <key>NSCameraUsageDescription</key>
         <string>MeetMeYou Need This Permission for use camera</string>
 
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+          <string>https</string>
+          <string>http</string>
+        </array>
 	</dict>
 </plist>

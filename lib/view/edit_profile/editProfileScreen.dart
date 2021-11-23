@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
@@ -288,30 +289,59 @@ class EditProfileScreen extends StatelessWidget {
                                 SizedBox(
                                   height: scaler.getHeight(0.2),
                                 ),
-                                TextFormField(
-                                  //   enabled: signUpType!=StringConstants.social,
-                                  controller: phoneNumberController,
-                                  style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
-                                      ColorConstants.colorBlack),
-                                  decoration:
-                                      ViewDecoration.inputDecorationWithCurve(
-                                          "+1 58 479 95 8",
-                                          scaler,
-                                          ColorConstants.primaryColor),
-                                  onFieldSubmitted: (data) {
-                                    // FocusScope.of(context).requestFocus(nodes[1]);
-                                  },
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value!.trim().isEmpty) {
-                                      return "phone_number_required".tr();
-                                    }
-                                    {
-                                      return null;
-                                    }
-                                  },
+                                Container(
+                                  height: scaler.getHeight(3.8),
+                                  child: TextFormField(
+                                    inputFormatters: <TextInputFormatter>[
+                                      LengthLimitingTextInputFormatter(10),
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    controller: phoneNumberController,
+                                    style: ViewDecoration.textFieldStyle(
+                                        scaler.getTextSize(9.5),
+                                        ColorConstants.colorBlack),
+                                    decoration:
+                                        ViewDecoration.inputDecorationWithCurve(
+                                      "",
+                                      scaler,
+                                      ColorConstants.primaryColor,
+                                      prefixIcon: CountryCodePicker(
+                                        onChanged: (value) {
+                                          provider.countryCode = value.dialCode;
+                                        },
+                                        padding: scaler.getPaddingAll(0.0),
+                                        textStyle: TextStyle(
+                                          fontSize: scaler.getTextSize(9.5),
+                                          color: ColorConstants.colorBlack,
+                                        ),
+                                        initialSelection:
+                                            provider.countryCode == ""
+                                                ? "US"
+                                                : provider.countryCode,
+                                        favorite: ['+91', 'IND'],
+                                        showFlag: false,
+                                        showFlagDialog: true,
+                                        showCountryOnly: false,
+                                        showOnlyCountryWhenClosed: false,
+                                        alignLeft: false,
+                                      ),
+                                    ),
+                                    onFieldSubmitted: (data) {
+                                      // FocusScope.of(context).requestFocus(nodes[1]);
+                                    },
+                                    textInputAction: TextInputAction.next,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value!.trim().isEmpty) {
+                                        return null;
+                                      } else if (!Validations.validateMobile(
+                                          value.trim())) {
+                                        return "invalid_phone_number".tr();
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                  ),
                                 ),
                                 SizedBox(
                                   height: scaler.getHeight(1),
@@ -418,16 +448,30 @@ class EditProfileScreen extends StatelessWidget {
                                               hideKeyboard(context);
                                               if (_formKey.currentState!
                                                   .validate()) {
+                                                String? countryCode;
+                                                if (phoneNumberController
+                                                    .text.isNotEmpty) {
+                                                  countryCode = provider
+                                                              .countryCode
+                                                              .toString() ==
+                                                          ""
+                                                      ? "+1"
+                                                      : provider.countryCode
+                                                          .toString();
+                                                } else {
+                                                  countryCode = "";
+                                                }
                                                 provider
                                                     .updateUserProfilePicture(
-                                                    context,
-                                                    firstNameController
-                                                        .text,
-                                                    lastNameController.text,
-                                                    emailController.text,
-                                                    phoneNumberController
-                                                        .text,
-                                                    addressController.text);
+                                                        context,
+                                                        firstNameController
+                                                            .text,
+                                                        lastNameController.text,
+                                                        emailController.text,
+                                                        phoneNumberController
+                                                            .text,
+                                                        countryCode,
+                                                        addressController.text);
                                               }
                                             },
                                             child: CustomShape(

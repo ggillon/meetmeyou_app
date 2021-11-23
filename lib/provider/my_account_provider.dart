@@ -19,6 +19,7 @@ class MyAccountProvider extends BaseProvider {
   String? lastName;
   String? email;
   String? phoneNumber;
+  String? countryCode;
   String? address;
   String? userProfilePic;
 
@@ -27,6 +28,7 @@ class MyAccountProvider extends BaseProvider {
     lastName = userDetail.lastName ?? "";
     email = userDetail.email ?? "";
     phoneNumber = userDetail.phone ?? "";
+    countryCode = userDetail.countryCode ?? "";
     address = userDetail.address ?? "";
     userProfilePic = userDetail.profileUrl ?? "";
 

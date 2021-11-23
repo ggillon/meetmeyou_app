@@ -3,6 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/view/about/aboutPage.dart';
 import 'package:meetmeyou_app/view/calendar_settings/calendarSettingsScreen.dart';
+import 'package:meetmeyou_app/view/contacts/editContactScreen.dart';
+import 'package:meetmeyou_app/view/contacts/onTapContactScreen.dart';
+import 'package:meetmeyou_app/view/contacts/search_profile/searchProfileScreen.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
 import 'package:meetmeyou_app/view/history/historyScreen.dart';
@@ -14,6 +17,7 @@ import 'package:meetmeyou_app/view/login/loginPage.dart';
 import 'package:meetmeyou_app/view/login_options/loginOptionsPage.dart';
 import 'package:meetmeyou_app/view/my_account/myAccountScreen.dart';
 import 'package:meetmeyou_app/view/privacy_policy_and_terms/privacyPolicyAndTerms.dart';
+import 'package:meetmeyou_app/view/rejected_invites/rejectedInvitesScreen.dart';
 import 'package:meetmeyou_app/view/signup/signupPage.dart';
 import 'package:meetmeyou_app/view/verify_screen/verifyScreen.dart';
 
@@ -91,6 +95,25 @@ class Router {
       case RoutesConstants.calendarSettingsScreen:
         return MaterialPageRoute(
             builder: (_) => CalendarSettingsScreen(), settings: settings);
+
+      case RoutesConstants.onTapContactScreen:
+        return MaterialPageRoute(
+            builder: (_) => OnTapContactScreen(
+                  data: settings.arguments as DataToOnTapContactScreen,
+                ),
+            settings: settings);
+
+      case RoutesConstants.editContactScreen:
+        return MaterialPageRoute(
+            builder: (_) => EditContactScreen(), settings: settings);
+
+      case RoutesConstants.rejectedInvitesScreen:
+        return MaterialPageRoute(
+            builder: (_) => RejectedInvitesScreen(), settings: settings);
+
+      case RoutesConstants.searchProfileScreen:
+        return MaterialPageRoute(
+            builder: (_) => SearchProfileScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

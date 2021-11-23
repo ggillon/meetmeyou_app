@@ -1,8 +1,9 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
@@ -26,6 +27,7 @@ class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
   final addressController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -287,29 +289,54 @@ class SignUpPage extends StatelessWidget {
                       SizedBox(
                         height: scaler.getHeight(0.2),
                       ),
-                      CustomShape(
-                        bgColor: ColorConstants.colorLightGray,
-                        radius: scaler.getBorderRadiusCircular(7),
-                        child: IntlPhoneField(
-                          autoValidate: false,
-                          showCountryFlag: true,
+                      Container(
+                        height: scaler.getHeight(3.8),
+                        child: TextFormField(
+                          inputFormatters: <TextInputFormatter>[
+                            LengthLimitingTextInputFormatter(10),
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          controller: phoneNumberController,
                           style: ViewDecoration.textFieldStyle(
                               scaler.getTextSize(9.5),
                               ColorConstants.colorBlack),
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            counterText: '',
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 2.0, horizontal: 2.0),
-                            border: InputBorder.none,
+                          decoration:
+                          ViewDecoration.inputDecorationWithCurve(
+                            "",
+                            scaler,
+                            ColorConstants.primaryColor,
+                            prefixIcon: CountryCodePicker(
+                              onChanged: (value) {
+                                provider.countryCode = value.dialCode!;
+                              },
+                              padding: scaler.getPaddingAll(0.0),
+                              textStyle: TextStyle(
+                                fontSize: scaler.getTextSize(9.5),
+                                color: ColorConstants.colorBlack,
+                              ),
+                              initialSelection: "US",
+                              favorite: ['+91', 'IND'],
+                              showFlag: true,
+                              showFlagDialog: true,
+                              showCountryOnly: false,
+                              showOnlyCountryWhenClosed: false,
+                              alignLeft: false,
+                            ),
                           ),
-                          initialCountryCode: 'US',
-                          onCountryChanged: (code) {
-                            hideKeyboard(context);
-                            provider.countryCode = code.countryCode!;
+                          onFieldSubmitted: (data) {
+                            // FocusScope.of(context).requestFocus(nodes[1]);
                           },
-                          onChanged: (phone) {
-                            provider.phone = phone.number!;
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return null;
+                            } else if (!Validations.validateMobile(
+                                value.trim())) {
+                              return "invalid_phone_number".tr();
+                            } else {
+                              return null;
+                            }
                           },
                         ),
                       ),

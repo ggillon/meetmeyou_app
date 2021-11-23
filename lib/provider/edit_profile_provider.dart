@@ -20,6 +20,7 @@ class EditProfileProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   String? imageUrl;
   File? image;
+  String? countryCode;
 
   bool _isLoading = false;
 
@@ -45,6 +46,7 @@ class EditProfileProvider extends BaseProvider {
     lastNameController.text = userDetail.lastName ?? "";
     emailController.text = userDetail.email ?? "";
     phoneNoController.text = userDetail.phone ?? "";
+    countryCode = userDetail.countryCode ?? "";
     imageUrl = userDetail.profileUrl ?? "";
     addressController.text = userDetail.address ?? "";
 
@@ -95,14 +97,21 @@ class EditProfileProvider extends BaseProvider {
   }
 
   // This Function is used to update user details.
-  Future<void> updateUserDetails(BuildContext context, String firstName,
-      String lastName, String email, String phoneNumber, String address) async {
+  Future<void> updateUserDetails(
+      BuildContext context,
+      String firstName,
+      String lastName,
+      String email,
+      String phoneNumber,
+      String countryCode,
+      String address) async {
     var value = await mmyEngine!
         .updateProfile(
       firstName: firstName,
       lastName: lastName,
       email: email,
       phoneNumber: phoneNumber,
+      countryCode: countryCode,
       homeAddress: address,
     )
         .catchError((e) {
@@ -115,25 +124,32 @@ class EditProfileProvider extends BaseProvider {
       userDetail.lastName = value.lastName!;
       userDetail.email = value.email!;
       userDetail.phone = value.phoneNumber!;
+      userDetail.countryCode = value.countryCode;
       userDetail.address = value.addresses!['Home'];
       userDetail.profileUrl = value.photoURL;
       DialogHelper.showMessage(context, "profile_updated_successfully".tr());
     }
   }
 
-  Future<void> updateUserProfilePicture(BuildContext context, String firstName,
-      String lastName, String email, String phoneNumber, String address) async {
+  Future<void> updateUserProfilePicture(
+      BuildContext context,
+      String firstName,
+      String lastName,
+      String email,
+      String phoneNumber,
+      String countryCode,
+      String address) async {
     updateLoadingStatus(true);
     if (image != null) {
       await mmyEngine!.updateProfilePicture(image!).catchError((e) {
         updateLoadingStatus(false);
         DialogHelper.showMessage(context, e.message);
       });
-      updateUserDetails(
-          context, firstName, lastName, email, phoneNumber, address);
+      updateUserDetails(context, firstName, lastName, email, phoneNumber,
+          countryCode, address);
     } else {
-      updateUserDetails(
-          context, firstName, lastName, email, phoneNumber, address);
+      updateUserDetails(context, firstName, lastName, email, phoneNumber,
+          countryCode, address);
     }
   }
 }

@@ -54,6 +54,20 @@
   "application_version" : "Application Version",
   "calender_settings" : "Calendar settings",
   "delete_user" : "Delete user",
-  "invite" : "Invite"
+  "invite" : "Invite",
+  "invalid_phone_number" : "Invalid Phone Number",
+  "contacts" : "Contacts",
+  "all" : "All",
+  "groups" : "Groups",
+  "rejected_invites" : "Rejected invites",
+  "search_for_contact" : "Search for contacts/profiles",
+  "create_group_of_contacts" : "Create a group of contacts",
+  "call" : "Call",
+  "sms" : "Sms",
+  "whats_app" : "WhatsApp",
+  "search_for_profile" : "Search for profile",
+  "search" : "Search",
+  "profiles_found" : "Profiles found"
+
 
 }

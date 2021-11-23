@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
@@ -53,13 +54,26 @@ class MyAccountScreen extends StatelessWidget {
                           scaler.getTextSize(16),
                           TextAlign.left),
                       SizedBox(height: scaler.getHeight(2)),
-                      userDetails(scaler, provider),
+                      CommonWidgets.userDetails(
+                          scaler,
+                          provider.userProfilePic,
+                          provider.firstName.toString(),
+                          provider.lastName.toString(),
+                          provider.email),
                       SizedBox(height: scaler.getHeight(3)),
-                      phoneNoAndAddressFun(scaler, ImageConstants.phone_no_icon,
-                          "phone_number".tr(), provider.phoneNumber!),
+                      CommonWidgets.phoneNoAndAddressFun(
+                          scaler,
+                          ImageConstants.phone_no_icon,
+                          "phone_number".tr(),
+                          provider.phoneNumber!,
+                          countryCode: true,
+                          cCode: provider.countryCode),
                       SizedBox(height: scaler.getHeight(1.5)),
-                      phoneNoAndAddressFun(scaler, ImageConstants.address_icon,
-                          "address".tr(), provider.address!),
+                      CommonWidgets.phoneNoAndAddressFun(
+                          scaler,
+                          ImageConstants.address_icon,
+                          "address".tr(),
+                          provider.address!),
                       SizedBox(height: scaler.getHeight(3)),
                       Text("organized_events".tr()).boldText(
                           ColorConstants.colorBlack,
@@ -77,63 +91,6 @@ class MyAccountScreen extends StatelessWidget {
           );
         }),
       ),
-    );
-  }
-
-  Widget userDetails(ScreenScaler scaler, MyAccountProvider provider) {
-    return Row(
-      children: [
-        ClipRRect(
-          borderRadius: scaler.getBorderRadiusCircular(10.0),
-          child: ImageView(
-            path: provider.userProfilePic,
-            width: scaler.getWidth(22),
-            height: scaler.getWidth(22),
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(width: scaler.getWidth(2.5)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(provider.firstName.toString() +
-                      " " +
-                      provider.lastName.toString())
-                  .boldText(ColorConstants.colorBlack, scaler.getTextSize(12),
-                      TextAlign.left,
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-              SizedBox(height: scaler.getHeight(0.5)),
-              Text(provider.email!).mediumText(ColorConstants.colorBlack,
-                  scaler.getTextSize(10), TextAlign.left,
-                  maxLines: 1, overflow: TextOverflow.ellipsis)
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget phoneNoAndAddressFun(
-      ScreenScaler scaler, String icon, String field, String value) {
-    return Row(
-      children: [
-        SvgPicture.asset(icon),
-        SizedBox(width: scaler.getWidth(4)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(field).boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(9.5), TextAlign.left),
-              SizedBox(height: scaler.getHeight(0.3)),
-              Text(value).regularText(ColorConstants.colorGray,
-                  scaler.getTextSize(9.5), TextAlign.left,
-                  maxLines: 1, overflow: TextOverflow.ellipsis),
-            ],
-          ),
-        )
-      ],
     );
   }
 }

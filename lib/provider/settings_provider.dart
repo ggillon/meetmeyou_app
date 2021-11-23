@@ -32,6 +32,7 @@ class SettingsProvider extends BaseProvider {
     userDetail.lastName = userProfile.lastName ?? "";
     userDetail.email = userProfile.email ?? "";
     userDetail.phone = userProfile.phoneNumber ?? "";
+    userDetail.countryCode = userProfile.countryCode ?? "";
 
     userDetail.address = '';
     if(userProfile.addresses != null)
