@@ -108,7 +108,7 @@ Widget TestSearchProfile(BuildContext context, Function setPage) {
                             initialData: emptyList,
                             builder: (context, contactList) => ListView.builder(
                               itemCount: contactList.data!.length,
-                              itemBuilder: (context, item) => Text('${contactList.data![item].displayName ?? ''}: ${contactList.data![item].uid}')
+                              itemBuilder: (context, item) => Text('${contactList.data![item].displayName}: ${contactList.data![item].uid}')
                               ,)),
                       ),
                     ),
@@ -149,7 +149,7 @@ Widget TestImportContacts(BuildContext context, Function setPage) {
                         initialData: emptyList,
                         builder: (context, contactList) => ListView.builder(
                           itemCount: contactList.data!.length,
-                          itemBuilder: (context, item) => Text('${contactList.data![item].displayName ?? ''}: ${contactList.data![item].email}')
+                          itemBuilder: (context, item) => Text('${contactList.data![item].displayName}: ${contactList.data![item].email}')
                           ,)),
                   ),
                 ),
@@ -167,8 +167,6 @@ Widget TestContactList(BuildContext context, Function setPage) {
 
   final auth = Provider.of<AuthBase>(context, listen: false);
 
-  bool invitationCreated = false;
-  bool invitationReplied = false;
   bool groupCreated = false;
   String testGroupCid = "";
   String invitationCID = "";
@@ -202,7 +200,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                           initialData: emptyList,
                           builder: (context, contactList) => ListView.builder(
                               itemCount: contactList.data!.length,
-                              itemBuilder: (context, item) => Text(contactList.data![item].displayName ?? '')
+                              itemBuilder: (context, item) => Text(contactList.data![item].displayName)
                       ,)),
                     ),
                   ),
@@ -228,7 +226,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                                 groupCreated = true;
                                 testGroupCid = contactList.data![item].cid;
                               }
-                              return Text('${contactList.data![item].displayName ?? 'No Name'} : ${contactList.data![item].group}');
+                              return Text('${contactList.data![item].displayName} : ${contactList.data![item].group}');
                             },)),
                     ),
                   ),
@@ -249,7 +247,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                           initialData: emptyList,
                           builder: (context, contactList) => ListView.builder(
                             itemCount: contactList.data!.length,
-                            itemBuilder: (context, item) {invitationCID = contactList.data![item].cid; return Text(contactList.data![item].displayName ?? '');},
+                            itemBuilder: (context, item) {invitationCID = contactList.data![item].cid; return Text(contactList.data![item].displayName);},
                       )),
                     ),
                   ),
@@ -269,7 +267,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                           initialData: emptyList,
                           builder: (context, contactList) => ListView.builder(
                             itemCount: contactList.data!.length,
-                            itemBuilder: (context, item) => Text(contactList.data![item].displayName ?? ''),
+                            itemBuilder: (context, item) => Text(contactList.data![item].displayName),
                           ),
                       ),
                     ),

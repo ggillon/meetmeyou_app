@@ -21,11 +21,9 @@ Future<bool> isNewProfile(User currentUser) async {
     if (profile == null) {
       return true;
     } else {
-      if (profile.parameters != null) {
-        if (profile.parameters!.containsKey('New'))
-          if (profile.parameters!['New'] == true)
+        if (profile.parameters.containsKey('New'))
+          if (profile.parameters['New'] == true)
             return true;
-      }
       return false;
     }
   } catch(e) {
@@ -98,21 +96,21 @@ Future<Profile> updateProfile(User currentUser, {String? firstName, String? last
 
   final oldProfile = (await db.getProfile(currentUser.uid))!;
 
-  String displayName = (firstName ?? oldProfile.firstName ?? '') + ' ' + (lastName ?? oldProfile.lastName ?? '');
+  String displayName = (firstName ?? oldProfile.firstName) + ' ' + (lastName ?? oldProfile.lastName);
 
   Profile profile = Profile(
     uid: currentUser.uid,
     displayName: displayName,
-    firstName: firstName ?? oldProfile.firstName ?? '',
-    lastName: lastName ?? oldProfile.lastName ?? '',
-    email: email ?? oldProfile.email ?? '',
-    countryCode: countryCode ?? oldProfile.countryCode ?? '',
-    phoneNumber: phoneNumber ?? oldProfile.phoneNumber ?? '',
-    photoURL: photoUrl ?? oldProfile.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    firstName: firstName ?? oldProfile.firstName,
+    lastName: lastName ?? oldProfile.lastName,
+    email: email ?? oldProfile.email,
+    countryCode: countryCode ?? oldProfile.countryCode,
+    phoneNumber: phoneNumber ?? oldProfile.phoneNumber,
+    photoURL: photoUrl ?? oldProfile.photoURL,
     addresses: homeAddress!=null?<String, dynamic>{'Home': homeAddress}:oldProfile.addresses,
-    about: about ?? oldProfile.about ?? '',
-    other: other ?? oldProfile.other ?? <String, dynamic>{},
-    parameters: parameters ?? oldProfile.parameters ?? <String, dynamic>{},
+    about: about ?? oldProfile.about,
+    other: other ?? oldProfile.other,
+    parameters: parameters ?? oldProfile.parameters,
   );
 
   await db.setProfile(profile);
@@ -123,7 +121,7 @@ Future<Profile> updateProfile(User currentUser, {String? firstName, String? last
 Future<Profile> setProfileParameter(User currentUser, {required String param, required dynamic value}) async {
   Database db = FirestoreDB(uid: currentUser.uid);
   final profile = (await db.getProfile(currentUser.uid))!;
-  profile.parameters![param] = value;
+  profile.parameters[param] = value;
   await db.setProfile(profile);
   return profile;
 }

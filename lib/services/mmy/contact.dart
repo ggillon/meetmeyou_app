@@ -1,23 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
-import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/database/id_gen.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
 import 'package:contacts_service/contacts_service.dart' as Phone;
 import 'package:permission_handler/permission_handler.dart';
 
-//Contact Status
-const CONTACT_NEW = 'New contact';
-const CONTACT_PRIVATE = 'Private contact';
-const CONTACT_CONFIRMED = 'Confirmed contact';
-const CONTACT_INVITED = 'Invited contact';
-const CONTACT_INVITATION = 'Invitation';
-const CONTACT_REJECTED = 'Rejected invitation';
-const CONTACT_GROUP = 'Contact Group';
-const CONTACT_PROFILE = 'Listed profile';
 
+const CONTACT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 const GROUP_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 
 // Create a new contact
@@ -34,8 +26,8 @@ Future<Contact> createNewPrivateContact(User currentUser, {String? displayName, 
     photoURL: photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
     about: about ?? '',
-    other: <String, dynamic>{},
-    group: null,
+    other: EMPTY_MAP,
+    group: EMPTY_MAP,
     status: CONTACT_PRIVATE,
   );
 
@@ -57,8 +49,8 @@ Contact createLocalContact(User currentUser, {String? displayName, String? first
     photoURL: photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
     about: about ?? '',
-    other: <String, dynamic>{},
-    group: null,
+    other: EMPTY_MAP,
+    group: EMPTY_MAP,
     status: CONTACT_PRIVATE,
   );
   return contact;
@@ -100,17 +92,17 @@ Future<Contact> updatePrivateContact(User currentUser, String cid, {String? disp
   Contact contact = Contact(
     uid: currentUser.uid,
     cid: cid,
-    displayName: displayName ?? oldContact.displayName ?? '',
-    firstName: firstName ?? oldContact.firstName ?? '',
-    lastName: lastName ?? oldContact.lastName ?? '',
-    email: email ?? oldContact.email ?? '',
-    countryCode: countryCode ?? oldContact.countryCode ?? '',
-    phoneNumber: phoneNumber ?? oldContact.phoneNumber ?? '',
-    photoURL: photoUrl ?? oldContact.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    displayName: displayName ?? oldContact.displayName,
+    firstName: firstName ?? oldContact.firstName,
+    lastName: lastName ?? oldContact.lastName,
+    email: email ?? oldContact.email,
+    countryCode: countryCode ?? oldContact.countryCode,
+    phoneNumber: phoneNumber ?? oldContact.phoneNumber,
+    photoURL: photoUrl ?? oldContact.photoURL,
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
-    about: about ?? oldContact.about ?? '',
-    other: other ?? oldContact.other ?? <String, dynamic>{},
-    status: status ?? oldContact.status ?? CONTACT_PRIVATE,
+    about: about ?? oldContact.about,
+    other: other ?? oldContact.other,
+    status: status ?? oldContact.status,
     group: oldContact.group,
   );
 
@@ -124,17 +116,17 @@ Contact contactFromProfile(Profile profile, {String? uid}) {
   return Contact(
     cid: profile.uid,
     uid: uid ?? profile.uid,
-    displayName: profile.displayName ?? '',
-    firstName: profile.firstName ?? '',
-    lastName: profile.lastName ?? '',
-    email: profile.email ?? '',
-    countryCode: profile.countryCode ?? '',
-    phoneNumber: profile.phoneNumber ?? '',
-    photoURL: profile.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-    addresses: profile.addresses ?? <String, dynamic>{'Home': ''},
-    about: profile.about ?? '',
-    other: <String, dynamic>{},
-    group: null,
+    displayName: profile.displayName,
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    email: profile.email,
+    countryCode: profile.countryCode,
+    phoneNumber: profile.phoneNumber,
+    photoURL: profile.photoURL,
+    addresses: profile.addresses,
+    about: profile.about,
+    other: EMPTY_MAP,
+    group: EMPTY_MAP,
     status: CONTACT_PROFILE,
   );
 }
@@ -175,14 +167,14 @@ Future<Contact> updateGroupContact(User currentUser, String cid, {String? displa
 // Group contact functions : add one or more contacts, returns the group as contact
 Future<Contact> addToGroup(User currentUser, String cid, {String? contactCid, List<String>? contactListCids}) async {
   Contact group = await getContact(currentUser, cid: cid);
-  if(contactCid != null && group.group != null) {
+  if(contactCid != null) {
     Contact contact = await getContact(currentUser, cid: contactCid);
-    group.group!.addAll(<String, dynamic>{contact.cid: contact.displayName});
+    group.group.addAll(<String, dynamic>{contact.cid: contact.displayName});
   }
-  if(contactListCids != null && group.group != null) {
+  if(contactListCids != null) {
     for(String contactCid in contactListCids) {
       Contact contact = await getContact(currentUser, cid: contactCid);
-      group.group!.addAll(<String, dynamic>{contact.cid: contact.displayName});
+      group.group.addAll(<String, dynamic>{contact.cid: contact.displayName});
     }
   }
   await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, group);
@@ -192,15 +184,15 @@ Future<Contact> addToGroup(User currentUser, String cid, {String? contactCid, Li
 // Group contact functions : remove one or more contacts, returns the group as contact
 Future<Contact> removeFromGroup(User currentUser, String cid, {String? contactCid, List<String>? contactListCids}) async {
   Contact group = await getContact(currentUser, cid: cid);
-  if(contactCid != null && group.group != null) {
-    if(group.group!.containsKey(contactCid)) {
-      group.group!.remove(contactCid);
+  if(contactCid != null) {
+    if(group.group.containsKey(contactCid)) {
+      group.group.remove(contactCid);
     }
   }
-  if(contactListCids != null && group.group != null) {
+  if(contactListCids != null) {
     for(String contactCid in contactListCids) {
-      if(group.group!.containsKey(contactCid)) {
-        group.group!.remove(contactCid);
+      if(group.group.containsKey(contactCid)) {
+        group.group.remove(contactCid);
       }
     }
   }
@@ -263,7 +255,7 @@ Future<void> linkProfiles(User currentUser, {required String uid,}) async {
   Contact contact1 = contactFromProfile((await db.getProfile(uid))!, uid: currentUser.uid);
   Contact contact2 = contactFromProfile((await db.getProfile(currentUser.uid))!, uid: uid);
   await db.setContact(currentUser.uid, contact1);
-  await db.setContact(contact1.uid!, contact2);
+  await db.setContact(contact1.uid, contact2);
 }
 
 Future<List<Contact>> getPhoneContacts(User currentUser) async {
@@ -278,11 +270,11 @@ Future<List<Contact>> getPhoneContacts(User currentUser) async {
     for (Phone.Contact phoneContact in phoneContacts) {
       if(phoneContact.displayName != null && (phoneContact.emails!.length>0)) {
         Contact contact = createLocalContact(currentUser);
-        contact.displayName = phoneContact.displayName;
-        contact.email = phoneContact.emails!.first.value;
+        contact.displayName = phoneContact.displayName!;
+        contact.email = phoneContact.emails!.first.value!;
         if(phoneContact.phones!.length>0)
-          contact.phoneNumber = phoneContact.phones!.first.value;
-        contact.countryCode = null;
+          contact.phoneNumber = phoneContact.phones!.first.value!;
+        contact.countryCode = '';
         phoneContactList.add(contact);
       }
     }

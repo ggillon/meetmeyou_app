@@ -109,16 +109,16 @@ class MMY implements MMYEngine {
   Future<List<Contact>> getContacts({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false}) async {
     List<Contact> contactList = [];
     List<String> filter = [];
-    if(confirmedContacts) filter.add(contactLib.CONTACT_CONFIRMED);
-    if(groups) filter.add(contactLib.CONTACT_GROUP);
-    if(invitedContacts) filter.add(contactLib.CONTACT_INVITED);
-    if(invitations) filter.add(contactLib.CONTACT_INVITATION);
-    if(rejectedContacts) filter.add(contactLib.CONTACT_INVITED);
+    if(confirmedContacts) filter.add(CONTACT_CONFIRMED);
+    if(groups) filter.add(CONTACT_GROUP);
+    if(invitedContacts) filter.add(CONTACT_INVITED);
+    if(invitations) filter.add(CONTACT_INVITATION);
+    if(rejectedContacts) filter.add(CONTACT_INVITED);
     //if(private) filter.add(contactLib.CONTACT_PRIVATE);
 
     if(filter.isEmpty) { // by default, return confirmed contacts
-      filter.add(contactLib.CONTACT_CONFIRMED);
-      filter.add(contactLib.CONTACT_PRIVATE);
+      filter.add(CONTACT_CONFIRMED);
+      filter.add(CONTACT_PRIVATE);
     }
 
     for(Contact contact in await contactLib.getContacts(_currentUser)) {
@@ -165,7 +165,6 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Contact>> getPhoneContacts() async {
-    List<Contact> contactList = [];
     return contactLib.getPhoneContacts(_currentUser);
   }
 

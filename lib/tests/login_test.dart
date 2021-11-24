@@ -32,8 +32,8 @@ Widget TestShowProfile(BuildContext context) {
               Text('Profile Display Name: ${profile.data!.displayName}'),
               Text('AuthUser Email: ${profile.data!.email}'),
               Text('AuthUser UID: ${profile.data!.uid}'),
-              (profile.data!.parameters?['New'] != null)
-                  ? Text('Profile isNew: ${profile.data!.parameters!['New']}')
+              (profile.data!.parameters['New'] != null)
+                  ? Text('Profile isNew: ${profile.data!.parameters['New']}')
                   : Text('Profile isNew: param not set'),
               SizedBox(height: 10),
               ElevatedButton(
