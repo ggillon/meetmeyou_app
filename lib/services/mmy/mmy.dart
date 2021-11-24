@@ -19,7 +19,8 @@ abstract class MMYEngine {
   Future<bool> isNew();
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
-
+  /// Delete User - Cautious
+  Future<void> deleteUser();
   /// Get a contact, invitation or group from DB
   Future<Contact> getContact(String cid);
   /// Get a contact, invitation or group from DB
@@ -78,6 +79,11 @@ class MMY implements MMYEngine {
   Future<Profile> updateProfilePicture(File file) async {
    String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
    return profileLib.updateProfile(_currentUser, photoUrl: photoURL);
+  }
+
+  @override
+  Future<void> deleteUser() async {
+    profileLib.deleteProfile(_currentUser);
   }
 
   @override

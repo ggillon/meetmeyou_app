@@ -20,7 +20,7 @@ class Profile {
     final String displayName = data['displayName'] ?? '';
     final String firstName= data['firstName'] ?? '';
     final String lastName = data['lastName'] ?? '';
-    final String email = data['email'] = '';
+    final String email = data['email'] ?? '';
     final String countryCode = data['countryCode'] ?? '';
     final String phoneNumber = data['phoneNumber'] ?? '';
     final String photoURL = data['photoURL'] ?? '';
@@ -37,7 +37,7 @@ class Profile {
     final String displayName = data['displayName'] ?? '';
     final String firstName= data['firstName'] ?? '';
     final String lastName = data['lastName'] ?? '';
-    final String email = data['email'] = '';
+    final String email = data['email'] ?? '';
     final String countryCode = data['countryCode'] ?? '';
     final String phoneNumber = data['phoneNumber'] ?? '';
     final String photoURL = data['photoURL'] ?? '';

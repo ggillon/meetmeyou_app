@@ -20,7 +20,7 @@ Widget TestShowProfile(BuildContext context) {
       appBar: AppBar(),
       body: FutureBuilder<Profile>(
         future: Provider.of<MMYEngine>(context, listen: false).getUserProfile(),
-        initialData: createNoDBProfile(uid: 'uid'), // Generate blank profile for test purposes
+        initialData: createLocalProfile(uid: 'uid'), // Generate blank profile for test purposes
         builder: (context, profile) => Center(
           child: Column(
             children: [

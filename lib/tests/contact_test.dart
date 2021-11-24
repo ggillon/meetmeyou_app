@@ -61,9 +61,16 @@ Widget ContactMenu(BuildContext context, Function setPage) {
         SizedBox(height: 10,),
         ElevatedButton(onPressed: () => auth.signOut(), child: Text("Sign Out")),
         SizedBox(height: 10,),
+        ElevatedButton(onPressed: () => deleteUser(context), child: Text("Delete User")),
+        SizedBox(height: 10,),
       ],
     ),
   );
+}
+
+Future<void> deleteUser(BuildContext context) async {
+  final mmy = MMY(Provider.of<AuthBase>(context, listen: false).currentUser!);
+  await mmy.deleteUser();
 }
 
 void toggleGroup(BuildContext context, bool create, Function setPage) {

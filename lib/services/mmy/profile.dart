@@ -154,7 +154,7 @@ Future<List<Profile>> searchProfiles(User currentUser, {required String searchTe
 
 
 // Create Profile from fields without storing it for tests purposes
-Profile createNoDBProfile({required String uid, String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) {
+Profile createLocalProfile({required String uid, String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) {
 
   Profile profile = Profile(
     uid: uid,
