@@ -67,7 +67,19 @@
   "whats_app" : "WhatsApp",
   "search_for_profile" : "Search for profile",
   "search" : "Search",
-  "profiles_found" : "Profiles found"
-
-
+  "profiles_found" : "Profiles found",
+  "group_name" : "Group Name",
+  "description" : "Description",
+  "contacts_in_groups" : "Contacts in groups",
+  "group_name_required" : "Group name is required",
+  "manage_group_contacts" : "Manage Group Contacts",
+  "group_contacts" : "Group Contacts",
+  "loading_contacts" : "Loading Contacts....",
+  "sorry_no_contacts_found" : "Sorry no contacts found",
+  "loading_rejected_contacts" : "Loading Rejected Invites....",
+  "no__rejected_contacts_found" : "No rejected invites found",
+  "searching_profiles" : "Searching profiles",
+  "no_profile_found" : "No profile found",
+  "invitations" : "Invitations",
+  "click_to_reply_to_invitation" : "Click to reply to invitation"
 }

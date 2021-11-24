@@ -4,6 +4,7 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
@@ -30,9 +31,10 @@ class InviteFriendsScreen extends StatelessWidget {
         // floatingActionButtonLocation:  FloatingActionButtonLocation.centerFloat,
         body: BaseView<InviteFriendsProvider>(
           onModelReady: (provider) {
-            provider.isChecked =
-                List<bool>.filled(provider.myContactListName.length, false);
             provider.sortContactList();
+            provider.getPhoneContacts(context);
+            // provider.isChecked =
+            //     List<bool>.filled(provider.contactList.length, false);
           },
           builder: (context, provider, _) {
             return Padding(
@@ -50,10 +52,33 @@ class InviteFriendsScreen extends StatelessWidget {
                   SizedBox(height: scaler.getHeight(1)),
                   searchBar(scaler, provider),
                   SizedBox(height: scaler.getHeight(1)),
-                  inviteFriendList(scaler, "sample@gmail.com", provider),
+                  provider.state == ViewState.Busy
+                      ? Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(child: CircularProgressIndicator()),
+                              SizedBox(height: scaler.getHeight(1)),
+                              Text("loading_contacts".tr()).mediumText(
+                                  ColorConstants.primaryColor,
+                                  scaler.getTextSize(10),
+                                  TextAlign.left),
+                            ],
+                          ),
+                        )
+                      : provider.contactList.length == 0
+                          ? Expanded(
+                              child: Center(
+                                child: Text("sorry_no_contacts_found".tr())
+                                    .mediumText(ColorConstants.primaryColor,
+                                        scaler.getTextSize(11), TextAlign.left),
+                              ),
+                            )
+                          : inviteFriendList(scaler, provider),
                   Container(
-                    child: DialogHelper.btnWidget(
-                        scaler, context, "invite".tr(), ColorConstants.primaryColor),
+                    child: DialogHelper.btnWidget(scaler, context,
+                        "invite".tr(), ColorConstants.primaryColor),
                   )
                 ],
               ),
@@ -96,30 +121,31 @@ class InviteFriendsScreen extends StatelessWidget {
     );
   }
 
-  Widget inviteFriendList(
-      ScreenScaler scaler, String friendEmail, InviteFriendsProvider provider) {
+  Widget inviteFriendList(ScreenScaler scaler, InviteFriendsProvider provider) {
     return Expanded(
       child: SingleChildScrollView(
         child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: provider.myContactListName.length,
+            itemCount: provider.contactList.length,
             itemBuilder: (context, index) {
-              String currentHeader =
-                  provider.myContactListName[index].capitalize().substring(0, 1);
+              String currentHeader = provider.contactList[index].displayName!
+                  .capitalize()
+                  .substring(0, 1);
               String header = index == 0
-                  ? provider.myContactListName[index].capitalize().substring(0, 1)
-                  : provider.myContactListName[index - 1]
+                  ? provider.contactList[index].displayName!
+                      .capitalize()
+                      .substring(0, 1)
+                  : provider.contactList[index - 1].displayName!
                       .capitalize()
                       .substring(0, 1);
               if (searchBarController.text.isEmpty) {
                 return aToZHeader(
-                    provider, currentHeader, header, index, scaler, friendEmail);
-              } else if (provider.myContactListName[index]
+                    provider, currentHeader, header, index, scaler);
+              } else if (provider.contactList[index].displayName!
                   .toLowerCase()
                   .contains(searchBarController.text)) {
-                return inviteFriendProfileCard(
-                    scaler, friendEmail, provider, index);
+                return inviteFriendProfileCard(scaler, provider, index);
               } else {
                 return Container();
               }
@@ -129,7 +155,7 @@ class InviteFriendsScreen extends StatelessWidget {
   }
 
   aToZHeader(InviteFriendsProvider provider, String cHeader, String header,
-      int index, scaler, friendEmail) {
+      int index, scaler) {
     if (index == 0 ? true : (header != cHeader)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,16 +164,16 @@ class InviteFriendsScreen extends StatelessWidget {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          inviteFriendProfileCard(scaler, friendEmail, provider, index),
+          inviteFriendProfileCard(scaler, provider, index),
         ],
       );
     } else {
-      return inviteFriendProfileCard(scaler, friendEmail, provider, index);
+      return inviteFriendProfileCard(scaler, provider, index);
     }
   }
 
-  Widget inviteFriendProfileCard(ScreenScaler scaler, String friendEmail,
-      InviteFriendsProvider provider, int index) {
+  Widget inviteFriendProfileCard(
+      ScreenScaler scaler, InviteFriendsProvider provider, int index) {
     return Column(
       children: [
         Card(
@@ -160,26 +186,35 @@ class InviteFriendsScreen extends StatelessWidget {
             child: Row(
               children: [
                 ClipRRect(
-                  borderRadius: scaler.getBorderRadiusCircular(10.0),
-                  child: Container(
-                    color: ColorConstants.primaryColor,
-                    width: scaler.getWidth(10),
-                    height: scaler.getWidth(10),
-                  ),
-                ),
+                    borderRadius: scaler.getBorderRadiusCircular(10.0),
+                    child: provider.contactList[index].photoURL == null
+                        ? Container(
+                            color: ColorConstants.primaryColor,
+                            width: scaler.getWidth(10),
+                            height: scaler.getWidth(10),
+                          )
+                        : ImageView(
+                            color: ColorConstants.primaryColor,
+                            path: provider.contactList[index].photoURL,
+                            width: scaler.getWidth(10),
+                            height: scaler.getWidth(10))),
                 SizedBox(width: scaler.getWidth(2.5)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(provider.myContactListName[index].capitalize())
+                      Text(provider.contactList[index].displayName!
+                              .capitalize())
                           .semiBoldText(ColorConstants.colorBlack,
                               scaler.getTextSize(9.8), TextAlign.left,
                               maxLines: 1, overflow: TextOverflow.ellipsis),
                       SizedBox(height: scaler.getHeight(0.2)),
-                      Text(friendEmail).regularText(ColorConstants.colorGray,
-                          scaler.getTextSize(8.3), TextAlign.left,
-                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(provider.contactList[index].email!).regularText(
+                          ColorConstants.colorGray,
+                          scaler.getTextSize(8.3),
+                          TextAlign.left,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),

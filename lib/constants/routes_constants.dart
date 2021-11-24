@@ -14,8 +14,12 @@ class RoutesConstants {
   static const inviteFriendsScreen = "inviteFriendsScreen";
   static const historyScreen = "historyScreen";
   static const calendarSettingsScreen = "calendarSettingsScreen";
-  static const onTapContactScreen = "onTapContactScreen";
+  static const contactDescription = "contactDescription";
   static const editContactScreen = "editContactScreen";
   static const rejectedInvitesScreen = "rejectedInvitesScreen";
   static const searchProfileScreen = "searchProfileScreen";
+  static const rejectedInvitesDescriptionScreen = "rejectedInvitesDescriptionScreen";
+  static const groupDescriptionScreen = "groupDescriptionScreen";
+  static const createEditGroupScreen = "createEditGroupScreen";
+  static const groupContactsScreen = "groupContactsScreen";
 }

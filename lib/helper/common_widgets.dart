@@ -35,18 +35,25 @@ class CommonWidgets {
     );
   }
 
-  static Widget userDetails(ScreenScaler scaler, String? profilePic,
-      String? firstName, String? lastName, String? email,
-      {VoidCallback? actionOnEmail}) {
+  static Widget userDetails(ScreenScaler scaler,
+      {String? profilePic,
+      String? firstName,
+      String? lastName,
+      String? email,
+      VoidCallback? actionOnEmail}) {
     return Row(
       children: [
-        ClipRRect(
-          borderRadius: scaler.getBorderRadiusCircular(10.0),
-          child: ImageView(
-            path: profilePic,
-            width: scaler.getWidth(22),
-            height: scaler.getWidth(22),
-            fit: BoxFit.cover,
+        Container(
+          width: scaler.getWidth(22),
+          height: scaler.getWidth(22),
+          child: ClipRRect(
+            borderRadius: scaler.getBorderRadiusCircular(10.0),
+            child: ImageView(
+              path: profilePic,
+              width: scaler.getWidth(22),
+              height: scaler.getWidth(22),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         SizedBox(width: scaler.getWidth(2.5)),
@@ -74,62 +81,85 @@ class CommonWidgets {
   }
 
   static Widget userContactCard(
-      ScreenScaler scaler, String email, String contactName) {
-    return Column(
-      children: [
-        Card(
-          elevation: 3.0,
-          shadowColor: ColorConstants.colorWhite,
-          shape: RoundedRectangleBorder(
-              borderRadius: scaler.getBorderRadiusCircular(12)),
-          child: Padding(
-            padding: scaler.getPaddingAll(10.0),
-            child: Row(
-              children: [
-                Stack(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  overflow: Overflow.visible,
-                  children: [
-                    ClipRRect(
+      ScreenScaler scaler, String email, String contactName,
+      {String? profileImg, String? searchStatus, bool search = false, VoidCallback? iconTapAction, bool invitation = false}) {
+    return Column(children: [
+      Card(
+        color:  invitation ? ColorConstants.primaryColor : ColorConstants.colorWhite,
+        elevation: 3.0,
+        shadowColor: ColorConstants.colorWhite,
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(12)),
+        child: Padding(
+          padding: scaler.getPaddingAll(10.0),
+          child: Row(
+            children: [
+              Stack(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                overflow: Overflow.visible,
+                children: [
+                  ClipRRect(
                       borderRadius: scaler.getBorderRadiusCircular(10.0),
-                      child: Container(
-                        color: ColorConstants.primaryColor,
-                        width: scaler.getWidth(10),
-                        height: scaler.getWidth(10),
-                      ),
-                    ),
-                    Positioned(
-                        top: 25,
-                        right: -5,
-                        child: ImageView(path: ImageConstants.small_logo_icon))
+                      child: profileImg == null
+                          ? Container(
+                              color: ColorConstants.primaryColor,
+                              width: scaler.getWidth(10),
+                              height: scaler.getWidth(10),
+                            )
+                          : Container(
+                              width: scaler.getWidth(10),
+                              height: scaler.getWidth(10),
+                              child: ImageView(
+                                path: profileImg,
+                                width: scaler.getWidth(10),
+                                height: scaler.getWidth(10),
+                              ),
+                            )),
+                  Positioned(
+                      top: 25,
+                      right: -5,
+                      child: ImageView(path: ImageConstants.small_logo_icon))
+                ],
+              ),
+              SizedBox(width: scaler.getWidth(2.5)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(contactName.capitalize()).semiBoldText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(9.8),
+                        TextAlign.left,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    SizedBox(height: scaler.getHeight(0.2)),
+                    Text(email).regularText(ColorConstants.colorGray,
+                        scaler.getTextSize(8.3), TextAlign.left,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
                   ],
                 ),
-                SizedBox(width: scaler.getWidth(2.5)),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(contactName.capitalize()).semiBoldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(9.8),
-                          TextAlign.left,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      SizedBox(height: scaler.getHeight(0.2)),
-                      Text(email).regularText(ColorConstants.colorGray,
-                          scaler.getTextSize(8.3), TextAlign.left,
-                          maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ],
-                  ),
-                ),
-                ImageView(path: ImageConstants.contact_arrow_icon) //
-              ],
-            ),
+              ),
+              iconStatusCheck(scaler, searchStatus: search ? searchStatus : "", iconTap: search ? iconTapAction : (){})
+            ],
           ),
         ),
-        SizedBox(height: scaler.getHeight(0.5)),
-      ],
-    );
+      ),
+      SizedBox(height: scaler.getHeight(0.5))
+    ]);
+  }
+
+  static Widget iconStatusCheck(ScreenScaler scaler, {String? searchStatus, VoidCallback? iconTap}) {
+    if (searchStatus == "Listed profile") {
+      return GestureDetector(
+        onTap: iconTap,
+        child: CircleAvatar(
+          backgroundColor: ColorConstants.colorGray,
+            radius: 12,
+            child: ImageView(path: ImageConstants.small_add_icon)),
+      );
+    } else {
+      return ImageView(path: ImageConstants.contact_arrow_icon);
+    }
   }
 
   static bottomSheet(
@@ -178,4 +208,47 @@ class CommonWidgets {
       ),
     );
   }
+
+  static Widget settingsPageCard(
+      ScreenScaler scaler, BuildContext context, icon, String txt, bool val,
+      {VoidCallback? onTapCard}) {
+    return GestureDetector(
+      onTap: onTapCard,
+      child: Card(
+        shadowColor: ColorConstants.colorWhite,
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(10)),
+        child: CustomShape(
+          child: Padding(
+            padding: scaler.getPaddingAll(9.0),
+            child: Row(
+              children: [
+                ImageView(
+                    path: icon,
+                    height: 30,
+                    width: 30,
+                    color: ColorConstants.colorBlack),
+                SizedBox(width: scaler.getWidth(2.5)),
+                Text(txt).mediumText(ColorConstants.colorBlack,
+                    scaler.getTextSize(9.5), TextAlign.left),
+                val
+                    ? Expanded(
+                        child: Container(
+                            alignment: Alignment.centerRight,
+                            child: ImageView(
+                                path: ImageConstants.small_arrow_icon)))
+                    : Container()
+              ],
+            ),
+          ),
+          bgColor: ColorConstants.colorWhite,
+          radius: scaler.getBorderRadiusCircular(10),
+          width: MediaQuery.of(context).size.width,
+        ),
+      ),
+    );
+  }
+
+ // Widget discardAndSaveChangesButton(){}
 }

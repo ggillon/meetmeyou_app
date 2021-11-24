@@ -7,6 +7,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -56,7 +57,7 @@ class SettingsPage extends StatelessWidget {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          settingsPageCard(
+                          CommonWidgets.settingsPageCard(
                               scaler,
                               context,
                               ImageConstants.person_icon,
@@ -66,7 +67,7 @@ class SettingsPage extends StatelessWidget {
                                 context, RoutesConstants.inviteFriendsScreen);
                           }),
                           SizedBox(height: scaler.getHeight(1)),
-                          settingsPageCard(
+                          CommonWidgets.settingsPageCard(
                               scaler,
                               context,
                               ImageConstants.person_icon,
@@ -76,7 +77,7 @@ class SettingsPage extends StatelessWidget {
                                 context, RoutesConstants.rejectedInvitesScreen);
                           }),
                           SizedBox(height: scaler.getHeight(1)),
-                          settingsPageCard(
+                          CommonWidgets.settingsPageCard(
                               scaler,
                               context,
                               ImageConstants.archive_icon,
@@ -86,7 +87,7 @@ class SettingsPage extends StatelessWidget {
                                 context, RoutesConstants.historyScreen);
                           }),
                           SizedBox(height: scaler.getHeight(1)),
-                          settingsPageCard(
+                          CommonWidgets.settingsPageCard(
                               scaler,
                               context,
                               ImageConstants.calendar_icon,
@@ -96,7 +97,7 @@ class SettingsPage extends StatelessWidget {
                                 context, RoutesConstants.calendarSettingsScreen);
                           }),
                           SizedBox(height: scaler.getHeight(1)),
-                          settingsPageCard(
+                          CommonWidgets.settingsPageCard(
                               scaler,
                               context,
                               ImageConstants.about_icon,
@@ -193,54 +194,12 @@ class SettingsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  moveIcon(ImageConstants.arrow_icon)
+                  ImageView(path: ImageConstants.arrow_icon)
                 ],
               ),
             ),
           );
   }
 
-  Widget moveIcon(String icon) {
-    return ImageView(path: icon);
-  }
 
-  Widget settingsPageCard(
-      ScreenScaler scaler, BuildContext context, icon, String txt, bool val,
-      {VoidCallback? onTapCard}) {
-    return GestureDetector(
-      onTap: onTapCard,
-      child: Card(
-        shadowColor: ColorConstants.colorWhite,
-        elevation: 3.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: scaler.getBorderRadiusCircular(10)),
-        child: CustomShape(
-          child: Padding(
-            padding: scaler.getPaddingAll(9.0),
-            child: Row(
-              children: [
-                ImageView(
-                    path: icon,
-                    height: 30,
-                    width: 30,
-                    color: ColorConstants.colorBlack),
-                SizedBox(width: scaler.getWidth(2.5)),
-                Text(txt).mediumText(ColorConstants.colorBlack,
-                    scaler.getTextSize(9.5), TextAlign.left),
-                val
-                    ? Expanded(
-                        child: Container(
-                            alignment: Alignment.centerRight,
-                            child: moveIcon(ImageConstants.small_arrow_icon)))
-                    : Container()
-              ],
-            ),
-          ),
-          bgColor: ColorConstants.colorWhite,
-          radius: scaler.getBorderRadiusCircular(10),
-          width: MediaQuery.of(context).size.width,
-        ),
-      ),
-    );
-  }
 }

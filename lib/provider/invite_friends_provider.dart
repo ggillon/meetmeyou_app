@@ -1,11 +1,23 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class InviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
-  List<Contact> contactList = [];
+
+  List<Contact> _contactList = [];
+
+  set contactList(List<Contact> value) {
+    _contactList = value;
+  }
+
+  List<Contact> get contactList => _contactList;
 
   bool _value = false;
 
@@ -29,44 +41,51 @@ class InviteFriendsProvider extends BaseProvider {
     notifyListeners();
   }
 
-  // Future<void> getPhoneContacts() async {
-  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-  //   contactList = await mmyEngine!.getContacts();
-  //   notifyListeners();
-  // }
+  //String errorMsg = "Please allow contacts access";
 
-  List<String> _myContactListName = [
-    'jenny wilson',
-    'Robert fox',
-    'Elenor pena',
-    "Bessie cooper",
-    "Danny bill",
-    "sachin kalra",
-    "Rohit kumar",
-    "Bhavneet",
-    "Pardeep",
-    "Sahil",
-    "Chetan",
-    "Tarun",
-    "Sagar",
-    "Kanwar Sharma",
-    "Mohit",
-    "Divesh",
-    "Lucky",
-    "Sandeep",
-    "vikas",
-    "Annie",
-    "shivam",
-    "justin"
-  ];
+  Future<void> getPhoneContacts(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value = await mmyEngine!.getPhoneContacts().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (await Permission.contacts.request().isDenied) {
+      setState(ViewState.Idle);
+      return errorDialog(context, 'Please allow contacts access');
+    } else if (await Permission.contacts.request().isPermanentlyDenied) {
+      setState(ViewState.Idle);
+      return errorDialog(
+          context,
+          'Please enable contacts access '
+          'permission in system settings');
+    } else if (value.isNotEmpty) {
+      setState(ViewState.Idle);
+      contactList = value;
+      isChecked = List<bool>.filled(contactList.length, false);
+    } else {
+      setState(ViewState.Idle);
+    }
+    notifyListeners();
+  }
 
-  List<String> get myContactListName => _myContactListName;
+  List<Contact> sortContactList() {
+    contactList.sort();
+    return contactList;
+  }
 
-  List<String> sortContactList() {
-    _myContactListName = _myContactListName
-        .map((_myContactListName) => _myContactListName.toLowerCase())
-        .toList();
-    _myContactListName.sort();
-    return _myContactListName;
+  errorDialog(BuildContext context, String content) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: Text('Permissions error'),
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            ));
   }
 }

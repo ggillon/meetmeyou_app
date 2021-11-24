@@ -1,16 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/group_contacts_provider.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/edit_Contact_Provider.dart';
+import 'package:meetmeyou_app/provider/edit_group_provider.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
 import 'package:meetmeyou_app/provider/my_account_provider.dart';
-import 'package:meetmeyou_app/provider/on_tap_contact_provider.dart';
+import 'package:meetmeyou_app/provider/contact_description_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
 import 'package:meetmeyou_app/provider/settings_provider.dart';
@@ -39,8 +41,11 @@ void setupLocator() {
   locator.registerFactory<ContactsProvider>(()=> ContactsProvider());
   locator.registerFactory<EditContactProvider>(()=> EditContactProvider());
   locator.registerFactory<RejectedInvitesProvider>(()=> RejectedInvitesProvider());
-  locator.registerFactory<OnTapContactProvider>(()=> OnTapContactProvider());
+  locator.registerFactory<ContactDescriptionProvider>(()=> ContactDescriptionProvider());
   locator.registerFactory<SearchProfileProvider>(()=> SearchProfileProvider());
+  locator.registerFactory<EditGroupProvider>(()=> EditGroupProvider());
+  locator.registerFactory<GroupContactsProvider>(()=> GroupContactsProvider());
+
 
   /*
  locator.registerLazySingleton<Dio>(() {

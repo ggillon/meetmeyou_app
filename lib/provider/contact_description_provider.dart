@@ -3,7 +3,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class OnTapContactProvider extends BaseProvider {
+class ContactDescriptionProvider extends BaseProvider {
   static const whatsAppUrl = "whatsapp://send?phone=9876543210";
 
   makePhoneCall(BuildContext context) async {

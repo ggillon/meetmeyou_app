@@ -1,13 +1,21 @@
+import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
-class SearchProfileProvider extends BaseProvider{
-  Iterable<String> _searchList = [];
+class SearchProfileProvider extends BaseProvider {
+  MMYEngine? mmyEngine;
 
-  set searchList(Iterable<String> value) {
-    _searchList = value;
+  List<Contact> _searchContactList = [];
+
+  set searchContactList(List<Contact> value) {
+    _searchContactList = value;
   }
 
-  Iterable<String> get searchList => _searchList;
+  List<Contact> get searchContactList => _searchContactList;
 
   bool _value = false;
 
@@ -18,30 +26,32 @@ class SearchProfileProvider extends BaseProvider{
     notifyListeners();
   }
 
-  List<String> _myContactListName = [
-    'jenny wilson',
-    'Robert fox',
-    'Elenor pena',
-    "Bessie cooper",
-    "Danny bill",
-    "sachin kalra",
-    "Rohit kumar",
-    "Bhavneet",
-    "Pardeep",
-    "Sahil",
-    "Chetan",
-    "Tarun",
-    "Sagar",
-    "Kanwar Sharma",
-    "Mohit",
-    "Divesh",
-    "Lucky",
-    "Sandeep",
-    "vikas",
-    "Annie",
-    "shivam",
-    "justin"
-  ];
+  getSearchContacts(BuildContext context, String searchText) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value = await mmyEngine!.searchProfiles(searchText).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
 
-  List<String> get myContactListName => _myContactListName;
+    if (value != null) {
+      setState(ViewState.Idle);
+      searchContactList = value;
+    } else {
+      setState(ViewState.Idle);
+    }
+    notifyListeners();
+  }
+
+  inviteProfile(BuildContext context, String uid) async {
+    updateValue(true);
+    await mmyEngine!.inviteProfile(uid).catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateValue(false);
+    DialogHelper.showMessage(context, "Invitation send Successfully");
+    notifyListeners();
+  }
 }

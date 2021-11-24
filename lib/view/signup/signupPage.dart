@@ -404,7 +404,7 @@ class SignUpPage extends StatelessWidget {
                                         firstNameController.text;
                                     userDetail.lastName = lastNameController.text;
                                     userDetail.countryCode = provider.countryCode;
-                                    userDetail.phone = provider.phone;
+                                    userDetail.phone = phoneNumberController.text;
                                     userDetail.password = passwordController.text;
                                     userDetail.profileFile = provider.image;
                                     userDetail.address = addressController.text;

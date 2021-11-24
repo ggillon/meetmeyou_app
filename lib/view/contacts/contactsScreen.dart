@@ -6,12 +6,14 @@ import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
-import 'package:meetmeyou_app/view/contacts/onTapContactScreen.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -29,7 +31,9 @@ class ContactsScreen extends StatelessWidget {
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<ContactsProvider>(
           onModelReady: (provider) {
+            provider.sortList();
             provider.sortContactList();
+            provider.getConfirmedContactsAndInvitationsList(context);
           },
           builder: (context, provider, _) {
             return Padding(
@@ -46,7 +50,8 @@ class ContactsScreen extends StatelessWidget {
                           TextAlign.left),
                       GestureDetector(
                           onTap: () {
-                            CommonWidgets.bottomSheet(context, scaler, bottomDesign(scaler, context));
+                            CommonWidgets.bottomSheet(
+                                context, scaler, bottomDesign(scaler, context));
                           },
                           child: ImageView(path: ImageConstants.more_icon))
                     ],
@@ -56,9 +61,54 @@ class ContactsScreen extends StatelessWidget {
                   // SizedBox(height: scaler.getHeight(1)),
                   allGroupsToggleSwitch(scaler, provider),
                   SizedBox(height: scaler.getHeight(1)),
-                  toggle
-                      ? contactList(scaler, "16 members", provider)
-                      : contactList(scaler, "sample@gmail.com", provider)
+                  provider.state == ViewState.Busy
+                      ? Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(child: CircularProgressIndicator()),
+                              SizedBox(height: scaler.getHeight(1)),
+                              Text("loading_contacts".tr()).mediumText(
+                                  ColorConstants.primaryColor,
+                                  scaler.getTextSize(10),
+                                  TextAlign.left),
+                            ],
+                          ),
+                        )
+                      : provider.invitationContactList.length == 0 &&
+                              provider.confirmContactList.length == 0
+                          ? Center(
+                              child: Text("sorry_no_contacts_found".tr())
+                                  .mediumText(ColorConstants.primaryColor,
+                                      scaler.getTextSize(10), TextAlign.left),
+                            )
+                          : Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("invitations".tr()).semiBoldText(
+                                        ColorConstants.colorBlack,
+                                        scaler.getTextSize(9.8),
+                                        TextAlign.left),
+                                    SizedBox(height: scaler.getHeight(1)),
+                                    provider.invitationContactList.length == 0
+                                        ? Container()
+                                        : invitationContactList(scaler,
+                                            provider.invitationContactList),
+                                    provider.invitationContactList.length == 0
+                                        ? Container()
+                                        : SizedBox(
+                                            height: scaler.getHeight(2.5)),
+                                    provider.myContactListName.length == 0
+                                        ? Container()
+                                        : confirmContactList(
+                                            scaler, provider.myContactListName)
+                                  ],
+                                ),
+                              ),
+                            )
                 ],
               ),
             );
@@ -139,43 +189,54 @@ class ContactsScreen extends StatelessWidget {
     );
   }
 
-  Widget contactList(
-      ScreenScaler scaler, String friendEmail, ContactsProvider provider) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: provider.myContactListName.length,
-            itemBuilder: (context, index) {
-              String currentHeader = provider.myContactListName[index]
-                  .capitalize()
-                  .substring(0, 1);
-              String header = index == 0
-                  ? provider.myContactListName[index]
-                      .capitalize()
-                      .substring(0, 1)
-                  : provider.myContactListName[index - 1]
-                      .capitalize()
-                      .substring(0, 1);
-              if (searchBarController.text.isEmpty) {
-                return aToZHeader(context, provider, currentHeader, header,
-                    index, scaler, friendEmail);
-              } else if (provider.myContactListName[index]
-                  .toLowerCase()
-                  .contains(searchBarController.text)) {
-                return contactProfileCard(context, scaler, friendEmail,
-                    provider, index, provider.myContactListName[index]);
-              } else {
-                return Container();
-              }
-            }),
-      ),
-    );
+  Widget confirmContactList(ScreenScaler scaler, List<String> cList) {
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: cList.length,
+        itemBuilder: (context, index) {
+          String currentHeader = cList[index].capitalize().substring(0, 1);
+          String header = index == 0
+              ? cList[index].capitalize().substring(0, 1)
+              : cList[index - 1].capitalize().substring(0, 1);
+          if (searchBarController.text.isEmpty) {
+            return aToZHeader(context, currentHeader, header, index, scaler,
+                cList[index], cList[index]);
+          } else if (cList[index]
+              .toLowerCase()
+              .contains(searchBarController.text)) {
+            return contactProfileCard(
+                context, scaler, cList[index], cList[index], "");
+          } else {
+            return Container();
+          }
+        });
   }
 
-  aToZHeader(BuildContext context, ContactsProvider provider, String cHeader,
-      String header, int index, scaler, friendEmail) {
+  Widget invitationContactList(ScreenScaler scaler, List<Contact> iList) {
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: iList.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, RoutesConstants.contactDescription,
+                    arguments: UserDetail(
+                        firstName: iList[index].displayName!,
+                        email: iList[index].email!, value: true));
+              },
+              child: CommonWidgets.userContactCard(
+                  scaler,
+                  "click_to_reply_to_invitation".tr(),
+                  iList[index].displayName!,
+                  invitation: true,
+                  profileImg: iList[index].photoURL!));
+        });
+  }
+
+  aToZHeader(BuildContext context, String cHeader, String header, int index,
+      scaler, friendEmail, String contactName) {
     if (index == 0 ? true : (header != cHeader)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,33 +245,25 @@ class ContactsScreen extends StatelessWidget {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          contactProfileCard(context, scaler, friendEmail, provider, index,
-              provider.myContactListName[index]),
+          contactProfileCard(context, scaler, friendEmail, contactName, ""),
         ],
       );
     } else {
-      return contactProfileCard(context, scaler, friendEmail, provider, index,
-          provider.myContactListName[index]);
+      return contactProfileCard(context, scaler, friendEmail, contactName, "");
     }
   }
 
-  Widget contactProfileCard(
-      BuildContext context,
-      ScreenScaler scaler,
-      String friendEmail,
-      ContactsProvider provider,
-      int index,
-      String contactName) {
+  Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
+      String friendEmail, String contactName, String profileImage) {
     return GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, RoutesConstants.onTapContactScreen,
-              arguments: DataToOnTapContactScreen(
-                  contactName: provider.myContactListName[index],
-                  contactEmail: friendEmail));
+          Navigator.pushNamed(context, RoutesConstants.contactDescription,
+              arguments:
+                  UserDetail(firstName: contactName, email: friendEmail, value: false));
         },
-        child: CommonWidgets.userContactCard(scaler, friendEmail, contactName));
+        child: CommonWidgets.userContactCard(scaler, friendEmail, contactName,
+            profileImg: profileImage));
   }
-
 
   Widget bottomDesign(ScreenScaler scaler, BuildContext context) {
     return Column(
@@ -222,23 +275,31 @@ class ContactsScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: scaler.getHeight(1.5)),
-             GestureDetector(
-               onTap: (){
-                 Navigator.of(context).pop();
-                 Navigator.pushNamed(context, RoutesConstants.searchProfileScreen);
-               },
-             child: Text("search_for_contact".tr()).regularText(
-                   ColorConstants.primaryColor,
-                   scaler.getTextSize(11),
-                   TextAlign.center),
-             ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(
+                      context, RoutesConstants.searchProfileScreen);
+                },
+                child: Text("search_for_contact".tr()).regularText(
+                    ColorConstants.primaryColor,
+                    scaler.getTextSize(11),
+                    TextAlign.center),
+              ),
               SizedBox(height: scaler.getHeight(0.9)),
               Divider(),
               SizedBox(height: scaler.getHeight(0.9)),
-              Text("create_group_of_contacts".tr()).regularText(
-                  ColorConstants.primaryColor,
-                  scaler.getTextSize(11),
-                  TextAlign.center),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(
+                      context, RoutesConstants.createEditGroupScreen);
+                },
+                child: Text("create_group_of_contacts".tr()).regularText(
+                    ColorConstants.primaryColor,
+                    scaler.getTextSize(11),
+                    TextAlign.center),
+              ),
               SizedBox(height: scaler.getHeight(1.5)),
             ],
           ),
@@ -248,6 +309,4 @@ class ContactsScreen extends StatelessWidget {
       ],
     );
   }
-
-
 }
