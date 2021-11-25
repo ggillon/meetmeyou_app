@@ -9,5 +9,5 @@ class ColorConstants {
   static var colorLightGray = Color(0xFFF6F6F6);
   static var colorMediumGray = Color(0XFFEFEFF0);
   static var colorRed = Color(0xFFD83737);
-  static var colorWhiteDown = Color(0xFFF5F5F5);
+  static var colorBlackDown = Color(0xFF3F3F3F);
 }

@@ -6,8 +6,6 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meetmeyou_app/constants/routes_constants.dart';
-import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
@@ -60,7 +58,8 @@ class EditProfileProvider extends BaseProvider {
       var release = androidInfo.version.release;
       if (release.contains(".")) {
         release = release.substring(0, 1);
-      } else if (int.parse(release) > 10) {
+      }
+      if (int.parse(release) > 10) {
         status = await Permission.manageExternalStorage.request();
       } else {
         status = await Permission.storage.request();
@@ -120,12 +119,12 @@ class EditProfileProvider extends BaseProvider {
     });
     if (value != null) {
       updateLoadingStatus(false);
-      userDetail.firstName = value.firstName!;
-      userDetail.lastName = value.lastName!;
-      userDetail.email = value.email!;
-      userDetail.phone = value.phoneNumber!;
+      userDetail.firstName = value.firstName;
+      userDetail.lastName = value.lastName;
+      userDetail.email = value.email;
+      userDetail.phone = value.phoneNumber;
       userDetail.countryCode = value.countryCode;
-      userDetail.address = value.addresses!['Home'];
+      userDetail.address = value.addresses['Home'];
       userDetail.profileUrl = value.photoURL;
       DialogHelper.showMessage(context, "profile_updated_successfully".tr());
     }

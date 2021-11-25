@@ -91,24 +91,16 @@ class InviteFriendsScreen extends StatelessWidget {
 
   Widget searchBar(ScreenScaler scaler, InviteFriendsProvider provider) {
     return Card(
+      color: ColorConstants.colorWhite,
       elevation: 3.0,
       shadowColor: ColorConstants.colorWhite,
       shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(15)),
+          borderRadius: scaler.getBorderRadiusCircular(11)),
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(9.5), ColorConstants.colorBlack),
-        decoration: ViewDecoration.inputDecorationWithCurve(
-            "Cooper", scaler, ColorConstants.primaryColor,
-            prefixIcon: Icon(
-              Icons.search,
-              size: scaler.getTextSize(15),
-              color: ColorConstants.colorBlack,
-            ),
-            textSize: 12,
-            fillColor: ColorConstants.colorWhite,
-            radius: 15),
+            scaler.getTextSize(12), ColorConstants.colorBlack),
+        decoration: ViewDecoration.inputDecorationForSearchBox("search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
           // FocusScope.of(context).requestFocus(nodes[1]);
         },
@@ -129,20 +121,20 @@ class InviteFriendsScreen extends StatelessWidget {
             shrinkWrap: true,
             itemCount: provider.contactList.length,
             itemBuilder: (context, index) {
-              String currentHeader = provider.contactList[index].displayName!
+              String currentHeader = provider.contactList[index].displayName
                   .capitalize()
                   .substring(0, 1);
               String header = index == 0
-                  ? provider.contactList[index].displayName!
+                  ? provider.contactList[index].displayName
                       .capitalize()
                       .substring(0, 1)
-                  : provider.contactList[index - 1].displayName!
+                  : provider.contactList[index - 1].displayName
                       .capitalize()
                       .substring(0, 1);
               if (searchBarController.text.isEmpty) {
                 return aToZHeader(
                     provider, currentHeader, header, index, scaler);
-              } else if (provider.contactList[index].displayName!
+              } else if (provider.contactList[index].displayName
                   .toLowerCase()
                   .contains(searchBarController.text)) {
                 return inviteFriendProfileCard(scaler, provider, index);
@@ -203,13 +195,13 @@ class InviteFriendsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(provider.contactList[index].displayName!
+                      Text(provider.contactList[index].displayName
                               .capitalize())
                           .semiBoldText(ColorConstants.colorBlack,
                               scaler.getTextSize(9.8), TextAlign.left,
                               maxLines: 1, overflow: TextOverflow.ellipsis),
                       SizedBox(height: scaler.getHeight(0.2)),
-                      Text(provider.contactList[index].email!).regularText(
+                      Text(provider.contactList[index].email).regularText(
                           ColorConstants.colorGray,
                           scaler.getTextSize(8.3),
                           TextAlign.left,

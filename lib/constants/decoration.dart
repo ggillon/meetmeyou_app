@@ -10,11 +10,13 @@ import 'color_constants.dart';
 class ViewDecoration {
   static InputDecoration inputDecorationWithCurve(
       String fieldName, ScreenScaler scaler, Color color,
-      {IconData? icon, Widget? prefixIcon, double? textSize, Color? fillColor, double? radius}) {
+      {IconData? icon,
+      Widget? prefixIcon,
+      double? textSize,
+      Color? fillColor,
+      double? radius}) {
     return InputDecoration(
-        prefixIcon: prefixIcon == null
-            ? null
-            : prefixIcon,
+        prefixIcon: prefixIcon == null ? null : prefixIcon,
         suffixIcon: icon == null
             ? null
             : Icon(
@@ -23,8 +25,8 @@ class ViewDecoration {
                 color: ColorConstants.colorBlack,
               ),
         hintText: fieldName,
-        hintStyle:
-            textFieldStyle(scaler.getTextSize(textSize ?? 9.5), ColorConstants.colorGray),
+        hintStyle: textFieldStyle(
+            scaler.getTextSize(textSize ?? 9.5), ColorConstants.colorGray),
         filled: true,
         isDense: true,
         errorMaxLines: 3,
@@ -33,12 +35,12 @@ class ViewDecoration {
             : scaler.getPaddingLTRB(1, 0.1, 0.1, 0.1),
         fillColor: fillColor ?? ColorConstants.colorLightGray,
         enabledBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: fillColor ?? ColorConstants.colorLightGray, width: 1),
+            borderSide: BorderSide(
+                color: fillColor ?? ColorConstants.colorLightGray, width: 1),
             borderRadius: BorderRadius.all(Radius.circular(radius ?? 8))),
         disabledBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: fillColor ?? ColorConstants.colorLightGray, width: 1),
+            borderSide: BorderSide(
+                color: fillColor ?? ColorConstants.colorLightGray, width: 1),
             borderRadius: BorderRadius.all(Radius.circular(radius ?? 8))),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: color, width: 1),
@@ -84,6 +86,24 @@ class ViewDecoration {
         focusedErrorBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.red, width: 1),
             borderRadius: BorderRadius.all(Radius.circular(8))));
+  }
+
+  static InputDecoration inputDecorationForSearchBox(
+      String fieldName, ScreenScaler scaler) {
+    return InputDecoration(
+        prefixIcon: Icon(
+          Icons.search,
+          size: scaler.getTextSize(15),
+          color: ColorConstants.colorBlack,
+        ),
+        hintText: fieldName,
+        hintStyle:
+            textFieldStyle(scaler.getTextSize(12), ColorConstants.colorGray),
+        filled: true,
+        isDense: true,
+        contentPadding: scaler.getPaddingLTRB(1, 1, 1, 1),
+        fillColor: Colors.transparent,
+        border: InputBorder.none);
   }
 
   static TextStyle textFieldStyle(double size, Color color) {

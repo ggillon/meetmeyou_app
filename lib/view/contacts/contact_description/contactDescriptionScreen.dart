@@ -43,7 +43,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                             children: [
                               SizedBox(height: scaler.getHeight(2)),
                               CommonWidgets.userDetails(scaler,
-                                  profilePic: ImageConstants.dummy_profile,
+                                  profilePic: data.profileUrl,
                                   firstName:
                                       data.firstName.toString().capitalize(),
                                   lastName: "",
@@ -74,7 +74,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     scaler,
                                     ImageConstants.phone_no_icon,
                                     "phone_number".tr(),
-                                    "58 478 95 6",
+                                    data.phone ?? "",
                                     countryCode: true,
                                     cCode: "+1"),
                               ),
@@ -83,7 +83,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                   scaler,
                                   ImageConstants.address_icon,
                                   "address".tr(),
-                                  "Madison Square Garden"),
+                                  data.address ?? ""),
                               SizedBox(height: scaler.getHeight(3)),
                               Text("organized_events".tr()).boldText(
                                   ColorConstants.colorBlack,
@@ -96,93 +96,24 @@ class ContactDescriptionScreen extends StatelessWidget {
                         OrganizedEventsCard(showAttendBtn: false),
                         data.value!
                             ? provider.state == ViewState.Busy
-                                ? Center(child: CircularProgressIndicator())
-                                :
-                                // : CommonWidgets.expandedRowButton(
-                                //     context,
-                                //     scaler,
-                                //     "reject_invite".tr(),
-                                //     "accept_invite".tr(), onTapBtn2: () {
-                                //     provider.acceptOrRejectInvitation(
-                                //         context, data.cid!, true, "Accept");
-                                //     Navigator.of(context).pop();
-                                //   })
-                                Expanded(
+                                ? Expanded(
                                     child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Padding(
-                                        padding:
-                                            scaler.getPaddingLTRB(2, 0.0, 2, 1),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Expanded(
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: CustomShape(
-                                                  child: Center(
-                                                      child: Text(
-                                                              "reject_invite"
-                                                                  .tr())
-                                                          .mediumText(
-                                                              ColorConstants
-                                                                  .primaryColor,
-                                                              scaler
-                                                                  .getTextSize(
-                                                                      10),
-                                                              TextAlign
-                                                                  .center)),
-                                                  bgColor: ColorConstants
-                                                      .primaryColor
-                                                      .withOpacity(0.2),
-                                                  radius: BorderRadius.all(
-                                                    Radius.circular(12),
-                                                  ),
-                                                  width: scaler.getWidth(40),
-                                                  height: scaler.getHeight(4.5),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: scaler.getWidth(2),
-                                            ),
-                                            Expanded(
-                                                child: GestureDetector(
-                                              onTap: () {
-                                                provider
-                                                    .acceptOrRejectInvitation(
-                                                        context,
-                                                        data.cid!,
-                                                        true,
-                                                        "Accept");
-                                              },
-                                              child: CustomShape(
-                                                child: Center(
-                                                    child: Text("accept_invite"
-                                                            .tr())
-                                                        .mediumText(
-                                                            ColorConstants
-                                                                .colorWhite,
-                                                            scaler.getTextSize(
-                                                                10),
-                                                            TextAlign.center)),
-                                                bgColor:
-                                                    ColorConstants.primaryColor,
-                                                radius: BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                                width: scaler.getWidth(40),
-                                                height: scaler.getHeight(4.5),
-                                              ),
-                                            )),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
+                                        padding: scaler.getPaddingLTRB(
+                                            0.0, 0.0, 0.0, 1.0),
+                                        alignment: Alignment.bottomCenter,
+                                        child: CircularProgressIndicator()))
+                                : CommonWidgets.expandedRowButton(
+                                    context,
+                                    scaler,
+                                    "reject_invite".tr(),
+                                    "accept_invite".tr(),
+                                    btn1: false, onTapBtn1: () {
+                                    provider.acceptOrRejectInvitation(
+                                        context, data.cid!, false, "Reject");
+                                  }, onTapBtn2: () {
+                                    provider.acceptOrRejectInvitation(
+                                        context, data.cid!, true, "Accept");
+                                  })
                             : Container()
                       ],
                     ),

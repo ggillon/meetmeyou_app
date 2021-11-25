@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
@@ -115,6 +116,7 @@ class DialogHelper {
       leadingWidth: 100,
       leading: InkWell(
         onTap: () {
+          hideKeyboard(context);
           Navigator.pop(context);
         },
         child: Padding(

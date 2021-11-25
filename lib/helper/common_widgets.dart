@@ -101,8 +101,7 @@ class CommonWidgets {
           child: Row(
             children: [
               Stack(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                overflow: Overflow.visible,
+                clipBehavior: Clip.none,
                 children: [
                   ClipRRect(
                       borderRadius: scaler.getBorderRadiusCircular(10.0),
@@ -139,7 +138,7 @@ class CommonWidgets {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     SizedBox(height: scaler.getHeight(0.2)),
-                    Text(email).regularText(ColorConstants.colorGray,
+                    Text(email).regularText(ColorConstants.colorBlackDown,
                         scaler.getTextSize(8.3), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                   ],
@@ -272,9 +271,11 @@ class CommonWidgets {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    btn1 ? Navigator.pop(context) : onTapBtn1;
-                  },
+                  onTap: btn1
+                      ? () {
+                          Navigator.pop(context);
+                        }
+                      : onTapBtn1,
                   child: CustomShape(
                     child: Center(
                         child: Text(btn1Text).mediumText(

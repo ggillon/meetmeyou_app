@@ -28,18 +28,18 @@ class SettingsProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
 
-    userDetail.firstName = userProfile.firstName ?? "";
-    userDetail.lastName = userProfile.lastName ?? "";
-    userDetail.email = userProfile.email ?? "";
-    userDetail.phone = userProfile.phoneNumber ?? "";
-    userDetail.countryCode = userProfile.countryCode ?? "";
+    userDetail.firstName = userProfile.firstName;
+    userDetail.lastName = userProfile.lastName;
+    userDetail.email = userProfile.email;
+    userDetail.phone = userProfile.phoneNumber;
+    userDetail.countryCode = userProfile.countryCode;
 
     userDetail.address = '';
     if(userProfile.addresses != null)
-      if(userProfile.addresses!.containsKey('Home'))
-        userDetail.address = userProfile.addresses!['Home'];
+      if(userProfile.addresses.containsKey('Home'))
+        userDetail.address = userProfile.addresses['Home'];
 
-    userDetail.profileUrl = userProfile.photoURL ?? "";
+    userDetail.profileUrl = userProfile.photoURL;
 
     setState(ViewState.Idle);
     notifyListeners();

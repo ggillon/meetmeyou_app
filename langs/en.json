@@ -83,5 +83,6 @@
   "invitations" : "Invitations",
   "click_to_reply_to_invitation" : "Click to reply to invitation",
   "reject_invite" : "Reject invite",
-  "accept_invite" : "Accept invite"
+  "accept_invite" : "Accept invite",
+  "search_field_name" : "Cooper"
 }

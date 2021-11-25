@@ -63,7 +63,7 @@ class RejectedInvitesScreen extends StatelessWidget {
                                         scaler.getTextSize(11), TextAlign.left),
                               ),
                             )
-                          : contactList(scaler, "sample@gmail.com", provider)
+                          : contactList(scaler, provider)
                 ],
               ),
             );
@@ -73,24 +73,17 @@ class RejectedInvitesScreen extends StatelessWidget {
 
   Widget searchBar(ScreenScaler scaler, RejectedInvitesProvider provider) {
     return Card(
+      color: ColorConstants.colorWhite,
       elevation: 3.0,
       shadowColor: ColorConstants.colorWhite,
       shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(15)),
+          borderRadius: scaler.getBorderRadiusCircular(11)),
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(9.5), ColorConstants.colorBlack),
-        decoration: ViewDecoration.inputDecorationWithCurve(
-            "Cooper", scaler, ColorConstants.primaryColor,
-            prefixIcon: Icon(
-              Icons.search,
-              size: scaler.getTextSize(15),
-              color: ColorConstants.colorBlack,
-            ),
-            textSize: 12,
-            fillColor: ColorConstants.colorWhite,
-            radius: 15.0),
+            scaler.getTextSize(12), ColorConstants.colorBlack),
+        decoration: ViewDecoration.inputDecorationForSearchBox(
+            "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
           // FocusScope.of(context).requestFocus(nodes[1]);
         },
@@ -103,8 +96,7 @@ class RejectedInvitesScreen extends StatelessWidget {
     );
   }
 
-  Widget contactList(ScreenScaler scaler, String friendEmail,
-      RejectedInvitesProvider provider) {
+  Widget contactList(ScreenScaler scaler, RejectedInvitesProvider provider) {
     return Expanded(
       child: SingleChildScrollView(
         child: ListView.builder(
@@ -113,29 +105,23 @@ class RejectedInvitesScreen extends StatelessWidget {
             itemCount: provider.rejectedContactList.length,
             itemBuilder: (context, index) {
               String currentHeader = provider
-                  .rejectedContactList[index].displayName!
+                  .rejectedContactList[index].displayName
                   .capitalize()
                   .substring(0, 1);
               String header = index == 0
-                  ? provider.rejectedContactList[index].displayName!
+                  ? provider.rejectedContactList[index].displayName
                       .capitalize()
                       .substring(0, 1)
-                  : provider.rejectedContactList[index - 1].displayName!
+                  : provider.rejectedContactList[index - 1].displayName
                       .capitalize()
                       .substring(0, 1);
               if (searchBarController.text.isEmpty) {
-                return aToZHeader(context, provider, currentHeader, header,
-                    index, scaler, friendEmail);
-              } else if (provider.rejectedContactList[index].displayName!
+                return aToZHeader(
+                    context, provider, currentHeader, header, index, scaler);
+              } else if (provider.rejectedContactList[index].displayName
                   .toLowerCase()
                   .contains(searchBarController.text)) {
-                return contactProfileCard(
-                    context,
-                    scaler,
-                    friendEmail,
-                    provider,
-                    index,
-                    provider.rejectedContactList[index].displayName!);
+                return contactProfileCard(context, scaler, provider, index);
               } else {
                 return Container();
               }
@@ -145,7 +131,7 @@ class RejectedInvitesScreen extends StatelessWidget {
   }
 
   aToZHeader(BuildContext context, RejectedInvitesProvider provider,
-      String cHeader, String header, int index, scaler, friendEmail) {
+      String cHeader, String header, int index, scaler) {
     if (index == 0 ? true : (header != cHeader)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,30 +140,32 @@ class RejectedInvitesScreen extends StatelessWidget {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          contactProfileCard(context, scaler, friendEmail, provider, index,
-              provider.rejectedContactList[index].displayName!),
+          contactProfileCard(context, scaler, provider, index),
         ],
       );
     } else {
-      return contactProfileCard(context, scaler, friendEmail, provider, index,
-          provider.rejectedContactList[index].displayName!);
+      return contactProfileCard(context, scaler, provider, index);
     }
   }
 
-  Widget contactProfileCard(
-      BuildContext context,
-      ScreenScaler scaler,
-      String friendEmail,
-      RejectedInvitesProvider provider,
-      int index,
-      String contactName) {
+  Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
+      RejectedInvitesProvider provider, int index) {
     return GestureDetector(
         onTap: () {
           Navigator.pushNamed(
               context, RoutesConstants.rejectedInvitesDescriptionScreen,
-              arguments:
-                  UserDetail(firstName: contactName, email: friendEmail));
+              arguments: UserDetail(
+                  firstName: provider.rejectedContactList[index].displayName,
+                  email: provider.rejectedContactList[index].email,
+                  profileUrl: provider.rejectedContactList[index].photoURL,
+                  phone: provider.rejectedContactList[index].phoneNumber,
+                  address:
+                      provider.rejectedContactList[index].addresses['Home']));
         },
-        child: CommonWidgets.userContactCard(scaler, friendEmail, contactName));
+        child: CommonWidgets.userContactCard(
+            scaler,
+            provider.rejectedContactList[index].displayName,
+            provider.rejectedContactList[index].email,
+            profileImg: provider.rejectedContactList[index].photoURL));
   }
 }

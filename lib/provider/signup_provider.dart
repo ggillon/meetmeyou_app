@@ -33,7 +33,8 @@ class SignUpProvider extends BaseProvider {
       var release = androidInfo.version.release;
       if (release.contains(".")) {
         release = release.substring(0, 1);
-      } else if (int.parse(release) > 10) {
+      }
+      if (int.parse(release) > 10) {
         status = await Permission.manageExternalStorage.request();
       } else {
         status = await Permission.storage.request();

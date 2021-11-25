@@ -309,11 +309,11 @@ class EditProfileScreen extends StatelessWidget {
                                         onChanged: (value) {
                                           provider.countryCode = value.dialCode;
                                         },
-                                        padding: scaler.getPaddingAll(0.0),
-                                        textStyle: TextStyle(
-                                          fontSize: scaler.getTextSize(9.5),
-                                          color: ColorConstants.colorBlack,
-                                        ),
+                                        padding:
+                                        scaler.getPaddingLTRB(0.0, 0.0, 0.0, 0.1),
+                                        textStyle: ViewDecoration.textFieldStyle(
+                                            scaler.getTextSize(9.5),
+                                            ColorConstants.colorBlack),
                                         initialSelection:
                                             provider.countryCode == ""
                                                 ? "US"

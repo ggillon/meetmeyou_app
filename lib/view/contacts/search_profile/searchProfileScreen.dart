@@ -102,24 +102,17 @@ class SearchProfileScreen extends StatelessWidget {
   Widget searchBar(BuildContext context, ScreenScaler scaler,
       SearchProfileProvider provider) {
     return Card(
+      color: ColorConstants.colorWhite,
       elevation: 3.0,
       shadowColor: ColorConstants.colorWhite,
       shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(15)),
+          borderRadius: scaler.getBorderRadiusCircular(11)),
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(9.5), ColorConstants.colorBlack),
-        decoration: ViewDecoration.inputDecorationWithCurve(
-            "Cooper", scaler, ColorConstants.primaryColor,
-            prefixIcon: Icon(
-              Icons.search,
-              size: scaler.getTextSize(15),
-              color: ColorConstants.colorBlack,
-            ),
-            textSize: 12,
-            fillColor: ColorConstants.colorWhite,
-            radius: 15.0),
+            scaler.getTextSize(12), ColorConstants.colorBlack),
+        decoration: ViewDecoration.inputDecorationForSearchBox(
+            "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
           provider.getSearchContacts(context, data);
         },
@@ -148,19 +141,24 @@ class SearchProfileScreen extends StatelessWidget {
                       context, RoutesConstants.contactDescription,
                       arguments: UserDetail(
                           firstName:
-                              provider.searchContactList[index].displayName!,
-                          email: provider.searchContactList[index].email!,
-                          value: false));
+                              provider.searchContactList[index].displayName,
+                          email: provider.searchContactList[index].email,
+                          value: false,
+                          phone: provider.searchContactList[index].phoneNumber,
+                          profileUrl:
+                              provider.searchContactList[index].photoURL,
+                          address: provider
+                              .searchContactList[index].addresses['Home']));
                 },
                 child: CommonWidgets.userContactCard(
                     scaler,
-                    provider.searchContactList[index].email!,
-                    provider.searchContactList[index].displayName!,
-                    profileImg: provider.searchContactList[index].photoURL!,
-                    searchStatus: provider.searchContactList[index].status!,
+                    provider.searchContactList[index].email,
+                    provider.searchContactList[index].displayName,
+                    profileImg: provider.searchContactList[index].photoURL,
+                    searchStatus: provider.searchContactList[index].status,
                     search: true, iconTapAction: () {
                   provider.inviteProfile(_scaffoldKey.currentContext!,
-                      provider.searchContactList[index].uid!);
+                      provider.searchContactList[index].uid);
                 }),
               );
             }),

@@ -43,7 +43,8 @@ class ContactDescriptionProvider extends BaseProvider {
     }
   }
 
-  acceptOrRejectInvitation(BuildContext context, String cid, bool accept, String msg) async {
+  acceptOrRejectInvitation(
+      BuildContext context, String cid, bool accept, String msg) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     await mmyEngine!.respondInvitation(cid, accept).catchError((e) {
@@ -52,7 +53,6 @@ class ContactDescriptionProvider extends BaseProvider {
     });
 
     setState(ViewState.Idle);
-    DialogHelper.showMessage(context, "Invitation $msg Successfully");
-    notifyListeners();
+    Navigator.of(context).pop();
   }
 }

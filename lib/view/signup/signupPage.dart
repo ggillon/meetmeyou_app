@@ -62,12 +62,34 @@ class SignUpPage extends StatelessWidget {
                       SizedBox(
                         height: scaler.getHeight(5),
                       ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Stack(
-                          children: [
-                            GestureDetector(
-                              child: provider.image == null &&
+                      GestureDetector(
+                        onTap: () async {
+                          if (provider.userDetail.profileUrl == null) {
+                            var value = await provider.permissionCheck();
+                            if (value) {
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomDialog(
+                                        cameraClick: () {
+                                          provider.getImage(context, 1);
+                                        },
+                                        galleryClick: () {
+                                          provider.getImage(context, 2);
+                                        },
+                                        cancelClick: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ));
+                            }
+                          }
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Stack(
+                            children: [
+                              provider.image == null &&
                                       signUpType != StringConstants.social
                                   ? Container(
                                       color: ColorConstants.primaryColor,
@@ -94,52 +116,31 @@ class SignUpPage extends StatelessWidget {
                                               fit: BoxFit.cover,
                                               height: scaler.getWidth(20),
                                             ),
-                              onTap: () async {
-                                if (provider.userDetail.profileUrl == null) {
-                                  var value = await provider.permissionCheck();
-                                  if (value) {
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CustomDialog(
-                                              cameraClick: () {
-                                                provider.getImage(context, 1);
-                                              },
-                                              galleryClick: () {
-                                                provider.getImage(context, 2);
-                                              },
-                                              cancelClick: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ));
-                                  }
-                                }
-                              },
-                            ),
-                            Positioned(
-                              right: 5,
-                              top: 5,
-                              child: provider.userDetail.profileUrl == null
-                                  ? CircleAvatar(
-                                      radius: scaler.getWidth(2),
-                                      child: ClipOval(
-                                        child: Container(
-                                          color: ColorConstants.colorWhite,
-                                          width: scaler.getWidth(5),
-                                          height: scaler.getHeight(5),
-                                          child: Center(
-                                            child: ImageView(
-                                              color: ColorConstants.colorBlack,
-                                              path: ImageConstants.ic_edit,
+                              Positioned(
+                                right: 5,
+                                top: 5,
+                                child: provider.userDetail.profileUrl == null
+                                    ? CircleAvatar(
+                                        radius: scaler.getWidth(2),
+                                        child: ClipOval(
+                                          child: Container(
+                                            color: ColorConstants.colorWhite,
+                                            width: scaler.getWidth(5),
+                                            height: scaler.getHeight(5),
+                                            child: Center(
+                                              child: ImageView(
+                                                color:
+                                                    ColorConstants.colorBlack,
+                                                path: ImageConstants.ic_edit,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          ],
+                                      )
+                                    : Container(),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -154,7 +155,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
-                        enabled: signUpType!=StringConstants.social,
+                        enabled: signUpType != StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: firstNameController,
                         style: ViewDecoration.textFieldStyle(
@@ -187,7 +188,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
-                        enabled: signUpType!=StringConstants.social,
+                        enabled: signUpType != StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: lastNameController,
                         style: ViewDecoration.textFieldStyle(
@@ -220,7 +221,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
-                        enabled: signUpType!=StringConstants.social,
+                        enabled: signUpType != StringConstants.social,
                         controller: emailController,
                         style: ViewDecoration.textFieldStyle(
                             scaler.getTextSize(9.5), ColorConstants.colorBlack),
@@ -244,40 +245,51 @@ class SignUpPage extends StatelessWidget {
                           }
                         },
                       ),
-                      signUpType==StringConstants.social?Container():Column(children: [
-                        SizedBox(
-                          height: scaler.getHeight(1),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text("password".tr()).boldText(Colors.black,
-                              scaler.getTextSize(9.5), TextAlign.center),
-                        ),
-                        SizedBox(
-                          height: scaler.getHeight(0.2),
-                        ),
-                        TextFormField(
-                          controller: passwordController,
-                          style: ViewDecoration.textFieldStyle(
-                              scaler.getTextSize(9.5), ColorConstants.colorBlack),
-                          decoration: ViewDecoration.inputDecorationWithCurve(
-                              "", scaler, ColorConstants.primaryColor),
-                          onFieldSubmitted: (data) {},
-                          obscureText: true,
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return "password_required".tr();
-                            } else if (!Validations.validateStructure(value)) {
-                              return "invalid_password_format".tr();
-                            }
-                            {
-                              return null;
-                            }
-                          },
-                        )
-                      ],),
+                      signUpType == StringConstants.social
+                          ? Container()
+                          : Column(
+                              children: [
+                                SizedBox(
+                                  height: scaler.getHeight(1),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text("password".tr()).boldText(
+                                      Colors.black,
+                                      scaler.getTextSize(9.5),
+                                      TextAlign.center),
+                                ),
+                                SizedBox(
+                                  height: scaler.getHeight(0.2),
+                                ),
+                                TextFormField(
+                                  controller: passwordController,
+                                  style: ViewDecoration.textFieldStyle(
+                                      scaler.getTextSize(9.5),
+                                      ColorConstants.colorBlack),
+                                  decoration:
+                                      ViewDecoration.inputDecorationWithCurve(
+                                          "",
+                                          scaler,
+                                          ColorConstants.primaryColor),
+                                  onFieldSubmitted: (data) {},
+                                  obscureText: true,
+                                  textInputAction: TextInputAction.done,
+                                  keyboardType: TextInputType.text,
+                                  validator: (value) {
+                                    if (value!.trim().isEmpty) {
+                                      return "password_required".tr();
+                                    } else if (!Validations.validateStructure(
+                                        value)) {
+                                      return "invalid_password_format".tr();
+                                    }
+                                    {
+                                      return null;
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
                       SizedBox(
                         height: scaler.getHeight(1),
                       ),
@@ -291,6 +303,10 @@ class SignUpPage extends StatelessWidget {
                       ),
                       Container(
                         height: scaler.getHeight(3.8),
+                        // decoration: BoxDecoration(
+                        //   color: ColorConstants.colorLightGray,
+                        //   borderRadius: scaler.getBorderRadiusCircular(8.0),
+                        //  ),
                         child: TextFormField(
                           inputFormatters: <TextInputFormatter>[
                             LengthLimitingTextInputFormatter(10),
@@ -300,8 +316,7 @@ class SignUpPage extends StatelessWidget {
                           style: ViewDecoration.textFieldStyle(
                               scaler.getTextSize(9.5),
                               ColorConstants.colorBlack),
-                          decoration:
-                          ViewDecoration.inputDecorationWithCurve(
+                          decoration: ViewDecoration.inputDecorationWithCurve(
                             "",
                             scaler,
                             ColorConstants.primaryColor,
@@ -309,11 +324,11 @@ class SignUpPage extends StatelessWidget {
                               onChanged: (value) {
                                 provider.countryCode = value.dialCode!;
                               },
-                              padding: scaler.getPaddingAll(0.0),
-                              textStyle: TextStyle(
-                                fontSize: scaler.getTextSize(9.5),
-                                color: ColorConstants.colorBlack,
-                              ),
+                              padding:
+                                  scaler.getPaddingLTRB(0.0, 0.0, 0.0, 0.1),
+                              textStyle: ViewDecoration.textFieldStyle(
+                                  scaler.getTextSize(9.5),
+                                  ColorConstants.colorBlack),
                               initialSelection: "US",
                               favorite: ['+91', 'IND'],
                               showFlag: true,
@@ -395,17 +410,28 @@ class SignUpPage extends StatelessWidget {
                               onTap: () {
                                 hideKeyboard(context);
                                 if (_formKey.currentState!.validate()) {
-                                  if(signUpType==StringConstants.social){
-                                    provider.updateProfile(context, firstNameController.text, lastNameController.text, emailController.text, provider.countryCode, phoneNumberController.text, addressController.text);
-                                  }else{
+                                  if (signUpType == StringConstants.social) {
+                                    provider.updateProfile(
+                                        context,
+                                        firstNameController.text,
+                                        lastNameController.text,
+                                        emailController.text,
+                                        provider.countryCode,
+                                        phoneNumberController.text,
+                                        addressController.text);
+                                  } else {
                                     var userDetail = UserDetail();
                                     userDetail.email = emailController.text;
                                     userDetail.firstName =
                                         firstNameController.text;
-                                    userDetail.lastName = lastNameController.text;
-                                    userDetail.countryCode = provider.countryCode;
-                                    userDetail.phone = phoneNumberController.text;
-                                    userDetail.password = passwordController.text;
+                                    userDetail.lastName =
+                                        lastNameController.text;
+                                    userDetail.countryCode =
+                                        provider.countryCode;
+                                    userDetail.phone =
+                                        phoneNumberController.text;
+                                    userDetail.password =
+                                        passwordController.text;
                                     userDetail.profileFile = provider.image;
                                     userDetail.address = addressController.text;
                                     provider.sendOtpToMail(

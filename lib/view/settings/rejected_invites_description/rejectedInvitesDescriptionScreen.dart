@@ -31,7 +31,7 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                     children: [
                       SizedBox(height: scaler.getHeight(2)),
                       CommonWidgets.userDetails(scaler,
-                          profilePic: ImageConstants.dummy_profile,
+                          profilePic: data.profileUrl!,
                           firstName: data.firstName.toString().capitalize(),
                           lastName: "",
                           email: data.email),
@@ -40,7 +40,7 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                           scaler,
                           ImageConstants.phone_no_icon,
                           "phone_number".tr(),
-                          "58 478 95 6",
+                          data.phone!,
                           countryCode: true,
                           cCode: "+1"),
                       SizedBox(height: scaler.getHeight(1.5)),
@@ -48,7 +48,7 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                           scaler,
                           ImageConstants.address_icon,
                           "address".tr(),
-                          "Madison Square Garden"),
+                          data.address!),
                       SizedBox(height: scaler.getHeight(3)),
                       Text("organized_events".tr()).boldText(
                           ColorConstants.colorBlack,
