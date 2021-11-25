@@ -149,7 +149,8 @@ class SearchProfileScreen extends StatelessWidget {
                       arguments: UserDetail(
                           firstName:
                               provider.searchContactList[index].displayName!,
-                          email: provider.searchContactList[index].email!));
+                          email: provider.searchContactList[index].email!,
+                          value: false));
                 },
                 child: CommonWidgets.userContactCard(
                     scaler,

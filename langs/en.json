@@ -81,5 +81,7 @@
   "searching_profiles" : "Searching profiles",
   "no_profile_found" : "No profile found",
   "invitations" : "Invitations",
-  "click_to_reply_to_invitation" : "Click to reply to invitation"
+  "click_to_reply_to_invitation" : "Click to reply to invitation",
+  "reject_invite" : "Reject invite",
+  "accept_invite" : "Accept invite"
 }

@@ -4,6 +4,7 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -46,23 +47,28 @@ class ContactDescriptionScreen extends StatelessWidget {
                                   firstName:
                                       data.firstName.toString().capitalize(),
                                   lastName: "",
-                                  email: data.email, actionOnEmail: () {
-                                provider.sendingMails(context);
-                              }),
+                                  email: data.email,
+                                  actionOnEmail: data.value!
+                                      ? () {}
+                                      : () {
+                                          provider.sendingMails(context);
+                                        }),
                               SizedBox(height: scaler.getHeight(2.5)),
                               GestureDetector(
                                 onTap: () {
-                                  CommonWidgets.bottomSheet(
-                                      context,
-                                      scaler,
-                                      bottomDesign(context, scaler,
-                                          callClick: () {
-                                        provider.makePhoneCall(context);
-                                      }, smsClick: () {
-                                        provider.sendingSMS(context);
-                                      }, whatsAppClick: () {
-                                        provider.openingWhatsApp(context);
-                                      }));
+                                  data.value!
+                                      ? Container()
+                                      : CommonWidgets.bottomSheet(
+                                          context,
+                                          scaler,
+                                          bottomDesign(context, scaler,
+                                              callClick: () {
+                                            provider.makePhoneCall(context);
+                                          }, smsClick: () {
+                                            provider.sendingSMS(context);
+                                          }, whatsAppClick: () {
+                                            provider.openingWhatsApp(context);
+                                          }));
                                 },
                                 child: CommonWidgets.phoneNoAndAddressFun(
                                     scaler,
@@ -88,71 +94,96 @@ class ContactDescriptionScreen extends StatelessWidget {
                           ),
                         ),
                         OrganizedEventsCard(showAttendBtn: false),
-                        // data.value!
-                        //     ? Expanded(
-                        //         child: Container(
-                        //           alignment: Alignment.bottomCenter,
-                        //           child: Padding(
-                        //             padding:
-                        //                 scaler.getPaddingLTRB(2, 0.0, 2, 1),
-                        //             child: Row(
-                        //               mainAxisAlignment:
-                        //                   MainAxisAlignment.spaceEvenly,
-                        //               children: [
-                        //                 Expanded(
-                        //                   child: GestureDetector(
-                        //                     onTap: () {
-                        //                       Navigator.pop(context);
-                        //                     },
-                        //                     child: CustomShape(
-                        //                       child: Center(
-                        //                           child: Text("discard".tr())
-                        //                               .mediumText(
-                        //                                   ColorConstants
-                        //                                       .primaryColor,
-                        //                                   scaler
-                        //                                       .getTextSize(10),
-                        //                                   TextAlign.center)),
-                        //                       bgColor: ColorConstants
-                        //                           .primaryColor
-                        //                           .withOpacity(0.2),
-                        //                       radius: BorderRadius.all(
-                        //                         Radius.circular(12),
-                        //                       ),
-                        //                       width: scaler.getWidth(40),
-                        //                       height: scaler.getHeight(4.5),
-                        //                     ),
-                        //                   ),
-                        //                 ),
-                        //                 SizedBox(
-                        //                   width: scaler.getWidth(2),
-                        //                 ),
-                        //                 Expanded(
-                        //                     child: GestureDetector(
-                        //                   onTap: () {},
-                        //                   child: CustomShape(
-                        //                     child: Center(
-                        //                         child: Text("save_changes".tr())
-                        //                             .mediumText(
-                        //                                 ColorConstants
-                        //                                     .colorWhite,
-                        //                                 scaler.getTextSize(10),
-                        //                                 TextAlign.center)),
-                        //                     bgColor:
-                        //                         ColorConstants.primaryColor,
-                        //                     radius: BorderRadius.all(
-                        //                       Radius.circular(12),
-                        //                     ),
-                        //                     width: scaler.getWidth(40),
-                        //                     height: scaler.getHeight(4.5),
-                        //                   ),
-                        //                 )),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       )
-                        //     : Container()
+                        data.value!
+                            ? provider.state == ViewState.Busy
+                                ? Center(child: CircularProgressIndicator())
+                                :
+                                // : CommonWidgets.expandedRowButton(
+                                //     context,
+                                //     scaler,
+                                //     "reject_invite".tr(),
+                                //     "accept_invite".tr(), onTapBtn2: () {
+                                //     provider.acceptOrRejectInvitation(
+                                //         context, data.cid!, true, "Accept");
+                                //     Navigator.of(context).pop();
+                                //   })
+                                Expanded(
+                                    child: Container(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Padding(
+                                        padding:
+                                            scaler.getPaddingLTRB(2, 0.0, 2, 1),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: CustomShape(
+                                                  child: Center(
+                                                      child: Text(
+                                                              "reject_invite"
+                                                                  .tr())
+                                                          .mediumText(
+                                                              ColorConstants
+                                                                  .primaryColor,
+                                                              scaler
+                                                                  .getTextSize(
+                                                                      10),
+                                                              TextAlign
+                                                                  .center)),
+                                                  bgColor: ColorConstants
+                                                      .primaryColor
+                                                      .withOpacity(0.2),
+                                                  radius: BorderRadius.all(
+                                                    Radius.circular(12),
+                                                  ),
+                                                  width: scaler.getWidth(40),
+                                                  height: scaler.getHeight(4.5),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: scaler.getWidth(2),
+                                            ),
+                                            Expanded(
+                                                child: GestureDetector(
+                                              onTap: () {
+                                                provider
+                                                    .acceptOrRejectInvitation(
+                                                        context,
+                                                        data.cid!,
+                                                        true,
+                                                        "Accept");
+                                              },
+                                              child: CustomShape(
+                                                child: Center(
+                                                    child: Text("accept_invite"
+                                                            .tr())
+                                                        .mediumText(
+                                                            ColorConstants
+                                                                .colorWhite,
+                                                            scaler.getTextSize(
+                                                                10),
+                                                            TextAlign.center)),
+                                                bgColor:
+                                                    ColorConstants.primaryColor,
+                                                radius: BorderRadius.all(
+                                                  Radius.circular(12),
+                                                ),
+                                                width: scaler.getWidth(40),
+                                                height: scaler.getHeight(4.5),
+                                              ),
+                                            )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                            : Container()
                       ],
                     ),
                   ),

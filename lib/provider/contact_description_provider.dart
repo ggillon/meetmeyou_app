@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactDescriptionProvider extends BaseProvider {
+  MMYEngine? mmyEngine;
   static const whatsAppUrl = "whatsapp://send?phone=9876543210";
 
   makePhoneCall(BuildContext context) async {
@@ -37,6 +41,18 @@ class ContactDescriptionProvider extends BaseProvider {
     } else {
       DialogHelper.showMessage(context, "Could not launch $url!");
     }
+  }
 
+  acceptOrRejectInvitation(BuildContext context, String cid, bool accept, String msg) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    await mmyEngine!.respondInvitation(cid, accept).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    setState(ViewState.Idle);
+    DialogHelper.showMessage(context, "Invitation $msg Successfully");
+    notifyListeners();
   }
 }

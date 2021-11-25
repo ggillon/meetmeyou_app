@@ -396,7 +396,7 @@ class SignUpPage extends StatelessWidget {
                                 hideKeyboard(context);
                                 if (_formKey.currentState!.validate()) {
                                   if(signUpType==StringConstants.social){
-                                    provider.updateProfile(context, firstNameController.text, lastNameController.text, emailController.text, provider.countryCode, provider.phone, addressController.text);
+                                    provider.updateProfile(context, firstNameController.text, lastNameController.text, emailController.text, provider.countryCode, phoneNumberController.text, addressController.text);
                                   }else{
                                     var userDetail = UserDetail();
                                     userDetail.email = emailController.text;

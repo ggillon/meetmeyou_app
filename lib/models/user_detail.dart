@@ -11,6 +11,7 @@ class UserDetail{
   String? profileUrl;
   String? address;
   bool? value ;
+  String? cid;
 
-  UserDetail({this.firstName, this.lastName, this.email, this.countryCode, this.phone, this.profileUrl, this.address, this.value});
+  UserDetail({this.firstName, this.lastName, this.email, this.countryCode, this.phone, this.profileUrl, this.address, this.value, this.cid});
 }

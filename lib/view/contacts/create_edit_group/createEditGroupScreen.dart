@@ -203,61 +203,7 @@ class CreateEditGroupScreen extends StatelessWidget {
                             SizedBox(
                               height: scaler.getHeight(2),
                             ),
-                            Flexible(
-                              child: Container(
-                                alignment: Alignment.bottomCenter,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: CustomShape(
-                                          child: Center(
-                                              child: Text("discard".tr())
-                                                  .mediumText(
-                                                      ColorConstants
-                                                          .primaryColor,
-                                                      scaler.getTextSize(10),
-                                                      TextAlign.center)),
-                                          bgColor: ColorConstants.primaryColor
-                                              .withOpacity(0.2),
-                                          radius: BorderRadius.all(
-                                            Radius.circular(12),
-                                          ),
-                                          width: scaler.getWidth(40),
-                                          height: scaler.getHeight(4.5),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: scaler.getWidth(2),
-                                    ),
-                                    Expanded(
-                                        child: GestureDetector(
-                                      onTap: () {},
-                                      child: CustomShape(
-                                        child: Center(
-                                            child: Text("save_changes".tr())
-                                                .mediumText(
-                                                    ColorConstants.colorWhite,
-                                                    scaler.getTextSize(10),
-                                                    TextAlign.center)),
-                                        bgColor: ColorConstants.primaryColor,
-                                        radius: BorderRadius.all(
-                                          Radius.circular(12),
-                                        ),
-                                        width: scaler.getWidth(40),
-                                        height: scaler.getHeight(4.5),
-                                      ),
-                                    )),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            CommonWidgets.expandedRowButton(context, scaler, "discard".tr(), "save_changes".tr())
                           ],
                         ),
                       ),

@@ -82,10 +82,16 @@ class CommonWidgets {
 
   static Widget userContactCard(
       ScreenScaler scaler, String email, String contactName,
-      {String? profileImg, String? searchStatus, bool search = false, VoidCallback? iconTapAction, bool invitation = false}) {
+      {String? profileImg,
+      String? searchStatus,
+      bool search = false,
+      VoidCallback? iconTapAction,
+      bool invitation = false}) {
     return Column(children: [
       Card(
-        color:  invitation ? ColorConstants.primaryColor : ColorConstants.colorWhite,
+        color: invitation
+            ? ColorConstants.primaryColor
+            : ColorConstants.colorWhite,
         elevation: 3.0,
         shadowColor: ColorConstants.colorWhite,
         shape: RoundedRectangleBorder(
@@ -139,7 +145,9 @@ class CommonWidgets {
                   ],
                 ),
               ),
-              iconStatusCheck(scaler, searchStatus: search ? searchStatus : "", iconTap: search ? iconTapAction : (){})
+              iconStatusCheck(scaler,
+                  searchStatus: search ? searchStatus : "",
+                  iconTap: search ? iconTapAction : () {})
             ],
           ),
         ),
@@ -148,12 +156,13 @@ class CommonWidgets {
     ]);
   }
 
-  static Widget iconStatusCheck(ScreenScaler scaler, {String? searchStatus, VoidCallback? iconTap}) {
+  static Widget iconStatusCheck(ScreenScaler scaler,
+      {String? searchStatus, VoidCallback? iconTap}) {
     if (searchStatus == "Listed profile") {
       return GestureDetector(
         onTap: iconTap,
         child: CircleAvatar(
-          backgroundColor: ColorConstants.colorGray,
+            backgroundColor: ColorConstants.colorGray,
             radius: 12,
             child: ImageView(path: ImageConstants.small_add_icon)),
       );
@@ -250,5 +259,61 @@ class CommonWidgets {
     );
   }
 
- // Widget discardAndSaveChangesButton(){}
+  static Widget expandedRowButton(BuildContext context, ScreenScaler scaler,
+      String btn1Text, String btn2Text,
+      {VoidCallback? onTapBtn1, bool btn1 = true, VoidCallback? onTapBtn2}) {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2, 0.0, 2, 1),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    btn1 ? Navigator.pop(context) : onTapBtn1;
+                  },
+                  child: CustomShape(
+                    child: Center(
+                        child: Text(btn1Text).mediumText(
+                            ColorConstants.primaryColor,
+                            scaler.getTextSize(10),
+                            TextAlign.center)),
+                    bgColor: ColorConstants.primaryColor.withOpacity(0.2),
+                    radius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                    width: scaler.getWidth(40),
+                    height: scaler.getHeight(4.5),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: scaler.getWidth(2),
+              ),
+              Expanded(
+                  child: GestureDetector(
+                onTap: onTapBtn2,
+                child: CustomShape(
+                  child: Center(
+                      child: Text(btn2Text).mediumText(
+                          ColorConstants.colorWhite,
+                          scaler.getTextSize(10),
+                          TextAlign.center)),
+                  bgColor: ColorConstants.primaryColor,
+                  radius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                  width: scaler.getWidth(40),
+                  height: scaler.getHeight(4.5),
+                ),
+              )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
