@@ -162,11 +162,16 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Contact>> searchProfiles(String searchText) async {
-    List<Contact> contactList = [];
+    List<Contact> searchList = [];
+    List<String> contactListID = await getContactIDs(confirmedContacts: true);
+    List<String> invitedListID = await getContactIDs(invitedContacts: true);
     for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
-      contactList.add(contactLib.contactFromProfile(profile, uid: profile.uid));
+      Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
+      if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
+      if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
+      searchList.add(contact);
     }
-    return contactList;
+    return searchList;
   }
 
   @override
