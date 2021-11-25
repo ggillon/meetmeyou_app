@@ -61,9 +61,16 @@ Widget ContactMenu(BuildContext context, Function setPage) {
         SizedBox(height: 10,),
         ElevatedButton(onPressed: () => auth.signOut(), child: Text("Sign Out")),
         SizedBox(height: 10,),
+        ElevatedButton(onPressed: () => deleteUser(context), child: Text("Delete User")),
+        SizedBox(height: 10,),
       ],
     ),
   );
+}
+
+Future<void> deleteUser(BuildContext context) async {
+  final mmy = MMY(Provider.of<AuthBase>(context, listen: false).currentUser!);
+  await mmy.deleteUser();
 }
 
 void toggleGroup(BuildContext context, bool create, Function setPage) {
@@ -108,7 +115,7 @@ Widget TestSearchProfile(BuildContext context, Function setPage) {
                             initialData: emptyList,
                             builder: (context, contactList) => ListView.builder(
                               itemCount: contactList.data!.length,
-                              itemBuilder: (context, item) => Text('${contactList.data![item].displayName ?? ''}: ${contactList.data![item].uid}')
+                              itemBuilder: (context, item) => Text('${contactList.data![item].displayName}: ${contactList.data![item].uid}')
                               ,)),
                       ),
                     ),
@@ -149,7 +156,7 @@ Widget TestImportContacts(BuildContext context, Function setPage) {
                         initialData: emptyList,
                         builder: (context, contactList) => ListView.builder(
                           itemCount: contactList.data!.length,
-                          itemBuilder: (context, item) => Text('${contactList.data![item].displayName ?? ''}: ${contactList.data![item].email}')
+                          itemBuilder: (context, item) => Text('${contactList.data![item].displayName}: ${contactList.data![item].email}')
                           ,)),
                   ),
                 ),
@@ -167,8 +174,6 @@ Widget TestContactList(BuildContext context, Function setPage) {
 
   final auth = Provider.of<AuthBase>(context, listen: false);
 
-  bool invitationCreated = false;
-  bool invitationReplied = false;
   bool groupCreated = false;
   String testGroupCid = "";
   String invitationCID = "";
@@ -202,7 +207,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                           initialData: emptyList,
                           builder: (context, contactList) => ListView.builder(
                               itemCount: contactList.data!.length,
-                              itemBuilder: (context, item) => Text(contactList.data![item].displayName ?? '')
+                              itemBuilder: (context, item) => Text(contactList.data![item].displayName)
                       ,)),
                     ),
                   ),
@@ -228,7 +233,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                                 groupCreated = true;
                                 testGroupCid = contactList.data![item].cid;
                               }
-                              return Text('${contactList.data![item].displayName ?? 'No Name'} : ${contactList.data![item].group}');
+                              return Text('${contactList.data![item].displayName} : ${contactList.data![item].group}');
                             },)),
                     ),
                   ),
@@ -249,7 +254,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                           initialData: emptyList,
                           builder: (context, contactList) => ListView.builder(
                             itemCount: contactList.data!.length,
-                            itemBuilder: (context, item) {invitationCID = contactList.data![item].cid; return Text(contactList.data![item].displayName ?? '');},
+                            itemBuilder: (context, item) {invitationCID = contactList.data![item].cid; return Text(contactList.data![item].displayName);},
                       )),
                     ),
                   ),
@@ -269,7 +274,7 @@ Widget TestContactList(BuildContext context, Function setPage) {
                           initialData: emptyList,
                           builder: (context, contactList) => ListView.builder(
                             itemCount: contactList.data!.length,
-                            itemBuilder: (context, item) => Text(contactList.data![item].displayName ?? ''),
+                            itemBuilder: (context, item) => Text(contactList.data![item].displayName),
                           ),
                       ),
                     ),

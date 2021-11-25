@@ -19,7 +19,8 @@ abstract class MMYEngine {
   Future<bool> isNew();
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
-
+  /// Delete User - Cautious
+  Future<void> deleteUser();
   /// Get a contact, invitation or group from DB
   Future<Contact> getContact(String cid);
   /// Get a contact, invitation or group from DB
@@ -81,6 +82,11 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<void> deleteUser() async {
+    profileLib.deleteProfile(_currentUser);
+  }
+
+  @override
   Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, String about = ''}) async {
     final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
     return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
@@ -109,16 +115,16 @@ class MMY implements MMYEngine {
   Future<List<Contact>> getContacts({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false}) async {
     List<Contact> contactList = [];
     List<String> filter = [];
-    if(confirmedContacts) filter.add(contactLib.CONTACT_CONFIRMED);
-    if(groups) filter.add(contactLib.CONTACT_GROUP);
-    if(invitedContacts) filter.add(contactLib.CONTACT_INVITED);
-    if(invitations) filter.add(contactLib.CONTACT_INVITATION);
-    if(rejectedContacts) filter.add(contactLib.CONTACT_INVITED);
+    if(confirmedContacts) filter.add(CONTACT_CONFIRMED);
+    if(groups) filter.add(CONTACT_GROUP);
+    if(invitedContacts) filter.add(CONTACT_INVITED);
+    if(invitations) filter.add(CONTACT_INVITATION);
+    if(rejectedContacts) filter.add(CONTACT_INVITED);
     //if(private) filter.add(contactLib.CONTACT_PRIVATE);
 
     if(filter.isEmpty) { // by default, return confirmed contacts
-      filter.add(contactLib.CONTACT_CONFIRMED);
-      filter.add(contactLib.CONTACT_PRIVATE);
+      filter.add(CONTACT_CONFIRMED);
+      filter.add(CONTACT_PRIVATE);
     }
 
     for(Contact contact in await contactLib.getContacts(_currentUser)) {
@@ -165,7 +171,6 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Contact>> getPhoneContacts() async {
-    List<Contact> contactList = [];
     return contactLib.getPhoneContacts(_currentUser);
   }
 
