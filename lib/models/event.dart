@@ -1,20 +1,23 @@
 import 'constants.dart';
 
 //Event Types
-const PRIVATE_EVENT = 'Private Event';
-const PRIVATE_EVENT_MD = 'Private Event MultiDates';
-const ANNOUNCEMENT = 'Announcement';
-const SAVE_THE_DATE = 'Save the date';
-const UPDATED_EVENT = 'Updated event';
+const EVENT_TYPE_PRIVATE = 'Private Event';
+const EVENT_TYPE_PRIVATE_MD = 'Private Event MultiDates';
+const EVENT_TYPE_ANNOUNCEMENT = 'Announcement';
+const EVENT_TYPE_SAVE_THE_DATE = 'Save the date';
+const EVENT_TYPE_UPDATED = 'Updated event';
 
 // Reply type
-const INVITED = 'Invited';
-const ORGANISER = 'Organiser';
-const ATTENDING = 'Attending';
-const NOT_ATTENDING = 'Not Attending';
-const NOT_INTERESTED = 'Not Interested';
-const CANCELED = 'Canceled';
-const REPLIED = 'Replied';
+const EVENT_INVITED = 'Invited';
+const EVENT_ORGANISER = 'Organiser';
+const EVENT_ATTENDING = 'Attending';
+const EVENT_NOT_ATTENDING = 'Not Attending';
+const EVENT_NOT_INTERESTED = 'Not Interested';
+const EVENT_CANCELED = 'Canceled';
+const EVENT_REPLIED = 'Replied';
+
+// Admin Type
+const EVENT_ADMIN_ORGANISER = 'Organiser';
 
 // Invites type
 const EMAIL_DONE = 'Email Done';
@@ -136,3 +139,20 @@ class Event {
     };
   }
 }
+
+
+//OLD CONSTANTS
+const PRIVATE_EVENT = 'Private Event';
+const PRIVATE_EVENT_MD = 'Private Event MultiDates';
+const ANNOUNCEMENT = 'Announcement';
+const SAVE_THE_DATE = 'Save the date';
+const UPDATED_EVENT = 'Updated event';
+
+// Reply type
+const INVITED = 'Invited';
+const ORGANISER = 'Organiser';
+const ATTENDING = 'Attending';
+const NOT_ATTENDING = 'Not Attending';
+const NOT_INTERESTED = 'Not Interested';
+const CANCELED = 'Canceled';
+const REPLIED = 'Replied';
