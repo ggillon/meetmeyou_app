@@ -61,6 +61,9 @@ class InviteFriendsProvider extends BaseProvider {
           'permission in system settings');
     } else if (value.isNotEmpty) {
       setState(ViewState.Idle);
+      value.sort((a, b) {
+        return a.displayName.toString().toLowerCase().compareTo(b.displayName.toString().toLowerCase());
+      });
       contactList = value;
       isChecked = List<bool>.filled(contactList.length, false);
     } else {
@@ -69,10 +72,6 @@ class InviteFriendsProvider extends BaseProvider {
     notifyListeners();
   }
 
-  List<Contact> sortContactList() {
-    contactList.sort();
-    return contactList;
-  }
 
   errorDialog(BuildContext context, String content) {
     return showDialog(

@@ -26,7 +26,6 @@ class RejectedInvitesScreen extends StatelessWidget {
           appBar: DialogHelper.appBarWithBack(scaler, context),
           body: BaseView<RejectedInvitesProvider>(onModelReady: (provider) {
             provider.getRejectedInvitesList(context);
-            provider.sortRejectedContactList();
           }, builder: (builder, provider, _) {
             return Padding(
               padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
@@ -164,8 +163,8 @@ class RejectedInvitesScreen extends StatelessWidget {
         },
         child: CommonWidgets.userContactCard(
             scaler,
-            provider.rejectedContactList[index].displayName,
             provider.rejectedContactList[index].email,
+            provider.rejectedContactList[index].displayName,
             profileImg: provider.rejectedContactList[index].photoURL));
   }
 }

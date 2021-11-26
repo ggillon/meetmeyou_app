@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class SearchProfileProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  bool searchValue = false;
 
   List<Contact> _searchContactList = [];
 
@@ -40,18 +41,17 @@ class SearchProfileProvider extends BaseProvider {
     } else {
       setState(ViewState.Idle);
     }
-    notifyListeners();
   }
 
-  inviteProfile(BuildContext context, String uid) async {
+  inviteProfile(BuildContext context, Contact contact) async {
     updateValue(true);
-    await mmyEngine!.inviteProfile(uid).catchError((e) {
+    await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
       updateValue(false);
       DialogHelper.showMessage(context, e.message);
     });
+    contact.status = 'Invited contact';
 
     updateValue(false);
     DialogHelper.showMessage(context, "Invitation send Successfully");
-    notifyListeners();
   }
 }

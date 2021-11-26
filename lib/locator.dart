@@ -5,8 +5,9 @@ import 'package:meetmeyou_app/provider/group_contacts_provider.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/edit_Contact_Provider.dart';
-import 'package:meetmeyou_app/provider/edit_group_provider.dart';
+import 'package:meetmeyou_app/provider/create_edit_group_provider.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
+import 'package:meetmeyou_app/provider/group_description_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
@@ -43,8 +44,9 @@ void setupLocator() {
   locator.registerFactory<RejectedInvitesProvider>(()=> RejectedInvitesProvider());
   locator.registerFactory<ContactDescriptionProvider>(()=> ContactDescriptionProvider());
   locator.registerFactory<SearchProfileProvider>(()=> SearchProfileProvider());
-  locator.registerFactory<EditGroupProvider>(()=> EditGroupProvider());
+  locator.registerFactory<CreateEditGroupProvider>(()=> CreateEditGroupProvider());
   locator.registerFactory<GroupContactsProvider>(()=> GroupContactsProvider());
+  locator.registerFactory<GroupDescriptionProvider>(()=> GroupDescriptionProvider());
 
 
   /*

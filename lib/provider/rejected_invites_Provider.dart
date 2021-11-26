@@ -35,6 +35,9 @@ class RejectedInvitesProvider extends BaseProvider {
     });
     if (value != null) {
       setState(ViewState.Idle);
+      value.sort((a, b) {
+        return a.displayName.toString().toLowerCase().compareTo(b.displayName.toString().toLowerCase());
+      });
       _rejectedContactList = value;
     } else {
       setState(ViewState.Idle);
@@ -42,8 +45,4 @@ class RejectedInvitesProvider extends BaseProvider {
     notifyListeners();
   }
 
-  List<Contact> sortRejectedContactList() {
-    rejectedContactList.sort();
-    return rejectedContactList;
-  }
 }

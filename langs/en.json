@@ -70,7 +70,6 @@
   "profiles_found" : "Profiles found",
   "group_name" : "Group Name",
   "description" : "Description",
-  "contacts_in_groups" : "Contacts in groups",
   "group_name_required" : "Group name is required",
   "manage_group_contacts" : "Manage Group Contacts",
   "group_contacts" : "Group Contacts",
@@ -84,5 +83,14 @@
   "click_to_reply_to_invitation" : "Click to reply to invitation",
   "reject_invite" : "Reject invite",
   "accept_invite" : "Accept invite",
-  "search_field_name" : "Cooper"
+  "search_field_name" : "Cooper",
+  "sorry_no_profile_found" : "Sorry no profile found",
+  "loading_groups" : "Loading Groups",
+  "sorry_no_group_found" : "Sorry no group found",
+  "click_+_to_send_invitation" : "Click + to send invitation",
+  "invitation_waiting_reply" : "Invitation Waiting reply",
+  "already_a_contact" : "Already a contact",
+  "members" : "members",
+  "contacts_in_group" : "Contacts in group",
+  "please_add_members_in_your_group" : "No member found, Please add members"
 }

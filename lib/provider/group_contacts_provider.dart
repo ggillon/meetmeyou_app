@@ -1,6 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
-class GroupContactsProvider extends BaseProvider{
+class GroupContactsProvider extends BaseProvider {
+  MMYEngine? mmyEngine;
   List<String> _checklist = [];
 
   List<String> get checklist => _checklist;
@@ -27,38 +34,63 @@ class GroupContactsProvider extends BaseProvider{
     notifyListeners();
   }
 
-  List<String> _myContactListName = [
-    'jenny wilson',
-    'Robert fox',
-    'Elenor pena',
-    "Bessie cooper",
-    "Danny bill",
-    "sachin kalra",
-    "Rohit kumar",
-    "Bhavneet",
-    "Pardeep",
-    "Sahil",
-    "Chetan",
-    "Tarun",
-    "Sagar",
-    "Kanwar Sharma",
-    "Mohit",
-    "Divesh",
-    "Lucky",
-    "Sandeep",
-    "vikas",
-    "Annie",
-    "shivam",
-    "justin"
-  ];
+  // confirm contact list
+  List<Contact> _confirmContactList = [];
 
-  List<String> get myContactListName => _myContactListName;
+  List<Contact> get confirmContactList => _confirmContactList;
 
-  List<String> sortContactList() {
-    _myContactListName = _myContactListName
-        .map((_myContactListName) => _myContactListName.toLowerCase())
-        .toList();
-    _myContactListName.sort();
-    return _myContactListName;
+  set confirmContactList(List<Contact> value) {
+    _confirmContactList = value;
+  }
+
+  getConfirmedContactsList(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var confirmValue =
+        await mmyEngine!.getContacts(confirmedContacts: true).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (confirmValue != null) {
+      setState(ViewState.Idle);
+      confirmValue.sort((a, b) {
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
+      });
+      confirmContactList = confirmValue;
+      isChecked = List<bool>.filled(confirmContactList.length, false);
+    } else {
+      setState(ViewState.Idle);
+    }
+  }
+
+  addContactsToGroup(
+      BuildContext context, String groupCID, String contactCId) async {
+    updateValue(true);
+
+    await mmyEngine!
+        .addContactsToGroup(groupCID, contactCID: contactCId)
+        .catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    updateValue(false);
+  }
+
+  removeContactsFromGroup(
+      BuildContext context, String groupCID, String contactCId) async {
+    updateValue(true);
+
+    await mmyEngine!
+        .removeContactsFromGroup(groupCID, contactCID: contactCId)
+        .catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    updateValue(false);
   }
 }

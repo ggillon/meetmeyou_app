@@ -8,6 +8,17 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class ContactsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  int _toggle = 0;
+
+  int get toggle => _toggle;
+
+  set toggle(int value) {
+    _toggle = value;
+  }
+
+  bool toggleSwitch = true;
+
+  // confirm contact list
   List<Contact> _confirmContactList = [];
 
   List<Contact> get confirmContactList => _confirmContactList;
@@ -16,6 +27,7 @@ class ContactsProvider extends BaseProvider {
     _confirmContactList = value;
   }
 
+  // invitation contact list
   List<Contact> _invitationContactList = [];
 
   List<Contact> get invitationContactList => _invitationContactList;
@@ -24,7 +36,14 @@ class ContactsProvider extends BaseProvider {
     _invitationContactList = value;
   }
 
+  // Groups list
+  List<Contact> _groupList = [];
 
+  List<Contact> get groupList => _groupList;
+
+  set groupList(List<Contact> value) {
+    _groupList = value;
+  }
 
   getConfirmedContactsAndInvitationsList(BuildContext context) async {
     setState(ViewState.Busy);
@@ -45,15 +64,47 @@ class ContactsProvider extends BaseProvider {
     if (invitationValue != null && confirmValue != null) {
       setState(ViewState.Idle);
       invitationContactList = invitationValue;
+      confirmValue.sort((a, b) {
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
+      });
       confirmContactList = confirmValue;
     } else {
       setState(ViewState.Idle);
     }
   }
 
-  List<Contact> sortContactList() {
-    confirmContactList.sort();
-    return confirmContactList;
+  getGroupList(BuildContext context) async {
+    setState(ViewState.Busy);
+
+    var groupValue = await mmyEngine!.getContacts(groups: true).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (groupValue != null) {
+      setState(ViewState.Idle);
+      groupValue.sort((a, b) {
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
+      });
+      groupList = groupValue;
+    } else {
+      setState(ViewState.Idle);
+    }
   }
 
+  bool _value = false;
+
+  bool get value => _value;
+
+  void updateValue(bool value) {
+    _value = value;
+    notifyListeners();
+  }
+  
 }

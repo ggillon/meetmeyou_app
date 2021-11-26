@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 
 class HomePage extends StatelessWidget {
@@ -30,6 +31,8 @@ class HomePage extends StatelessWidget {
           GestureDetector(
             onTap: () {
               auth.signOut();
+              UserDetail userDetail = locator<UserDetail>();
+              userDetail.profileUrl = null;
               SharedPref.clearSharePref();
               //SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, false);
               Navigator.of(context).pushNamedAndRemoveUntil(

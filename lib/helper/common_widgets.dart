@@ -48,12 +48,18 @@ class CommonWidgets {
           height: scaler.getWidth(22),
           child: ClipRRect(
             borderRadius: scaler.getBorderRadiusCircular(10.0),
-            child: ImageView(
-              path: profilePic,
-              width: scaler.getWidth(22),
-              height: scaler.getWidth(22),
-              fit: BoxFit.cover,
-            ),
+            child: profilePic == null || profilePic == ""
+                ? Container(
+                    color: ColorConstants.primaryColor,
+                    width: scaler.getWidth(22),
+                    height: scaler.getWidth(22),
+                  )
+                : ImageView(
+                    path: profilePic,
+                    width: scaler.getWidth(22),
+                    height: scaler.getWidth(22),
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         SizedBox(width: scaler.getWidth(2.5)),
@@ -70,7 +76,7 @@ class CommonWidgets {
               SizedBox(height: scaler.getHeight(0.5)),
               GestureDetector(
                   onTap: actionOnEmail,
-                  child: Text(email!).mediumText(ColorConstants.colorBlack,
+                  child: Text(email ?? "").mediumText(ColorConstants.colorBlack,
                       scaler.getTextSize(10), TextAlign.left,
                       maxLines: 1, overflow: TextOverflow.ellipsis))
             ],
@@ -85,7 +91,7 @@ class CommonWidgets {
       {String? profileImg,
       String? searchStatus,
       bool search = false,
-      VoidCallback? iconTapAction,
+      VoidCallback? addIconTapAction,
       bool invitation = false}) {
     return Column(children: [
       Card(
@@ -99,54 +105,15 @@ class CommonWidgets {
         child: Padding(
           padding: scaler.getPaddingAll(10.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(10.0),
-                      child: profileImg == null
-                          ? Container(
-                              color: ColorConstants.primaryColor,
-                              width: scaler.getWidth(10),
-                              height: scaler.getWidth(10),
-                            )
-                          : Container(
-                              width: scaler.getWidth(10),
-                              height: scaler.getWidth(10),
-                              child: ImageView(
-                                path: profileImg,
-                                width: scaler.getWidth(10),
-                                height: scaler.getWidth(10),
-                              ),
-                            )),
-                  Positioned(
-                      top: 25,
-                      right: -5,
-                      child: ImageView(path: ImageConstants.small_logo_icon))
-                ],
-              ),
+              profileCardImageDesign(scaler, profileImg!),
               SizedBox(width: scaler.getWidth(2.5)),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(contactName.capitalize()).semiBoldText(
-                        ColorConstants.colorBlack,
-                        scaler.getTextSize(9.8),
-                        TextAlign.left,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    SizedBox(height: scaler.getHeight(0.2)),
-                    Text(email).regularText(ColorConstants.colorBlackDown,
-                        scaler.getTextSize(8.3), TextAlign.left,
-                        maxLines: 1, overflow: TextOverflow.ellipsis),
-                  ],
-                ),
-              ),
+              profileCardNameAndEmailDesign(scaler, contactName, email,
+                  search: true, searchStatus: searchStatus),
               iconStatusCheck(scaler,
                   searchStatus: search ? searchStatus : "",
-                  iconTap: search ? iconTapAction : () {})
+                  addIconTap: search ? addIconTapAction : () {})
             ],
           ),
         ),
@@ -155,18 +122,89 @@ class CommonWidgets {
     ]);
   }
 
+  static Widget profileCardImageDesign(ScreenScaler scaler, String profileImg) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        ClipRRect(
+            borderRadius: scaler.getBorderRadiusCircular(10.0),
+            child: profileImg == null || profileImg == ""
+                ? Container(
+                    color: ColorConstants.primaryColor,
+                    width: scaler.getWidth(10),
+                    height: scaler.getWidth(10),
+                  )
+                : Container(
+                    width: scaler.getWidth(10),
+                    height: scaler.getWidth(10),
+                    child: ImageView(
+                      path: profileImg,
+                      width: scaler.getWidth(10),
+                      height: scaler.getWidth(10),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+        Positioned(
+            top: 25,
+            right: -5,
+            child: ImageView(path: ImageConstants.small_logo_icon))
+      ],
+    );
+  }
+
+  static Widget profileCardNameAndEmailDesign(
+      ScreenScaler scaler, String contactName, String email,
+      {bool search = false, String? searchStatus}) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(contactName.capitalize()).semiBoldText(ColorConstants.colorBlack,
+              scaler.getTextSize(9.8), TextAlign.left,
+              maxLines: 1, overflow: TextOverflow.ellipsis),
+          SizedBox(height: scaler.getHeight(0.2)),
+          Text(emailOrTextStatusCheck(searchStatus ?? "", email)).regularText(
+              ColorConstants.colorBlackDown,
+              scaler.getTextSize(8.3),
+              TextAlign.left,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+
   static Widget iconStatusCheck(ScreenScaler scaler,
-      {String? searchStatus, VoidCallback? iconTap}) {
+      {String? searchStatus, VoidCallback? addIconTap}) {
     if (searchStatus == "Listed profile") {
       return GestureDetector(
-        onTap: iconTap,
+        onTap: addIconTap,
         child: CircleAvatar(
             backgroundColor: ColorConstants.colorGray,
             radius: 12,
             child: ImageView(path: ImageConstants.small_add_icon)),
       );
+    } else if (searchStatus == "Confirmed contact") {
+      return Container();
+    } else if (searchStatus == "Invited contact") {
+      return GestureDetector(
+        onTap: () {},
+        child: ImageView(path: ImageConstants.invited_waiting_icon),
+      );
     } else {
       return ImageView(path: ImageConstants.contact_arrow_icon);
+    }
+  }
+
+  static emailOrTextStatusCheck(String searchStatus, String email) {
+    if (searchStatus == "Listed profile") {
+      return "click_+_to_send_invitation".tr();
+    } else if (searchStatus == "Confirmed contact") {
+      return "already_a_contact".tr();
+    } else if (searchStatus == "Invited contact") {
+      return "invitation_waiting_reply".tr();
+    } else {
+      return email;
     }
   }
 
@@ -174,7 +212,7 @@ class CommonWidgets {
       BuildContext context, ScreenScaler scaler, Widget bottomDesign) {
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: scaler.getBorderRadiusCircular(15),
         ),
         backgroundColor: Colors.transparent,
         barrierColor: Color.fromARGB(1, 245, 245, 245),
@@ -194,7 +232,8 @@ class CommonWidgets {
         });
   }
 
-  static Widget cancelBtn(ScreenScaler scaler, BuildContext context) {
+  static Widget cancelBtn(ScreenScaler scaler, BuildContext context,
+      {Color? color}) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pop();
@@ -205,8 +244,10 @@ class CommonWidgets {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: CustomShape(
           child: Center(
-            child: Text("cancel".tr()).semiBoldText(ColorConstants.primaryColor,
-                scaler.getTextSize(11), TextAlign.center),
+            child: Text("cancel".tr()).semiBoldText(
+                color ?? ColorConstants.primaryColor,
+                scaler.getTextSize(11),
+                TextAlign.center),
           ),
           bgColor: Colors.transparent,
           radius: scaler.getBorderRadiusCircular(10),

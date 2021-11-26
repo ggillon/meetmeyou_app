@@ -24,7 +24,7 @@ class SettingsProvider extends BaseProvider {
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     var userProfile = await mmyEngine!.getUserProfile().catchError((e) {
-      setState(ViewState.Busy);
+      setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
 
@@ -42,7 +42,6 @@ class SettingsProvider extends BaseProvider {
     userDetail.profileUrl = userProfile.photoURL;
 
     setState(ViewState.Idle);
-    notifyListeners();
   }
 
 }

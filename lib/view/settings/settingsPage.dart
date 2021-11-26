@@ -117,6 +117,7 @@ class SettingsPage extends StatelessWidget {
                         DialogHelper.btnWidget(scaler, context, "logout".tr(),
                             ColorConstants.primaryColor, funOnTap: () {
                           auth.signOut();
+                          provider.userDetail.profileUrl = null;
                           SharedPref.clearSharePref();
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               RoutesConstants.loginOptions, (route) => false);

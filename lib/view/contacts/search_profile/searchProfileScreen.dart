@@ -47,8 +47,11 @@ class SearchProfileScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           hideKeyboard(context);
-                          provider.getSearchContacts(
-                              context, searchBarController.text);
+                          if(searchBarController.text.isNotEmpty){
+                            provider.getSearchContacts(
+                                context, searchBarController.text);
+                            provider.searchValue = true;
+                          }
                         },
                         child: DialogHelper.btnWidget(scaler, context,
                             "search".tr(), ColorConstants.primaryColor),
@@ -71,27 +74,39 @@ class SearchProfileScreen extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  provider.searchContactList.length == 0 ||
-                                          searchBarController.text.isEmpty
-                                      ? Container()
-                                      : Text("${provider.searchContactList.length}" +
-                                              " " +
-                                              "profiles_found".tr())
-                                          .boldText(
-                                              ColorConstants.colorBlack,
-                                              scaler.getTextSize(10),
-                                              TextAlign.left),
-                                  SizedBox(height: scaler.getHeight(1)),
-                                  searchBarController.text.isEmpty
-                                      ? Container()
-                                      : contactList(scaler, provider)
-                                ],
-                              ),
-                            )
+                          : provider.searchContactList.length == 0 &&
+                                  provider.searchValue
+                              ? Expanded(
+                                  child: Center(
+                                    child: Text("sorry_no_profile_found".tr())
+                                        .mediumText(
+                                            ColorConstants.primaryColor,
+                                            scaler.getTextSize(10),
+                                            TextAlign.left),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      provider.searchContactList.length == 0 ||
+                                              searchBarController.text.isEmpty
+                                          ? Container()
+                                          : Text("${provider.searchContactList.length}" +
+                                                  " " +
+                                                  "profiles_found".tr())
+                                              .boldText(
+                                                  ColorConstants.colorBlack,
+                                                  scaler.getTextSize(10),
+                                                  TextAlign.left),
+                                      SizedBox(height: scaler.getHeight(1)),
+                                      searchBarController.text.isEmpty
+                                          ? Container()
+                                          : contactList(scaler, provider)
+                                    ],
+                                  ),
+                                )
                     ],
                   ),
                 );
@@ -114,13 +129,17 @@ class SearchProfileScreen extends StatelessWidget {
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
-          provider.getSearchContacts(context, data);
+          if(searchBarController.text.isNotEmpty){
+            provider.getSearchContacts(context, data);
+            provider.searchValue = true;
+          }
         },
         textInputAction: TextInputAction.search,
         keyboardType: TextInputType.name,
         onChanged: (value) {
           provider.updateValue(true);
           provider.searchContactList.clear();
+           provider.searchValue = false;
         },
       ),
     );
@@ -156,9 +175,9 @@ class SearchProfileScreen extends StatelessWidget {
                     provider.searchContactList[index].displayName,
                     profileImg: provider.searchContactList[index].photoURL,
                     searchStatus: provider.searchContactList[index].status,
-                    search: true, iconTapAction: () {
-                  provider.inviteProfile(_scaffoldKey.currentContext!,
-                      provider.searchContactList[index].uid);
+                    search: true, addIconTapAction: () {
+                   provider.inviteProfile(_scaffoldKey.currentContext!,
+                      provider.searchContactList[index]);
                 }),
               );
             }),

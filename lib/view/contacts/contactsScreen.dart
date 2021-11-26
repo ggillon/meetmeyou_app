@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -21,7 +22,6 @@ import 'package:toggle_switch/toggle_switch.dart';
 class ContactsScreen extends StatelessWidget {
   ContactsScreen({Key? key}) : super(key: key);
   final searchBarController = TextEditingController();
-  bool toggle = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,6 @@ class ContactsScreen extends StatelessWidget {
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<ContactsProvider>(
           onModelReady: (provider) {
-            provider.sortContactList();
             provider.getConfirmedContactsAndInvitationsList(context);
           },
           builder: (context, provider, _) {
@@ -49,8 +48,9 @@ class ContactsScreen extends StatelessWidget {
                           TextAlign.left),
                       GestureDetector(
                           onTap: () {
-                            CommonWidgets.bottomSheet(context, scaler,
-                                bottomDesign(scaler, context, provider));
+                            // CommonWidgets.bottomSheet(context, scaler,
+                            //     bottomDesign(scaler, context, provider));
+                            bottomSheet(context, scaler, provider);
                           },
                           child: Padding(
                             padding: scaler.getPaddingLTRB(0.0, 0.0, 1.0, 0.0),
@@ -61,64 +61,125 @@ class ContactsScreen extends StatelessWidget {
                   SizedBox(height: scaler.getHeight(1)),
                   // searchBar(scaler, provider),
                   // SizedBox(height: scaler.getHeight(1)),
-                  allGroupsToggleSwitch(scaler, provider),
+                  //  allGroupsToggleSwitch(scaler, provider),
+                  AnimatedToggle(
+                    values: ['all'.tr(), 'groups'.tr()],
+                    onToggleCallback: (value) {
+                      provider.toggle = value;
+                      if (value == 0) {
+                        provider
+                            .getConfirmedContactsAndInvitationsList(context);
+                      } else {
+                        provider.getGroupList(context);
+                      }
+                      provider.updateValue(true);
+                    },
+                    buttonColor: ColorConstants.colorWhite,
+                    backgroundColor: ColorConstants.colorMediumGray,
+                  ),
                   SizedBox(height: scaler.getHeight(1)),
-                  provider.state == ViewState.Busy
-                      ? Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(child: CircularProgressIndicator()),
-                              SizedBox(height: scaler.getHeight(1)),
-                              Text("loading_contacts".tr()).mediumText(
-                                  ColorConstants.primaryColor,
-                                  scaler.getTextSize(10),
-                                  TextAlign.left),
-                            ],
-                          ),
-                        )
-                      : provider.invitationContactList.length == 0 &&
-                              provider.confirmContactList.length == 0
+                  provider.toggle == 0
+                      ? provider.state == ViewState.Busy
                           ? Expanded(
-                              child: Center(
-                                child: Text("sorry_no_contacts_found".tr())
-                                    .mediumText(ColorConstants.primaryColor,
-                                        scaler.getTextSize(10), TextAlign.left),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(child: CircularProgressIndicator()),
+                                  SizedBox(height: scaler.getHeight(1)),
+                                  Text("loading_contacts".tr()).mediumText(
+                                      ColorConstants.primaryColor,
+                                      scaler.getTextSize(10),
+                                      TextAlign.left),
+                                ],
                               ),
                             )
-                          : Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    provider.invitationContactList.length == 0
-                                        ? Container()
-                                        : Text("invitations".tr()).semiBoldText(
-                                            ColorConstants.colorBlack,
-                                            scaler.getTextSize(9.8),
+                          : provider.invitationContactList.length == 0 &&
+                                  provider.confirmContactList.length == 0
+                              ? Expanded(
+                                  child: Center(
+                                    child: Text("sorry_no_contacts_found".tr())
+                                        .mediumText(
+                                            ColorConstants.primaryColor,
+                                            scaler.getTextSize(10),
                                             TextAlign.left),
-                                    SizedBox(height: scaler.getHeight(1)),
-                                    provider.invitationContactList.length == 0
-                                        ? Container()
-                                        : invitationContactList(
-                                            scaler,
-                                            provider.invitationContactList,
-                                            provider),
-                                    provider.invitationContactList.length == 0
-                                        ? Container()
-                                        : SizedBox(
-                                            height: scaler.getHeight(2.5)),
-                                    provider.confirmContactList.length == 0
-                                        ? Container()
-                                        : confirmContactList(
-                                            scaler,
-                                            provider.confirmContactList,
-                                            provider)
-                                  ],
-                                ),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        provider.invitationContactList.length ==
+                                                0
+                                            ? Container()
+                                            : Text("invitations".tr())
+                                                .semiBoldText(
+                                                    ColorConstants.colorBlack,
+                                                    scaler.getTextSize(9.8),
+                                                    TextAlign.left),
+                                        SizedBox(height: scaler.getHeight(1)),
+                                        provider.invitationContactList.length ==
+                                                0
+                                            ? Container()
+                                            : invitationContactList(
+                                                scaler,
+                                                provider.invitationContactList,
+                                                provider),
+                                        provider.invitationContactList.length ==
+                                                0
+                                            ? Container()
+                                            : SizedBox(
+                                                height: scaler.getHeight(2.5)),
+                                        provider.confirmContactList.length == 0
+                                            ? Container()
+                                            : confirmContactList(
+                                                scaler,
+                                                provider.confirmContactList,
+                                                provider)
+                                      ],
+                                    ),
+                                  ),
+                                )
+                      : provider.state == ViewState.Busy
+                          ? Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(child: CircularProgressIndicator()),
+                                  SizedBox(height: scaler.getHeight(1)),
+                                  Text("loading_groups".tr()).mediumText(
+                                      ColorConstants.primaryColor,
+                                      scaler.getTextSize(10),
+                                      TextAlign.left),
+                                ],
                               ),
                             )
+                          : provider.groupList.length == 0
+                              ? Expanded(
+                                  child: Center(
+                                    child: Text("sorry_no_group_found".tr())
+                                        .mediumText(
+                                            ColorConstants.primaryColor,
+                                            scaler.getTextSize(10),
+                                            TextAlign.left),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: scaler.getHeight(1)),
+                                        confirmContactList(scaler,
+                                            provider.groupList, provider),
+                                      ],
+                                    ),
+                                  ),
+                                )
                 ],
               ),
             );
@@ -179,7 +240,7 @@ class ContactsScreen extends StatelessWidget {
         activeFgColor: ColorConstants.colorBlack,
         inactiveBgColor: ColorConstants.colorMediumGray,
         inactiveFgColor: ColorConstants.colorBlack,
-        // initialLabelIndex: 0,
+        // initialLabelIndex: toggle ? 1 : 0,
         totalSwitches: 2,
         labels: ["All", "Groups"],
         customTextStyles: [
@@ -195,9 +256,7 @@ class ContactsScreen extends StatelessWidget {
               fontSize: scaler.getTextSize(8.5))
         ],
         radiusStyle: true,
-        onToggle: (index) {
-          //  provider.updateToggle();
-        },
+        onToggle: (index) {},
       ),
     );
   }
@@ -276,71 +335,166 @@ class ContactsScreen extends StatelessWidget {
 
   Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
       List<Contact> cList, int index, ContactsProvider provider) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, RoutesConstants.contactDescription,
-                  arguments: UserDetail(
-                      firstName: cList[index].displayName,
-                      email: cList[index].email,
-                      value: false,
-                      profileUrl: cList[index].photoURL,
-                      phone: cList[index].phoneNumber,
-                      address: cList[index].addresses['Home']))
-              .then((value) {
-            provider.getConfirmedContactsAndInvitationsList(context);
-          });
-        },
-        child: CommonWidgets.userContactCard(
-            scaler, cList[index].email, cList[index].displayName,
-            profileImg: cList[index].photoURL));
+    return provider.toggle == 0
+        ? GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, RoutesConstants.contactDescription,
+                      arguments: UserDetail(
+                          firstName: cList[index].displayName,
+                          email: cList[index].email,
+                          value: false,
+                          profileUrl: cList[index].photoURL,
+                          phone: cList[index].phoneNumber,
+                          address: cList[index].addresses['Home']))
+                  .then((value) {
+                provider.getConfirmedContactsAndInvitationsList(context);
+              });
+            },
+            child: CommonWidgets.userContactCard(
+                scaler, cList[index].email, cList[index].displayName,
+                profileImg: cList[index].photoURL))
+        : GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                      context, RoutesConstants.groupDescriptionScreen,
+                      arguments: UserDetail(
+                          firstName: cList[index].displayName,
+                          profileUrl: cList[index].photoURL,
+                          about: cList[index].about,
+                          membersLength: cList[index].group.length.toString(),
+                          group: cList[index].group))
+                  .then((value) {
+                provider.getGroupList(context);
+              });
+            },
+            child: CommonWidgets.userContactCard(
+                scaler,
+                cList[index].group.length.toString() + " " + "members".tr(),
+                cList[index].displayName,
+                profileImg: cList[index].photoURL));
   }
 
-  Widget bottomDesign(
-      ScreenScaler scaler, BuildContext context, ContactsProvider provider) {
-    return Column(
-      children: [
-        Card(
-          color: ColorConstants.colorWhite.withOpacity(0.7),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Column(
-            children: [
-              SizedBox(height: scaler.getHeight(1.5)),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(
-                          context, RoutesConstants.searchProfileScreen)
-                      .then((value) {
-                    provider.getConfirmedContactsAndInvitationsList(context);
-                  });
-                },
-                child: Text("search_for_contact".tr()).regularText(
-                    ColorConstants.primaryColor,
-                    scaler.getTextSize(11),
-                    TextAlign.center),
-              ),
-              SizedBox(height: scaler.getHeight(0.9)),
-              Divider(),
-              SizedBox(height: scaler.getHeight(0.9)),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(
-                      context, RoutesConstants.createEditGroupScreen);
-                },
-                child: Text("create_group_of_contacts".tr()).regularText(
-                    ColorConstants.primaryColor,
-                    scaler.getTextSize(11),
-                    TextAlign.center),
-              ),
-              SizedBox(height: scaler.getHeight(1.5)),
-            ],
-          ),
+  // Widget bottomDesign(
+  //     ScreenScaler scaler, BuildContext context, ContactsProvider provider) {
+  //   return Column(
+  //     children: [
+  //       Card(
+  //         color: ColorConstants.colorWhite.withOpacity(0.7),
+  //         shape:
+  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+  //         child: Column(
+  //           children: [
+  //             SizedBox(height: scaler.getHeight(1.5)),
+  //             GestureDetector(
+  //               onTap: () {
+  //                 Navigator.of(context).pop();
+  //                 Navigator.pushNamed(
+  //                         context, RoutesConstants.searchProfileScreen)
+  //                     .then((value) {
+  //                   provider.getConfirmedContactsAndInvitationsList(context);
+  //                 });
+  //               },
+  //               child: Text("search_for_contact".tr()).regularText(
+  //                   ColorConstants.primaryColor,
+  //                   scaler.getTextSize(11),
+  //                   TextAlign.center),
+  //             ),
+  //             SizedBox(height: scaler.getHeight(0.9)),
+  //             Divider(),
+  //             SizedBox(height: scaler.getHeight(0.9)),
+  //             GestureDetector(
+  //               onTap: () {
+  //                 Navigator.of(context).pop();
+  //                 Navigator.pushNamed(
+  //                     context, RoutesConstants.createEditGroupScreen);
+  //               },
+  //               child: Text("create_group_of_contacts".tr()).regularText(
+  //                   ColorConstants.primaryColor,
+  //                   scaler.getTextSize(11),
+  //                   TextAlign.center),
+  //             ),
+  //             SizedBox(height: scaler.getHeight(1.5)),
+  //           ],
+  //         ),
+  //       ),
+  //       CommonWidgets.cancelBtn(scaler, context),
+  //       SizedBox(height: scaler.getHeight(1)),
+  //     ],
+  //   );
+  // }
+
+  bottomSheet(
+      BuildContext context, ScreenScaler scaler, ContactsProvider provider) {
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
         ),
-        CommonWidgets.cancelBtn(scaler, context),
-        SizedBox(height: scaler.getHeight(1)),
-      ],
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: scaler.getHeight(0.5)),
+              Container(
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorMediumGray,
+                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                height: scaler.getHeight(0.4),
+                width: scaler.getWidth(12),
+              ),
+              Column(
+                children: [
+                  SizedBox(height: scaler.getHeight(2)),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.pushNamed(
+                              context, RoutesConstants.searchProfileScreen)
+                          .then((value) {
+                        provider
+                            .getConfirmedContactsAndInvitationsList(context);
+                      });
+                    },
+                    child: Text("search_for_contact".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  Divider(),
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.pushNamed(
+                              context, RoutesConstants.createEditGroupScreen)
+                          .then((value) {
+                        provider.getGroupList(context);
+                      });
+                    },
+                    child: Text("create_group_of_contacts".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                  SizedBox(height: scaler.getHeight(2)),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text("cancel".tr()).semiBoldText(
+                      ColorConstants.colorRed,
+                      scaler.getTextSize(11),
+                      TextAlign.center),
+                ),
+              ),
+              SizedBox(height: scaler.getHeight(1)),
+            ],
+          );
+        });
   }
 }

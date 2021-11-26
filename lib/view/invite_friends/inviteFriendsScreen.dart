@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
@@ -31,7 +32,6 @@ class InviteFriendsScreen extends StatelessWidget {
         // floatingActionButtonLocation:  FloatingActionButtonLocation.centerFloat,
         body: BaseView<InviteFriendsProvider>(
           onModelReady: (provider) {
-            provider.sortContactList();
             provider.getPhoneContacts(context);
             // provider.isChecked =
             //     List<bool>.filled(provider.contactList.length, false);
@@ -100,7 +100,8 @@ class InviteFriendsScreen extends StatelessWidget {
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
             scaler.getTextSize(12), ColorConstants.colorBlack),
-        decoration: ViewDecoration.inputDecorationForSearchBox("search_field_name".tr(), scaler),
+        decoration: ViewDecoration.inputDecorationForSearchBox(
+            "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
           // FocusScope.of(context).requestFocus(nodes[1]);
         },
@@ -177,39 +178,13 @@ class InviteFriendsScreen extends StatelessWidget {
             padding: scaler.getPaddingAll(10.0),
             child: Row(
               children: [
-                ClipRRect(
-                    borderRadius: scaler.getBorderRadiusCircular(10.0),
-                    child: provider.contactList[index].photoURL == null
-                        ? Container(
-                            color: ColorConstants.primaryColor,
-                            width: scaler.getWidth(10),
-                            height: scaler.getWidth(10),
-                          )
-                        : ImageView(
-                            color: ColorConstants.primaryColor,
-                            path: provider.contactList[index].photoURL,
-                            width: scaler.getWidth(10),
-                            height: scaler.getWidth(10))),
+                CommonWidgets.profileCardImageDesign(
+                    scaler, provider.contactList[index].photoURL),
                 SizedBox(width: scaler.getWidth(2.5)),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(provider.contactList[index].displayName
-                              .capitalize())
-                          .semiBoldText(ColorConstants.colorBlack,
-                              scaler.getTextSize(9.8), TextAlign.left,
-                              maxLines: 1, overflow: TextOverflow.ellipsis),
-                      SizedBox(height: scaler.getHeight(0.2)),
-                      Text(provider.contactList[index].email).regularText(
-                          ColorConstants.colorGray,
-                          scaler.getTextSize(8.3),
-                          TextAlign.left,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                    ],
-                  ),
-                ),
+                CommonWidgets.profileCardNameAndEmailDesign(
+                    scaler,
+                    provider.contactList[index].displayName,
+                    provider.contactList[index].email),
                 Checkbox(
                   value: provider.isChecked[index],
                   onChanged: (bool? value) {
