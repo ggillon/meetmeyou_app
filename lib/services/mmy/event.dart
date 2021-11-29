@@ -36,12 +36,21 @@ Event createLocalEvent(Profile organiser) {
 }
 
 Future<Event> createEvent(User currentUser, Event event) async {
+  /*if(event.organiserID != currentUser.uid)
+    throw('Error trying to create an event with wrong ID');*/
+  //print(event.organiserID);
   await FirestoreDB(uid: currentUser.uid).setEvent(event);
   return event;
 }
 
-Future<Event> updateEvent(User currentUser, String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, String? formText, Map? form}) async {
-  Event event = await FirestoreDB(uid: currentUser.uid).getEvent(eid);
+Future<Event> updateEvent(User currentUser, String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, String? formText, Map? form}) async {
+
+  Event? event;
+
+  if (eid != null)
+    event = await FirestoreDB(uid: currentUser.uid).getEvent(eid);
+  else
+    event = createLocalEvent(await getUserProfile(currentUser));
 
   event
   ..title = title ?? event.title
@@ -72,8 +81,8 @@ Future<Event> removeInvitations(User currentUser, String eid, List<String> CIDs)
   return event;
 }
 
-Map Invitations({String? CID, List<String>? CIDs, required String inviteStatus}){
-  Map newList = Map();
+Map<String, dynamic> Invitations({String? CID, List<String>? CIDs, required String inviteStatus}){
+  Map<String, dynamic> newList = <String, dynamic>{};
   if(CID != null) {
     newList.addAll({CID: inviteStatus});
     return newList;
@@ -86,8 +95,15 @@ Map Invitations({String? CID, List<String>? CIDs, required String inviteStatus})
   return newList;
 }
 
-Future<List<Event>> getUserEvents(User currentUser) async {
-  return await FirestoreDB(uid: currentUser.uid).getUserEvents(currentUser.uid);
+Future<List<Event>> getUserEvents(User currentUser,{List<String>? filters}) async {
+  List<Event> eventList = [];
+  if(filters == null)
+    filters = [EVENT_ORGANISER, EVENT_INVITED, EVENT_ATTENDING, EVENT_NOT_ATTENDING, EVENT_CANCELED];
+  for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(currentUser.uid)) {
+    if(filters.contains(event.invitedContacts[currentUser.uid]) && event.start.isAfter(DateTime.now().subtract(Duration(hours: 24))))
+      eventList.add(event);
+  }
+  return eventList;
 }
 
 Future<Event> getEvent(User currentUser, String eid) async {

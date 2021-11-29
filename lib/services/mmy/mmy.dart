@@ -60,15 +60,17 @@ abstract class MMYEngine {
   /// EVENT ///
 
   /// Get all Events where user is invited or organiser
-  Future<List<Event>> getUserEvents();
+  Future<List<Event>> getUserEvents({List<String>? filters});
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
-  Future<Event> createEvent(Event event);
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,});
   /// Update an event
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,});
+  Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,});
   /// Delete an event
   Future<void> deleteEvent(String eid);
+  /// Get even link
+  String getEventLink(String eid);
   /// Invite contact to event
   Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs});
   /// Remove contact from event
@@ -229,13 +231,13 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<Event>> getUserEvents() {
-    return eventLib.getUserEvents(_currentUser);
+  Future<List<Event>> getUserEvents({List<String>? filters}) {
+    return eventLib.getUserEvents(_currentUser, filters: filters);
   }
 
   @override
-  Future<Event> createEvent(Event event) {
-    return eventLib.createEvent(_currentUser, event);
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,}) {
+    return eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
   }
 
   @override
@@ -266,9 +268,13 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) async {
+  Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) async {
     return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
   }
 
+  @override
+  String getEventLink(String eid) {
+    return 'http://event.meetmeyou.com/$eid';
+  }
 
 }

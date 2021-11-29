@@ -45,6 +45,8 @@ Widget ContactMenu(BuildContext context, Function setPage) {
 
   final auth = Provider.of<AuthBase>(context, listen: false);
 
+
+
   return Scaffold(
     appBar: AppBar(),
     body:Column(
@@ -111,7 +113,7 @@ Widget TestSearchProfile(BuildContext context, Function setPage) {
                       child: SizedBox(
                         height: 100,
                         child: FutureBuilder<List<Contact>>(
-                            future: mmy.searchProfiles('Choupy'),
+                            future: mmy.searchProfiles('Gillon'),
                             initialData: emptyList,
                             builder: (context, contactList) => ListView.builder(
                               itemCount: contactList.data!.length,

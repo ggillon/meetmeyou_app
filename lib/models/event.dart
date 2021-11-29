@@ -14,6 +14,7 @@ const EVENT_ATTENDING = 'Attending';
 const EVENT_NOT_ATTENDING = 'Not Attending';
 const EVENT_NOT_INTERESTED = 'Not Interested';
 const EVENT_CANCELED = 'Canceled';
+const EVENT_DELETED = 'Canceled';
 const EVENT_REPLIED = 'Replied';
 
 // Admin Type
