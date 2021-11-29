@@ -67,6 +67,8 @@ abstract class MMYEngine {
   Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,});
   /// Update an event
   Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,});
+  /// Get status of user
+  Future<String> eventUserStatus(String eid);
   /// Delete an event
   Future<void> deleteEvent(String eid);
   /// Get even link
@@ -248,6 +250,11 @@ class MMY implements MMYEngine {
   @override
   Future<Event> getEvent(String eid) async {
     return await eventLib.getEvent(_currentUser, eid);
+  }
+
+  @override
+  Future<String> eventUserStatus(String eid) async {
+     return (await eventLib.getEvent(_currentUser, eid)).invitedContacts[_currentUser.uid];
   }
 
   @override
