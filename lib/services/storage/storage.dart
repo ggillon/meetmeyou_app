@@ -29,6 +29,15 @@ Future<String> storeEventPicture(File file, {required String eid}) async {
   return FirebaseStorage.instance.ref(path).getDownloadURL();
 }
 
+Future<String> storeGroupPicture(File file, {required String eid}) async {
+  final path = 'group_pictures/${eid}.png';
+  imageLib.Image image = imageLib.decodeImage(file.readAsBytesSync())!;
+  imageLib.Image eventPicture = imageLib.copyResize(image, height: 1440);
+  File profilePic = await File('${eid}.png').writeAsBytes(imageLib.encodePng(eventPicture));
+  await FirebaseStorage.instance.ref(path).putFile(profilePic);
+  return FirebaseStorage.instance.ref(path).getDownloadURL();
+}
+
 Future<String> getFilePath(String uid)async {
   final folderName = StringConstants.appName.toLowerCase();
   final directory = Directory("storage/emulated/0/$folderName");

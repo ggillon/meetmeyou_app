@@ -48,6 +48,8 @@ abstract class MMYEngine {
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about});
   /// Add contact(s) to group
   Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
+  /// UpdateGroupPicture
+  Future<Contact> updateGroupPicture(String cid, File file);
   /// Remove contact(s) from group
   Future<Contact> removeContactsFromGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
   /// Search for profiles
@@ -189,6 +191,12 @@ class MMY implements MMYEngine {
   @override
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about}) {
     return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
+  }
+
+  @override
+  Future<Contact> updateGroupPicture(String cid, File file) async {
+    String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
+    return contactLib.updateGroupContact(_currentUser, cid, photoURL: photoURL);
   }
 
   @override
