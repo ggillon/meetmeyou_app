@@ -9,6 +9,8 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/models/group_detail.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/create_edit_group_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -17,7 +19,8 @@ import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class CreateEditGroupScreen extends StatelessWidget {
   CreateEditGroupScreen({Key? key}) : super(key: key);
-  final nameController = TextEditingController();
+
+  final groupNameController = TextEditingController();
   final descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -28,192 +31,177 @@ class CreateEditGroupScreen extends StatelessWidget {
       child: Scaffold(
           backgroundColor: ColorConstants.colorWhite,
           appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: BaseView<CreateEditGroupProvider>(
-              onModelReady: (provider) {},
-              builder: (builder, provider, _) {
-                return LayoutBuilder(builder: (context, constraint) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraint.maxHeight),
-                      child: IntrinsicHeight(
-                        child: Form(
-                          key: _formKey,
-                          child: Padding(
-                            padding: scaler.getPaddingLTRB(2.5, 1.0, 2.5, 1.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: GestureDetector(
-                                    onTap: provider.enable
-                                        ? () async {
-                                            var value = await provider
-                                                .permissionCheck();
-                                            if (value) {
-                                              showDialog(
-                                                  barrierDismissible: false,
-                                                  context: context,
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      CustomDialog(
-                                                        cameraClick: () {
-                                                          provider.getImage(
-                                                              context, 1);
-                                                        },
-                                                        galleryClick: () {
-                                                          provider.getImage(
-                                                              context, 2);
-                                                        },
-                                                        cancelClick: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ));
-                                            }
-                                          }
-                                        : () {},
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      child: Stack(
-                                        children: [
-                                          provider.image == null
-                                              ? provider.imageUrl != null
-                                                  ? ImageView(
-                                                      path: provider.imageUrl,
-                                                      width:
-                                                          scaler.getWidth(20),
-                                                      fit: BoxFit.cover,
-                                                      height:
-                                                          scaler.getWidth(20),
-                                                    )
-                                                  : Container(
-                                                      color: ColorConstants
-                                                          .primaryColor,
-                                                      width:
-                                                          scaler.getWidth(20),
-                                                      height:
-                                                          scaler.getWidth(20),
-                                                    )
-                                              : provider.image != null
-                                                  ? ImageView(
-                                                      file: provider.image,
-                                                      width:
-                                                          scaler.getWidth(20),
-                                                      fit: BoxFit.cover,
-                                                      height:
-                                                          scaler.getWidth(20),
-                                                    )
-                                                  : Container(
-                                                      color: ColorConstants
-                                                          .primaryColor,
-                                                      width:
-                                                          scaler.getWidth(20),
-                                                      height:
-                                                          scaler.getWidth(20),
-                                                    ),
-                                          Positioned(
-                                              right: 5,
-                                              top: 5,
-                                              child: CircleAvatar(
-                                                radius: scaler.getWidth(2),
-                                                child: ClipOval(
-                                                  child: Container(
+          body: BaseView<CreateEditGroupProvider>(onModelReady: (provider) {
+            groupNameController.text = provider.groupDetail.createGroup ?? false
+                ? ""
+                : provider.groupDetail.groupName ?? "";
+            descriptionController.text =
+                provider.groupDetail.createGroup ?? false
+                    ? ""
+                    : provider.groupDetail.about ?? "";
+          }, builder: (builder, provider, _) {
+            return LayoutBuilder(builder: (context, constraint) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraint.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: scaler.getPaddingLTRB(2.5, 1.0, 2.5, 1.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  var value = await provider.permissionCheck();
+                                  if (value) {
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            CustomDialog(
+                                              cameraClick: () {
+                                                provider.getImage(context, 1);
+                                              },
+                                              galleryClick: () {
+                                                provider.getImage(context, 2);
+                                              },
+                                              cancelClick: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ));
+                                  }
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Stack(
+                                    children: [
+                                      provider.image == null
+                                          ? provider.imageUrl != null
+                                              ? ImageView(
+                                                  path: provider.imageUrl,
+                                                  width: scaler.getWidth(20),
+                                                  fit: BoxFit.cover,
+                                                  height: scaler.getWidth(20),
+                                                )
+                                              : Container(
+                                                  color: ColorConstants
+                                                      .primaryColor,
+                                                  width: scaler.getWidth(20),
+                                                  height: scaler.getWidth(20),
+                                                )
+                                          : provider.image != null
+                                              ? ImageView(
+                                                  file: provider.image,
+                                                  width: scaler.getWidth(20),
+                                                  fit: BoxFit.cover,
+                                                  height: scaler.getWidth(20),
+                                                )
+                                              : Container(
+                                                  color: ColorConstants
+                                                      .primaryColor,
+                                                  width: scaler.getWidth(20),
+                                                  height: scaler.getWidth(20),
+                                                ),
+                                      Positioned(
+                                          right: 5,
+                                          top: 5,
+                                          child: CircleAvatar(
+                                            radius: scaler.getWidth(2),
+                                            child: ClipOval(
+                                              child: Container(
+                                                color:
+                                                    ColorConstants.colorWhite,
+                                                width: scaler.getWidth(5),
+                                                height: scaler.getHeight(5),
+                                                child: Center(
+                                                  child: ImageView(
                                                     color: ColorConstants
-                                                        .colorWhite,
-                                                    width: scaler.getWidth(5),
-                                                    height: scaler.getHeight(5),
-                                                    child: Center(
-                                                      child: ImageView(
-                                                        color: ColorConstants
-                                                            .colorBlack,
-                                                        path: ImageConstants
-                                                            .ic_edit,
-                                                      ),
-                                                    ),
+                                                        .colorBlack,
+                                                    path:
+                                                        ImageConstants.ic_edit,
                                                   ),
                                                 ),
-                                              ))
-                                        ],
-                                      ),
-                                    ),
+                                              ),
+                                            ),
+                                          ))
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: scaler.getHeight(2)),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text("name".tr()).boldText(
-                                      Colors.black,
-                                      scaler.getTextSize(9.5),
-                                      TextAlign.center),
-                                ),
-                                SizedBox(
-                                  height: scaler.getHeight(0.2),
-                                ),
-                                TextFormField(
-                                  enabled: provider.enable ? true : false,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  controller: nameController,
-                                  style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
-                                      ColorConstants.colorBlack),
-                                  decoration:
-                                      ViewDecoration.inputDecorationWithCurve(
-                                          "Ian Hacks",
-                                          scaler,
-                                          ColorConstants.primaryColor),
-                                  onFieldSubmitted: (data) {
-                                    // FocusScope.of(context).requestFocus(nodes[1]);
-                                  },
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.name,
-                                  validator: (value) {
-                                    if (value!.trim().isEmpty) {
-                                      return "group_name_required".tr();
-                                    }
-                                    {
-                                      return null;
-                                    }
-                                  },
-                                ),
-                                SizedBox(
-                                  height: scaler.getHeight(1),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text("description".tr()).boldText(
-                                      Colors.black,
-                                      scaler.getTextSize(9.5),
-                                      TextAlign.center),
-                                ),
-                                SizedBox(
-                                  height: scaler.getHeight(0.2),
-                                ),
-                                TextFormField(
-                                  enabled: provider.enable ? true : false,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  controller: descriptionController,
-                                  style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
-                                      ColorConstants.colorBlack),
-                                  decoration:
-                                      ViewDecoration.inputDecorationWithCurve(
-                                          "random@random.com",
-                                          scaler,
-                                          ColorConstants.primaryColor),
-                                  onFieldSubmitted: (data) {
-                                    // FocusScope.of(context).requestFocus(nodes[1]);
-                                  },
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.name,
-                                ),
-                                SizedBox(
-                                  height: scaler.getHeight(2.5),
-                                ),
-                                provider.groupCreated
+                              ),
+                            ),
+                            SizedBox(height: scaler.getHeight(2)),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text("name".tr()).boldText(Colors.black,
+                                  scaler.getTextSize(9.5), TextAlign.center),
+                            ),
+                            SizedBox(
+                              height: scaler.getHeight(0.2),
+                            ),
+                            TextFormField(
+                              textCapitalization: TextCapitalization.sentences,
+                              controller: groupNameController,
+                              style: ViewDecoration.textFieldStyle(
+                                  scaler.getTextSize(9.5),
+                                  ColorConstants.colorBlack),
+                              decoration:
+                                  ViewDecoration.inputDecorationWithCurve(
+                                      "Ian Hacks",
+                                      scaler,
+                                      ColorConstants.primaryColor),
+                              onFieldSubmitted: (data) {
+                                // FocusScope.of(context).requestFocus(nodes[1]);
+                              },
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.name,
+                              validator: (value) {
+                                if (value!.trim().isEmpty) {
+                                  return "group_name_required".tr();
+                                }
+                                {
+                                  return null;
+                                }
+                              },
+                            ),
+                            SizedBox(
+                              height: scaler.getHeight(1),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text("description".tr()).boldText(
+                                  Colors.black,
+                                  scaler.getTextSize(9.5),
+                                  TextAlign.center),
+                            ),
+                            SizedBox(
+                              height: scaler.getHeight(0.2),
+                            ),
+                            TextFormField(
+                              textCapitalization: TextCapitalization.sentences,
+                              controller: descriptionController,
+                              style: ViewDecoration.textFieldStyle(
+                                  scaler.getTextSize(9.5),
+                                  ColorConstants.colorBlack),
+                              decoration:
+                                  ViewDecoration.inputDecorationWithCurve(
+                                      "random@random.com",
+                                      scaler,
+                                      ColorConstants.primaryColor),
+                              onFieldSubmitted: (data) {
+                                // FocusScope.of(context).requestFocus(nodes[1]);
+                              },
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.name,
+                            ),
+                            SizedBox(
+                              height: scaler.getHeight(2.5),
+                            ),
+                            provider.groupDetail.createGroup ?? false
+                                ? provider.groupCreated
                                     ? CommonWidgets.settingsPageCard(
                                         scaler,
                                         context,
@@ -224,40 +212,62 @@ class CreateEditGroupScreen extends StatelessWidget {
                                           Navigator.pushNamed(
                                                   context,
                                                   RoutesConstants
-                                                      .groupContactsScreen,
-                                                  arguments: provider.groupCid)
+                                                      .groupContactsScreen)
                                               .then((value) {
-                                            provider.enable = false;
+                                            provider.update = true;
                                           });
                                         }
                                       })
-                                    : Container(),
-                                SizedBox(
-                                  height: scaler.getHeight(2),
-                                ),
-                                CommonWidgets.expandedRowButton(
-                                    context,
+                                    : Container()
+                                : CommonWidgets.settingsPageCard(
                                     scaler,
-                                    "discard".tr(),
-                                    "save_changes".tr(), onTapBtn2: () {
-                                  hideKeyboard(context);
-                                  if (_formKey.currentState!.validate()) {
-                                    provider.enable
-                                        ? provider.createNewGroupContact(
-                                            context, nameController.text,
-                                            about: descriptionController.text)
-                                        : Navigator.of(context).pop();
-                                  }
-                                })
-                              ],
+                                    context,
+                                    ImageConstants.person_icon,
+                                    "manage_group_contacts".tr(),
+                                    true, onTapCard: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RoutesConstants.groupContactsScreen,
+                                      ).then((value) {
+                                        provider.update = true;
+                                      });
+                                    }
+                                  }),
+                            SizedBox(
+                              height: scaler.getHeight(2),
                             ),
-                          ),
+                            CommonWidgets.expandedRowButton(
+                                context,
+                                scaler,
+                                "discard".tr(),
+                                "save_changes".tr(), onTapBtn2: () {
+                              hideKeyboard(context);
+                              if (_formKey.currentState!.validate()) {
+                                provider.groupDetail.createGroup!
+                                    ? provider.update
+                                        ? provider.updateGroupContact(context,
+                                            provider.groupDetail.groupCid ?? "",
+                                            groupName: groupNameController.text,
+                                            about: descriptionController.text)
+                                        : provider.createNewGroupContact(
+                                            context, groupNameController.text,
+                                            about: descriptionController.text)
+                                    : provider.updateGroupContact(context,
+                                        provider.groupDetail.groupCid ?? "",
+                                        groupName: groupNameController.text,
+                                        about: descriptionController.text);
+                              }
+                            })
+                          ],
                         ),
                       ),
                     ),
-                  );
-                });
-              })),
+                  ),
+                ),
+              );
+            });
+          })),
     );
   }
 }

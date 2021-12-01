@@ -125,14 +125,14 @@ class Router {
 
       case RoutesConstants.groupDescriptionScreen:
         return MaterialPageRoute(
-            builder: (_) => GroupDescriptionScreen(userDetail: settings.arguments as UserDetail), settings: settings);
+            builder: (_) => GroupDescriptionScreen(), settings: settings);
 
       case RoutesConstants.createEditGroupScreen:
         return MaterialPageRoute(
             builder: (_) => CreateEditGroupScreen(), settings: settings);
 
       case RoutesConstants.groupContactsScreen:
-        return MaterialPageRoute(builder: (_) => GroupContactsScreen(groupCid: settings.arguments as String), settings: settings);
+        return MaterialPageRoute(builder: (_) => GroupContactsScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

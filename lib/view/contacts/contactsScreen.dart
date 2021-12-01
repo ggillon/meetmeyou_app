@@ -355,15 +355,17 @@ class ContactsScreen extends StatelessWidget {
                 profileImg: cList[index].photoURL))
         : GestureDetector(
             onTap: () {
+              provider.setGroupValue(cList[index]);
               Navigator.pushNamed(
-                      context, RoutesConstants.groupDescriptionScreen,
-                      arguments: UserDetail(
-                          firstName: cList[index].displayName,
-                          profileUrl: cList[index].photoURL,
-                          about: cList[index].about,
-                          membersLength: cList[index].group.length.toString(),
-                          group: cList[index].group))
-                  .then((value) {
+                context, RoutesConstants.groupDescriptionScreen,
+                // arguments: UserDetail(
+                //     groupName: cList[index].displayName,
+                //     profileUrl: cList[index].photoURL,
+                //     about: cList[index].about,
+                //     membersLength: cList[index].group.length.toString(),
+                //     group: cList[index].group,
+                //     groupCid: cList[index].cid, createGroup: true)
+              ).then((value) {
                 provider.getGroupList(context);
               });
             },

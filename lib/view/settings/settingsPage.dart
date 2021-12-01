@@ -52,68 +52,58 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: scaler.getHeight(2.5)),
-                  Container(
-                    height: scaler.getHeight(39),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.person_icon,
-                              "invite_friends".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.inviteFriendsScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.person_icon,
-                              "rejected_invites".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.rejectedInvitesScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.archive_icon,
-                              "history".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.historyScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.calendar_icon,
-                              "calender_settings".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.calendarSettingsScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.about_icon,
-                              "about".tr(),
-                              false, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.aboutPage);
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
+                  SingleChildScrollView(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.person_icon,
+                            "invite_friends".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.inviteFriendsScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.person_icon,
+                            "rejected_invites".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.rejectedInvitesScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.archive_icon,
+                            "history".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.historyScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.calendar_icon,
+                            "calender_settings".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.calendarSettingsScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.about_icon,
+                            "about".tr(),
+                            false, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.aboutPage);
+                        }),
                         DialogHelper.btnWidget(scaler, context, "logout".tr(),
                             ColorConstants.primaryColor, funOnTap: () {
                           auth.signOut();
@@ -201,6 +191,4 @@ class SettingsPage extends StatelessWidget {
             ),
           );
   }
-
-
 }

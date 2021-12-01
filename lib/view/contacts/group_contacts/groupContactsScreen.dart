@@ -9,14 +9,14 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/group_contacts_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class GroupContactsScreen extends StatelessWidget {
-  GroupContactsScreen({Key? key, this.groupCid}) : super(key: key);
+  GroupContactsScreen({Key? key}) : super(key: key);
   final searchBarController = TextEditingController();
-  String? groupCid;
 
   @override
   Widget build(BuildContext context) {
@@ -168,16 +168,30 @@ class GroupContactsScreen extends StatelessWidget {
                     provider.confirmContactList[index].displayName,
                     provider.confirmContactList[index].email),
                 Checkbox(
-                  value: provider.isChecked[index],
+                  value: provider
+                      .checkIsSelected(provider.confirmContactList[index]),
                   onChanged: (bool? value) {
-                    provider.setCheckBoxValue(value!, index);
-                    if (provider.isChecked[index]) {
-                      provider.addContactsToGroup(context, groupCid!,
-                          provider.confirmContactList[index].cid);
-                    } else{
-                      provider.removeContactsFromGroup(context, groupCid!,
-                          provider.confirmContactList[index].cid);
+                    if (value!) {
+                      provider.addContactsToGroup(
+                          context,
+                          provider.groupDetail.groupCid ?? "",
+                          provider.confirmContactList[index]);
+                    } else {
+                      provider.removeContactsFromGroup(
+                          context,
+                          provider.groupDetail.groupCid ?? "",
+                          provider.confirmContactList[index]);
                     }
+
+                    // if (provider.isChecked[index]) {
+                    //   provider.addContactsToGroup(context, userDetail.groupCid!,
+                    //       provider.confirmContactList[index].cid);
+                    // } else {
+                    //   provider.removeContactsFromGroup(
+                    //       context,
+                    //       userDetail.groupCid!,
+                    //       provider.confirmContactList[index].cid);
+                    // }
                     // provider.isChecked[index]
                     //     ? provider.checklist
                     //         .add(provider.myContactListName[index])

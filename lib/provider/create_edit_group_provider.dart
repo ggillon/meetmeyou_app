@@ -6,17 +6,22 @@ import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CreateEditGroupProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  GroupDetail groupDetail = locator<GroupDetail>();
   String? imageUrl;
   File? image;
+
   bool groupCreated = false;
-  String? groupCid;
-  bool enable = true;
+  bool update = false;
+
+  // String? groupCid;
 
   Future<bool> permissionCheck() async {
     var status = await Permission.storage.status;
@@ -79,12 +84,47 @@ class CreateEditGroupProvider extends BaseProvider {
     });
 
     print("value is ${value}");
-    groupCid = value.cid;
+    groupDetail.groupCid = value.cid;
+    // groupCid = value.cid;
 
     setState(ViewState.Idle);
     groupCreated = true;
-    enable = false;
+    update = true;
+    //enable = false;
     // Navigator.of(context).pop();
     DialogHelper.showMessage(context, "Group created successfully");
   }
+
+  Future updateGroupContact(BuildContext context, String groupCid,
+      {String? groupName, String? groupImg, String? about}) async {
+    setState(ViewState.Busy);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!
+        .updateGroupContact(groupCid,
+            displayName: groupName,
+            photoURL: groupImg ??
+                "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
+            about: about ?? "")
+        .catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      setState(ViewState.Idle);
+
+      groupDetail.groupName = value.displayName;
+      groupDetail.about = value.about;
+      groupDetail.membersLength = value.group.length.toString();
+
+      Navigator.of(context).pop();
+    }
+
+  }
+
+/*void updateGroupMembers(List<Contact> groupMembersList) {
+    this.groupMembersList = groupMembersList;
+  }*/
 }

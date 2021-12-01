@@ -8,15 +8,16 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/group_description_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 
 class GroupDescriptionScreen extends StatelessWidget {
-  const GroupDescriptionScreen({Key? key, required this.userDetail})
-      : super(key: key);
-  final UserDetail userDetail;
+  GroupDescriptionScreen({Key? key}) : super(key: key);
+
+   GroupDescriptionProvider provider = locator<GroupDescriptionProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +27,21 @@ class GroupDescriptionScreen extends StatelessWidget {
           backgroundColor: ColorConstants.colorWhite,
           appBar: DialogHelper.appBarWithBack(scaler, context, showEdit: true,
               editClick: () {
-            Navigator.pushNamed(context, RoutesConstants.createEditGroupScreen);
+            Navigator.pushNamed(
+              context,
+              RoutesConstants.createEditGroupScreen,
+            ).then((value) {
+              this.provider.getGroupDetail();
+            //  provider.groupDetail.membersLength = provider.groupDetail.groupConfirmContactList?.length.toString();
+            });
           }),
           body: BaseView<GroupDescriptionProvider>(
             onModelReady: (provider) {
-              provider.getGroupContactsList(context, userDetail.group!);
+              this.provider = provider;
+              provider.getGroupContactsList(
+                  context, provider.groupDetail.group!);
+              provider.getGroupDetail();
+              //  provider.groupDetail.groupConfirmContactList = provider.groupContactList;
             },
             builder: (builder, provider, _) {
               return Padding(
@@ -40,15 +51,15 @@ class GroupDescriptionScreen extends StatelessWidget {
                   children: [
                     SizedBox(height: scaler.getHeight(1.0)),
                     CommonWidgets.userDetails(scaler,
-                        profilePic: userDetail.profileUrl,
-                        firstName: userDetail.firstName,
+                        profilePic: provider.groupPhotoUrl,
+                        firstName: provider.groupName,
                         lastName: "",
-                        email: userDetail.about),
+                        email: provider.groupDetail.about),
                     SizedBox(height: scaler.getHeight(1.5)),
-                    userDetail.membersLength == 0.toString() ||
-                            userDetail.membersLength == null
+                    provider.membersLength == 0.toString() ||
+                            provider.membersLength == null
                         ? Container()
-                        : Text("${userDetail.membersLength}" +
+                        : Text("${provider.membersLength}" +
                                 " " +
                                 "contacts_in_group".tr())
                             .boldText(ColorConstants.colorBlack,
@@ -82,7 +93,7 @@ class GroupDescriptionScreen extends StatelessWidget {
                               )
                             : Expanded(
                                 child: SingleChildScrollView(
-                                  child: confirmContactList(scaler,
+                                  child: groupcontactList(scaler,
                                       provider.groupContactList, provider),
                                 ),
                               )
@@ -94,7 +105,7 @@ class GroupDescriptionScreen extends StatelessWidget {
     );
   }
 
-  Widget confirmContactList(ScreenScaler scaler, List<Contact> cList,
+  Widget groupcontactList(ScreenScaler scaler, List<Contact> cList,
       GroupDescriptionProvider provider) {
     return ListView.builder(
         physics: NeverScrollableScrollPhysics(),

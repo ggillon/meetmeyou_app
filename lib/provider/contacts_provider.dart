@@ -3,11 +3,13 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class ContactsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  GroupDetail groupDetail = locator<GroupDetail>();
   int _toggle = 0;
 
   int get toggle => _toggle;
@@ -71,6 +73,10 @@ class ContactsProvider extends BaseProvider {
             .compareTo(b.displayName.toString().toLowerCase());
       });
       confirmContactList = confirmValue;
+
+      groupDetail.createGroup = true;
+      groupDetail.checkBoxCheck = false;
+      groupDetail.groupConfirmContactList = [];
     } else {
       setState(ViewState.Idle);
     }
@@ -92,7 +98,12 @@ class ContactsProvider extends BaseProvider {
             .toLowerCase()
             .compareTo(b.displayName.toString().toLowerCase());
       });
+
       groupList = groupValue;
+
+      groupDetail.createGroup = true;
+      groupDetail.checkBoxCheck = false;
+      groupDetail.groupConfirmContactList = [];
     } else {
       setState(ViewState.Idle);
     }
@@ -106,5 +117,15 @@ class ContactsProvider extends BaseProvider {
     _value = value;
     notifyListeners();
   }
-  
+
+  setGroupValue(Contact contact){
+    groupDetail.groupName = contact.displayName;
+    groupDetail.about = contact.about;
+    groupDetail.groupCid = contact.cid;
+    groupDetail.membersLength = contact.group.length.toString();
+    groupDetail.groupPhotoUrl = contact.photoURL;
+    groupDetail.group = contact.group;
+    groupDetail.createGroup = false;
+  }
+
 }

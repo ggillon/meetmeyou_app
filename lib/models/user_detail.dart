@@ -1,6 +1,8 @@
 import 'dart:io';
 
-class UserDetail{
+import 'package:meetmeyou_app/models/contact.dart';
+
+class UserDetail {
   String? firstName;
   String? lastName;
   String? email;
@@ -10,11 +12,35 @@ class UserDetail{
   File? profileFile;
   String? profileUrl;
   String? address;
-  bool? value ;
+  bool? value;
   String? cid;
   String? about;
   String? membersLength;
   Map? group;
 
-  UserDetail({this.firstName, this.lastName, this.email, this.countryCode, this.phone, this.profileUrl, this.address, this.value, this.cid, this.about, this.membersLength, this.group});
+  /*bool? createGroup;
+  String? groupName;
+  List<Contact>? groupConfirmContactList = [];
+  String? groupCid;*/
+
+  UserDetail(
+      {this.firstName,
+      this.lastName,
+      this.email,
+      this.countryCode,
+      this.phone,
+      this.profileUrl,
+      this.address,
+      this.value,
+      this.cid,
+      this.about,
+      this.membersLength,
+      this.group,});
+
+ /* UserDetail.createEditGroup(
+      {this.createGroup,
+      this.groupName,
+      this.about,
+      this.groupConfirmContactList,
+      this.groupCid});*/
 }

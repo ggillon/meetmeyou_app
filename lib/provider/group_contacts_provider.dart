@@ -3,11 +3,13 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class GroupContactsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  GroupDetail groupDetail = locator<GroupDetail>();
   List<String> _checklist = [];
 
   List<String> get checklist => _checklist;
@@ -18,19 +20,6 @@ class GroupContactsProvider extends BaseProvider {
 
   void updateValue(bool value) {
     _value = value;
-    notifyListeners();
-  }
-
-  late List<bool> _isChecked;
-
-  List<bool> get isChecked => _isChecked;
-
-  set isChecked(List<bool> value) {
-    _isChecked = value;
-  }
-
-  setCheckBoxValue(bool value, int index) {
-    _isChecked[index] = value;
     notifyListeners();
   }
 
@@ -62,35 +51,41 @@ class GroupContactsProvider extends BaseProvider {
             .compareTo(b.displayName.toString().toLowerCase());
       });
       confirmContactList = confirmValue;
-      isChecked = List<bool>.filled(confirmContactList.length, false);
     } else {
       setState(ViewState.Idle);
     }
   }
 
   addContactsToGroup(
-      BuildContext context, String groupCID, String contactCId) async {
-    updateValue(true);
-
+      BuildContext context, String groupCID, Contact contact) async {
     await mmyEngine!
-        .addContactsToGroup(groupCID, contactCID: contactCId)
+        .addContactsToGroup(groupCID, contactCID: contact.cid)
         .catchError((e) {
-      updateValue(false);
       DialogHelper.showMessage(context, e.message);
     });
-    updateValue(false);
+    groupDetail.groupConfirmContactList?.add((contact));
+    groupDetail.membersLength = groupDetail.groupConfirmContactList?.length.toString();
+    notifyListeners();
   }
 
   removeContactsFromGroup(
-      BuildContext context, String groupCID, String contactCId) async {
-    updateValue(true);
-
+      BuildContext context, String groupCID, Contact contact) async {
     await mmyEngine!
-        .removeContactsFromGroup(groupCID, contactCID: contactCId)
+        .removeContactsFromGroup(groupCID, contactCID: contact.cid)
         .catchError((e) {
-      updateValue(false);
       DialogHelper.showMessage(context, e.message);
     });
-    updateValue(false);
+    var index = groupDetail.groupConfirmContactList
+        ?.indexWhere((element) => element.cid == contact.cid);
+    groupDetail.groupConfirmContactList?.removeAt(index!);
+    groupDetail.membersLength = groupDetail.groupConfirmContactList?.length.toString();
+
+    notifyListeners();
+  }
+
+  bool checkIsSelected(Contact contact) {
+    var value = groupDetail.groupConfirmContactList
+        ?.any((element) => element.cid == contact.cid);
+    return value!;
   }
 }
