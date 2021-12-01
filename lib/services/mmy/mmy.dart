@@ -2,12 +2,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
+import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
+import 'event.dart' as eventLib;
 import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 
+
 abstract class MMYEngine {
+
+  /// PROFILE ///
 
   /// Get the user profile or create new one
   Future<Profile> getUserProfile();
@@ -21,6 +27,9 @@ abstract class MMYEngine {
   Future<Profile> updateProfilePicture(File file);
   /// Delete User - Cautious
   Future<void> deleteUser();
+
+  /// CONTACT ///
+
   /// Get a contact, invitation or group from DB
   Future<Contact> getContact(String cid);
   /// Get a contact, invitation or group from DB
@@ -39,6 +48,8 @@ abstract class MMYEngine {
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about});
   /// Add contact(s) to group
   Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
+  /// UpdateGroupPicture
+  Future<Contact> updateGroupPicture(String cid, File file);
   /// Remove contact(s) from group
   Future<Contact> removeContactsFromGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
   /// Search for profiles
@@ -47,6 +58,43 @@ abstract class MMYEngine {
   Future<List<Contact>> getPhoneContacts();
   /// Invite phone Contacts
   Future<void> invitePhoneContacts(List<Contact> contacts);
+
+  /// EVENT ///
+
+  /// Get all Events where user is invited or organiser
+  Future<List<Event>> getUserEvents({List<String>? filters});
+  /// Get a particular Event
+  Future<Event> getEvent(String eid);
+  /// Create an event
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,});
+  /// Update an event
+  Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,});
+  /// Get status of user
+  Future<String> eventUserStatus(String eid);
+  /// Delete an event
+  Future<void> deleteEvent(String eid);
+  /// Get even link
+  String getEventLink(String eid);
+  /// Invite contact to event
+  Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs});
+  /// Remove contact from event
+  Future<Event> removeContactsFromEvent(String eid, {required List<String> CIDs});
+  /// Reply to event
+  Future<void> replyToEvent(String eid, {required String response});
+  /// Add a date option to event
+  //Future<Event> addDateToEvent(String eid, {required DateTime start, required DateTime end});
+  /// Remove a date from an event
+  //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
+  /// Answer a date attendence for an event
+  //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
+  /// Chose a date for an event
+  //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
+  ///  Add/Update a form to an event
+  //Future<Event> updateFormToEvent(String eid, {required String formText, required Map form});
+  ///  Reply to form to an event
+  //Future<Event> replyEventForm(String eid, {required Map answers});
+  ///  List answers to form
+  //Future<List<Map>> listAnswersToForm(String eid);
 }
 
 class MMY implements MMYEngine {
@@ -146,6 +194,12 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<Contact> updateGroupPicture(String cid, File file) async {
+    String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
+    return contactLib.updateGroupContact(_currentUser, cid, photoURL: photoURL);
+  }
+
+  @override
   Future<void> respondInvitation(String cid, bool accept) {
     return contactLib.respondProfile(_currentUser, cid: cid, accept: accept);
   }
@@ -181,10 +235,61 @@ class MMY implements MMYEngine {
 
   @override
   Future<void> invitePhoneContacts(List<Contact> contacts) async {
-    //TODO: invite contacts
+    List<String> emails = [];
+    for(Contact contact in contacts) emails.add(contact.email);
+    sendInvitesEmail(emails);
   }
 
+  @override
+  Future<List<Event>> getUserEvents({List<String>? filters}) {
+    return eventLib.getUserEvents(_currentUser, filters: filters);
+  }
 
+  @override
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,}) {
+    return eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  }
 
+  @override
+  Future<void> deleteEvent(String eid) async {
+    await eventLib.deleteEvent(_currentUser, eid);
+  }
+
+  @override
+  Future<Event> getEvent(String eid) async {
+    return await eventLib.getEvent(_currentUser, eid);
+  }
+
+  @override
+  Future<String> eventUserStatus(String eid) async {
+     return (await eventLib.getEvent(_currentUser, eid)).invitedContacts[_currentUser.uid];
+  }
+
+  @override
+  Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs}) async {
+    return await eventLib.updateInvitations(_currentUser, eid,
+        eventLib.Invitations(CIDs: CIDs, inviteStatus: EVENT_INVITED));
+  }
+
+  @override
+  Future<Event> removeContactsFromEvent(String eid, {required List<String> CIDs}) async {
+    return await eventLib.removeInvitations(_currentUser, eid, CIDs);
+  }
+
+  @override
+  Future<Event> replyToEvent(String eid, {required String response}) async {
+    return await eventLib.updateInvitations(_currentUser, eid,
+        eventLib.Invitations(CIDs: [_currentUser.uid], inviteStatus: response));
+  }
+
+  @override
+  Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) async {
+    return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  }
+
+  @override
+  String getEventLink(String eid) {
+    return 'http://event.meetmeyou.com/$eid';
+  }
 
 }

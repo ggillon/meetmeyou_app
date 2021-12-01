@@ -1,13 +1,15 @@
 // Flutter imports
 
 // Service imports
-import 'package:meetmeyou_app/models/contact.dart';
+
 
 import 'firestore_service.dart';
 import 'api_path.dart';
 
 //Data models import
 import 'package:meetmeyou_app/models/profile.dart';
+import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/event.dart';
 
 
 abstract class Database {
@@ -25,6 +27,12 @@ abstract class Database {
   Future<Contact> getContact(String uid, String cid);
   Future<void> deleteContact(String uid, String cid);
   Future<List<Contact>> getContacts(String uid);
+
+  // Event DB Functions
+  Future<void> setEvent(Event event);
+  Future<Event> getEvent(String eid);
+  Future<void> deleteEvent(String eid);
+  Future<List<Event>> getUserEvents(String uid);
 }
 
 class FirestoreDB implements Database {
@@ -89,6 +97,42 @@ class FirestoreDB implements Database {
 
   Future<void> deleteContact(String uid, String cid) async {
     _service.deleteData(path: APIPath.userContact(uid, cid));
+  }
+
+  // EVENT METHODS
+  Future<void> setEvent(Event event) async {
+    _service.setData(
+      path: APIPath.event(event.eid),
+      data: event.toMap(),
+    );
+  }
+
+  Future<Event> getEvent(String eid) async {
+    return await _service.getData(
+      path: APIPath.event(eid),
+      builder: (data) {return Event.fromMap(data);},
+    );
+  }
+
+  Future<void> deleteEvent(String eid,) async {
+    _service.deleteData(path: APIPath.event(eid));
+  }
+
+  Future<List<Event>> getUserEvents(String uid) async {
+    return _service.collectionStreamWhereFieldPresent(
+        path: APIPath.events(),
+        field: 'invitedContacts.$uid',
+        builder: (data) {
+          return Event.fromMap(data);
+        }).first;
+    /*return await _service.getListDataWhere(
+      path: APIPath.events(),
+      field: 'invitedContacts.$eid',
+      value: 'query',
+      builder: (data) {
+        return Profile.fromMap(data);
+      },
+    );*/
   }
 
 

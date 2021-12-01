@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:meetmeyou_app/services/email/email.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:provider/provider.dart';
 
@@ -43,6 +44,7 @@ class _ContactTestState extends State<ContactTest> {
 Widget ContactMenu(BuildContext context, Function setPage) {
 
   final auth = Provider.of<AuthBase>(context, listen: false);
+
 
 
   return Scaffold(
@@ -111,7 +113,7 @@ Widget TestSearchProfile(BuildContext context, Function setPage) {
                       child: SizedBox(
                         height: 100,
                         child: FutureBuilder<List<Contact>>(
-                            future: mmy.searchProfiles('Choupy'),
+                            future: mmy.searchProfiles('Gillon'),
                             initialData: emptyList,
                             builder: (context, contactList) => ListView.builder(
                               itemCount: contactList.data!.length,

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth_oauth/firebase_auth_oauth.dart';
+import 'package:meetmeyou_app/services/email/email.dart';
 
 abstract class AuthBase {
   User? get currentUser;
@@ -154,8 +155,8 @@ class Auth implements AuthBase {
   Future<String> generateOTP(String email) async {
     final seed = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
     final code = seed.substring(seed.length-4, seed.length);
-    print(code);
-    //TODO: code to email code
+    print('OTP code: $code');
+    sendOTPEmail(email, code);
     return code;
   }
 
