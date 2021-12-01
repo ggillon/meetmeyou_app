@@ -126,6 +126,7 @@ class EditProfileProvider extends BaseProvider {
       userDetail.countryCode = value.countryCode;
       userDetail.address = value.addresses['Home'];
       userDetail.profileUrl = value.photoURL;
+      Navigator.of(context).pop();
       DialogHelper.showMessage(context, "profile_updated_successfully".tr());
     }
   }

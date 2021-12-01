@@ -182,21 +182,6 @@ class GroupContactsScreen extends StatelessWidget {
                           provider.groupDetail.groupCid ?? "",
                           provider.confirmContactList[index]);
                     }
-
-                    // if (provider.isChecked[index]) {
-                    //   provider.addContactsToGroup(context, userDetail.groupCid!,
-                    //       provider.confirmContactList[index].cid);
-                    // } else {
-                    //   provider.removeContactsFromGroup(
-                    //       context,
-                    //       userDetail.groupCid!,
-                    //       provider.confirmContactList[index].cid);
-                    // }
-                    // provider.isChecked[index]
-                    //     ? provider.checklist
-                    //         .add(provider.myContactListName[index])
-                    //     : provider.checklist
-                    //         .remove(provider.myContactListName[index]);
                   },
                 ),
               ],

@@ -104,8 +104,8 @@ class CreateEditGroupProvider extends BaseProvider {
     var value = await mmyEngine!
         .updateGroupContact(groupCid,
             displayName: groupName,
-            photoURL: groupImg ??
-                "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
+            // photoURL: groupImg ??
+            //     "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
             about: about ?? "")
         .catchError((e) {
       setState(ViewState.Idle);
@@ -121,10 +121,20 @@ class CreateEditGroupProvider extends BaseProvider {
 
       Navigator.of(context).pop();
     }
-
   }
 
-/*void updateGroupMembers(List<Contact> groupMembersList) {
-    this.groupMembersList = groupMembersList;
-  }*/
+  // Future updateGroupImage(BuildContext context, String groupName,
+  //     {String? groupImg, String? about}) async {
+  //   setState(ViewState.Busy);
+  //   if (image != null) {
+  //     await mmyEngine!.updateGroupPicture(image!).catchError((e) {
+  //       setState(ViewState.Idle);
+  //       DialogHelper.showMessage(context, e.message);
+  //     });
+  //
+  //     createNewGroupContact(context, groupName, about: about);
+  //   } else {
+  //     createNewGroupContact(context, groupName, about: about);
+  //   }
+  // }
 }

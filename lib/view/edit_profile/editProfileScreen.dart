@@ -96,13 +96,19 @@ class EditProfileScreen extends StatelessWidget {
                                         children: [
                                           provider.image == null
                                               ? provider.imageUrl != null
-                                                  ? ImageView(
-                                                      path: provider.imageUrl,
+                                                  ? Container(
                                                       width:
                                                           scaler.getWidth(20),
-                                                      fit: BoxFit.cover,
                                                       height:
                                                           scaler.getWidth(20),
+                                                      child: ImageView(
+                                                        path: provider.imageUrl,
+                                                        width:
+                                                            scaler.getWidth(20),
+                                                        fit: BoxFit.cover,
+                                                        height:
+                                                            scaler.getWidth(20),
+                                                      ),
                                                     )
                                                   : Container(
                                                       color: ColorConstants
@@ -113,13 +119,19 @@ class EditProfileScreen extends StatelessWidget {
                                                           scaler.getWidth(20),
                                                     )
                                               : provider.image != null
-                                                  ? ImageView(
-                                                      file: provider.image,
+                                                  ? Container(
                                                       width:
                                                           scaler.getWidth(20),
-                                                      fit: BoxFit.cover,
                                                       height:
                                                           scaler.getWidth(20),
+                                                      child: ImageView(
+                                                        file: provider.image,
+                                                        width:
+                                                            scaler.getWidth(20),
+                                                        fit: BoxFit.cover,
+                                                        height:
+                                                            scaler.getWidth(20),
+                                                      ),
                                                     )
                                                   : Container(
                                                       color: ColorConstants
@@ -309,11 +321,12 @@ class EditProfileScreen extends StatelessWidget {
                                         onChanged: (value) {
                                           provider.countryCode = value.dialCode;
                                         },
-                                        padding:
-                                        scaler.getPaddingLTRB(0.0, 0.0, 0.0, 0.1),
-                                        textStyle: ViewDecoration.textFieldStyle(
-                                            scaler.getTextSize(9.5),
-                                            ColorConstants.colorBlack),
+                                        padding: scaler.getPaddingLTRB(
+                                            0.0, 0.0, 0.0, 0.1),
+                                        textStyle:
+                                            ViewDecoration.textFieldStyle(
+                                                scaler.getTextSize(9.5),
+                                                ColorConstants.colorBlack),
                                         initialSelection:
                                             provider.countryCode == ""
                                                 ? "US"

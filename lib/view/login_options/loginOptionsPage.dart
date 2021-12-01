@@ -108,7 +108,12 @@ class LoginOptions extends StatelessWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      provider.signInWithGoogle(context);
+                                      provider.state == ViewState.Busy
+                                          ? Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : provider.signInWithGoogle(context);
                                     },
                                     child: CustomShape(
                                       child: Center(
@@ -153,7 +158,13 @@ class LoginOptions extends StatelessWidget {
                                         )
                                       : GestureDetector(
                                           onTap: () {
-                                            provider.signInWithFb(context);
+                                            provider.state == ViewState.Busy
+                                                ? Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  )
+                                                : provider
+                                                    .signInWithFb(context);
                                           },
                                           child: CustomShape(
                                             child: Center(

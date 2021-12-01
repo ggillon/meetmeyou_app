@@ -81,11 +81,15 @@ class CreateEditGroupScreen extends StatelessWidget {
                                     children: [
                                       provider.image == null
                                           ? provider.imageUrl != null
-                                              ? ImageView(
-                                                  path: provider.imageUrl,
+                                              ? Container(
                                                   width: scaler.getWidth(20),
-                                                  fit: BoxFit.cover,
                                                   height: scaler.getWidth(20),
+                                                  child: ImageView(
+                                                    path: provider.imageUrl,
+                                                    width: scaler.getWidth(20),
+                                                    fit: BoxFit.cover,
+                                                    height: scaler.getWidth(20),
+                                                  ),
                                                 )
                                               : Container(
                                                   color: ColorConstants
@@ -94,11 +98,15 @@ class CreateEditGroupScreen extends StatelessWidget {
                                                   height: scaler.getWidth(20),
                                                 )
                                           : provider.image != null
-                                              ? ImageView(
-                                                  file: provider.image,
+                                              ? Container(
                                                   width: scaler.getWidth(20),
-                                                  fit: BoxFit.cover,
                                                   height: scaler.getWidth(20),
+                                                  child: ImageView(
+                                                    file: provider.image,
+                                                    width: scaler.getWidth(20),
+                                                    fit: BoxFit.cover,
+                                                    height: scaler.getWidth(20),
+                                                  ),
                                                 )
                                               : Container(
                                                   color: ColorConstants

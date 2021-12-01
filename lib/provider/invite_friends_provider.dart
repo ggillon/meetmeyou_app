@@ -19,6 +19,8 @@ class InviteFriendsProvider extends BaseProvider {
 
   List<Contact> get contactList => _contactList;
 
+  List<Contact> checkedContactList = [];
+
   bool _value = false;
 
   bool get value => _value;
@@ -62,7 +64,10 @@ class InviteFriendsProvider extends BaseProvider {
     } else if (value.isNotEmpty) {
       setState(ViewState.Idle);
       value.sort((a, b) {
-        return a.displayName.toString().toLowerCase().compareTo(b.displayName.toString().toLowerCase());
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
       });
       contactList = value;
       isChecked = List<bool>.filled(contactList.length, false);
@@ -71,7 +76,6 @@ class InviteFriendsProvider extends BaseProvider {
     }
     notifyListeners();
   }
-
 
   errorDialog(BuildContext context, String content) {
     return showDialog(
@@ -86,5 +90,17 @@ class InviteFriendsProvider extends BaseProvider {
                 )
               ],
             ));
+  }
+
+  Future onTapInviteBtn(BuildContext context) async {
+    updateValue(true);
+    await mmyEngine!.invitePhoneContacts(checkedContactList).catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    updateValue(false);
+    Navigator.of(context).pop();
+    DialogHelper.showMessage(context, "Invited Successfully");
+
   }
 }

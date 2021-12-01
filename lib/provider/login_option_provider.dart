@@ -27,6 +27,7 @@ class LoginOptionProvider extends BaseProvider {
   }
 
   Future<void> signInWithFb(BuildContext context) async {
+    setState(ViewState.Busy);
     var user = await auth.signInWithFacebook().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);
@@ -54,6 +55,7 @@ class LoginOptionProvider extends BaseProvider {
   }
 
   Future<void> signInWithGoogle(BuildContext context) async {
+    setState(ViewState.Busy);
     var user = await auth.signInWithGoogle().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message,
