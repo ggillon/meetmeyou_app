@@ -43,13 +43,11 @@ abstract class MMYEngine {
   /// Accept an invitation
   Future<void> respondInvitation(String cid, bool accept);
   /// Create a Group of contacts
-  Future<Contact> newGroupContact(String name, {String photoURL, String about});
+  Future<Contact> newGroupContact(String name, {String photoURL, String about, File? photoFile});
   /// Update a Group of contacts
-  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about});
+  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about});
   /// Add contact(s) to group
   Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
-  /// UpdateGroupPicture
-  Future<Contact> updateGroupPicture(String cid, File file);
   /// Remove contact(s) from group
   Future<Contact> removeContactsFromGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
   /// Search for profiles
@@ -135,7 +133,9 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, String about = ''}) async {
+  Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, File? photoFile, String about = ''}) async {
+    if (photoFile!=null)
+      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
     final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
     return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
   }
@@ -189,14 +189,10 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about}) {
+  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about}) async {
+    if (photoFile!=null)
+      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
     return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
-  }
-
-  @override
-  Future<Contact> updateGroupPicture(String cid, File file) async {
-    String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
-    return contactLib.updateGroupContact(_currentUser, cid, photoURL: photoURL);
   }
 
   @override
