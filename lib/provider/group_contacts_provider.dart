@@ -64,7 +64,14 @@ class GroupContactsProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
     groupDetail.groupConfirmContactList?.add((contact));
-    groupDetail.membersLength = groupDetail.groupConfirmContactList?.length.toString();
+    groupDetail.groupConfirmContactList?.sort((a, b) {
+      return a.displayName
+          .toString()
+          .toLowerCase()
+          .compareTo(b.displayName.toString().toLowerCase());
+    });
+    groupDetail.membersLength =
+        groupDetail.groupConfirmContactList?.length.toString();
     notifyListeners();
   }
 
@@ -78,7 +85,14 @@ class GroupContactsProvider extends BaseProvider {
     var index = groupDetail.groupConfirmContactList
         ?.indexWhere((element) => element.cid == contact.cid);
     groupDetail.groupConfirmContactList?.removeAt(index!);
-    groupDetail.membersLength = groupDetail.groupConfirmContactList?.length.toString();
+    groupDetail.groupConfirmContactList?.sort((a, b) {
+      return a.displayName
+          .toString()
+          .toLowerCase()
+          .compareTo(b.displayName.toString().toLowerCase());
+    });
+    groupDetail.membersLength =
+        groupDetail.groupConfirmContactList?.length.toString();
 
     notifyListeners();
   }

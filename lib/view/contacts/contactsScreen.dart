@@ -270,16 +270,11 @@ class ContactsScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, RoutesConstants.contactDescription,
-                        arguments: UserDetail(
-                            firstName: iList[index].displayName,
-                            email: iList[index].email,
-                            value: true,
-                            cid: iList[index].cid,
-                            profileUrl: iList[index].photoURL,
-                            phone: iList[index].phoneNumber,
-                            address: iList[index].addresses['Home']))
-                    .then((value) {
+                provider.setContactsValue(iList[index], true, iList[index].cid);
+                Navigator.pushNamed(
+                  context,
+                  RoutesConstants.contactDescription,
+                ).then((value) {
                   provider.getConfirmedContactsAndInvitationsList(context);
                 });
               },
@@ -338,15 +333,11 @@ class ContactsScreen extends StatelessWidget {
     return provider.toggle == 0
         ? GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, RoutesConstants.contactDescription,
-                      arguments: UserDetail(
-                          firstName: cList[index].displayName,
-                          email: cList[index].email,
-                          value: false,
-                          profileUrl: cList[index].photoURL,
-                          phone: cList[index].phoneNumber,
-                          address: cList[index].addresses['Home']))
-                  .then((value) {
+              provider.setContactsValue(cList[index], false, "");
+              Navigator.pushNamed(
+                context,
+                RoutesConstants.contactDescription,
+              ).then((value) {
                 provider.getConfirmedContactsAndInvitationsList(context);
               });
             },
@@ -357,14 +348,8 @@ class ContactsScreen extends StatelessWidget {
             onTap: () {
               provider.setGroupValue(cList[index]);
               Navigator.pushNamed(
-                context, RoutesConstants.groupDescriptionScreen,
-                // arguments: UserDetail(
-                //     groupName: cList[index].displayName,
-                //     profileUrl: cList[index].photoURL,
-                //     about: cList[index].about,
-                //     membersLength: cList[index].group.length.toString(),
-                //     group: cList[index].group,
-                //     groupCid: cList[index].cid, createGroup: true)
+                context,
+                RoutesConstants.groupDescriptionScreen,
               ).then((value) {
                 provider.getGroupList(context);
               });
@@ -375,55 +360,6 @@ class ContactsScreen extends StatelessWidget {
                 cList[index].displayName,
                 profileImg: cList[index].photoURL));
   }
-
-  // Widget bottomDesign(
-  //     ScreenScaler scaler, BuildContext context, ContactsProvider provider) {
-  //   return Column(
-  //     children: [
-  //       Card(
-  //         color: ColorConstants.colorWhite.withOpacity(0.7),
-  //         shape:
-  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-  //         child: Column(
-  //           children: [
-  //             SizedBox(height: scaler.getHeight(1.5)),
-  //             GestureDetector(
-  //               onTap: () {
-  //                 Navigator.of(context).pop();
-  //                 Navigator.pushNamed(
-  //                         context, RoutesConstants.searchProfileScreen)
-  //                     .then((value) {
-  //                   provider.getConfirmedContactsAndInvitationsList(context);
-  //                 });
-  //               },
-  //               child: Text("search_for_contact".tr()).regularText(
-  //                   ColorConstants.primaryColor,
-  //                   scaler.getTextSize(11),
-  //                   TextAlign.center),
-  //             ),
-  //             SizedBox(height: scaler.getHeight(0.9)),
-  //             Divider(),
-  //             SizedBox(height: scaler.getHeight(0.9)),
-  //             GestureDetector(
-  //               onTap: () {
-  //                 Navigator.of(context).pop();
-  //                 Navigator.pushNamed(
-  //                     context, RoutesConstants.createEditGroupScreen);
-  //               },
-  //               child: Text("create_group_of_contacts".tr()).regularText(
-  //                   ColorConstants.primaryColor,
-  //                   scaler.getTextSize(11),
-  //                   TextAlign.center),
-  //             ),
-  //             SizedBox(height: scaler.getHeight(1.5)),
-  //           ],
-  //         ),
-  //       ),
-  //       CommonWidgets.cancelBtn(scaler, context),
-  //       SizedBox(height: scaler.getHeight(1)),
-  //     ],
-  //   );
-  // }
 
   bottomSheet(
       BuildContext context, ScreenScaler scaler, ContactsProvider provider) {

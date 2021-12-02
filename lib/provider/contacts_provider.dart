@@ -4,11 +4,13 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class ContactsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  UserDetail userDetail = locator<UserDetail>();
   GroupDetail groupDetail = locator<GroupDetail>();
   int _toggle = 0;
 
@@ -128,4 +130,14 @@ class ContactsProvider extends BaseProvider {
     groupDetail.createGroup = false;
   }
 
+  setContactsValue(Contact contact, bool value, String cid){
+    userDetail.firstName = contact.firstName;
+    userDetail.lastName = contact.lastName;
+    userDetail.email = contact.email;
+    userDetail.profileUrl = contact.photoURL;
+    userDetail.phone = contact.phoneNumber;
+    userDetail.address = contact.addresses['Home'];
+    userDetail.checkForInvitation = value;
+    userDetail.cid = cid;
+  }
 }

@@ -76,21 +76,17 @@ class InviteFriendsScreen extends StatelessWidget {
                               ),
                             )
                           : inviteFriendList(scaler, provider),
-                  provider.value == true
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Container(
-                          child: DialogHelper.btnWidget(
-                              scaler,
-                              context,
-                              "invite".tr(),
-                              ColorConstants.primaryColor, funOnTap: () {
-                            if (provider.checkedContactList.length != 0) {
-                              provider.onTapInviteBtn(context);
-                            }
-                          }),
-                        )
+                  Container(
+                    child: DialogHelper.btnWidget(
+                        scaler,
+                        context,
+                        "invite".tr(),
+                        ColorConstants.primaryColor, funOnTap: () {
+                      if (provider.checkedContactList.length != 0) {
+                        provider.onTapInviteBtn(context);
+                      }
+                    }),
+                  )
                 ],
               ),
             );

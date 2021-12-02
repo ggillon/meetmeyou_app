@@ -3,11 +3,13 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class RejectedInvitesProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  UserDetail userDetail = locator<UserDetail>();
   List<Contact> _rejectedContactList = [];
 
   List<Contact> get rejectedContactList => _rejectedContactList;
@@ -45,4 +47,19 @@ class RejectedInvitesProvider extends BaseProvider {
     notifyListeners();
   }
 
+  setRejectedInvitesValue(Contact rejectContact){
+    userDetail.firstName = rejectContact.firstName;
+    userDetail.lastName = rejectContact.lastName;
+    userDetail.email = rejectContact.email;
+    userDetail.profileUrl = rejectContact.photoURL;
+    userDetail.phone = rejectContact.phoneNumber;
+    userDetail.address = rejectContact.addresses['Home'];
+  }
+
+// firstName: provider.rejectedContactList[index].displayName,
+// email: provider.rejectedContactList[index].email,
+// profileUrl: provider.rejectedContactList[index].photoURL,
+// phone: provider.rejectedContactList[index].phoneNumber,
+// address:
+//     provider.rejectedContactList[index].addresses['Home']
 }

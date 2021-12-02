@@ -6,13 +6,14 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 
 class RejectedInvitesDescriptionScreen extends StatelessWidget {
-  final UserDetail data;
+   RejectedInvitesDescriptionScreen({Key? key}) : super(key: key);
 
-  const RejectedInvitesDescriptionScreen({Key? key, required this.data}) : super(key: key);
+  UserDetail userDetail = locator<UserDetail>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +32,16 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                     children: [
                       SizedBox(height: scaler.getHeight(2)),
                       CommonWidgets.userDetails(scaler,
-                          profilePic: data.profileUrl!,
-                          firstName: data.firstName.toString().capitalize(),
-                          lastName: "",
-                          email: data.email),
+                          profilePic: userDetail.profileUrl,
+                          firstName: userDetail.firstName.toString().capitalize(),
+                          lastName: userDetail.lastName.toString().capitalize(),
+                          email: userDetail.email),
                       SizedBox(height: scaler.getHeight(2.5)),
                       CommonWidgets.phoneNoAndAddressFun(
                           scaler,
                           ImageConstants.phone_no_icon,
                           "phone_number".tr(),
-                          data.phone!,
+                          userDetail.phone!,
                           countryCode: true,
                           cCode: "+1"),
                       SizedBox(height: scaler.getHeight(1.5)),
@@ -48,7 +49,7 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                           scaler,
                           ImageConstants.address_icon,
                           "address".tr(),
-                          data.address!),
+                          userDetail.address!),
                       SizedBox(height: scaler.getHeight(3)),
                       Text("organized_events".tr()).boldText(
                           ColorConstants.colorBlack,

@@ -151,15 +151,9 @@ class RejectedInvitesScreen extends StatelessWidget {
       RejectedInvitesProvider provider, int index) {
     return GestureDetector(
         onTap: () {
+          provider.setRejectedInvitesValue(provider.rejectedContactList[index]);
           Navigator.pushNamed(
-              context, RoutesConstants.rejectedInvitesDescriptionScreen,
-              arguments: UserDetail(
-                  firstName: provider.rejectedContactList[index].displayName,
-                  email: provider.rejectedContactList[index].email,
-                  profileUrl: provider.rejectedContactList[index].photoURL,
-                  phone: provider.rejectedContactList[index].phoneNumber,
-                  address:
-                      provider.rejectedContactList[index].addresses['Home']));
+              context, RoutesConstants.rejectedInvitesDescriptionScreen);
         },
         child: CommonWidgets.userContactCard(
             scaler,

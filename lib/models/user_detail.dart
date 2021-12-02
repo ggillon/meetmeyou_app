@@ -12,7 +12,7 @@ class UserDetail {
   File? profileFile;
   String? profileUrl;
   String? address;
-  bool? value;
+  bool? checkForInvitation;
   String? cid;
   String? about;
   String? membersLength;
@@ -31,7 +31,7 @@ class UserDetail {
       this.phone,
       this.profileUrl,
       this.address,
-      this.value,
+      this.checkForInvitation,
       this.cid,
       this.about,
       this.membersLength,

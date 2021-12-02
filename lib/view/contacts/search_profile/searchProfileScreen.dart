@@ -162,7 +162,7 @@ class SearchProfileScreen extends StatelessWidget {
                           firstName:
                               provider.searchContactList[index].displayName,
                           email: provider.searchContactList[index].email,
-                          value: false,
+                          checkForInvitation: false,
                           phone: provider.searchContactList[index].phoneNumber,
                           profileUrl:
                               provider.searchContactList[index].photoURL,

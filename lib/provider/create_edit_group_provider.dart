@@ -104,8 +104,8 @@ class CreateEditGroupProvider extends BaseProvider {
     var value = await mmyEngine!
         .updateGroupContact(groupCid,
             displayName: groupName,
-            // photoURL: groupImg ??
-            //     "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
+            photoURL: groupImg ??
+                "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
             about: about ?? "")
         .catchError((e) {
       setState(ViewState.Idle);

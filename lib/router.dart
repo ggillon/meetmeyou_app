@@ -102,9 +102,7 @@ class Router {
 
       case RoutesConstants.contactDescription:
         return MaterialPageRoute(
-            builder: (_) => ContactDescriptionScreen(
-                  data: settings.arguments as UserDetail,
-                ),
+            builder: (_) => ContactDescriptionScreen(),
             settings: settings);
 
       case RoutesConstants.editContactScreen:
@@ -121,7 +119,7 @@ class Router {
 
       case RoutesConstants.rejectedInvitesDescriptionScreen:
         return MaterialPageRoute(
-            builder: (_) => RejectedInvitesDescriptionScreen(data: settings.arguments as UserDetail), settings: settings);
+            builder: (_) => RejectedInvitesDescriptionScreen(), settings: settings);
 
       case RoutesConstants.groupDescriptionScreen:
         return MaterialPageRoute(
