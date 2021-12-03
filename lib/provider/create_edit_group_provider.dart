@@ -68,45 +68,46 @@ class CreateEditGroupProvider extends BaseProvider {
   }
 
   Future createNewGroupContact(BuildContext context, String groupName,
-      {String? groupImg, String? about}) async {
+      {String? groupImg, String? about, File? photoFile}) async {
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine!
-        .newGroupContact(groupName,
-            photoURL: groupImg ??
-                "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
-            about: about ?? "")
+        .newGroupContact(groupName, about: about ?? "")
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
 
-    print("value is ${value}");
-    groupDetail.groupCid = value.cid;
-    // groupCid = value.cid;
-
-    setState(ViewState.Idle);
-    groupCreated = true;
-    update = true;
-    //enable = false;
-    // Navigator.of(context).pop();
-    DialogHelper.showMessage(context, "Group created successfully");
+    if (value != null) {
+      groupDetail.groupCid = value.cid;
+      groupCreated = true;
+      update = true;
+     await updateGroupContact(context, value.cid,
+          groupName: groupName, about: about, photoFile: image, back: false);
+       image = null;
+      DialogHelper.showMessage(context, "Group created successfully");
+    }
+    //groupDetail.groupPhotoUrl = value.photoURL;
   }
 
   Future updateGroupContact(BuildContext context, String groupCid,
-      {String? groupName, String? groupImg, String? about}) async {
-    setState(ViewState.Busy);
-
+      {String? groupName,
+      String? groupImg,
+      String? about,
+      File? photoFile, bool back = true,}) async {
+    if(back){
+      setState(ViewState.Busy);
+    }
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine!
         .updateGroupContact(groupCid,
             displayName: groupName,
-            photoURL: groupImg ??
-                "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media",
-            about: about ?? "")
+            about: about ?? "",
+            photoFile: back ? image : photoFile,
+            photoURL: groupDetail.groupPhotoUrl)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
@@ -114,27 +115,26 @@ class CreateEditGroupProvider extends BaseProvider {
 
     if (value != null) {
       setState(ViewState.Idle);
-
       groupDetail.groupName = value.displayName;
       groupDetail.about = value.about;
+      groupDetail.groupPhotoUrl = value.photoURL;
       groupDetail.membersLength = value.group.length.toString();
-
-      Navigator.of(context).pop();
+      back ? Navigator.of(context).pop() : Container();
     }
   }
 
-  // Future updateGroupImage(BuildContext context, String groupName,
-  //     {String? groupImg, String? about}) async {
-  //   setState(ViewState.Busy);
-  //   if (image != null) {
-  //     await mmyEngine!.updateGroupPicture(image!).catchError((e) {
-  //       setState(ViewState.Idle);
-  //       DialogHelper.showMessage(context, e.message);
-  //     });
-  //
-  //     createNewGroupContact(context, groupName, about: about);
-  //   } else {
-  //     createNewGroupContact(context, groupName, about: about);
-  //   }
-  // }
+// Future updateGroupImage(BuildContext context, String groupName,
+//     {String? groupImg, String? about}) async {
+//   setState(ViewState.Busy);
+//   if (image != null) {
+//     await mmyEngine!.updateGroupPicture(image!).catchError((e) {
+//       setState(ViewState.Idle);
+//       DialogHelper.showMessage(context, e.message);
+//     });
+//
+//     createNewGroupContact(context, groupName, about: about);
+//   } else {
+//     createNewGroupContact(context, groupName, about: about);
+//   }
+// }
 }

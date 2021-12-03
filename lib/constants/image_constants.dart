@@ -37,4 +37,8 @@ class ImageConstants {
   static const small_logo_icon = "images/ic_smallLogo.svg";
   static const small_add_icon = "images/ic_small_add.svg";
   static const invited_waiting_icon = "images/ic_moreIcon.svg";
+  static const close_icon = "images/ic_close.svg";
+  static const image_frame_icon = "images/ic_imageFrame.svg";
+  static const image_border_icon = "images/ic_imageBorder.svg";
+
 }

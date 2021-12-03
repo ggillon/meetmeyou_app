@@ -14,12 +14,16 @@ class GroupContactsProvider extends BaseProvider {
 
   List<String> get checklist => _checklist;
 
-  bool _value = false;
+  late List<bool> _value = [];
 
-  bool get value => _value;
+  List<bool> get value => _value;
 
-  void updateValue(bool value) {
+  set value(List<bool> value) {
     _value = value;
+  }
+
+  void updateValue(bool value, int index) {
+    _value[index] = value;
     notifyListeners();
   }
 
@@ -51,16 +55,19 @@ class GroupContactsProvider extends BaseProvider {
             .compareTo(b.displayName.toString().toLowerCase());
       });
       confirmContactList = confirmValue;
+      value = List<bool>.filled(confirmContactList.length, false);
     } else {
       setState(ViewState.Idle);
     }
   }
 
   addContactsToGroup(
-      BuildContext context, String groupCID, Contact contact) async {
+      BuildContext context, String groupCID, Contact contact, int index) async {
+    updateValue(true, index);
     await mmyEngine!
         .addContactsToGroup(groupCID, contactCID: contact.cid)
         .catchError((e) {
+      updateValue(false, index);
       DialogHelper.showMessage(context, e.message);
     });
     groupDetail.groupConfirmContactList?.add((contact));
@@ -72,14 +79,17 @@ class GroupContactsProvider extends BaseProvider {
     });
     groupDetail.membersLength =
         groupDetail.groupConfirmContactList?.length.toString();
+    updateValue(false, index);
     notifyListeners();
   }
 
-  removeContactsFromGroup(
-      BuildContext context, String groupCID, Contact contact) async {
+  removeContactsFromGroup(BuildContext context, String groupCID,
+      Contact contact, int currentIndex) async {
+    updateValue(true, currentIndex);
     await mmyEngine!
         .removeContactsFromGroup(groupCID, contactCID: contact.cid)
         .catchError((e) {
+      updateValue(false, currentIndex);
       DialogHelper.showMessage(context, e.message);
     });
     var index = groupDetail.groupConfirmContactList
@@ -93,7 +103,7 @@ class GroupContactsProvider extends BaseProvider {
     });
     groupDetail.membersLength =
         groupDetail.groupConfirmContactList?.length.toString();
-
+    updateValue(false, currentIndex);
     notifyListeners();
   }
 

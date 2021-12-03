@@ -78,6 +78,7 @@ class ContactsProvider extends BaseProvider {
 
       groupDetail.createGroup = true;
       groupDetail.checkBoxCheck = false;
+      groupDetail.groupPhotoUrl = null;
       groupDetail.groupConfirmContactList = [];
     } else {
       setState(ViewState.Idle);
@@ -105,6 +106,7 @@ class ContactsProvider extends BaseProvider {
 
       groupDetail.createGroup = true;
       groupDetail.checkBoxCheck = false;
+      groupDetail.groupPhotoUrl = null;
       groupDetail.groupConfirmContactList = [];
     } else {
       setState(ViewState.Idle);

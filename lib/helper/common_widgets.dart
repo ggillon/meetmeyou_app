@@ -66,6 +66,7 @@ class CommonWidgets {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+          //  mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(firstName! + " " + lastName!).boldText(
                   ColorConstants.colorBlack,
@@ -74,7 +75,7 @@ class CommonWidgets {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
               SizedBox(height: scaler.getHeight(0.5)),
-              GestureDetector(
+             email == "" ? Container() :  GestureDetector(
                   onTap: actionOnEmail,
                   child: Text(email ?? "").mediumText(ColorConstants.colorBlack,
                       scaler.getTextSize(10), TextAlign.left,
@@ -128,7 +129,7 @@ class CommonWidgets {
       children: [
         ClipRRect(
             borderRadius: scaler.getBorderRadiusCircular(10.0),
-            child: profileImg == null || profileImg == ""
+            child: profileImg == null
                 ? Container(
                     color: ColorConstants.primaryColor,
                     width: scaler.getWidth(10),

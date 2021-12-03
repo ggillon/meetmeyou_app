@@ -135,7 +135,7 @@ class MMY implements MMYEngine {
   @override
   Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, File? photoFile, String about = ''}) async {
     if (photoFile!=null)
-      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
+      photoURL = await storageLib.storeGroupPicture(photoFile, eid: _currentUser.uid);
     final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
     return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
   }
@@ -191,7 +191,7 @@ class MMY implements MMYEngine {
   @override
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about}) async {
     if (photoFile!=null)
-      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
+      photoURL = await storageLib.storeGroupPicture(photoFile, eid: cid);
     return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
   }
 

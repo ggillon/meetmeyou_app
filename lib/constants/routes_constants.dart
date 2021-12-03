@@ -22,4 +22,6 @@ class RoutesConstants {
   static const groupDescriptionScreen = "groupDescriptionScreen";
   static const createEditGroupScreen = "createEditGroupScreen";
   static const groupContactsScreen = "groupContactsScreen";
+  static const createEventScreen = "createEventScreen";
+  static const defaultPhotoPage = "defaultPhotoPage";
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/view/about/aboutPage.dart';
+import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScreen.dart';
+import 'package:meetmeyou_app/view/add_event/default_photo_page/defaultPhotoPage.dart';
 import 'package:meetmeyou_app/view/calendar_settings/calendarSettingsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/group_contacts/groupContactsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
@@ -131,6 +133,12 @@ class Router {
 
       case RoutesConstants.groupContactsScreen:
         return MaterialPageRoute(builder: (_) => GroupContactsScreen(), settings: settings);
+
+      case RoutesConstants.createEventScreen:
+        return MaterialPageRoute(builder: (_) => CreateEventScreen(), settings: settings);
+
+      case RoutesConstants.defaultPhotoPage:
+        return MaterialPageRoute(builder: (_) => DefaultPhotoPage(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

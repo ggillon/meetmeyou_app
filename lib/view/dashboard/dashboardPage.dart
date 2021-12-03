@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
+import 'package:meetmeyou_app/view/add_event/addEventScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
@@ -22,8 +23,7 @@ class _DashboardPageState extends State<DashboardPage> {
     HomePage(),
     Text('Calender Page',
         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-    Text('Add Page',
-        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    AddEventScreen(),
     ContactsScreen(),
     SettingsPage()
   ];

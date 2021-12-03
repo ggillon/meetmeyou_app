@@ -90,7 +90,8 @@ class GroupContactsScreen extends StatelessWidget {
         textInputAction: TextInputAction.search,
         keyboardType: TextInputType.name,
         onChanged: (value) {
-          provider.updateValue(true);
+            // provider.updateValue(true);
+          provider.setState(ViewState.Idle);
         },
       ),
     );
@@ -161,28 +162,40 @@ class GroupContactsScreen extends StatelessWidget {
             padding: scaler.getPaddingAll(10.0),
             child: Row(
               children: [
-                CommonWidgets.profileCardImageDesign(scaler, ""),
+                CommonWidgets.profileCardImageDesign(scaler, provider.confirmContactList[index].photoURL),
                 SizedBox(width: scaler.getWidth(2.5)),
                 CommonWidgets.profileCardNameAndEmailDesign(
                     scaler,
                     provider.confirmContactList[index].displayName,
                     provider.confirmContactList[index].email),
-                Checkbox(
-                  value: provider
-                      .checkIsSelected(provider.confirmContactList[index]),
-                  onChanged: (bool? value) {
-                    if (value!) {
-                      provider.addContactsToGroup(
-                          context,
-                          provider.groupDetail.groupCid ?? "",
-                          provider.confirmContactList[index]);
-                    } else {
-                      provider.removeContactsFromGroup(
-                          context,
-                          provider.groupDetail.groupCid ?? "",
-                          provider.confirmContactList[index]);
-                    }
-                  },
+                Container(
+                  width: scaler.getWidth(8),
+                  height: scaler.getHeight(3.5),
+                  alignment: Alignment.center,
+                  child: provider.value[index] == true
+                      ? Container(
+                          height: scaler.getHeight(2),
+                          width: scaler.getWidth(4.5),
+                          child: CircularProgressIndicator())
+                      : Checkbox(
+                          value: provider.checkIsSelected(
+                              provider.confirmContactList[index]),
+                          onChanged: (bool? value) {
+                            if (value!) {
+                              provider.addContactsToGroup(
+                                  context,
+                                  provider.groupDetail.groupCid ?? "",
+                                  provider.confirmContactList[index],
+                                  index);
+                            } else {
+                              provider.removeContactsFromGroup(
+                                  context,
+                                  provider.groupDetail.groupCid ?? "",
+                                  provider.confirmContactList[index],
+                                  index);
+                            }
+                          },
+                        ),
                 ),
               ],
             ),

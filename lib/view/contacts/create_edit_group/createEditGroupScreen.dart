@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
@@ -80,12 +81,15 @@ class CreateEditGroupScreen extends StatelessWidget {
                                   child: Stack(
                                     children: [
                                       provider.image == null
-                                          ? provider.imageUrl != null
+                                          ? provider.groupDetail
+                                                      .groupPhotoUrl !=
+                                                  null
                                               ? Container(
                                                   width: scaler.getWidth(20),
                                                   height: scaler.getWidth(20),
                                                   child: ImageView(
-                                                    path: provider.imageUrl,
+                                                    path: provider.groupDetail
+                                                        .groupPhotoUrl,
                                                     width: scaler.getWidth(20),
                                                     fit: BoxFit.cover,
                                                     height: scaler.getWidth(20),
@@ -205,9 +209,7 @@ class CreateEditGroupScreen extends StatelessWidget {
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.name,
                             ),
-                            SizedBox(
-                              height: scaler.getHeight(2.5),
-                            ),
+                            SizedBox(height: scaler.getHeight(2.5)),
                             provider.groupDetail.createGroup ?? false
                                 ? provider.groupCreated
                                     ? CommonWidgets.settingsPageCard(
@@ -245,28 +247,51 @@ class CreateEditGroupScreen extends StatelessWidget {
                             SizedBox(
                               height: scaler.getHeight(2),
                             ),
-                            CommonWidgets.expandedRowButton(
-                                context,
-                                scaler,
-                                "discard".tr(),
-                                "save_changes".tr(), onTapBtn2: () {
-                              hideKeyboard(context);
-                              if (_formKey.currentState!.validate()) {
-                                provider.groupDetail.createGroup!
-                                    ? provider.update
-                                        ? provider.updateGroupContact(context,
-                                            provider.groupDetail.groupCid ?? "",
-                                            groupName: groupNameController.text,
-                                            about: descriptionController.text)
-                                        : provider.createNewGroupContact(
-                                            context, groupNameController.text,
-                                            about: descriptionController.text)
-                                    : provider.updateGroupContact(context,
-                                        provider.groupDetail.groupCid ?? "",
-                                        groupName: groupNameController.text,
-                                        about: descriptionController.text);
-                              }
-                            })
+                            provider.state == ViewState.Busy
+                                ? Expanded(
+                                    child: Container(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            CircularProgressIndicator(),
+                                            SizedBox(height: scaler.getHeight(1)),
+                                          ],
+                                        )))
+                                : CommonWidgets.expandedRowButton(
+                                    context,
+                                    scaler,
+                                    "discard".tr(),
+                                    "save_changes".tr(), onTapBtn2: () {
+                                    hideKeyboard(context);
+                                    if (_formKey.currentState!.validate()) {
+                                      provider.groupDetail.createGroup!
+                                          ? provider.update
+                                              ? provider.updateGroupContact(
+                                                  context,
+                                                  provider.groupDetail
+                                                          .groupCid ??
+                                                      "",
+                                                  groupName:
+                                                      groupNameController.text,
+                                                  about: descriptionController
+                                                      .text)
+                                              : provider.createNewGroupContact(
+                                                  context,
+                                                  groupNameController.text,
+                                                  // groupImg: provider.groupDetail.groupPhotoUrl,
+                                                  about: descriptionController
+                                                      .text)
+                                          : provider.updateGroupContact(
+                                              context,
+                                              provider.groupDetail.groupCid ??
+                                                  "",
+                                              groupName:
+                                                  groupNameController.text,
+                                              about:
+                                                  descriptionController.text);
+                                    }
+                                  })
                           ],
                         ),
                       ),

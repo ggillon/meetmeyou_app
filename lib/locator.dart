@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/create_event_provider.dart';
 import 'package:meetmeyou_app/provider/group_contacts_provider.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -49,6 +50,7 @@ void setupLocator() {
   locator.registerFactory<GroupContactsProvider>(()=> GroupContactsProvider());
   locator.registerFactory<GroupDescriptionProvider>(()=> GroupDescriptionProvider());
   locator.registerLazySingleton<GroupDetail>(() => GroupDetail());
+  locator.registerLazySingleton<CreateEventProvider>(() => CreateEventProvider());
 
 
   /*
