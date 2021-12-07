@@ -66,7 +66,7 @@ class CommonWidgets {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-          //  mainAxisAlignment: MainAxisAlignment.center,
+            //  mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(firstName! + " " + lastName!).boldText(
                   ColorConstants.colorBlack,
@@ -75,11 +75,16 @@ class CommonWidgets {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
               SizedBox(height: scaler.getHeight(0.5)),
-             email == "" ? Container() :  GestureDetector(
-                  onTap: actionOnEmail,
-                  child: Text(email ?? "").mediumText(ColorConstants.colorBlack,
-                      scaler.getTextSize(10), TextAlign.left,
-                      maxLines: 1, overflow: TextOverflow.ellipsis))
+              email == ""
+                  ? Container()
+                  : GestureDetector(
+                      onTap: actionOnEmail,
+                      child: Text(email ?? "").mediumText(
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(10),
+                          TextAlign.left,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis))
             ],
           ),
         ),
@@ -233,7 +238,7 @@ class CommonWidgets {
         });
   }
 
-  static Widget cancelBtn(ScreenScaler scaler, BuildContext context,
+  static Widget cancelBtn(ScreenScaler scaler, BuildContext context, double size,
       {Color? color}) {
     return GestureDetector(
       onTap: () {
@@ -253,8 +258,25 @@ class CommonWidgets {
           bgColor: Colors.transparent,
           radius: scaler.getBorderRadiusCircular(10),
           width: MediaQuery.of(context).size.width,
-          height: scaler.getHeight(5),
+          height: scaler.getHeight(size),
         ),
+      ),
+    );
+  }
+
+  static Widget commonBtn(
+      ScreenScaler scaler, BuildContext context, String txt, Color bgColor, Color txtColor, {VoidCallback? onTapFun}) {
+    return GestureDetector(
+      onTap: onTapFun,
+      child: CustomShape(
+        child: Center(
+          child: Text(txt)
+              .mediumText(txtColor, scaler.getTextSize(10), TextAlign.center),
+        ),
+        bgColor: bgColor,
+        radius: scaler.getBorderRadiusCircular(10),
+        width: MediaQuery.of(context).size.width,
+        height: scaler.getHeight(4.5),
       ),
     );
   }
@@ -303,58 +325,56 @@ class CommonWidgets {
   static Widget expandedRowButton(BuildContext context, ScreenScaler scaler,
       String btn1Text, String btn2Text,
       {VoidCallback? onTapBtn1, bool btn1 = true, VoidCallback? onTapBtn2}) {
-    return Expanded(
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: scaler.getPaddingLTRB(2, 0.0, 2, 1),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: btn1
-                      ? () {
-                          Navigator.pop(context);
-                        }
-                      : onTapBtn1,
-                  child: CustomShape(
-                    child: Center(
-                        child: Text(btn1Text).mediumText(
-                            ColorConstants.primaryColor,
-                            scaler.getTextSize(10),
-                            TextAlign.center)),
-                    bgColor: ColorConstants.primaryColor.withOpacity(0.2),
-                    radius: BorderRadius.all(
-                      Radius.circular(12),
-                    ),
-                    width: scaler.getWidth(40),
-                    height: scaler.getHeight(4.5),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: scaler.getWidth(2),
-              ),
-              Expanded(
-                  child: GestureDetector(
-                onTap: onTapBtn2,
+    return Container(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: scaler.getPaddingLTRB(2, 0.0, 2, 1),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: btn1
+                    ? () {
+                        Navigator.pop(context);
+                      }
+                    : onTapBtn1,
                 child: CustomShape(
                   child: Center(
-                      child: Text(btn2Text).mediumText(
-                          ColorConstants.colorWhite,
+                      child: Text(btn1Text).mediumText(
+                          ColorConstants.primaryColor,
                           scaler.getTextSize(10),
                           TextAlign.center)),
-                  bgColor: ColorConstants.primaryColor,
+                  bgColor: ColorConstants.primaryColor.withOpacity(0.2),
                   radius: BorderRadius.all(
                     Radius.circular(12),
                   ),
                   width: scaler.getWidth(40),
                   height: scaler.getHeight(4.5),
                 ),
-              )),
-            ],
-          ),
+              ),
+            ),
+            SizedBox(
+              width: scaler.getWidth(2),
+            ),
+            Expanded(
+                child: GestureDetector(
+              onTap: onTapBtn2,
+              child: CustomShape(
+                child: Center(
+                    child: Text(btn2Text).mediumText(
+                        ColorConstants.colorWhite,
+                        scaler.getTextSize(10),
+                        TextAlign.center)),
+                bgColor: ColorConstants.primaryColor,
+                radius: BorderRadius.all(
+                  Radius.circular(12),
+                ),
+                width: scaler.getWidth(40),
+                height: scaler.getHeight(4.5),
+              ),
+            )),
+          ],
         ),
       ),
     );

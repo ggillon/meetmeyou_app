@@ -47,7 +47,7 @@ class SearchProfileScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           hideKeyboard(context);
-                          if(searchBarController.text.isNotEmpty){
+                          if (searchBarController.text.isNotEmpty) {
                             provider.getSearchContacts(
                                 context, searchBarController.text);
                             provider.searchValue = true;
@@ -129,7 +129,7 @@ class SearchProfileScreen extends StatelessWidget {
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
-          if(searchBarController.text.isNotEmpty){
+          if (searchBarController.text.isNotEmpty) {
             provider.getSearchContacts(context, data);
             provider.searchValue = true;
           }
@@ -139,7 +139,7 @@ class SearchProfileScreen extends StatelessWidget {
         onChanged: (value) {
           provider.updateValue(true);
           provider.searchContactList.clear();
-           provider.searchValue = false;
+          provider.searchValue = false;
         },
       ),
     );
@@ -154,21 +154,18 @@ class SearchProfileScreen extends StatelessWidget {
             itemCount: provider.searchContactList.length,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () {
-                  hideKeyboard(context);
-                  Navigator.pushNamed(
-                      context, RoutesConstants.contactDescription,
-                      arguments: UserDetail(
-                          firstName:
-                              provider.searchContactList[index].displayName,
-                          email: provider.searchContactList[index].email,
-                          checkForInvitation: false,
-                          phone: provider.searchContactList[index].phoneNumber,
-                          profileUrl:
-                              provider.searchContactList[index].photoURL,
-                          address: provider
-                              .searchContactList[index].addresses['Home']));
-                },
+                // onTap: provider.searchContactList[index].status ==
+                //             'Listed profile' ||
+                //         provider.searchContactList[index].status ==
+                //             'Invited contact'
+                //     ? () {}
+                //     : () {
+                //   provider.setContactsValue(provider.searchContactList[index], false, "");
+                //         Navigator.pushNamed(
+                //             context, RoutesConstants.contactDescription,
+                //
+                //         );
+                //       },
                 child: CommonWidgets.userContactCard(
                     scaler,
                     provider.searchContactList[index].email,
@@ -176,7 +173,7 @@ class SearchProfileScreen extends StatelessWidget {
                     profileImg: provider.searchContactList[index].photoURL,
                     searchStatus: provider.searchContactList[index].status,
                     search: true, addIconTapAction: () {
-                   provider.inviteProfile(_scaffoldKey.currentContext!,
+                  provider.inviteProfile(_scaffoldKey.currentContext!,
                       provider.searchContactList[index]);
                 }),
               );

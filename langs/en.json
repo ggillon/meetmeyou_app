@@ -100,5 +100,26 @@
   "event_name_required": "Event name required",
   "take_a_photo": "Take a photo",
   "choose_photo": "Choose Photo",
-  "default_photo": "Default Photo"
+  "default_photo": "Default Photo",
+  "start_date_and_time" : "Start date and time",
+  "end_date_and_time" : "End date and time",
+  "event_location" : "Event Location",
+  "event_description" : "Event Description",
+  "questionare" : "Questionare",
+  "ask_for_feedback" : "Ask for feedback",
+  "event_location_required" : "Event location required",
+  "event_description_required" : "Event description required",
+  "phone_no_cannot_empty" : "Phone number can't be empty",
+  "delete_group" : "Delete group",
+  "home" : "Home",
+  "my_upcoming_events"  : "My upcoming events",
+  "going" : "Going",
+  "not_going" : "Not Going",
+  "not_replied" : "Not Replied",
+  "hidden" : "Hidden",
+  "save_event" : "Save event",
+  "cancel_event" : "Cancel event",
+  "loading_event" : "Loading events",
+  "sorry_no_event_found" : "Sorry no event found"
+
 }

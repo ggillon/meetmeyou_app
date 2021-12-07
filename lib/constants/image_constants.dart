@@ -40,5 +40,11 @@ class ImageConstants {
   static const close_icon = "images/ic_close.svg";
   static const image_frame_icon = "images/ic_imageFrame.svg";
   static const image_border_icon = "images/ic_imageBorder.svg";
-
+  static const map_icon = "images/ic_map_icon.svg";
+  static const share_icon = "images/ic_share.svg";
+  static const clock_icon = "images/ic_clock.svg";
+  static const back = "images/ic_back.svg";
+  static const map = "images/ic_map.svg";
+  static const event_clock_icon = "images/ic_event_clock.svg";
+  static const event_arrow_icon = "images/ic_event_arrow.svg";
 }

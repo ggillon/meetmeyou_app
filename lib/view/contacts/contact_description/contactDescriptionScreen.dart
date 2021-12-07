@@ -79,7 +79,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     "phone_number".tr(),
                                     userDetail.phone ?? "",
                                     countryCode: true,
-                                    cCode: "+1"),
+                                    cCode: userDetail.countryCode),
                               ),
                               SizedBox(height: scaler.getHeight(1.5)),
                               CommonWidgets.phoneNoAndAddressFun(
@@ -105,18 +105,20 @@ class ContactDescriptionScreen extends StatelessWidget {
                                             0.0, 0.0, 0.0, 1.0),
                                         alignment: Alignment.bottomCenter,
                                         child: CircularProgressIndicator()))
-                                : CommonWidgets.expandedRowButton(
-                                    context,
-                                    scaler,
-                                    "reject_invite".tr(),
-                                    "accept_invite".tr(),
-                                    btn1: false, onTapBtn1: () {
-                                    provider.acceptOrRejectInvitation(context,
-                                        userDetail.cid!, false, "Reject");
-                                  }, onTapBtn2: () {
-                                    provider.acceptOrRejectInvitation(context,
-                                        userDetail.cid!, true, "Accept");
-                                  })
+                                : Expanded(
+                                  child: CommonWidgets.expandedRowButton(
+                                      context,
+                                      scaler,
+                                      "reject_invite".tr(),
+                                      "accept_invite".tr(),
+                                      btn1: false, onTapBtn1: () {
+                                      provider.acceptOrRejectInvitation(context,
+                                          userDetail.cid!, false, "Reject");
+                                    }, onTapBtn2: () {
+                                      provider.acceptOrRejectInvitation(context,
+                                          userDetail.cid!, true, "Accept");
+                                    }),
+                                )
                             : Container()
                       ],
                     ),
@@ -170,7 +172,7 @@ class ContactDescriptionScreen extends StatelessWidget {
             ],
           ),
         ),
-        CommonWidgets.cancelBtn(scaler, context),
+        CommonWidgets.cancelBtn(scaler, context, 5.0),
         SizedBox(height: scaler.getHeight(1)),
       ],
     );

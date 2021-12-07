@@ -76,6 +76,8 @@ class ContactsProvider extends BaseProvider {
       });
       confirmContactList = confirmValue;
 
+      // isContactChecked = List<bool>.filled(confirmContactList.length, false);
+
       groupDetail.createGroup = true;
       groupDetail.checkBoxCheck = false;
       groupDetail.groupPhotoUrl = null;
@@ -122,7 +124,7 @@ class ContactsProvider extends BaseProvider {
     notifyListeners();
   }
 
-  setGroupValue(Contact contact){
+  setGroupValue(Contact contact) {
     groupDetail.groupName = contact.displayName;
     groupDetail.about = contact.about;
     groupDetail.groupCid = contact.cid;
@@ -132,14 +134,16 @@ class ContactsProvider extends BaseProvider {
     groupDetail.createGroup = false;
   }
 
-  setContactsValue(Contact contact, bool value, String cid){
+  setContactsValue(Contact contact, bool value, String cid) {
     userDetail.firstName = contact.firstName;
     userDetail.lastName = contact.lastName;
     userDetail.email = contact.email;
     userDetail.profileUrl = contact.photoURL;
     userDetail.phone = contact.phoneNumber;
+    userDetail.countryCode = contact.countryCode;
     userDetail.address = contact.addresses['Home'];
     userDetail.checkForInvitation = value;
     userDetail.cid = cid;
   }
+
 }

@@ -14,16 +14,25 @@ class ViewDecoration {
       Widget? prefixIcon,
       double? textSize,
       Color? fillColor,
-      double? radius}) {
+      double? radius,
+      bool imageView = false,
+      String? path}) {
     return InputDecoration(
         prefixIcon: prefixIcon == null ? null : prefixIcon,
         suffixIcon: icon == null
             ? null
-            : Icon(
-                icon,
-                size: scaler.getTextSize(12),
-                color: ColorConstants.colorBlack,
-              ),
+            : imageView
+                ? Container(
+                    height: scaler.getHeight(1),
+                    child: ImageView(
+                      path: path,
+                      height: scaler.getHeight(1),
+                    ))
+                : Icon(
+                    icon,
+                    size: scaler.getTextSize(12),
+                    color: ColorConstants.colorBlack,
+                  ),
         hintText: fieldName,
         hintStyle: textFieldStyle(
             scaler.getTextSize(textSize ?? 9.5), ColorConstants.colorGray),

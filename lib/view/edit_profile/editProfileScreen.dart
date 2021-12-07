@@ -302,12 +302,12 @@ class EditProfileScreen extends StatelessWidget {
                                   height: scaler.getHeight(0.2),
                                 ),
                                 Container(
-                                  height: scaler.getHeight(3.8),
+                               //   height: scaler.getHeight(3.8),
                                   child: TextFormField(
-                                    inputFormatters: <TextInputFormatter>[
-                                      LengthLimitingTextInputFormatter(10),
-                                      FilteringTextInputFormatter.digitsOnly,
-                                    ],
+                                    // inputFormatters: <TextInputFormatter>[
+                                    //   LengthLimitingTextInputFormatter(10),
+                                    //   FilteringTextInputFormatter.digitsOnly,
+                                    // ],
                                     controller: phoneNumberController,
                                     style: ViewDecoration.textFieldStyle(
                                         scaler.getTextSize(9.5),
@@ -346,7 +346,7 @@ class EditProfileScreen extends StatelessWidget {
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value!.trim().isEmpty) {
-                                        return null;
+                                        return "phone_no_cannot_empty".tr();
                                       } else if (!Validations.validateMobile(
                                           value.trim())) {
                                         return "invalid_phone_number".tr();

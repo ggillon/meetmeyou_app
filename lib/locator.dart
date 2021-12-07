@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/create_event_provider.dart';
+import 'package:meetmeyou_app/provider/event_invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/group_contacts_provider.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -10,6 +12,7 @@ import 'package:meetmeyou_app/provider/edit_Contact_Provider.dart';
 import 'package:meetmeyou_app/provider/create_edit_group_provider.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/provider/group_description_provider.dart';
+import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
@@ -30,6 +33,8 @@ GetIt locator = GetIt.instance;
 void setupLocator() {
   locator.registerLazySingleton<AuthBase>(() => Auth());
   locator.registerLazySingleton<UserDetail>(() => UserDetail());
+  locator.registerLazySingleton<GroupDetail>(() => GroupDetail());
+  locator.registerLazySingleton<EventDetail>(() => EventDetail());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -49,8 +54,9 @@ void setupLocator() {
   locator.registerFactory<CreateEditGroupProvider>(()=> CreateEditGroupProvider());
   locator.registerFactory<GroupContactsProvider>(()=> GroupContactsProvider());
   locator.registerFactory<GroupDescriptionProvider>(()=> GroupDescriptionProvider());
-  locator.registerLazySingleton<GroupDetail>(() => GroupDetail());
-  locator.registerLazySingleton<CreateEventProvider>(() => CreateEventProvider());
+  locator.registerFactory<CreateEventProvider>(() => CreateEventProvider());
+  locator.registerFactory<EventInviteFriendsProvider>(() => EventInviteFriendsProvider());
+  locator.registerFactory<HomePageProvider>(() => HomePageProvider());
 
 
   /*

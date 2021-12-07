@@ -3,11 +3,13 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class SearchProfileProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  UserDetail userDetail = locator<UserDetail>();
   bool searchValue = false;
 
   List<Contact> _searchContactList = [];
@@ -53,5 +55,16 @@ class SearchProfileProvider extends BaseProvider {
 
     updateValue(false);
     DialogHelper.showMessage(context, "Invitation send Successfully");
+  }
+
+  setContactsValue(Contact contact, bool value, String cid) {
+    userDetail.firstName = contact.firstName;
+    userDetail.lastName = contact.lastName;
+    userDetail.email = contact.email;
+    userDetail.profileUrl = contact.photoURL;
+    userDetail.phone = contact.phoneNumber;
+    userDetail.countryCode = contact.countryCode;
+    userDetail.address = contact.addresses['Home'];
+    userDetail.checkForInvitation = value;
   }
 }

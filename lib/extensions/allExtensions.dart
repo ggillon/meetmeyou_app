@@ -135,3 +135,17 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }
+
+extension TimeOfDayExtension on TimeOfDay {
+  int isCompareTo(TimeOfDay other) {
+    if (hour < other.hour) return -1;
+    if (hour > other.hour) return 1;
+    if (hour < other.hour) {
+      if (minute > other.minute) return -1;
+    } else {
+      if (minute > other.minute) return 1;
+    }
+    if (minute < other.minute) return -1;
+    return 0;
+  }
+}

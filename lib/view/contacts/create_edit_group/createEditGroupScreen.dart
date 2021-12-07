@@ -40,7 +40,7 @@ class CreateEditGroupScreen extends StatelessWidget {
                 provider.groupDetail.createGroup ?? false
                     ? ""
                     : provider.groupDetail.about ?? "";
-          }, builder: (builder, provider, _) {
+          }, builder: (context, provider, _) {
             return LayoutBuilder(builder: (context, constraint) {
               return SingleChildScrollView(
                 child: ConstrainedBox(
@@ -244,54 +244,125 @@ class CreateEditGroupScreen extends StatelessWidget {
                                       });
                                     }
                                   }),
-                            SizedBox(
-                              height: scaler.getHeight(2),
-                            ),
-                            provider.state == ViewState.Busy
-                                ? Expanded(
+                            SizedBox(height: scaler.getHeight(2)),
+                            provider.groupDetail.createGroup ?? false
+                                ? Container()
+                                : Expanded(
                                     child: Container(
+                                      alignment: Alignment.bottomCenter,
+                                      child: DialogHelper.btnWidget(
+                                          scaler,
+                                          context,
+                                          "delete_group".tr(),
+                                          ColorConstants.colorRed,
+                                          funOnTap: () {
+                                        DialogHelper.showDialogWithTwoButtons(
+                                            context,
+                                            "Delete Group",
+                                            "Are you sure you want to delete this group?");
+                                      }),
+                                    ),
+                                  ),
+                            SizedBox(height: scaler.getHeight(1)),
+                            provider.groupDetail.createGroup ?? false
+                                ? provider.state == ViewState.Busy
+                                    ? Expanded(
+                                      child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              CircularProgressIndicator(),
+                                              SizedBox(
+                                                  height: scaler.getHeight(1)),
+                                            ],
+                                          )),
+                                    )
+                                    : Expanded(
+                                      child: CommonWidgets.expandedRowButton(
+                                          context,
+                                          scaler,
+                                          "discard".tr(),
+                                          "save_changes".tr(), onTapBtn2: () {
+                                          hideKeyboard(context);
+                                          if (_formKey.currentState!.validate()) {
+                                            provider.groupDetail.createGroup!
+                                                ? provider.update
+                                                    ? provider.updateGroupContact(
+                                                        context,
+                                                        provider.groupDetail
+                                                                .groupCid ??
+                                                            "",
+                                                        groupName:
+                                                            groupNameController
+                                                                .text,
+                                                        about: descriptionController
+                                                            .text)
+                                                    : provider.createNewGroupContact(
+                                                        context,
+                                                        groupNameController.text,
+                                                        // groupImg: provider.groupDetail.groupPhotoUrl,
+                                                        about: descriptionController
+                                                            .text)
+                                                : provider.updateGroupContact(
+                                                    context,
+                                                    provider.groupDetail.groupCid ??
+                                                        "",
+                                                    groupName:
+                                                        groupNameController.text,
+                                                    about: descriptionController
+                                                        .text);
+                                          }
+                                        }),
+                                    )
+                                : provider.state == ViewState.Busy
+                                    ? Container(
                                         alignment: Alignment.bottomCenter,
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
                                           children: [
                                             CircularProgressIndicator(),
-                                            SizedBox(height: scaler.getHeight(1)),
+                                            SizedBox(
+                                                height: scaler.getHeight(1)),
                                           ],
-                                        )))
-                                : CommonWidgets.expandedRowButton(
-                                    context,
-                                    scaler,
-                                    "discard".tr(),
-                                    "save_changes".tr(), onTapBtn2: () {
-                                    hideKeyboard(context);
-                                    if (_formKey.currentState!.validate()) {
-                                      provider.groupDetail.createGroup!
-                                          ? provider.update
-                                              ? provider.updateGroupContact(
+                                        ))
+                                    : CommonWidgets.expandedRowButton(
+                                        context,
+                                        scaler,
+                                        "discard".tr(),
+                                        "save_changes".tr(), onTapBtn2: () {
+                                        hideKeyboard(context);
+                                        if (_formKey.currentState!.validate()) {
+                                          provider.groupDetail.createGroup!
+                                              ? provider.update
+                                                  ? provider.updateGroupContact(
+                                                      context,
+                                                      provider.groupDetail
+                                                              .groupCid ??
+                                                          "",
+                                                      groupName:
+                                                          groupNameController
+                                                              .text,
+                                                      about: descriptionController
+                                                          .text)
+                                                  : provider.createNewGroupContact(
+                                                      context,
+                                                      groupNameController.text,
+                                                      // groupImg: provider.groupDetail.groupPhotoUrl,
+                                                      about: descriptionController
+                                                          .text)
+                                              : provider.updateGroupContact(
                                                   context,
-                                                  provider.groupDetail
-                                                          .groupCid ??
+                                                  provider.groupDetail.groupCid ??
                                                       "",
                                                   groupName:
                                                       groupNameController.text,
                                                   about: descriptionController
-                                                      .text)
-                                              : provider.createNewGroupContact(
-                                                  context,
-                                                  groupNameController.text,
-                                                  // groupImg: provider.groupDetail.groupPhotoUrl,
-                                                  about: descriptionController
-                                                      .text)
-                                          : provider.updateGroupContact(
-                                              context,
-                                              provider.groupDetail.groupCid ??
-                                                  "",
-                                              groupName:
-                                                  groupNameController.text,
-                                              about:
-                                                  descriptionController.text);
-                                    }
-                                  })
+                                                      .text);
+                                        }
+                                      })
                           ],
                         ),
                       ),

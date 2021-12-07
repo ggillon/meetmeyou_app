@@ -123,18 +123,4 @@ class CreateEditGroupProvider extends BaseProvider {
     }
   }
 
-// Future updateGroupImage(BuildContext context, String groupName,
-//     {String? groupImg, String? about}) async {
-//   setState(ViewState.Busy);
-//   if (image != null) {
-//     await mmyEngine!.updateGroupPicture(image!).catchError((e) {
-//       setState(ViewState.Idle);
-//       DialogHelper.showMessage(context, e.message);
-//     });
-//
-//     createNewGroupContact(context, groupName, about: about);
-//   } else {
-//     createNewGroupContact(context, groupName, about: about);
-//   }
-// }
 }

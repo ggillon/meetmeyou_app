@@ -90,7 +90,13 @@ class EditProfileProvider extends BaseProvider {
       notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      image = File(pickedFile!.path);
+    //  image = File(pickedFile!.path);
+      if (pickedFile != null) {
+        image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+        return;
+      }
       notifyListeners();
     }
   }
@@ -104,7 +110,6 @@ class EditProfileProvider extends BaseProvider {
       String phoneNumber,
       String countryCode,
       String address) async {
-
     var value = await mmyEngine!
         .updateProfile(
       firstName: firstName,

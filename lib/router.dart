@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/view/about/aboutPage.dart';
 import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScreen.dart';
 import 'package:meetmeyou_app/view/add_event/default_photo_page/defaultPhotoPage.dart';
+import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/calendar_settings/calendarSettingsScreen.dart';
+import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/group_contacts/groupContactsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 import 'package:meetmeyou_app/view/contacts/create_edit_group/createEditGroupScreen.dart';
@@ -14,6 +17,7 @@ import 'package:meetmeyou_app/view/contacts/search_profile/searchProfileScreen.d
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
 import 'package:meetmeyou_app/view/history/historyScreen.dart';
+import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/invite_friends/inviteFriendsScreen.dart';
@@ -139,6 +143,12 @@ class Router {
 
       case RoutesConstants.defaultPhotoPage:
         return MaterialPageRoute(builder: (_) => DefaultPhotoPage(), settings: settings);
+
+      case RoutesConstants.eventInviteFriendsScreen:
+        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(), settings: settings);
+
+      case RoutesConstants.eventDetailScreen:
+        return MaterialPageRoute(builder: (_) => EventDetailScreen(event: settings.arguments as Event), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

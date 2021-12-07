@@ -302,16 +302,16 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       Container(
-                        height: scaler.getHeight(3.8),
+                      //  height: scaler.getHeight(3.8),
                         // decoration: BoxDecoration(
                         //   color: ColorConstants.colorLightGray,
                         //   borderRadius: scaler.getBorderRadiusCircular(8.0),
                         //  ),
                         child: TextFormField(
-                          inputFormatters: <TextInputFormatter>[
-                            LengthLimitingTextInputFormatter(10),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          // inputFormatters: <TextInputFormatter>[
+                          //   LengthLimitingTextInputFormatter(10),
+                          //   FilteringTextInputFormatter.digitsOnly,
+                          // ],
                           controller: phoneNumberController,
                           style: ViewDecoration.textFieldStyle(
                               scaler.getTextSize(9.5),

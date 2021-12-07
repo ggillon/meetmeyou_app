@@ -35,7 +35,7 @@ class AddEventScreen extends StatelessWidget {
   Widget eventCard(BuildContext context, ScreenScaler scaler) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesConstants.createEventScreen);
+        Navigator.of(context).pushNamed(RoutesConstants.createEventScreen);
       },
       child: Card(
         shadowColor: ColorConstants.colorWhite,
