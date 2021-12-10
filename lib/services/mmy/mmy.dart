@@ -64,9 +64,9 @@ abstract class MMYEngine {
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,});
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, required DateTime start, required DateTime end,});
   /// Update an event
-  Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,});
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,});
   /// Get status of user
   Future<String> eventUserStatus(String eid);
   /// Delete an event
@@ -242,8 +242,13 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, required DateTime start, required DateTime end,}) {
-    return eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, required DateTime start, required DateTime end,}) async {
+    Event event = await eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+    if (photoFile!=null) {
+      photoURL = await storageLib.storeEventPicture(photoFile, eid: event.eid);
+      event = await updateEvent(event.eid, photoURL: photoURL);
+    }
+    return event;
   }
 
   @override
@@ -279,7 +284,9 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> updateEvent(String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) async {
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,}) async {
+    if (photoFile!=null)
+      photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
     return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
   }
 
