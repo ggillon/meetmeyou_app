@@ -58,7 +58,7 @@ class EventInviteFriendsScreen extends StatelessWidget {
                       } else {
                         provider.getGroupList(context);
                       }
-                      provider.updateValue(true);
+                      provider.updateToggleValue(true);
                     },
                     buttonColor: ColorConstants.colorWhite,
                     backgroundColor: ColorConstants.colorMediumGray,
@@ -146,25 +146,41 @@ class EventInviteFriendsScreen extends StatelessWidget {
                                   ),
                                 ),
                   SizedBox(height: scaler.getHeight(1)),
-                  provider.value == true
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Container(
-                          child: DialogHelper.btnWidget(
-                              scaler,
-                              context,
-                              "invite_friends".tr(),
-                              ColorConstants.primaryColor, funOnTap: () {
-                            if (provider.contactCIDs!.isNotEmpty) {
-                              provider.inviteContactsToEvent(
-                                  context, provider.contactCIDs);
-                            } else {
-                              DialogHelper.showMessage(
-                                  context, "Please select contacts to Invite");
-                            }
-                          }),
-                        ),
+                  // provider.value == true
+                  //     ? Center(
+                  //         child: CircularProgressIndicator(),
+                  //       )
+                  //     :
+                provider.value == true ? Center(
+                  child: CircularProgressIndicator(),
+                ) : Container(
+                    child: DialogHelper.btnWidget(
+                        scaler,
+                        context,
+                        "invite_friends".tr(),
+                        ColorConstants.primaryColor, funOnTap: () {
+                      List<String> contactsCidList = [];
+                      List<String> keysList = [];
+                      if (provider.checkGroupList.isNotEmpty) {
+                        for (int i = 0; i < provider.checkGroupList.length; i++) {
+                          for (var key in provider.checkGroupList[i].group.keys) {
+                            keysList.add(key);
+                          }
+                        }
+                      }
+                      contactsCidList.addAll(provider.contactCIDs!);
+                      contactsCidList.addAll(keysList);
+                      print(contactsCidList.toSet().toList());
+                      if (contactsCidList.isNotEmpty) {
+                        provider.inviteContactsToEvent(
+                            context, contactsCidList.toSet().toList());
+                      }
+                     else {
+                      DialogHelper.showMessage(
+                          context, "Please select contacts to Invite");
+                        }
+                    }),
+                  ),
                   SizedBox(height: scaler.getHeight(1)),
                 ],
               ),
@@ -194,7 +210,7 @@ class EventInviteFriendsScreen extends StatelessWidget {
         textInputAction: TextInputAction.search,
         keyboardType: TextInputType.name,
         onChanged: (value) {
-          provider.updateValue(true);
+          provider.updateSearchValue(true);
         },
       ),
     );
@@ -275,7 +291,7 @@ class EventInviteFriendsScreen extends StatelessWidget {
                         height: scaler.getHeight(3.5),
                         alignment: Alignment.center,
                         child: Checkbox(
-                          value: provider.checkIsSelected(
+                          value: provider.contactCheckIsSelected(
                               provider.confirmContactList[index]),
                           onChanged: (bool? value) {
                             if (value!) {
@@ -293,9 +309,26 @@ class EventInviteFriendsScreen extends StatelessWidget {
                         height: scaler.getHeight(3.5),
                         alignment: Alignment.center,
                         child: Checkbox(
-                          value: provider.isGroupChecked[index],
+                          value: provider.groupCheckIsSelected(
+                              provider.groupList[index], index),
                           onChanged: (bool? value) {
-                            provider.setGroupCheckBoxValue(value!, index);
+                            if (value!) {
+                              List<String> keysList = [];
+                              for (var key
+                                  in provider.groupList[index].group.keys) {
+                                keysList.add(key);
+                              }
+                              provider.addContactToGroupCidList(
+                                  keysList, index, provider.groupList[index]);
+                            } else {
+                              List<String> keysList = [];
+                              for (var key
+                                  in provider.groupList[index].group.keys) {
+                                keysList.add(key);
+                              }
+                              provider.removeContactFromGroupCidList(
+                                  keysList, index, provider.groupList[index]);
+                            }
                           },
                         ),
                       ),

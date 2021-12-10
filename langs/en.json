@@ -120,6 +120,15 @@
   "save_event" : "Save event",
   "cancel_event" : "Cancel event",
   "loading_event" : "Loading events",
-  "sorry_no_event_found" : "Sorry no event found"
+  "sorry_no_event_found" : "Sorry no event found",
+  "organiser" : "Organiser",
+  "event_discussion" : "Event Discussion",
+  "respond" : "Respond",
+  "edit" : "Edit",
+  "cancelled" : "Cancelled",
+  "going_to_event" : "Going to event",
+  "not_going_to_event" : "Not going to event",
+  "hide_event" : "Hide event",
+  "attending" : "Attending"
 
 }

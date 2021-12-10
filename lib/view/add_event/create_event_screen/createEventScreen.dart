@@ -229,14 +229,28 @@ class CreateEventScreen extends StatelessWidget {
                                                 1) {
                                               DialogHelper.showMessage(context,
                                                   "Select correct time.");
+                                            } else {
+                                              provider.updateEvent(
+                                                  context,
+                                                  eventNameController.text,
+                                                  addressController.text,
+                                                  eventDescriptionController
+                                                      .text,
+                                                  provider.dateTimeFormat(
+                                                      provider.startDate,
+                                                      provider.startTime),
+                                                  provider.dateTimeFormat(
+                                                      provider.endDate,
+                                                      provider.endTime),
+                                                  photoURL: provider.imageUrl);
                                             }
-                                            return;
                                           } else {
                                             provider.updateEvent(
                                                 context,
                                                 eventNameController.text,
                                                 addressController.text,
-                                                eventDescriptionController.text,
+                                                eventDescriptionController
+                                                    .text,
                                                 provider.dateTimeFormat(
                                                     provider.startDate,
                                                     provider.startTime),
@@ -270,6 +284,7 @@ class CreateEventScreen extends StatelessWidget {
                                               provider.imageUrl == null) {
                                             DialogHelper.showMessage(context,
                                                 "Please Select image.");
+                                            return;
                                           } else if (provider.startDate
                                               .isAfter(provider.endDate)) {
                                             DialogHelper.showMessage(context,
@@ -287,8 +302,21 @@ class CreateEventScreen extends StatelessWidget {
                                                 1) {
                                               DialogHelper.showMessage(context,
                                                   "Select correct time.");
+                                            } else {
+                                              provider.createEvent(
+                                                  context,
+                                                  eventNameController.text,
+                                                  addressController.text,
+                                                  eventDescriptionController
+                                                      .text,
+                                                  provider.dateTimeFormat(
+                                                      provider.startDate,
+                                                      provider.startTime),
+                                                  provider.dateTimeFormat(
+                                                      provider.endDate,
+                                                      provider.endTime),
+                                                  photoURL: provider.imageUrl);
                                             }
-                                            return;
                                           } else {
                                             provider.createEvent(
                                                 context,

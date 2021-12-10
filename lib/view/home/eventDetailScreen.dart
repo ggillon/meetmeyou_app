@@ -1,27 +1,38 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:image_stack/image_stack.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/provider/event_detail_provider.dart';
+import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class EventDetailScreen extends StatelessWidget {
   final Event event;
 
-  const EventDetailScreen({Key? key, required this.event}) : super(key: key);
+  EventDetailScreen({Key? key, required this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
+        body: BaseView<EventDetailProvider>(
+          onModelReady: (provider) {
+            provider.eventGoingLength();
+            provider.getUsersProfileUrl(context);
+          },
+          builder: (context, provider, _) {
+            return SingleChildScrollView(
+                child: Column(children: [
               Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.bottomCenter,
@@ -33,24 +44,119 @@ class EventDetailScreen extends StatelessWidget {
                   )
                 ],
               ),
-              SizedBox(height: scaler.getHeight(5)),
+              SizedBox(height: scaler.getHeight(6)),
               Padding(
-                padding: scaler.getPaddingLTRB(3, 0.0, 3, 1.0),
+                padding: scaler.getPaddingLTRB(3, 1.0, 3, 1.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CommonWidgets.commonBtn(
-                        scaler,
-                        context,
-                        "Going",
-                        ColorConstants.primaryColor.withOpacity(0.2),
-                        ColorConstants.primaryColor),
+                    provider.replyEventValue == true
+                        ? Center(child: CircularProgressIndicator())
+                        : CommonWidgets.commonBtn(
+                            scaler,
+                            context,
+                            provider.eventDetail.eventBtnStatus!.tr(),
+                            provider.eventDetail.btnBGColor!,
+                            provider.eventDetail.textColor!, onTapFun: () {
+                            provider.eventDetail.eventBtnStatus == "respond"
+                                ? CommonWidgets.respondToEventBottomSheet(
+                                    context, scaler, going: () {
+                                    Navigator.of(context).pop();
+                                    provider.replyToEvent(
+                                        context, event.eid, EVENT_ATTENDING);
+                                  }, notGoing: () {
+                                    Navigator.of(context).pop();
+                                    provider.replyToEvent(context, event.eid,
+                                        EVENT_NOT_ATTENDING);
+                                  }, hide: () {
+                                    Navigator.of(context).pop();
+                                    provider.replyToEvent(context, event.eid,
+                                        EVENT_NOT_INTERESTED);
+                                  })
+                                : Container();
+                          }),
                     SizedBox(height: scaler.getHeight(1)),
-                    organiserCard(scaler),
+                    organiserCard(scaler, provider),
+                    SizedBox(height: scaler.getHeight(1)),
+                    provider.eventAttendingLength == 0
+                        ? Container()
+                        : GestureDetector(
+                            onTap: () {
+                              provider.eventDetail.attendingProfileKeys =
+                                  provider.eventAttendingKeysList;
+                              Navigator.pushNamed(context,
+                                      RoutesConstants.eventAttendingScreen)
+                                  .then((value) {
+                                provider.eventAttendingLength = (provider
+                                        .eventDetail
+                                        .attendingProfileKeys
+                                        ?.length ??
+                                    0);
+                                provider.updateValue(true);
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  // ClipRRect(
+                                  //   borderRadius:
+                                  //       scaler.getBorderRadiusCircular(15.0),
+                                  //   child: Container(
+                                  //     alignment: Alignment.center,
+                                  //     color: ColorConstants.primaryColor,
+                                  //     height: scaler.getHeight(1.8),
+                                  //     width: scaler.getWidth(6),
+                                  //     child: Text(provider.eventAttendingLength
+                                  //             .toString())
+                                  //         .mediumText(
+                                  //             ColorConstants.colorWhite,
+                                  //             scaler.getTextSize(7.7),
+                                  //             TextAlign.center),
+                                  //   ),
+                                  // ),
+                                  ImageStack(
+                                    imageList:
+                                        provider.eventAttendingPhotoUrlLists,
+                                    totalCount: provider
+                                        .eventAttendingPhotoUrlLists.length,
+                                    imageRadius: 25,
+                                    imageCount: 2,
+                                    imageBorderColor: ColorConstants.colorWhite,
+                                    backgroundColor:
+                                        ColorConstants.primaryColor,
+                                    imageBorderWidth: 1,
+                                    extraCountTextStyle: TextStyle(
+                                        fontSize: 7.7,
+                                        color: ColorConstants.colorWhite,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(width: scaler.getWidth(1)),
+                                  Text("going".tr()).regularText(
+                                      ColorConstants.colorGray,
+                                      scaler.getTextSize(8),
+                                      TextAlign.center),
+                                ],
+                              ),
+                            ),
+                          ),
+                    SizedBox(height: scaler.getHeight(1)),
+                    Text("event_description".tr()).boldText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(9.5),
+                        TextAlign.left),
+                    SizedBox(height: scaler.getHeight(2)),
+                    Text(event.description).regularText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(10),
+                        TextAlign.left),
+                    SizedBox(height: scaler.getHeight(2.5)),
+                    eventDiscussionCard(scaler)
                   ],
                 ),
-              ),
-            ],
-          ),
+              )
+            ]));
+          },
         ),
       ),
     );
@@ -116,6 +222,7 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
+  bool showText = true;
   Widget titleDateLocationCard(ScreenScaler scaler) {
     return Padding(
       padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
@@ -216,21 +323,75 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget organiserCard(ScreenScaler scaler){
+  Widget organiserCard(ScreenScaler scaler, EventDetailProvider provider) {
     return Card(
       shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(10)),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: scaler.getBorderRadiusCircular(15.0),
-            child: Container(
-              color: ColorConstants.primaryColor,
-              height: scaler.getHeight(1),
-              width: scaler.getWidth(4),
-            ),
-          )
-        ],
+          borderRadius: scaler.getBorderRadiusCircular(8)),
+      child: Padding(
+        padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+        child: Row(
+          children: [
+            ClipRRect(
+                borderRadius: scaler.getBorderRadiusCircular(15.0),
+                child: provider.userDetail.profileUrl == null
+                    ? Container(
+                        color: ColorConstants.primaryColor,
+                        height: scaler.getHeight(2.8),
+                        width: scaler.getWidth(9),
+                      )
+                    : Container(
+                        height: scaler.getHeight(2.8),
+                        width: scaler.getWidth(9),
+                        child: ImageView(
+                            path: provider.userDetail.profileUrl,
+                            height: scaler.getHeight(2.8),
+                            width: scaler.getWidth(9)),
+                      )),
+            SizedBox(width: scaler.getWidth(2)),
+            Expanded(
+                child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(event.organiserName + " " + "(${"organiser".tr()})")
+                  .semiBoldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(9.8), TextAlign.left,
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
+            )),
+            SizedBox(width: scaler.getWidth(2)),
+            ImageView(
+              path: ImageConstants.event_arrow_icon,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget eventDiscussionCard(ScreenScaler scaler) {
+    return Card(
+      shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircular(8)),
+      child: Padding(
+        padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+        child: Row(
+          children: [
+            ImageView(path: ImageConstants.event_chat_icon),
+            SizedBox(width: scaler.getWidth(2)),
+            Expanded(
+                child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text("event_discussion".tr()).mediumText(
+                  ColorConstants.colorBlack,
+                  scaler.getTextSize(9.5),
+                  TextAlign.left,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            )),
+            SizedBox(width: scaler.getWidth(2)),
+            ImageView(
+              path: ImageConstants.small_arrow_icon,
+            )
+          ],
+        ),
       ),
     );
   }

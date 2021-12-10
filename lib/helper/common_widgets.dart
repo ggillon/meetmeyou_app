@@ -98,6 +98,7 @@ class CommonWidgets {
       String? searchStatus,
       bool search = false,
       VoidCallback? addIconTapAction,
+      VoidCallback? deleteIconTapAction,
       bool invitation = false}) {
     return Column(children: [
       Card(
@@ -119,7 +120,8 @@ class CommonWidgets {
                   search: true, searchStatus: searchStatus),
               iconStatusCheck(scaler,
                   searchStatus: search ? searchStatus : "",
-                  addIconTap: search ? addIconTapAction : () {})
+                  addIconTap: search ? addIconTapAction : () {},
+                  deleteIconTap: search ? deleteIconTapAction ?? (){} : () {})
             ],
           ),
         ),
@@ -181,7 +183,9 @@ class CommonWidgets {
   }
 
   static Widget iconStatusCheck(ScreenScaler scaler,
-      {String? searchStatus, VoidCallback? addIconTap}) {
+      {String? searchStatus,
+      VoidCallback? addIconTap,
+      VoidCallback? deleteIconTap}) {
     if (searchStatus == "Listed profile") {
       return GestureDetector(
         onTap: addIconTap,
@@ -196,6 +200,11 @@ class CommonWidgets {
       return GestureDetector(
         onTap: () {},
         child: ImageView(path: ImageConstants.invited_waiting_icon),
+      );
+    } else if (searchStatus == "Event Edit") {
+      return GestureDetector(
+        onTap: deleteIconTap,
+        child: ImageView(path: ImageConstants.event_remove_icon),
       );
     } else {
       return ImageView(path: ImageConstants.contact_arrow_icon);
@@ -238,7 +247,8 @@ class CommonWidgets {
         });
   }
 
-  static Widget cancelBtn(ScreenScaler scaler, BuildContext context, double size,
+  static Widget cancelBtn(
+      ScreenScaler scaler, BuildContext context, double size,
       {Color? color}) {
     return GestureDetector(
       onTap: () {
@@ -264,8 +274,9 @@ class CommonWidgets {
     );
   }
 
-  static Widget commonBtn(
-      ScreenScaler scaler, BuildContext context, String txt, Color bgColor, Color txtColor, {VoidCallback? onTapFun}) {
+  static Widget commonBtn(ScreenScaler scaler, BuildContext context, String txt,
+      Color bgColor, Color txtColor,
+      {VoidCallback? onTapFun}) {
     return GestureDetector(
       onTap: onTapFun,
       child: CustomShape(
@@ -276,7 +287,7 @@ class CommonWidgets {
         bgColor: bgColor,
         radius: scaler.getBorderRadiusCircular(10),
         width: MediaQuery.of(context).size.width,
-        height: scaler.getHeight(4.5),
+        height: scaler.getHeight(5),
       ),
     );
   }
@@ -362,10 +373,8 @@ class CommonWidgets {
               onTap: onTapBtn2,
               child: CustomShape(
                 child: Center(
-                    child: Text(btn2Text).mediumText(
-                        ColorConstants.colorWhite,
-                        scaler.getTextSize(10),
-                        TextAlign.center)),
+                    child: Text(btn2Text).mediumText(ColorConstants.colorWhite,
+                        scaler.getTextSize(10), TextAlign.center)),
                 bgColor: ColorConstants.primaryColor,
                 radius: BorderRadius.all(
                   Radius.circular(12),
@@ -375,6 +384,99 @@ class CommonWidgets {
               ),
             )),
           ],
+        ),
+      ),
+    );
+  }
+
+  static respondToEventBottomSheet(BuildContext context, ScreenScaler scaler,
+      {VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide}) {
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: scaler.getHeight(0.5)),
+              Container(
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorMediumGray,
+                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                height: scaler.getHeight(0.4),
+                width: scaler.getWidth(12),
+              ),
+              Column(
+                children: [
+                  SizedBox(height: scaler.getHeight(2)),
+                  GestureDetector(
+                    onTap: going,
+                    child: Text("going_to_event".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  Divider(),
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  GestureDetector(
+                    onTap: notGoing,
+                    child: Text("not_going_to_event".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  Divider(),
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  GestureDetector(
+                    onTap: hide,
+                    child: Text("hide_event".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                  SizedBox(height: scaler.getHeight(2)),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text("cancel".tr()).semiBoldText(
+                      ColorConstants.colorRed,
+                      scaler.getTextSize(11),
+                      TextAlign.center),
+                ),
+              ),
+              SizedBox(height: scaler.getHeight(1)),
+            ],
+          );
+        });
+  }
+
+  static Widget notificationBadge(ScreenScaler scaler) {
+    return Positioned(
+      right: -3,
+      child: Container(
+        alignment: Alignment.center,
+        padding: scaler.getPaddingAll(1.5),
+        decoration: BoxDecoration(
+          color: ColorConstants.colorRed,
+          borderRadius: scaler.getBorderRadiusCircular(10.0),
+        ),
+        constraints: BoxConstraints(
+          minWidth: 15,
+          minHeight: 15,
+        ),
+        child: Text("10").semiBoldText(
+          ColorConstants.colorWhite,
+          scaler.getTextSize(6.8),
+          TextAlign.center,
         ),
       ),
     );

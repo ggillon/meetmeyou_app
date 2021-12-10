@@ -26,4 +26,5 @@ class RoutesConstants {
   static const defaultPhotoPage = "defaultPhotoPage";
   static const eventInviteFriendsScreen = "eventInviteFriendsScreen";
   static const eventDetailScreen = "eventDetailScreen";
+  static const eventAttendingScreen = "eventAttendingScreen";
 }

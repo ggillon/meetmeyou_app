@@ -28,6 +28,7 @@ class SettingsProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
 
+
     userDetail.firstName = userProfile.firstName;
     userDetail.lastName = userProfile.lastName;
     userDetail.email = userProfile.email;

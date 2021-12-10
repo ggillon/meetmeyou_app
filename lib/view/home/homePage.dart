@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -64,9 +65,10 @@ class _HomePageState extends State<HomePage>
           // ))
           body: BaseView<HomePageProvider>(
         onModelReady: (provider) {
+          provider.getUserDetail(context);
           widget.provider = provider;
           provider.tabController = TabController(length: 5, vsync: this);
-          provider.tabChangeEvent();
+          provider.tabChangeEvent(context);
           provider.getIndexChanging(context);
         },
         builder: (context, provider, _) {
@@ -198,27 +200,32 @@ class _HomePageState extends State<HomePage>
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists),
+                            : upcomingEventsList(
+                                scaler, provider.eventLists, provider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists),
+                            : upcomingEventsList(
+                                scaler, provider.eventLists, provider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists),
+                            : upcomingEventsList(
+                                scaler, provider.eventLists, provider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists),
+                            : upcomingEventsList(
+                                scaler, provider.eventLists, provider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists),
+                            : upcomingEventsList(
+                                scaler, provider.eventLists, provider),
                   ],
                 ),
               ),
@@ -249,7 +256,8 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget upcomingEventsList(ScreenScaler scaler, List<Event> eventList) {
+  Widget upcomingEventsList(
+      ScreenScaler scaler, List<Event> eventList, HomePageProvider provider) {
     return Padding(
       padding: scaler.getPaddingLTRB(5.8, 0.5, 5.8, 0.0),
       child: ListView.builder(
@@ -258,8 +266,21 @@ class _HomePageState extends State<HomePage>
             return Padding(
               padding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 1.0),
               child: GestureDetector(
-                onTap: (){
-                  Navigator.pushNamed(context, RoutesConstants.eventDetailScreen, arguments: eventList[index]);
+                onTap: () {
+                  provider.eventDetail.eventBtnStatus =
+                      provider.getEventBtnStatus(eventList[index]);
+                  provider.eventDetail.textColor =
+                      provider.getEventBtnColorStatus(eventList[index]);
+                  provider.eventDetail.btnBGColor =
+                      provider.getEventBtnColorStatus(eventList[index],
+                          textColor: false);
+                  provider.eventDetail.eventMapData = eventList[index].invitedContacts;
+                  provider.eventDetail.eid = eventList[index].eid;
+                  Navigator.pushNamed(
+                      context, RoutesConstants.eventDetailScreen,
+                      arguments: eventList[index]).then((value) {
+                        provider.getIndexChanging(context);
+                  });
                 },
                 child: Card(
                   shadowColor: ColorConstants.colorWhite,
@@ -267,7 +288,7 @@ class _HomePageState extends State<HomePage>
                   shape: RoundedRectangleBorder(
                       borderRadius: scaler.getBorderRadiusCircular(10)),
                   // child: CustomShape(
-                  child: eventCard(scaler, context, eventList, index),
+                  child: eventCard(scaler, context, eventList, index, provider),
                   //  bgColor: ColorConstants.colorWhite,
                   //   radius: scaler.getBorderRadiusCircular(10),
                   //  width: MediaQuery.of(context).size.width / 1.2
@@ -280,7 +301,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget eventCard(ScreenScaler scaler, BuildContext context,
-      List<Event> eventList, int index) {
+      List<Event> eventList, int index, HomePageProvider provider) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -361,7 +382,7 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               SizedBox(width: scaler.getWidth(1)),
-              attendBtn(scaler)
+              eventRespondBtn(scaler, eventList[index], provider)
             ],
           ),
         )
@@ -396,17 +417,36 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget attendBtn(ScreenScaler scaler) {
-    return CustomShape(
-      child: Center(
-          child: Text("attend".tr()).semiBoldText(ColorConstants.primaryColor,
-              scaler.getTextSize(9.5), TextAlign.center)),
-      bgColor: ColorConstants.primaryColor.withOpacity(0.2),
-      radius: BorderRadius.all(
-        Radius.circular(12),
+  Widget eventRespondBtn(
+      ScreenScaler scaler, Event event, HomePageProvider provider) {
+    return GestureDetector(
+      onTap: () {
+        provider.getEventBtnStatus(event) == "respond"
+            ? CommonWidgets.respondToEventBottomSheet(context, scaler,
+                going: () {
+                Navigator.of(context).pop();
+                provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+              }, notGoing: () {
+                Navigator.of(context).pop();
+                provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
+              }, hide: () {
+                Navigator.of(context).pop();
+                provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+              })
+            : Container();
+      },
+      child: CustomShape(
+        child: Center(
+            child: Text(provider.getEventBtnStatus(event).toString().tr())
+                .semiBoldText(provider.getEventBtnColorStatus(event),
+                    scaler.getTextSize(9.5), TextAlign.center)),
+        bgColor: provider.getEventBtnColorStatus(event, textColor: false),
+        radius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        width: scaler.getWidth(20),
+        height: scaler.getHeight(3.5),
       ),
-      width: scaler.getWidth(20),
-      height: scaler.getHeight(3.5),
     );
   }
 

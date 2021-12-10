@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -151,6 +152,7 @@ class CreateEventProvider extends BaseProvider {
       Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen).then((value) {
         fromInviteScreen = true;
         updateLoadingStatus(true);
+        hideKeyboard(context);
       });
     }
   }

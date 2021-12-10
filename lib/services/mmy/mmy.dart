@@ -16,7 +16,7 @@ abstract class MMYEngine {
   /// PROFILE ///
 
   /// Get the user profile or create new one
-  Future<Profile> getUserProfile();
+  Future<Profile> getUserProfile({bool user = true, String? uid});
   /// Update the user profile
   Future<Profile> updateProfile({String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters});
   /// Get the user profile or create new one, leveraging the Auth user info
@@ -102,8 +102,8 @@ class MMY implements MMYEngine {
   final User _currentUser;
 
   @override
-  Future<Profile> getUserProfile() {
-    return profileLib.getUserProfile(_currentUser);
+  Future<Profile> getUserProfile({bool user = true, String? uid}) {
+    return profileLib.getUserProfile(_currentUser, user: user, uid: uid);
   }
 
   @override
