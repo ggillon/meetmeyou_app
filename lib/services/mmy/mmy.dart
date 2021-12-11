@@ -42,6 +42,8 @@ abstract class MMYEngine {
   Future<void> inviteProfile(String uid);
   /// Accept an invitation
   Future<void> respondInvitation(String cid, bool accept);
+  /// Number of unresponded invites
+  Future<int> unrespondedInvites();
   /// Create a Group of contacts
   Future<Contact> newGroupContact(String name, {String photoURL, String about, File? photoFile});
   /// Update a Group of contacts
@@ -79,6 +81,9 @@ abstract class MMYEngine {
   Future<Event> removeContactsFromEvent(String eid, {required List<String> CIDs});
   /// Reply to event
   Future<void> replyToEvent(String eid, {required String response});
+  /// Number of unresponded events
+  Future<int> unrespondedEvents();
+
   /// Add a date option to event
   //Future<Event> addDateToEvent(String eid, {required DateTime start, required DateTime end});
   /// Remove a date from an event
@@ -201,6 +206,14 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<int> unrespondedInvites() async {
+    int i=0;
+    for (Contact contact in await contactLib.getContacts(_currentUser)) {
+      if(contact.status == CONTACT_INVITATION) i++; }
+    return i;
+  }
+
+  @override
   Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String>? contactsCIDs}) {
     return contactLib.addToGroup(_currentUser, groupCID, contactCid: contactCID, contactListCids: contactsCIDs);
   }
@@ -281,6 +294,14 @@ class MMY implements MMYEngine {
   Future<Event> replyToEvent(String eid, {required String response}) async {
     return await eventLib.updateInvitations(_currentUser, eid,
         eventLib.Invitations(CIDs: [_currentUser.uid], inviteStatus: response));
+  }
+
+  @override
+  Future<int> unrespondedEvents() async {
+    int i=0;
+    for (Event event in await eventLib.getUserEvents(_currentUser)) {
+      if(event.invitedContacts[_currentUser.uid] == EVENT_INVITED) i++; }
+    return i;
   }
 
   @override

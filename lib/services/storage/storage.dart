@@ -1,6 +1,5 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:meetmeyou_app/constants/string_constants.dart';
 

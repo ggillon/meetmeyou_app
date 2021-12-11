@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
-import 'package:meetmeyou_app/extensions/allExtensions.dart';
 
 import 'color_constants.dart';
 
