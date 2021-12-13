@@ -48,7 +48,7 @@ class HomePageProvider extends BaseProvider {
     });
 
     userDetail.cid = userProfile.uid;
-    userDetail.profileUrl = userProfile.photoURL;
+   // userDetail.profileUrl = userProfile.photoURL;
 
     setState(ViewState.Idle);
   }

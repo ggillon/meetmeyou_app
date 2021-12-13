@@ -29,6 +29,7 @@ class EventDetailScreen extends StatelessWidget {
           onModelReady: (provider) {
             provider.eventGoingLength();
             provider.getUsersProfileUrl(context);
+            provider.getOrganiserProfileUrl(context);
           },
           builder: (context, provider, _) {
             return SingleChildScrollView(
@@ -99,39 +100,68 @@ class EventDetailScreen extends StatelessWidget {
                               width: double.infinity,
                               child: Row(
                                 children: [
-                                  // ClipRRect(
-                                  //   borderRadius:
-                                  //       scaler.getBorderRadiusCircular(15.0),
-                                  //   child: Container(
-                                  //     alignment: Alignment.center,
-                                  //     color: ColorConstants.primaryColor,
-                                  //     height: scaler.getHeight(1.8),
-                                  //     width: scaler.getWidth(6),
-                                  //     child: Text(provider.eventAttendingLength
-                                  //             .toString())
-                                  //         .mediumText(
-                                  //             ColorConstants.colorWhite,
-                                  //             scaler.getTextSize(7.7),
-                                  //             TextAlign.center),
-                                  //   ),
-                                  // ),
-                                  ImageStack(
-                                    imageList:
-                                        provider.eventAttendingPhotoUrlLists,
-                                    totalCount: provider
-                                        .eventAttendingPhotoUrlLists.length,
-                                    imageRadius: 25,
-                                    imageCount: 2,
-                                    imageBorderColor: ColorConstants.colorWhite,
-                                    backgroundColor:
-                                        ColorConstants.primaryColor,
-                                    imageBorderWidth: 1,
-                                    extraCountTextStyle: TextStyle(
-                                        fontSize: 7.7,
-                                        color: ColorConstants.colorWhite,
-                                        fontWeight: FontWeight.w500),
+                                  Stack(
+                                    alignment: Alignment.centerRight,
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      ImageStack(
+                                        imageList: provider
+                                            .eventAttendingPhotoUrlLists,
+                                        totalCount: provider
+                                            .eventAttendingPhotoUrlLists.length,
+                                        imageRadius: 25,
+                                        imageCount: provider.imageStackLength(
+                                            provider.eventAttendingPhotoUrlLists
+                                                .length),
+                                        imageBorderColor:
+                                            ColorConstants.colorWhite,
+                                        backgroundColor:
+                                            ColorConstants.primaryColor,
+                                        imageBorderWidth: 1,
+                                        extraCountTextStyle: TextStyle(
+                                            fontSize: 7.7,
+                                            color: ColorConstants.colorWhite,
+                                            fontWeight: FontWeight.w500),
+                                        showTotalCount: false,
+                                      ),
+                                      Positioned(
+                                        right: -22,
+                                        child: provider
+                                                    .eventAttendingPhotoUrlLists
+                                                    .length <=
+                                                6
+                                            ? Container()
+                                            : ClipRRect(
+                                                borderRadius: scaler
+                                                    .getBorderRadiusCircular(
+                                                        15.0),
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  color: ColorConstants
+                                                      .primaryColor,
+                                                  height: scaler.getHeight(2.0),
+                                                  width: scaler.getWidth(6),
+                                                  child: Text((provider
+                                                                  .eventAttendingPhotoUrlLists
+                                                                  .length -
+                                                              6)
+                                                          .toString())
+                                                      .mediumText(
+                                                          ColorConstants
+                                                              .colorWhite,
+                                                          scaler
+                                                              .getTextSize(7.7),
+                                                          TextAlign.center),
+                                                ),
+                                              ),
+                                      )
+                                    ],
                                   ),
-                                  SizedBox(width: scaler.getWidth(1)),
+
+                                  provider.eventAttendingPhotoUrlLists.length <=
+                                          6
+                                      ? SizedBox(width: scaler.getWidth(1))
+                                      : SizedBox(width: scaler.getWidth(6)),
                                   Text("going".tr()).regularText(
                                       ColorConstants.colorGray,
                                       scaler.getTextSize(8),
@@ -223,6 +253,7 @@ class EventDetailScreen extends StatelessWidget {
   }
 
   bool showText = true;
+
   Widget titleDateLocationCard(ScreenScaler scaler) {
     return Padding(
       padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
@@ -345,7 +376,8 @@ class EventDetailScreen extends StatelessWidget {
                         child: ImageView(
                             path: provider.userDetail.profileUrl,
                             height: scaler.getHeight(2.8),
-                            width: scaler.getWidth(9)),
+                            width: scaler.getWidth(9),
+                        fit: BoxFit.cover),
                       )),
             SizedBox(width: scaler.getWidth(2)),
             Expanded(

@@ -1,4 +1,5 @@
 import 'package:easy_localization/src/public_ext.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -127,7 +128,34 @@ class EventAttendingScreen extends StatelessWidget {
                 ? ""
                 : "Listed profile",
         addIconTapAction: () {}, deleteIconTapAction: () {
-      provider.removeContactsFromEvent(_scaffoldKey.currentContext!, cList[index].cid);
+      deleteIconAlertDialog(context, scaler, cList, index, provider);
     });
+  }
+
+
+  deleteIconAlertDialog(BuildContext context, ScreenScaler scaler, List<dynamic> cList, int index,  EventAttendingProvider provider) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text("remove_attendant".tr()).semiBoldText(ColorConstants.colorBlack,
+              scaler.getTextSize(9.8), TextAlign.center),
+          content:Text("remove_attendant_text".tr()).regularText(ColorConstants.colorBlack,
+              scaler.getTextSize(7.9), TextAlign.center),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("cancel".tr()).regularText(ColorConstants.primaryColor,
+                  scaler.getTextSize(9.8), TextAlign.center),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop();
+                provider.removeContactsFromEvent(_scaffoldKey.currentContext!, cList[index].cid);
+              },
+              child: Text("remove".tr()).semiBoldText(ColorConstants.primaryColor,
+                  scaler.getTextSize(9.8), TextAlign.center),
+            )
+          ],
+        ));
   }
 }

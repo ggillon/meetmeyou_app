@@ -31,7 +31,7 @@ class ImageView extends StatelessWidget {
     Widget imageWidget;
     if(path==""){
       imageWidget=Image.asset(
-        ImageConstants.introduction1,
+        ImageConstants.splash,
         width: width,
         height: height,
         color:ColorConstants.primaryColor,

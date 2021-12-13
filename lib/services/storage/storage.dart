@@ -25,8 +25,10 @@ Future<String> storeEventPicture(File file, {required String eid}) async {
   final path = 'event_pictures/${eid}.png';
   imageLib.Image image = imageLib.decodeImage(file.readAsBytesSync())!;
   imageLib.Image eventPicture = imageLib.copyResize(image, height: 1440);
+  final profileFile = File(await getFilePath(eid));
   File profilePic =
-      await File('${eid}.png').writeAsBytes(imageLib.encodePng(eventPicture));
+  await profileFile.writeAsBytes(imageLib.encodePng(eventPicture));
+ // File profilePic = await File('${eid}.png').writeAsBytes(imageLib.encodePng(eventPicture));
   await FirebaseStorage.instance.ref(path).putFile(profilePic);
   return FirebaseStorage.instance.ref(path).getDownloadURL();
 }

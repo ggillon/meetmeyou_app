@@ -86,7 +86,10 @@ class InviteFriendsProvider extends BaseProvider {
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    openAppSettings();
+                  }
                 )
               ],
             ));

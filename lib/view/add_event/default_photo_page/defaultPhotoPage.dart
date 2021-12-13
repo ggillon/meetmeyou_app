@@ -30,7 +30,7 @@ class DefaultPhotoPage extends StatelessWidget {
           children: [
             Container(
               height: scaler.getHeight(75),
-              padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 2.0),
+              padding: scaler.getPaddingLTRB(3.0, 7.0, 3.0, 2.0),
               child: GridView.builder(
                 itemCount: defaultImages.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

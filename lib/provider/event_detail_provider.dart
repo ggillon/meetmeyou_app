@@ -15,6 +15,7 @@ class EventDetailProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   int eventAttendingLength = 0;
   List<String> eventAttendingKeysList = [];
+  String? organiserKey;
 
   bool _value = false;
 
@@ -40,6 +41,8 @@ class EventDetailProvider extends BaseProvider {
       if (valuesList[i] == "Attending") {
         eventAttendingLength = eventAttendingLength + 1;
         eventAttendingKeysList.add(keysList[i]);
+      } else if (valuesList[i] == "Organiser") {
+        organiserKey = keysList[i];
       }
     }
     return eventAttendingLength;
@@ -47,11 +50,12 @@ class EventDetailProvider extends BaseProvider {
 
   List<String> eventAttendingPhotoUrlLists = [];
 
+
   Future getUsersProfileUrl(BuildContext context) async {
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    for (var key in eventDetail.eventMapData!.keys) {
+    for (var key in eventAttendingKeysList) {
       var value = await mmyEngine!
           .getUserProfile(user: false, uid: key)
           .catchError((e) {
@@ -61,6 +65,21 @@ class EventDetailProvider extends BaseProvider {
       eventAttendingPhotoUrlLists.add(value.photoURL);
     }
     // print(eventAttendingLists);
+    setState(ViewState.Idle);
+  }
+
+  Future getOrganiserProfileUrl(BuildContext context) async {
+    setState(ViewState.Busy);
+
+    var value = await mmyEngine!
+        .getUserProfile(user: false, uid: organiserKey)
+        .catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+
+    userDetail.profileUrl = value.photoURL;
     setState(ViewState.Idle);
   }
 
@@ -84,5 +103,26 @@ class EventDetailProvider extends BaseProvider {
 
     updateValue(false);
     Navigator.of(context).pop();
+  }
+
+  imageStackLength(int length){
+    switch(length){
+      case 0:
+        return 0;
+      case 1:
+        return 1;
+      case 2:
+        return 2;
+      case 3:
+        return 3;
+      case 4:
+        return 4;
+      case 5:
+        return 5;
+      case 6:
+        return 6;
+      default:
+        return length;
+    }
   }
 }

@@ -20,7 +20,7 @@ class CreateEventProvider extends BaseProvider {
   EventDetail eventDetail = locator<EventDetail>();
 
   File? image;
-  String? imageUrl;
+  //String? imageUrl;
   DateTime startDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay.now();
   DateTime endDate = DateTime.now();
@@ -73,10 +73,16 @@ class CreateEventProvider extends BaseProvider {
     if (type == 1) {
       final pickedFile = await picker.pickImage(source: ImageSource.camera);
       image = File(pickedFile!.path);
-      //notifyListeners();
+      if(image != null){
+        eventDetail.eventPhotoUrl = "";
+      }
+      notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       image = File(pickedFile!.path);
+      if(image != null){
+        eventDetail.eventPhotoUrl = "";
+      }
       notifyListeners();
     }
   }
@@ -129,7 +135,7 @@ class CreateEventProvider extends BaseProvider {
 
   Future createEvent(BuildContext context, String title, String location,
       String description, DateTime startDateTime, DateTime endDateTime,
-      {String? photoURL}) async {
+      {String? photoURL, File? photoFile}) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
@@ -138,6 +144,7 @@ class CreateEventProvider extends BaseProvider {
             title: title,
             location: location,
             description: description,
+            photoFile: photoFile ?? null,
             photoURL: photoURL ?? "",
             start: startDateTime,
             end: endDateTime)
@@ -148,8 +155,11 @@ class CreateEventProvider extends BaseProvider {
     if (value != null) {
       setState(ViewState.Idle);
       eventDetail.eid = value.eid;
-      DialogHelper.showMessage(context, "Event created Successfully");
-      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen).then((value) {
+      photoFile = null;
+      eventDetail.eventPhotoUrl = value.photoURL;
+   //   DialogHelper.showMessage(context, "Event created Successfully");
+      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen)
+          .then((value) {
         fromInviteScreen = true;
         updateLoadingStatus(true);
         hideKeyboard(context);
@@ -159,14 +169,15 @@ class CreateEventProvider extends BaseProvider {
 
   Future updateEvent(BuildContext context, String title, String location,
       String description, DateTime startDateTime, DateTime endDateTime,
-      {String? photoURL}) async {
+      {String? photoURL, File? photoFile}) async {
     setState(ViewState.Busy);
     var value = await mmyEngine!
-        .updateEvent(eventDetail.eid,
+        .updateEvent(eventDetail.eid.toString(),
             title: title,
             location: location,
             description: description,
-            photoURL: photoURL ?? "",
+            photoURL: eventDetail.eventPhotoUrl ?? "",
+            photoFile: eventDetail.eventPhotoUrl == null ? photoFile ?? null : null,
             start: startDateTime,
             end: endDateTime)
         .catchError((e) {
@@ -175,7 +186,7 @@ class CreateEventProvider extends BaseProvider {
     });
     if (value != null) {
       setState(ViewState.Idle);
-     // DialogHelper.showMessage(context, "Event updated Successfully");
+      // DialogHelper.showMessage(context, "Event updated Successfully");
       Navigator.of(context).pop();
     }
   }

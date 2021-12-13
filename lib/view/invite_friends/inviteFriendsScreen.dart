@@ -16,12 +16,14 @@ class InviteFriendsScreen extends StatelessWidget {
   InviteFriendsScreen({Key? key}) : super(key: key);
 
   final searchBarController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: ColorConstants.colorWhite,
         appBar: DialogHelper.appBarWithBack(scaler, context),
         // floatingActionButton: Padding(
@@ -32,7 +34,7 @@ class InviteFriendsScreen extends StatelessWidget {
         // floatingActionButtonLocation:  FloatingActionButtonLocation.centerFloat,
         body: BaseView<InviteFriendsProvider>(
           onModelReady: (provider) {
-            provider.getPhoneContacts(context);
+            provider.getPhoneContacts(_scaffoldKey.currentContext!);
             // provider.isChecked =
             //     List<bool>.filled(provider.contactList.length, false);
           },

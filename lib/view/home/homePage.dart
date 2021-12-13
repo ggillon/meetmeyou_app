@@ -312,9 +312,9 @@ class _HomePageState extends State<HomePage>
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: ImageView(
                 path: eventList[index].photoURL,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 height: scaler.getHeight(21),
-                //  width: MediaQuery.of(context).size.width / 1.2,
+                  width: double.infinity,
               ),
             ),
             Positioned(

@@ -129,6 +129,8 @@
   "going_to_event" : "Going to event",
   "not_going_to_event" : "Not going to event",
   "hide_event" : "Hide event",
-  "attending" : "Attending"
-
+  "attending" : "Attending",
+  "remove_attendant" : "Remove attendant",
+  "remove_attendant_text" : "Removing someone from this list will stop them from viewing the event!",
+  "remove" : "Remove"
 }

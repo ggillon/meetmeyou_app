@@ -208,7 +208,7 @@ class CreateEventScreen extends StatelessWidget {
                                         "save_event".tr(), onTapBtn2: () {
                                         if (_formKey.currentState!.validate()) {
                                           if (provider.image == null &&
-                                              provider.imageUrl == null) {
+                                              provider.eventDetail.eventPhotoUrl == null) {
                                             DialogHelper.showMessage(context,
                                                 "Please Select image.");
                                             return;
@@ -242,22 +242,21 @@ class CreateEventScreen extends StatelessWidget {
                                                   provider.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
-                                                  photoURL: provider.imageUrl);
+                                                  photoURL: provider.eventDetail.eventPhotoUrl);
                                             }
                                           } else {
                                             provider.updateEvent(
                                                 context,
                                                 eventNameController.text,
                                                 addressController.text,
-                                                eventDescriptionController
-                                                    .text,
+                                                eventDescriptionController.text,
                                                 provider.dateTimeFormat(
                                                     provider.startDate,
                                                     provider.startTime),
                                                 provider.dateTimeFormat(
                                                     provider.endDate,
                                                     provider.endTime),
-                                                photoURL: provider.imageUrl);
+                                                photoURL: provider.eventDetail.eventPhotoUrl);
                                           }
                                         }
                                       })
@@ -281,7 +280,7 @@ class CreateEventScreen extends StatelessWidget {
                                         // });
                                         if (_formKey.currentState!.validate()) {
                                           if (provider.image == null &&
-                                              provider.imageUrl == null) {
+                                              provider.eventDetail.eventPhotoUrl == null) {
                                             DialogHelper.showMessage(context,
                                                 "Please Select image.");
                                             return;
@@ -315,7 +314,8 @@ class CreateEventScreen extends StatelessWidget {
                                                   provider.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
-                                                  photoURL: provider.imageUrl);
+                                                  photoURL: provider.eventDetail.eventPhotoUrl,
+                                                  photoFile: provider.image);
                                             }
                                           } else {
                                             provider.createEvent(
@@ -329,7 +329,8 @@ class CreateEventScreen extends StatelessWidget {
                                                 provider.dateTimeFormat(
                                                     provider.endDate,
                                                     provider.endTime),
-                                                photoURL: provider.imageUrl);
+                                                photoURL: provider.eventDetail.eventPhotoUrl,
+                                                photoFile: provider.image);
                                           }
                                         }
                                       }),
@@ -372,9 +373,9 @@ class CreateEventScreen extends StatelessWidget {
                       borderRadius:
                           scaler.getBorderRadiusCircularLR(0.0, 0.0, 15, 15),
                       child: provider.image == null
-                          ? provider.imageUrl != null
+                          ? provider.eventDetail.eventPhotoUrl != null
                               ? ImageView(
-                                  path: provider.imageUrl,
+                                  path: provider.eventDetail.eventPhotoUrl,
                                   fit: BoxFit.cover,
                                   height: scaler.getHeight(30),
                                   width: double.infinity,
@@ -388,7 +389,7 @@ class CreateEventScreen extends StatelessWidget {
                                   width: double.infinity,
                                 )
                               : imageSelectedCard(context, scaler)),
-                  provider.image == null && provider.imageUrl == null
+                  provider.image == null && provider.eventDetail.eventPhotoUrl == null
                       ? Container()
                       : Positioned(
                           child: GestureDetector(
@@ -653,7 +654,7 @@ class CreateEventScreen extends StatelessWidget {
                               context, RoutesConstants.defaultPhotoPage)
                           .then((value) {
                         provider.image = null;
-                        provider.imageUrl = value as String?;
+                        provider.eventDetail.eventPhotoUrl = value as String?;
                         provider.setState(ViewState.Idle);
                       });
                     },

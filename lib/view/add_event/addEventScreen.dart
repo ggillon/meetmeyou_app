@@ -5,10 +5,13 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class AddEventScreen extends StatelessWidget {
-  const AddEventScreen({Key? key}) : super(key: key);
+   AddEventScreen({Key? key}) : super(key: key);
+  EventDetail eventDetail = locator<EventDetail>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +38,7 @@ class AddEventScreen extends StatelessWidget {
   Widget eventCard(BuildContext context, ScreenScaler scaler) {
     return GestureDetector(
       onTap: () {
+        eventDetail.eventPhotoUrl = null;
         Navigator.of(context).pushNamed(RoutesConstants.createEventScreen);
       },
       child: Card(

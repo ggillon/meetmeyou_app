@@ -8,6 +8,7 @@ class EventDetail{
   Color? btnBGColor;
   Map? eventMapData;
   List<String>? attendingProfileKeys = [];
+  String? eventPhotoUrl;
 
-  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys});
+  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl});
 }

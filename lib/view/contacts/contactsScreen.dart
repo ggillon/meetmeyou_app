@@ -128,7 +128,7 @@ class ContactsScreen extends StatelessWidget {
                                                 height: scaler.getHeight(2.5)),
                                         provider.confirmContactList.length == 0
                                             ? Container()
-                                            : confirmContactList(
+                                            : confirmContactGroupList(
                                                 scaler,
                                                 provider.confirmContactList,
                                                 provider)
@@ -168,7 +168,7 @@ class ContactsScreen extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(height: scaler.getHeight(1)),
-                                        confirmContactList(scaler,
+                                        confirmContactGroupList(scaler,
                                             provider.groupList, provider),
                                       ],
                                     ),
@@ -229,7 +229,7 @@ class ContactsScreen extends StatelessWidget {
         });
   }
 
-  Widget confirmContactList(
+  Widget confirmContactGroupList(
       ScreenScaler scaler, List<Contact> cList, ContactsProvider provider) {
     return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
