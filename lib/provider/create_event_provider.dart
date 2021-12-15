@@ -201,6 +201,22 @@ class CreateEventProvider extends BaseProvider {
     }
   }
 
+  Future cancelEvent(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!
+        .cancelEvent(eventDetail.eid.toString())
+        .catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (value != null) {
+      setState(ViewState.Idle);
+      Navigator.of(context).pop();
+    }
+  }
+
   dateTimeFormat(DateTime date, TimeOfDay time) {
     String dateTimeString =
         date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
@@ -210,6 +226,4 @@ class CreateEventProvider extends BaseProvider {
     // print(tempDate);
     return tempDate;
   }
-
-
 }

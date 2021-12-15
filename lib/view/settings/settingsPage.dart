@@ -121,8 +121,8 @@ class SettingsPage extends StatelessWidget {
                               ColorConstants.colorRed, funOnTap: () {
                             DialogHelper.showDialogWithTwoButtons(
                                 context,
-                                "Delete User",
-                                "Are you sure you want to delete user?");
+                                "delete_user".tr(),
+                                "sure_to_delete_user".tr());
                           }),
                         ],
                       ),

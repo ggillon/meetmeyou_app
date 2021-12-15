@@ -12,21 +12,21 @@ class EventInviteFriendsProvider extends BaseProvider {
   EventDetail eventDetail = locator<EventDetail>();
   int toggle = 0;
 
- late List<bool> value = [];
+  late List<bool> value = [];
 
   void updateCheckValue(bool val, int index) {
     value[index] = val;
     notifyListeners();
   }
 
-  // bool _inviteValue = false;
-  //
-  // bool get inviteValue => _inviteValue;
-  //
-  // void updateGroupValue(bool value) {
-  //   _inviteValue = value;
-  //   notifyListeners();
-  // }
+  bool _groupInviteValue = false;
+
+  bool get groupInviteValue => _groupInviteValue;
+
+  void updateGroupValue(bool value) {
+    _groupInviteValue = value;
+    notifyListeners();
+  }
 
   bool _toggleValue = false;
 
@@ -152,7 +152,7 @@ class EventInviteFriendsProvider extends BaseProvider {
   // }
 
   // these function are used to invite contact
-   inviteContactToEvent(BuildContext context, String CID, int index) async {
+  inviteContactToEvent(BuildContext context, String CID, int index) async {
     updateCheckValue(true, index);
 
     await mmyEngine!.inviteContactsToEvent(eventDetail.eid.toString(),
@@ -164,7 +164,7 @@ class EventInviteFriendsProvider extends BaseProvider {
     updateCheckValue(false, index);
   }
 
-   removeContactFromEvent(BuildContext context, String CID, int ind) async {
+  removeContactFromEvent(BuildContext context, String CID, int ind) async {
     updateCheckValue(true, ind);
 
     await mmyEngine!.removeContactsFromEvent(eventDetail.eid.toString(),
@@ -205,7 +205,9 @@ class EventInviteFriendsProvider extends BaseProvider {
       }
     }
 
-    await mmyEngine!.inviteContactsToEvent(eventDetail.eid.toString(), CIDs: keysList.toSet().toList())
+    await mmyEngine!
+        .inviteContactsToEvent(eventDetail.eid.toString(),
+            CIDs: keysList.toSet().toList())
         .catchError((e) {
       updateCheckValue(false, index);
       DialogHelper.showMessage(context, e.message);
@@ -250,5 +252,17 @@ class EventInviteFriendsProvider extends BaseProvider {
     eventDetail.groupIndexList.removeAt(index);
     eventDetail.checkGroupList.remove(groupContact);
     notifyListeners();
+  }
+
+   checkIsGroupInvited(BuildContext context, Contact contact) async {
+    updateGroupValue(true);
+
+   var value =  await mmyEngine!.isGroupInvited(eventDetail.eid.toString(), contact.cid).catchError((e) {
+      updateGroupValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateGroupValue(false);
+    return value;
   }
 }

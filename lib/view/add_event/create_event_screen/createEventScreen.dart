@@ -265,35 +265,67 @@ class CreateEventScreen extends StatelessWidget {
                                         context,
                                         scaler,
                                         "cancel_event".tr(),
-                                        "save_event".tr(), onTapBtn2: () {
-                                        provider.eventDetail.contactCIDs = [];
-                                        provider.eventDetail.groupIndexList =
-                                            [];
-                                        if (_formKey.currentState!.validate()) {
-                                          if (provider.image == null &&
-                                              provider.eventDetail
-                                                      .eventPhotoUrl ==
-                                                  null) {
-                                            DialogHelper.showMessage(context,
-                                                "Please Select image.");
-                                            return;
-                                          } else if (provider.startDate
-                                              .isAfter(provider.endDate)) {
-                                            DialogHelper.showMessage(context,
-                                                "Start date cannot high than End date.");
-                                            return;
-                                          } else if (provider.startDate
-                                                  .toString()
-                                                  .substring(0, 11)
-                                                  .compareTo(provider.endDate
-                                                      .toString()
-                                                      .substring(0, 11)) ==
-                                              0) {
-                                            if (provider.startTime.isCompareTo(
-                                                    provider.endTime) ==
-                                                1) {
+                                        "save_event".tr(),
+                                        onTapBtn1: () {
+                                          DialogHelper.showDialogWithTwoButtons(
+                                              context,
+                                              "cancel_event".tr(),
+                                              "sure_to_cancel_event".tr(),
+                                              positiveButtonPress: () {
+                                                Navigator.of(context).pop();
+                                                provider.cancelEvent(context);
+                                              });
+                                        },
+                                        btn1: false,
+                                        onTapBtn2: () {
+                                          provider.eventDetail.contactCIDs = [];
+                                          provider.eventDetail.groupIndexList =
+                                              [];
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            if (provider.image == null &&
+                                                provider.eventDetail
+                                                        .eventPhotoUrl ==
+                                                    null) {
                                               DialogHelper.showMessage(context,
-                                                  "Select correct time.");
+                                                  "Please Select image.");
+                                              return;
+                                            } else if (provider.startDate
+                                                .isAfter(provider.endDate)) {
+                                              DialogHelper.showMessage(context,
+                                                  "Start date cannot high than End date.");
+                                              return;
+                                            } else if (provider.startDate
+                                                    .toString()
+                                                    .substring(0, 11)
+                                                    .compareTo(provider.endDate
+                                                        .toString()
+                                                        .substring(0, 11)) ==
+                                                0) {
+                                              if (provider.startTime
+                                                      .isCompareTo(
+                                                          provider.endTime) ==
+                                                  1) {
+                                                DialogHelper.showMessage(
+                                                    context,
+                                                    "Select correct time.");
+                                              } else {
+                                                provider.updateEvent(
+                                                    context,
+                                                    eventNameController.text,
+                                                    addressController.text,
+                                                    eventDescriptionController
+                                                        .text,
+                                                    provider.dateTimeFormat(
+                                                        provider.startDate,
+                                                        provider.startTime),
+                                                    provider.dateTimeFormat(
+                                                        provider.endDate,
+                                                        provider.endTime),
+                                                    photoURL: provider
+                                                        .eventDetail
+                                                        .eventPhotoUrl);
+                                              }
                                             } else {
                                               provider.updateEvent(
                                                   context,
@@ -310,23 +342,8 @@ class CreateEventScreen extends StatelessWidget {
                                                   photoURL: provider.eventDetail
                                                       .eventPhotoUrl);
                                             }
-                                          } else {
-                                            provider.updateEvent(
-                                                context,
-                                                eventNameController.text,
-                                                addressController.text,
-                                                eventDescriptionController.text,
-                                                provider.dateTimeFormat(
-                                                    provider.startDate,
-                                                    provider.startTime),
-                                                provider.dateTimeFormat(
-                                                    provider.endDate,
-                                                    provider.endTime),
-                                                photoURL: provider
-                                                    .eventDetail.eventPhotoUrl);
                                           }
-                                        }
-                                      })
+                                        })
                                 : provider.state == ViewState.Busy
                                     ? Center(
                                         child: CircularProgressIndicator(),
