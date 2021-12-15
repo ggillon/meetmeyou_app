@@ -121,5 +121,6 @@ Future<Event> cancelEvent(User currentUser, String eid) async {
   } else {
     throw('Error: user not organiser');
   }
+  await FirestoreDB(uid: currentUser.uid).setEvent(event);
   return event;
 }
