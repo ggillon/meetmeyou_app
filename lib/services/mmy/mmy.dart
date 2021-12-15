@@ -71,14 +71,22 @@ abstract class MMYEngine {
   Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,});
   /// Get status of user
   Future<String> eventUserStatus(String eid);
+  /// Cancel an event
+  Future<Event> cancelEvent(String eid);
   /// Delete an event
   Future<void> deleteEvent(String eid);
   /// Get even link
   String getEventLink(String eid);
   /// Invite contact to event
   Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs});
+  /// Invite group to event
+  Future<Event> inviteGroupsToEvent(String eid, {required List<String> CIDs});
   /// Remove contact from event
   Future<Event> removeContactsFromEvent(String eid, {required List<String> CIDs});
+  /// Invite group to event
+  Future<Event> removeGroupsFromEvent(String eid, {required List<String> CIDs});
+  /// Check if all Group members are invited
+  Future<bool> isGroupInvited(String eid, String cid);
   /// Reply to event
   Future<void> replyToEvent(String eid, {required String response});
   /// Number of unresponded events
@@ -265,6 +273,11 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<Event> cancelEvent(String eid) async {
+    return await eventLib.cancelEvent(_currentUser, eid);
+  }
+
+  @override
   Future<void> deleteEvent(String eid) async {
     await eventLib.deleteEvent(_currentUser, eid);
   }
@@ -286,8 +299,40 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<Event> inviteGroupsToEvent(String eid, {required List<String> CIDs}) async {
+    for(String cid in CIDs) {
+      (await contactLib.getContact(_currentUser, cid: cid)).group.forEach((key, value) async {
+        await eventLib.updateInvitations(_currentUser, eid,
+            eventLib.Invitations(CIDs: [key], inviteStatus: EVENT_INVITED));
+      });
+    }
+    return eventLib.getEvent(_currentUser, eid);
+  }
+
+  @override
   Future<Event> removeContactsFromEvent(String eid, {required List<String> CIDs}) async {
     return await eventLib.removeInvitations(_currentUser, eid, CIDs);
+  }
+
+  @override
+  Future<Event> removeGroupsFromEvent(String eid, {required List<String> CIDs}) async {
+    for(String cid in CIDs) {
+      (await contactLib.getContact(_currentUser, cid: cid)).group.forEach((key, value) async {
+        await eventLib.removeInvitations(_currentUser, eid, [key]);
+      });
+    }
+    return eventLib.getEvent(_currentUser, eid);
+  }
+
+  @override
+  Future<bool> isGroupInvited(String eid, String cid) async {
+    Event event = await eventLib.getEvent(_currentUser, eid);
+    Contact group = await contactLib.getContact(_currentUser, cid: cid);
+    for(String cid in group.group.keys) {
+      if (!event.invitedContacts.containsKey(cid))
+        return false;
+    }
+    return true;
   }
 
   @override

@@ -113,3 +113,13 @@ Future<Event> getEvent(User currentUser, String eid) async {
 Future<void> deleteEvent(User currentUser, String eid) async {
   await FirestoreDB(uid: currentUser.uid).deleteEvent(eid);
 }
+
+Future<Event> cancelEvent(User currentUser, String eid) async {
+  Event event = await FirestoreDB(uid: currentUser.uid).getEvent(eid);
+  if(event.organiserID == currentUser.uid) {
+    event.invitedContacts.forEach((key, value) {event.invitedContacts[key] = EVENT_CANCELED;});
+  } else {
+    throw('Error: user not organiser');
+  }
+  return event;
+}
