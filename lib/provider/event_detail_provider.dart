@@ -7,12 +7,14 @@ import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class EventDetailProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
+  DashboardProvider dashboardProvider  = locator<DashboardProvider>();
   int eventAttendingLength = 0;
   List<String> eventAttendingKeysList = [];
   String? organiserKey;

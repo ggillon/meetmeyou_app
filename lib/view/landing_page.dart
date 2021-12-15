@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meetmeyou_app/tests/contact_test.dart';
 import 'package:meetmeyou_app/tests/event_test.dart';
 import 'package:meetmeyou_app/tests/login_test.dart';
 import 'package:provider/provider.dart';

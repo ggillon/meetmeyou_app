@@ -37,6 +37,8 @@ class _DashboardPageState extends State<DashboardPage> {
       child: BaseView<DashboardProvider>(
         onModelReady: (provider) {
           provider.onItemTapped(0);
+          provider.unRespondedInvites(context);
+          provider.unRespondedEvents(context);
         },
         builder: (context, provider, _) {
           return Scaffold(
@@ -46,26 +48,36 @@ class _DashboardPageState extends State<DashboardPage> {
             bottomNavigationBar: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topRight,
-                    children: [
-                      ImageView(
-                        path: ImageConstants.home_icon,
-                      ),
-                      CommonWidgets.notificationBadge(scaler)
-                    ],
-                  ),
-                  activeIcon: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topRight,
-                    children: [
-                      ImageView(
-                        path: ImageConstants.home_icon_green,
-                      ),
-                      CommonWidgets.notificationBadge(scaler)
-                    ],
-                  ),
+                  icon: provider.unRespondedEvent == 0
+                      ? ImageView(
+                          path: ImageConstants.home_icon,
+                        )
+                      : Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            ImageView(
+                              path: ImageConstants.home_icon,
+                            ),
+                            CommonWidgets.notificationBadge(scaler,
+                                provider.unRespondedEvent)
+                          ],
+                        ),
+                  activeIcon: provider.unRespondedEvent == 0
+                      ? ImageView(
+                          path: ImageConstants.home_icon_green,
+                        )
+                      : Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            ImageView(
+                              path: ImageConstants.home_icon_green,
+                            ),
+                            CommonWidgets.notificationBadge(scaler,
+                                provider.unRespondedEvent)
+                          ],
+                        ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
@@ -80,26 +92,36 @@ class _DashboardPageState extends State<DashboardPage> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topRight,
-                    children: [
-                      ImageView(
-                        path: ImageConstants.contacts_icon,
-                      ),
-                      CommonWidgets.notificationBadge(scaler)
-                    ],
-                  ),
-                  activeIcon: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topRight,
-                    children: [
-                      ImageView(
-                        path: ImageConstants.contacts_icon_green,
-                      ),
-                      CommonWidgets.notificationBadge(scaler)
-                    ],
-                  ),
+                  icon: provider.unRespondedInvite == 0
+                      ? ImageView(
+                          path: ImageConstants.contacts_icon,
+                        )
+                      : Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            ImageView(
+                              path: ImageConstants.contacts_icon,
+                            ),
+                            CommonWidgets.notificationBadge(scaler,
+                                provider.unRespondedInvite)
+                          ],
+                        ),
+                  activeIcon: provider.unRespondedInvite == 0
+                      ? ImageView(
+                          path: ImageConstants.contacts_icon_green,
+                        )
+                      : Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            ImageView(
+                              path: ImageConstants.contacts_icon_green,
+                            ),
+                            CommonWidgets.notificationBadge(scaler,
+                                provider.unRespondedInvite)
+                          ],
+                        ),
                   label: 'Invite Friends',
                 ),
                 BottomNavigationBarItem(

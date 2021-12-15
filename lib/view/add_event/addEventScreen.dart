@@ -39,6 +39,8 @@ class AddEventScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         eventDetail.eventPhotoUrl = null;
+        eventDetail.editEvent = false;
+        eventDetail.contactCIDs = [];
         Navigator.of(context).pushNamed(RoutesConstants.createEventScreen);
       },
       child: Card(

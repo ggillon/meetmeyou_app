@@ -132,5 +132,6 @@
   "attending" : "Attending",
   "remove_attendant" : "Remove attendant",
   "remove_attendant_text" : "Removing someone from this list will stop them from viewing the event!",
-  "remove" : "Remove"
+  "remove" : "Remove",
+  "invite_more_friends": "Invite More Friends"
 }

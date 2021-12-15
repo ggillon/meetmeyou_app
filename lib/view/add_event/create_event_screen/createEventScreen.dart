@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -31,6 +32,25 @@ class CreateEventScreen extends StatelessWidget {
       child: Scaffold(
           backgroundColor: ColorConstants.colorWhite,
           body: BaseView<CreateEventProvider>(
+            onModelReady: (provider) {
+              if (provider.eventDetail.editEvent ?? true) {
+                provider.eventDetail.eventPhotoUrl =
+                    provider.eventDetail.photoUrlEvent;
+                eventNameController.text = provider.eventDetail.eventName ?? "";
+                provider.startDate =
+                    provider.eventDetail.startDateAndTime ?? DateTime.now();
+                provider.startTime = TimeOfDay.fromDateTime(
+                    provider.eventDetail.startDateAndTime ?? DateTime.now());
+                provider.endDate =
+                    provider.eventDetail.endDateAndTime ?? DateTime.now();
+                provider.endTime = TimeOfDay.fromDateTime(
+                    provider.eventDetail.endDateAndTime ?? DateTime.now());
+                addressController.text =
+                    provider.eventDetail.eventLocation ?? "";
+                eventDescriptionController.text =
+                    provider.eventDetail.eventDescription ?? "";
+              }
+            },
             builder: (context, provider, _) {
               return SingleChildScrollView(
                 child: Form(
@@ -195,8 +215,48 @@ class CreateEventScreen extends StatelessWidget {
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
                             questionAndFeedback(scaler, provider),
+                            SizedBox(height: scaler.getHeight(2.5)),
+                            provider.eventDetail.editEvent == true
+                                ? GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                              context,
+                                              RoutesConstants
+                                                  .eventInviteFriendsScreen)
+                                          .then((value) {
+                                        provider.fromInviteScreen = true;
+                                        provider.updateLoadingStatus(true);
+                                        hideKeyboard(context);
+                                      });
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child:
+                                              Text("invite_more_friends".tr())
+                                                  .boldText(
+                                                      ColorConstants
+                                                          .primaryColor,
+                                                      scaler.getTextSize(10.5),
+                                                      TextAlign.center),
+                                        ),
+                                        ImageView(
+                                            path:
+                                                ImageConstants.small_arrow_icon,
+                                            color: ColorConstants.primaryColor)
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
                             SizedBox(height: scaler.getHeight(7.5)),
-                            provider.fromInviteScreen
+                            provider.fromInviteScreen ||
+                                    provider.eventDetail.editEvent == true
                                 ? provider.state == ViewState.Busy
                                     ? Center(
                                         child: CircularProgressIndicator(),
@@ -206,9 +266,14 @@ class CreateEventScreen extends StatelessWidget {
                                         scaler,
                                         "cancel_event".tr(),
                                         "save_event".tr(), onTapBtn2: () {
+                                        provider.eventDetail.contactCIDs = [];
+                                        provider.eventDetail.groupIndexList =
+                                            [];
                                         if (_formKey.currentState!.validate()) {
                                           if (provider.image == null &&
-                                              provider.eventDetail.eventPhotoUrl == null) {
+                                              provider.eventDetail
+                                                      .eventPhotoUrl ==
+                                                  null) {
                                             DialogHelper.showMessage(context,
                                                 "Please Select image.");
                                             return;
@@ -242,7 +307,8 @@ class CreateEventScreen extends StatelessWidget {
                                                   provider.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
-                                                  photoURL: provider.eventDetail.eventPhotoUrl);
+                                                  photoURL: provider.eventDetail
+                                                      .eventPhotoUrl);
                                             }
                                           } else {
                                             provider.updateEvent(
@@ -256,7 +322,8 @@ class CreateEventScreen extends StatelessWidget {
                                                 provider.dateTimeFormat(
                                                     provider.endDate,
                                                     provider.endTime),
-                                                photoURL: provider.eventDetail.eventPhotoUrl);
+                                                photoURL: provider
+                                                    .eventDetail.eventPhotoUrl);
                                           }
                                         }
                                       })
@@ -280,7 +347,9 @@ class CreateEventScreen extends StatelessWidget {
                                         // });
                                         if (_formKey.currentState!.validate()) {
                                           if (provider.image == null &&
-                                              provider.eventDetail.eventPhotoUrl == null) {
+                                              provider.eventDetail
+                                                      .eventPhotoUrl ==
+                                                  null) {
                                             DialogHelper.showMessage(context,
                                                 "Please Select image.");
                                             return;
@@ -314,7 +383,8 @@ class CreateEventScreen extends StatelessWidget {
                                                   provider.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
-                                                  photoURL: provider.eventDetail.eventPhotoUrl,
+                                                  photoURL: provider.eventDetail
+                                                      .eventPhotoUrl,
                                                   photoFile: provider.image);
                                             }
                                           } else {
@@ -329,7 +399,8 @@ class CreateEventScreen extends StatelessWidget {
                                                 provider.dateTimeFormat(
                                                     provider.endDate,
                                                     provider.endTime),
-                                                photoURL: provider.eventDetail.eventPhotoUrl,
+                                                photoURL: provider
+                                                    .eventDetail.eventPhotoUrl,
                                                 photoFile: provider.image);
                                           }
                                         }
@@ -389,7 +460,8 @@ class CreateEventScreen extends StatelessWidget {
                                   width: double.infinity,
                                 )
                               : imageSelectedCard(context, scaler)),
-                  provider.image == null && provider.eventDetail.eventPhotoUrl == null
+                  provider.image == null &&
+                          provider.eventDetail.eventPhotoUrl == null
                       ? Container()
                       : Positioned(
                           child: GestureDetector(

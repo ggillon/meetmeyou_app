@@ -10,18 +10,21 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:provider/provider.dart';
 
 class EventDetailScreen extends StatelessWidget {
   final Event event;
-
   EventDetailScreen({Key? key, required this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+   // final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
@@ -38,10 +41,10 @@ class EventDetailScreen extends StatelessWidget {
                 clipBehavior: Clip.none,
                 alignment: Alignment.bottomCenter,
                 children: [
-                  imageView(context, scaler),
+                  imageView(context, scaler, provider),
                   Positioned(
                     bottom: -50,
-                    child: titleDateLocationCard(scaler),
+                    child: titleDateLocationCard(scaler, provider),
                   )
                 ],
               ),
@@ -59,22 +62,36 @@ class EventDetailScreen extends StatelessWidget {
                             provider.eventDetail.eventBtnStatus!.tr(),
                             provider.eventDetail.btnBGColor!,
                             provider.eventDetail.textColor!, onTapFun: () {
-                            provider.eventDetail.eventBtnStatus == "respond"
-                                ? CommonWidgets.respondToEventBottomSheet(
-                                    context, scaler, going: () {
-                                    Navigator.of(context).pop();
-                                    provider.replyToEvent(
-                                        context, event.eid, EVENT_ATTENDING);
-                                  }, notGoing: () {
-                                    Navigator.of(context).pop();
-                                    provider.replyToEvent(context, event.eid,
-                                        EVENT_NOT_ATTENDING);
-                                  }, hide: () {
-                                    Navigator.of(context).pop();
-                                    provider.replyToEvent(context, event.eid,
-                                        EVENT_NOT_INTERESTED);
-                                  })
-                                : Container();
+                            if (provider.eventDetail.eventBtnStatus ==
+                                "respond") {
+                              CommonWidgets.respondToEventBottomSheet(
+                                  context, scaler, going: () {
+                                Navigator.of(context).pop();
+                                    provider.dashboardProvider.updateEventNotificationCount();
+                                provider.replyToEvent(
+                                    context, event.eid, EVENT_ATTENDING);
+                              }, notGoing: () {
+                                Navigator.of(context).pop();
+                                provider.dashboardProvider.updateEventNotificationCount();
+                                provider.replyToEvent(
+                                    context, event.eid, EVENT_NOT_ATTENDING);
+                              }, hide: () {
+                                Navigator.of(context).pop();
+                                provider.dashboardProvider.updateEventNotificationCount();
+                                provider.replyToEvent(
+                                    context, event.eid, EVENT_NOT_INTERESTED);
+                              });
+                            } else if (provider.eventDetail.eventBtnStatus ==
+                                "edit") {
+                              // provider.setEventValuesForEdit(event);
+                              Navigator.pushNamed(context,
+                                      RoutesConstants.createEventScreen)
+                                  .then((value) {
+                                    provider.updateValue(true);
+                              });
+                            } else {
+                              Container();
+                            }
                           }),
                     SizedBox(height: scaler.getHeight(1)),
                     organiserCard(scaler, provider),
@@ -157,7 +174,6 @@ class EventDetailScreen extends StatelessWidget {
                                       )
                                     ],
                                   ),
-
                                   provider.eventAttendingPhotoUrlLists.length <=
                                           6
                                       ? SizedBox(width: scaler.getWidth(1))
@@ -176,7 +192,7 @@ class EventDetailScreen extends StatelessWidget {
                         scaler.getTextSize(9.5),
                         TextAlign.left),
                     SizedBox(height: scaler.getHeight(2)),
-                    Text(event.description).regularText(
+                    Text(provider.eventDetail.eventDescription ?? "").regularText(
                         ColorConstants.colorBlack,
                         scaler.getTextSize(10),
                         TextAlign.left),
@@ -192,7 +208,8 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget imageView(BuildContext context, ScreenScaler scaler) {
+  Widget imageView(
+      BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return Card(
       margin: scaler.getMarginAll(0.0),
       shadowColor: ColorConstants.colorWhite,
@@ -210,14 +227,15 @@ class EventDetailScreen extends StatelessWidget {
                 ClipRRect(
                   borderRadius:
                       scaler.getBorderRadiusCircularLR(0.0, 0.0, 15, 15),
-                  child: event.photoURL == null || event.photoURL == ""
+                  child: provider.eventDetail.photoUrlEvent == null ||
+                          provider.eventDetail.photoUrlEvent == ""
                       ? Container(
                           color: ColorConstants.primaryColor,
                           height: scaler.getHeight(30),
                           width: double.infinity,
                         )
                       : ImageView(
-                          path: event.photoURL,
+                          path: provider.eventDetail.photoUrlEvent,
                           fit: BoxFit.cover,
                           height: scaler.getHeight(30),
                           width: double.infinity,
@@ -254,7 +272,8 @@ class EventDetailScreen extends StatelessWidget {
 
   bool showText = true;
 
-  Widget titleDateLocationCard(ScreenScaler scaler) {
+  Widget titleDateLocationCard(
+      ScreenScaler scaler, EventDetailProvider provider) {
     return Padding(
       padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
       child: Card(
@@ -267,19 +286,17 @@ class EventDetailScreen extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                dateCard(scaler),
+                dateCard(scaler, provider),
                 SizedBox(width: scaler.getWidth(1.8)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       width: scaler.getWidth(55),
-                      child: Text(event.title).boldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
-                          TextAlign.left,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
+                      child: Text(provider.eventDetail.eventName ?? "")
+                          .boldText(ColorConstants.colorBlack,
+                              scaler.getTextSize(10), TextAlign.left,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                     ),
                     SizedBox(height: scaler.getHeight(0.3)),
                     Row(
@@ -288,13 +305,17 @@ class EventDetailScreen extends StatelessWidget {
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
                           width: scaler.getWidth(50),
-                          child: Text(DateTimeHelper.getWeekDay(event.start) +
+                          child: Text(DateTimeHelper.getWeekDay(
+                                      provider.eventDetail.startDateAndTime ??
+                                          DateTime.now()) +
                                   " - " +
                                   DateTimeHelper.convertEventDateToTimeFormat(
-                                      event.start) +
+                                      provider.eventDetail.startDateAndTime ??
+                                          DateTime.now()) +
                                   " to " +
                                   DateTimeHelper.convertEventDateToTimeFormat(
-                                      event.end))
+                                      provider.eventDetail.endDateAndTime ??
+                                          DateTime.now()))
                               .regularText(ColorConstants.colorGray,
                                   scaler.getTextSize(9.5), TextAlign.left,
                                   maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -308,12 +329,10 @@ class EventDetailScreen extends StatelessWidget {
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
                           width: scaler.getWidth(50),
-                          child: Text(event.location).regularText(
-                              ColorConstants.colorGray,
-                              scaler.getTextSize(9.5),
-                              TextAlign.left,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis),
+                          child: Text(provider.eventDetail.eventLocation ?? "")
+                              .regularText(ColorConstants.colorGray,
+                                  scaler.getTextSize(9.5), TextAlign.left,
+                                  maxLines: 1, overflow: TextOverflow.ellipsis),
                         )
                       ],
                     )
@@ -325,7 +344,7 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget dateCard(ScreenScaler scaler) {
+  Widget dateCard(ScreenScaler scaler, EventDetailProvider provider) {
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: scaler.getBorderRadiusCircular(8)),
@@ -339,13 +358,14 @@ class EventDetailScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(DateTimeHelper.getMonthByName(event.start)).regularText(
+            Text(DateTimeHelper.getMonthByName(provider.eventDetail.startDateAndTime ?? DateTime.now())).regularText(
                 ColorConstants.primaryColor,
                 scaler.getTextSize(11),
                 TextAlign.center),
-            Text(event.start.day <= 9
-                    ? "0" + event.start.day.toString()
-                    : event.start.day.toString())
+            Text(provider.eventDetail.startDateAndTime!.day <= 9
+                    ? "0" +
+                        provider.eventDetail.startDateAndTime!.day.toString()
+                    : provider.eventDetail.startDateAndTime!.day.toString())
                 .boldText(ColorConstants.primaryColor, scaler.getTextSize(14),
                     TextAlign.center)
           ],
@@ -377,7 +397,7 @@ class EventDetailScreen extends StatelessWidget {
                             path: provider.userDetail.profileUrl,
                             height: scaler.getHeight(2.8),
                             width: scaler.getWidth(9),
-                        fit: BoxFit.cover),
+                            fit: BoxFit.cover),
                       )),
             SizedBox(width: scaler.getWidth(2)),
             Expanded(

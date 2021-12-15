@@ -121,7 +121,7 @@ class CommonWidgets {
               iconStatusCheck(scaler,
                   searchStatus: search ? searchStatus : "",
                   addIconTap: search ? addIconTapAction : () {},
-                  deleteIconTap: search ? deleteIconTapAction ?? (){} : () {})
+                  deleteIconTap: search ? deleteIconTapAction ?? () {} : () {})
             ],
           ),
         ),
@@ -459,26 +459,26 @@ class CommonWidgets {
         });
   }
 
-  static Widget notificationBadge(ScreenScaler scaler) {
+  static Widget notificationBadge(ScreenScaler scaler, int count) {
     return Positioned(
-      right: -3,
-      child: Container(
-        alignment: Alignment.center,
-        padding: scaler.getPaddingAll(1.5),
-        decoration: BoxDecoration(
-          color: ColorConstants.colorRed,
-          borderRadius: scaler.getBorderRadiusCircular(10.0),
-        ),
-        constraints: BoxConstraints(
-          minWidth: 15,
-          minHeight: 15,
-        ),
-        child: Text("10").semiBoldText(
-          ColorConstants.colorWhite,
-          scaler.getTextSize(6.8),
-          TextAlign.center,
-        ),
-      ),
-    );
+            right: -3,
+            child: Container(
+              alignment: Alignment.center,
+              padding: scaler.getPaddingAll(1.5),
+              decoration: BoxDecoration(
+                color: count == 0 ? Colors.transparent : ColorConstants.colorRed,
+                borderRadius: scaler.getBorderRadiusCircular(10.0),
+              ),
+              constraints: BoxConstraints(
+                minWidth: 15,
+                minHeight: 15,
+              ),
+              child: Text(count.toString()).semiBoldText(
+                count == 0 ? Colors.transparent :  ColorConstants.colorWhite,
+                scaler.getTextSize(6.8),
+                TextAlign.center,
+              ),
+            ),
+          );
   }
 }

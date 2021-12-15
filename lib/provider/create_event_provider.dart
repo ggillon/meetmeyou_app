@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -20,6 +21,7 @@ class CreateEventProvider extends BaseProvider {
   EventDetail eventDetail = locator<EventDetail>();
 
   File? image;
+
   //String? imageUrl;
   DateTime startDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay.now();
@@ -73,14 +75,14 @@ class CreateEventProvider extends BaseProvider {
     if (type == 1) {
       final pickedFile = await picker.pickImage(source: ImageSource.camera);
       image = File(pickedFile!.path);
-      if(image != null){
+      if (image != null) {
         eventDetail.eventPhotoUrl = "";
       }
       notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       image = File(pickedFile!.path);
-      if(image != null){
+      if (image != null) {
         eventDetail.eventPhotoUrl = "";
       }
       notifyListeners();
@@ -157,7 +159,7 @@ class CreateEventProvider extends BaseProvider {
       eventDetail.eid = value.eid;
       photoFile = null;
       eventDetail.eventPhotoUrl = value.photoURL;
-   //   DialogHelper.showMessage(context, "Event created Successfully");
+      //   DialogHelper.showMessage(context, "Event created Successfully");
       Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen)
           .then((value) {
         fromInviteScreen = true;
@@ -171,13 +173,15 @@ class CreateEventProvider extends BaseProvider {
       String description, DateTime startDateTime, DateTime endDateTime,
       {String? photoURL, File? photoFile}) async {
     setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     var value = await mmyEngine!
         .updateEvent(eventDetail.eid.toString(),
             title: title,
             location: location,
             description: description,
             photoURL: eventDetail.eventPhotoUrl ?? "",
-            photoFile: eventDetail.eventPhotoUrl == null ? photoFile ?? null : null,
+            photoFile:
+                eventDetail.eventPhotoUrl == null ? photoFile ?? null : null,
             start: startDateTime,
             end: endDateTime)
         .catchError((e) {
@@ -186,6 +190,12 @@ class CreateEventProvider extends BaseProvider {
     });
     if (value != null) {
       setState(ViewState.Idle);
+      eventDetail.photoUrlEvent = value.photoURL;
+      eventDetail.eventName = value.title;
+      eventDetail.startDateAndTime = value.start;
+      eventDetail.endDateAndTime = value.end;
+      eventDetail.eventLocation = value.location;
+      eventDetail.eventDescription = value.description;
       // DialogHelper.showMessage(context, "Event updated Successfully");
       Navigator.of(context).pop();
     }
@@ -196,8 +206,10 @@ class CreateEventProvider extends BaseProvider {
         date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
     DateTime tempDate =
         new DateFormat("yyyy-MM-dd hh:mm").parse(dateTimeString);
-    print(dateTimeString);
-    print(tempDate);
+    // print(dateTimeString);
+    // print(tempDate);
     return tempDate;
   }
+
+
 }

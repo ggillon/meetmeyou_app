@@ -13,10 +13,12 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:provider/provider.dart';
 
 class ContactsScreen extends StatelessWidget {
   ContactsScreen({Key? key}) : super(key: key);
@@ -24,6 +26,7 @@ class ContactsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
@@ -120,7 +123,7 @@ class ContactsScreen extends StatelessWidget {
                                             : invitationContactList(
                                                 scaler,
                                                 provider.invitationContactList,
-                                                provider),
+                                                provider, dashBoardProvider),
                                         provider.invitationContactList.length ==
                                                 0
                                             ? Container()
@@ -207,7 +210,7 @@ class ContactsScreen extends StatelessWidget {
   }
 
   Widget invitationContactList(
-      ScreenScaler scaler, List<Contact> iList, ContactsProvider provider) {
+      ScreenScaler scaler, List<Contact> iList, ContactsProvider provider, DashboardProvider dashboardProvider) {
     return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -221,6 +224,7 @@ class ContactsScreen extends StatelessWidget {
                   RoutesConstants.contactDescription,
                 ).then((value) {
                   provider.getConfirmedContactsAndInvitationsList(context);
+                  provider.unRespondedInvites(context, dashboardProvider);
                 });
               },
               child: CommonWidgets.userContactCard(scaler,

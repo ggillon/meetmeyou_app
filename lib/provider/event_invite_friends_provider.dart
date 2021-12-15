@@ -12,14 +12,21 @@ class EventInviteFriendsProvider extends BaseProvider {
   EventDetail eventDetail = locator<EventDetail>();
   int toggle = 0;
 
-  bool _value = false;
+ late List<bool> value = [];
 
-  bool get value => _value;
-
-  void updateValue(bool value) {
-    _value = value;
+  void updateCheckValue(bool val, int index) {
+    value[index] = val;
     notifyListeners();
   }
+
+  // bool _inviteValue = false;
+  //
+  // bool get inviteValue => _inviteValue;
+  //
+  // void updateGroupValue(bool value) {
+  //   _inviteValue = value;
+  //   notifyListeners();
+  // }
 
   bool _toggleValue = false;
 
@@ -76,6 +83,7 @@ class EventInviteFriendsProvider extends BaseProvider {
             .compareTo(b.displayName.toString().toLowerCase());
       });
       confirmContactList = confirmValue;
+      value = List<bool>.filled(confirmContactList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -99,7 +107,7 @@ class EventInviteFriendsProvider extends BaseProvider {
       });
 
       groupList = groupValue;
-
+      value = List<bool>.filled(groupList.length, false);
       //isGroupChecked = List<bool>.filled(groupList.length, false);
     } else {
       setState(ViewState.Idle);
@@ -107,18 +115,14 @@ class EventInviteFriendsProvider extends BaseProvider {
   }
 
   // for event invite friends
-//  List<Contact>? eventInviteFriendsList = [];
-  List<String>? contactCIDs = [];
-  List<String> groupIndexList = [];
-  List<Contact> checkGroupList = [];
- // List<String> groupCidList = [];
 
   bool contactCheckIsSelected(Contact contact) {
-    var value = contactCIDs?.any((element) => element == contact.cid);
-    return value!;
+    var value =
+        eventDetail.contactCIDs.any((element) => element == contact.cid);
+    return value;
   }
 
-  bool groupCheckIsSelected(Contact groupData, int index) {
+  bool groupCheckIsSelected(int index) {
     // List<String> keysList = [];
     // for (var key in groupData.group.keys) {
     //   keysList.add(key);
@@ -130,64 +134,121 @@ class EventInviteFriendsProvider extends BaseProvider {
     // }
     //
     // return val!;
-    var value = groupIndexList.any((element) => element == index.toString());
+    var value = eventDetail.groupIndexList
+        .any((element) => element == index.toString());
     return value;
   }
 
-  Future inviteContactsToEvent(BuildContext context, List<String>? CIDs) async {
-    updateValue(true);
+  // Future inviteContactsToEvent(BuildContext context, List<String> CIDs) async {
+  //   updateInviteValue(true);
+  //
+  //   mmyEngine!.inviteContactsToEvent(eventDetail.eid.toString(),
+  //       CIDs: CIDs).catchError((e) {
+  //     updateInviteValue(false);
+  //     DialogHelper.showMessage(context, e.message);
+  //   });
+  //
+  //   updateInviteValue(false);
+  // }
 
-    mmyEngine!
-        .inviteContactsToEvent(eventDetail.eid.toString(), CIDs: CIDs ?? [])
-        .catchError((e) {
-      updateValue(false);
+  // these function are used to invite contact
+   inviteContactToEvent(BuildContext context, String CID, int index) async {
+    updateCheckValue(true, index);
+
+    await mmyEngine!.inviteContactsToEvent(eventDetail.eid.toString(),
+        CIDs: [CID]).catchError((e) {
+      updateCheckValue(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+    eventDetail.contactCIDs.add(CID);
+    updateCheckValue(false, index);
+  }
+
+   removeContactFromEvent(BuildContext context, String CID, int ind) async {
+    updateCheckValue(true, ind);
+
+    await mmyEngine!.removeContactsFromEvent(eventDetail.eid.toString(),
+        CIDs: [CID]).catchError((e) {
+      updateCheckValue(false, ind);
       DialogHelper.showMessage(context, e.message);
     });
 
-    updateValue(false);
-    Navigator.of(context).pop();
+    var index = eventDetail.contactCIDs.indexWhere((element) => element == CID);
+    eventDetail.contactCIDs.removeAt(index);
+    updateCheckValue(false, ind);
   }
 
+  // addContactToContactCIDList(Contact contact) {
+  //   //   eventInviteFriendsList?.add(contact);
+  //   eventDetail.contactCIDs.add(contact.cid);
+  //   notifyListeners();
+  // }
+  //
+  // removeContactFromContactCIDList(Contact contact) {
+  //   var index = eventDetail.contactCIDs.indexWhere((element) => element == contact.cid);
+  //   //  eventInviteFriendsList?.removeAt(index!);
+  //   eventDetail.contactCIDs.removeAt(index);
+  //   notifyListeners();
+  // }
 
-  addContactToContactCIDList(Contact contact) {
-    //   eventInviteFriendsList?.add(contact);
-    contactCIDs?.add(contact.cid);
+  // these function are used to invite group.
+  Future inviteGroupToEvent(BuildContext context, List<String> CIDs, int index,
+      Contact groupContact) async {
+    updateCheckValue(true, index);
+    List<String> keysList = [];
+    addContactToGroupCidList(index, groupContact);
+    if (eventDetail.checkGroupList.isNotEmpty) {
+      for (int i = 0; i < eventDetail.checkGroupList.length; i++) {
+        for (var key in eventDetail.checkGroupList[i].group.keys) {
+          keysList.add(key);
+        }
+      }
+    }
+
+    await mmyEngine!.inviteContactsToEvent(eventDetail.eid.toString(), CIDs: keysList.toSet().toList())
+        .catchError((e) {
+      updateCheckValue(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateCheckValue(false, index);
+  }
+
+  Future removeGroupFromEvent(BuildContext context, List<String> CIDs,
+      int index, Contact groupContact) async {
+    updateCheckValue(true, index);
+    List<String> keysList = [];
+    removeContactFromGroupCidList(index, groupContact);
+    if (eventDetail.checkGroupList.isNotEmpty) {
+      for (int i = 0; i < eventDetail.checkGroupList.length; i++) {
+        for (var key in eventDetail.checkGroupList[i].group.keys) {
+          keysList.add(key);
+        }
+      }
+    }
+
+    await mmyEngine!
+        .removeContactsFromEvent(eventDetail.eid.toString(),
+            CIDs: keysList.toSet().toList())
+        .catchError((e) {
+      updateCheckValue(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateCheckValue(false, index);
+  }
+
+  addContactToGroupCidList(int index, Contact groupContact) {
+    eventDetail.groupIndexList.add(index.toString());
+    eventDetail.checkGroupList.add(groupContact);
     notifyListeners();
   }
 
-  removeContactFromContactCIDList(Contact contact) {
-    var index = contactCIDs?.indexWhere((element) => element == contact.cid);
-    //  eventInviteFriendsList?.removeAt(index!);
-    contactCIDs?.removeAt(index!);
+  removeContactFromGroupCidList(int ind, Contact groupContact) {
+    var index = eventDetail.groupIndexList
+        .indexWhere((element) => element == ind.toString());
+    eventDetail.groupIndexList.removeAt(index);
+    eventDetail.checkGroupList.remove(groupContact);
     notifyListeners();
   }
-
-  addContactToGroupCidList(List<String> keysList, int index, Contact groupContact) {
-    groupIndexList.add(index.toString());
-    checkGroupList.add(groupContact);
-  //  groupCidList.addAll(keysList);
-    notifyListeners();
-  }
-
-  removeContactFromGroupCidList(List<String> keysList, int ind, Contact groupContact) {
-    var index =
-        groupIndexList.indexWhere((element) => element == ind.toString());
-    groupIndexList.removeAt(index);
-    checkGroupList.remove(groupContact);
-  //  groupCidList.remove(keysList);
-    notifyListeners();
-  }
-
-// late List<bool> _isGroupChecked;
-//
-// List<bool> get isGroupChecked => _isGroupChecked;
-//
-// set isGroupChecked(List<bool> value) {
-//   _isGroupChecked = value;
-// }
-//
-// setGroupCheckBoxValue(bool value, int index) {
-//   _isGroupChecked[index] = value;
-//   notifyListeners();
-// }
 }

@@ -12,12 +12,14 @@ import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   AuthBase auth = locator<AuthBase>();
@@ -33,6 +35,8 @@ class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final dashBoardProvider =
+        Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
@@ -200,32 +204,32 @@ class _HomePageState extends State<HomePage>
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(
-                                scaler, provider.eventLists, provider),
+                            : upcomingEventsList(scaler, provider.eventLists,
+                                provider, dashBoardProvider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(
-                                scaler, provider.eventLists, provider),
+                            : upcomingEventsList(scaler, provider.eventLists,
+                                provider, dashBoardProvider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(
-                                scaler, provider.eventLists, provider),
+                            : upcomingEventsList(scaler, provider.eventLists,
+                                provider, dashBoardProvider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(
-                                scaler, provider.eventLists, provider),
+                            : upcomingEventsList(scaler, provider.eventLists,
+                                provider, dashBoardProvider),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(
-                                scaler, provider.eventLists, provider),
+                            : upcomingEventsList(scaler, provider.eventLists,
+                                provider, dashBoardProvider),
                   ],
                 ),
               ),
@@ -256,8 +260,8 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget upcomingEventsList(
-      ScreenScaler scaler, List<Event> eventList, HomePageProvider provider) {
+  Widget upcomingEventsList(ScreenScaler scaler, List<Event> eventList,
+      HomePageProvider provider, DashboardProvider dashboardProvider) {
     return Padding(
       padding: scaler.getPaddingLTRB(5.8, 0.5, 5.8, 0.0),
       child: ListView.builder(
@@ -267,6 +271,7 @@ class _HomePageState extends State<HomePage>
               padding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 1.0),
               child: GestureDetector(
                 onTap: () {
+                  provider.setEventValuesForEdit(eventList[index]);
                   provider.eventDetail.eventBtnStatus =
                       provider.getEventBtnStatus(eventList[index]);
                   provider.eventDetail.textColor =
@@ -274,12 +279,18 @@ class _HomePageState extends State<HomePage>
                   provider.eventDetail.btnBGColor =
                       provider.getEventBtnColorStatus(eventList[index],
                           textColor: false);
-                  provider.eventDetail.eventMapData = eventList[index].invitedContacts;
+                  provider.eventDetail.eventMapData =
+                      eventList[index].invitedContacts;
                   provider.eventDetail.eid = eventList[index].eid;
                   Navigator.pushNamed(
-                      context, RoutesConstants.eventDetailScreen,
-                      arguments: eventList[index]).then((value) {
-                        provider.getIndexChanging(context);
+                          context, RoutesConstants.eventDetailScreen,
+                          arguments: eventList[index])
+                      .then((value) {
+                    provider.getIndexChanging(context);
+                    provider.unRespondedEvents(context, dashboardProvider);
+                    // if (provider.eventDetail.unRespondedEvent! > provider.eventDetail.unRespondedEvent1!.toInt()) {
+                    //   dashboardProvider.updateEventNotificationCount();
+                    // }
                   });
                 },
                 child: Card(
@@ -288,7 +299,8 @@ class _HomePageState extends State<HomePage>
                   shape: RoundedRectangleBorder(
                       borderRadius: scaler.getBorderRadiusCircular(10)),
                   // child: CustomShape(
-                  child: eventCard(scaler, context, eventList, index, provider),
+                  child: eventCard(scaler, context, eventList, index, provider,
+                      dashboardProvider),
                   //  bgColor: ColorConstants.colorWhite,
                   //   radius: scaler.getBorderRadiusCircular(10),
                   //  width: MediaQuery.of(context).size.width / 1.2
@@ -300,8 +312,13 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget eventCard(ScreenScaler scaler, BuildContext context,
-      List<Event> eventList, int index, HomePageProvider provider) {
+  Widget eventCard(
+      ScreenScaler scaler,
+      BuildContext context,
+      List<Event> eventList,
+      int index,
+      HomePageProvider provider,
+      DashboardProvider dashboardProvider) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -314,7 +331,7 @@ class _HomePageState extends State<HomePage>
                 path: eventList[index].photoURL,
                 fit: BoxFit.cover,
                 height: scaler.getHeight(21),
-                  width: double.infinity,
+                width: double.infinity,
               ),
             ),
             Positioned(
@@ -382,7 +399,8 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               SizedBox(width: scaler.getWidth(1)),
-              eventRespondBtn(scaler, eventList[index], provider)
+              eventRespondBtn(
+                  scaler, eventList[index], provider, dashboardProvider)
             ],
           ),
         )
@@ -417,23 +435,33 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget eventRespondBtn(
-      ScreenScaler scaler, Event event, HomePageProvider provider) {
+  Widget eventRespondBtn(ScreenScaler scaler, Event event,
+      HomePageProvider provider, DashboardProvider dashboardProvider) {
     return GestureDetector(
       onTap: () {
-        provider.getEventBtnStatus(event) == "respond"
-            ? CommonWidgets.respondToEventBottomSheet(context, scaler,
-                going: () {
-                Navigator.of(context).pop();
-                provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
-              }, notGoing: () {
-                Navigator.of(context).pop();
-                provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
-              }, hide: () {
-                Navigator.of(context).pop();
-                provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
-              })
-            : Container();
+        if (provider.getEventBtnStatus(event) == "respond") {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
+            Navigator.of(context).pop();
+            dashboardProvider.updateEventNotificationCount();
+            provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+          }, notGoing: () {
+            Navigator.of(context).pop();
+            dashboardProvider.updateEventNotificationCount();
+            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
+          }, hide: () {
+            Navigator.of(context).pop();
+            dashboardProvider.updateEventNotificationCount();
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+          });
+        } else if (provider.getEventBtnStatus(event) == "edit") {
+          provider.setEventValuesForEdit(event);
+          Navigator.pushNamed(context, RoutesConstants.createEventScreen)
+              .then((value) {
+            provider.getIndexChanging(context);
+          });
+        } else {
+          Container();
+        }
       },
       child: CustomShape(
         child: Center(

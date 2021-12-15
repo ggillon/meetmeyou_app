@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -17,18 +18,4 @@ class BaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _disposed = false;
-
-  @override
-  void dispose() {
-    _disposed = true;
-    super.dispose();
-  }
-
-  @override
-  void notifyListeners() {
-    if (!_disposed) {
-      super.notifyListeners();
-    }
-  }
 }

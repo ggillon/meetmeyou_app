@@ -18,6 +18,9 @@ class UserDetail {
   String? membersLength;
   Map? group;
 
+
+  int? unRespondedInvites = 0;
+  int? unRespondedInvites1 = 0;
   /*bool? createGroup;
   String? groupName;
   List<Contact>? groupConfirmContactList = [];
@@ -35,7 +38,7 @@ class UserDetail {
       this.cid,
       this.about,
       this.membersLength,
-      this.group,});
+      this.group, this.unRespondedInvites, this.unRespondedInvites1});
 
  /* UserDetail.createEditGroup(
       {this.createGroup,

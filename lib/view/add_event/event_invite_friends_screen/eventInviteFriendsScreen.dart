@@ -151,34 +151,36 @@ class EventInviteFriendsScreen extends StatelessWidget {
                   //         child: CircularProgressIndicator(),
                   //       )
                   //     :
-                provider.value == true ? Center(
-                  child: CircularProgressIndicator(),
-                ) : Container(
+                  Container(
                     child: DialogHelper.btnWidget(
                         scaler,
                         context,
                         "invite_friends".tr(),
                         ColorConstants.primaryColor, funOnTap: () {
-                      List<String> contactsCidList = [];
-                      List<String> keysList = [];
-                      if (provider.checkGroupList.isNotEmpty) {
-                        for (int i = 0; i < provider.checkGroupList.length; i++) {
-                          for (var key in provider.checkGroupList[i].group.keys) {
-                            keysList.add(key);
-                          }
-                        }
+                      // List<String> contactsCidList = [];
+                      // List<String> keysList = [];
+                      // if (provider.eventDetail.checkGroupList.isNotEmpty) {
+                      //   for (int i = 0;
+                      //       i < provider.eventDetail.checkGroupList.length;
+                      //       i++) {
+                      //     for (var key in provider
+                      //         .eventDetail.checkGroupList[i].group.keys) {
+                      //       keysList.add(key);
+                      //     }
+                      //   }
+                      // }
+                      // contactsCidList.addAll(provider.eventDetail.contactCIDs);
+                      // contactsCidList.addAll(keysList);
+                      // print(contactsCidList.toSet().toList());
+                      if (provider.eventDetail.contactCIDs.isNotEmpty ||
+                          provider.eventDetail.groupIndexList.isNotEmpty) {
+                        // provider.inviteContactsToEvent(
+                        //     context, contactsCidList.toSet().toList());
+                        Navigator.of(context).pop();
+                      } else {
+                        DialogHelper.showMessage(
+                            context, "Please select contacts to Invite");
                       }
-                      contactsCidList.addAll(provider.contactCIDs!);
-                      contactsCidList.addAll(keysList);
-                      print(contactsCidList.toSet().toList());
-                      if (contactsCidList.isNotEmpty) {
-                        provider.inviteContactsToEvent(
-                            context, contactsCidList.toSet().toList());
-                      }
-                     else {
-                      DialogHelper.showMessage(
-                          context, "Please select contacts to Invite");
-                        }
                     }),
                   ),
                   SizedBox(height: scaler.getHeight(1)),
@@ -284,53 +286,76 @@ class EventInviteFriendsScreen extends StatelessWidget {
                 CommonWidgets.profileCardNameAndEmailDesign(
                     scaler,
                     contactOrGroupList[index].displayName,
-                    contactOrGroupList[index].email),
+                    provider.toggle == 0 ? contactOrGroupList[index].email : contactOrGroupList[index].group.length.toString() + " " + "members".tr()),
                 provider.toggle == 0
                     ? Container(
                         width: scaler.getWidth(8),
                         height: scaler.getHeight(3.5),
                         alignment: Alignment.center,
-                        child: Checkbox(
-                          value: provider.contactCheckIsSelected(
-                              provider.confirmContactList[index]),
-                          onChanged: (bool? value) {
-                            if (value!) {
-                              provider.addContactToContactCIDList(
-                                  provider.confirmContactList[index]);
-                            } else {
-                              provider.removeContactFromContactCIDList(
-                                  provider.confirmContactList[index]);
-                            }
-                          },
-                        ),
+                        child: provider.value[index] == true
+                            ? Container(
+                                height: scaler.getHeight(2),
+                                width: scaler.getWidth(4.5),
+                                child: CircularProgressIndicator())
+                            : Checkbox(
+                                value: provider.contactCheckIsSelected(
+                                    provider.confirmContactList[index]),
+                                onChanged: (bool? value) {
+                                  if (value!) {
+                                    provider.inviteContactToEvent(
+                                        context,
+                                        provider.confirmContactList[index].cid,
+                                        index);
+                                  } else {
+                                    provider.removeContactFromEvent(
+                                        context,
+                                        provider.confirmContactList[index].cid,
+                                        index);
+                                  }
+                                },
+                              ),
                       )
                     : Container(
                         width: scaler.getWidth(8),
                         height: scaler.getHeight(3.5),
                         alignment: Alignment.center,
-                        child: Checkbox(
-                          value: provider.groupCheckIsSelected(
-                              provider.groupList[index], index),
-                          onChanged: (bool? value) {
-                            if (value!) {
-                              List<String> keysList = [];
-                              for (var key
-                                  in provider.groupList[index].group.keys) {
-                                keysList.add(key);
-                              }
-                              provider.addContactToGroupCidList(
-                                  keysList, index, provider.groupList[index]);
-                            } else {
-                              List<String> keysList = [];
-                              for (var key
-                                  in provider.groupList[index].group.keys) {
-                                keysList.add(key);
-                              }
-                              provider.removeContactFromGroupCidList(
-                                  keysList, index, provider.groupList[index]);
-                            }
-                          },
-                        ),
+                        child: provider.value[index] == true
+                            ? Container(
+                                height: scaler.getHeight(2),
+                                width: scaler.getWidth(4.5),
+                                child: CircularProgressIndicator())
+                            : Checkbox(
+                                value: provider.groupCheckIsSelected(index),
+                                onChanged: (bool? value) {
+                                  if (value!) {
+                                    List<String> keysList = [];
+                                    for (var key in provider
+                                        .groupList[index].group.keys) {
+                                      keysList.add(key);
+                                    }
+                                    // provider.addContactToGroupCidList(
+                                    //     index, provider.groupList[index]);
+                                    provider.inviteGroupToEvent(
+                                        context,
+                                        keysList,
+                                        index,
+                                        provider.groupList[index]);
+                                  } else {
+                                    List<String> keysList = [];
+                                    for (var key in provider
+                                        .groupList[index].group.keys) {
+                                      keysList.add(key);
+                                    }
+                                    // provider.removeContactFromGroupCidList(
+                                    //     index, provider.groupList[index]);
+                                    provider.removeGroupFromEvent(
+                                        context,
+                                        keysList,
+                                        index,
+                                        provider.groupList[index]);
+                                  }
+                                },
+                              ),
                       ),
               ],
             ),

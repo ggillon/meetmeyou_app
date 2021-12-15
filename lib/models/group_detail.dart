@@ -13,6 +13,7 @@ class GroupDetail {
   Map? group;
   bool? checkBoxCheck;
 
+
   GroupDetail(
       {this.createGroup,
       this.groupName,

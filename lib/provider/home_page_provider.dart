@@ -6,13 +6,17 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 
 class HomePageProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
+  GroupDetail groupDetail = locator<GroupDetail>();
   EventDetail eventDetail = locator<EventDetail>();
   TabController? tabController;
   int selectedIndex = 0;
@@ -29,14 +33,13 @@ class HomePageProvider extends BaseProvider {
 
   tabChangeEvent(BuildContext context) {
     tabController?.addListener(() {
-   //   selectedIndex = tabController!.index;
-     // setState(ViewState.Busy);
+      //   selectedIndex = tabController!.index;
+      // setState(ViewState.Busy);
       getIndexChanging(context);
-    //  setState(ViewState.Idle);
+      //  setState(ViewState.Idle);
       notifyListeners();
     });
   }
-
 
   Future<void> getUserDetail(BuildContext context) async {
     setState(ViewState.Busy);
@@ -48,7 +51,7 @@ class HomePageProvider extends BaseProvider {
     });
 
     userDetail.cid = userProfile.uid;
-   // userDetail.profileUrl = userProfile.photoURL;
+    // userDetail.profileUrl = userProfile.photoURL;
 
     setState(ViewState.Idle);
   }
@@ -67,9 +70,6 @@ class HomePageProvider extends BaseProvider {
 
     if (value != null) {
       setState(ViewState.Idle);
-      // for (int i = 0; i < value.length; i++) {
-      //   getEventBtnStatus(value[i]);
-      // }
       eventLists = value;
     }
   }
@@ -87,27 +87,20 @@ class HomePageProvider extends BaseProvider {
       if (keysList[i] == userDetail.cid) {
         if (valuesList[i] == "Invited") {
           return "respond";
-
         } else if (valuesList[i] == "Organiser") {
           return "edit";
-
         } else if (valuesList[i] == "Attending") {
           return "going";
-
         } else if (valuesList[i] == "Not Attending") {
           return "not_going";
-
         } else if (valuesList[i] == "Not Interested") {
           return "hidden";
-
         } else if (valuesList[i] == "Canceled") {
           return "cancelled";
-
         }
       }
     }
   }
-
 
   getEventBtnColorStatus(Event event, {bool textColor = true}) {
     List<String> keysList = [];
@@ -121,23 +114,29 @@ class HomePageProvider extends BaseProvider {
     for (int i = 0; i < keysList.length; i++) {
       if (keysList[i] == userDetail.cid) {
         if (valuesList[i] == "Invited") {
-          return textColor ? ColorConstants.colorWhite : ColorConstants.primaryColor;
-
+          return textColor
+              ? ColorConstants.colorWhite
+              : ColorConstants.primaryColor;
         } else if (valuesList[i] == "Organiser") {
-          return textColor ? ColorConstants.colorWhite : ColorConstants.primaryColor;
-
+          return textColor
+              ? ColorConstants.colorWhite
+              : ColorConstants.primaryColor;
         } else if (valuesList[i] == "Attending") {
-          return textColor ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2);
-
+          return textColor
+              ? ColorConstants.primaryColor
+              : ColorConstants.primaryColor.withOpacity(0.2);
         } else if (valuesList[i] == "Not Attending") {
-          return textColor ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2);
-
+          return textColor
+              ? ColorConstants.primaryColor
+              : ColorConstants.primaryColor.withOpacity(0.2);
         } else if (valuesList[i] == "Not Interested") {
-          return textColor ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2);
-
+          return textColor
+              ? ColorConstants.primaryColor
+              : ColorConstants.primaryColor.withOpacity(0.2);
         } else if (valuesList[i] == "Canceled") {
-          return textColor ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2);
-
+          return textColor
+              ? ColorConstants.primaryColor
+              : ColorConstants.primaryColor.withOpacity(0.2);
         }
       }
     }
@@ -168,8 +167,7 @@ class HomePageProvider extends BaseProvider {
     notifyListeners();
   }
 
-
-  Future replyToEvent(BuildContext context, String eid, String response) async{
+  Future replyToEvent(BuildContext context, String eid, String response) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.replyToEvent(eid, response: response).catchError((e) {
@@ -177,9 +175,39 @@ class HomePageProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
 
-   getIndexChanging(context);
+    getIndexChanging(context);
 
     setState(ViewState.Idle);
   }
 
+  setEventValuesForEdit(Event event) {
+    eventDetail.editEvent = true;
+    eventDetail.eid = event.eid;
+    eventDetail.photoUrlEvent = event.photoURL;
+    eventDetail.eventName = event.title;
+    eventDetail.startDateAndTime = event.start;
+    eventDetail.endDateAndTime = event.end;
+    eventDetail.eventLocation = event.location;
+    eventDetail.eventDescription = event.description;
+    List<String> keysList = [];
+
+    for (var key in event.invitedContacts.keys) {
+      keysList.add(key);
+    }
+    eventDetail.contactCIDs = keysList;
+  }
+
+  Future unRespondedEvents(
+      BuildContext context, DashboardProvider dashboardProvider) async {
+    setState(ViewState.Busy);
+    eventDetail.unRespondedEvent1 =
+        await mmyEngine!.unrespondedEvents().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (eventDetail.unRespondedEvent! > eventDetail.unRespondedEvent1!.toInt()) {
+      dashboardProvider.updateEventNotificationCount();
+    }
+    setState(ViewState.Idle);
+  }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
-import 'package:meetmeyou_app/services/email/email.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:provider/provider.dart';
