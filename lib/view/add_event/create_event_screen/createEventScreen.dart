@@ -128,6 +128,7 @@ class CreateEventScreen extends StatelessWidget {
                             SizedBox(height: scaler.getHeight(0.2)),
                             GestureDetector(
                               onTap: () async {
+                                hideKeyboard(context);
                                 Navigator.pushNamed(
                                         context, RoutesConstants.autoComplete)
                                     .then((value) {
@@ -271,6 +272,7 @@ class CreateEventScreen extends StatelessWidget {
                                               context,
                                               "cancel_event".tr(),
                                               "sure_to_cancel_event".tr(),
+                                              negativeButtonLabel: "No",
                                               positiveButtonPress: () {
                                                 Navigator.of(context).pop();
                                                 provider.cancelEvent(context);
@@ -554,6 +556,7 @@ class CreateEventScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                hideKeyboard(context);
                 provider.pickDateDialog(context, true);
               },
               child: Container(
@@ -614,6 +617,7 @@ class CreateEventScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                hideKeyboard(context);
                 provider.pickDateDialog(context, false);
               },
               child: Container(

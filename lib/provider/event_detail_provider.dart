@@ -70,11 +70,10 @@ class EventDetailProvider extends BaseProvider {
     setState(ViewState.Idle);
   }
 
-  Future getOrganiserProfileUrl(BuildContext context) async {
+  Future getOrganiserProfileUrl(BuildContext context, String organiserUid) async {
     setState(ViewState.Busy);
 
-    var value = await mmyEngine!
-        .getUserProfile(user: false, uid: organiserKey)
+    var value = await mmyEngine!.getUserProfile(user: false, uid: organiserUid)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
@@ -126,5 +125,17 @@ class EventDetailProvider extends BaseProvider {
       default:
         return length;
     }
+  }
+
+  deleteEvent(BuildContext context, String eid) async{
+    setState(ViewState.Busy);
+
+    await mmyEngine!.deleteEvent(eid).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    setState(ViewState.Idle);
+    Navigator.of(context).pop();
   }
 }

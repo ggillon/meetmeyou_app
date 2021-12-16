@@ -12,6 +12,8 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 class EventAttendingProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
+  List<String> status = [];
+  String? cid;
 
   bool _value = false;
 
@@ -49,9 +51,11 @@ class EventAttendingProvider extends BaseProvider {
       });
       if (value != null) {
         eventAttendingLists.add(value);
+        status.add("");
       }
     }
     setState(ViewState.Idle);
+    print(status);
   }
 
   Future getUserDetail(BuildContext context, String key) async {
@@ -66,9 +70,10 @@ class EventAttendingProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
     eventAttendingLists.add(value);
+    status.add("Listed profile");
     //  }
     // print(eventAttendingLists);
-    setState(ViewState.Idle);
+    // setState(ViewState.Idle);
   }
 
   Future removeContactsFromEvent(BuildContext context, String CID) async {
@@ -84,11 +89,29 @@ class EventAttendingProvider extends BaseProvider {
     eventAttendingLists.clear();
     await getContacts(context);
 
-    if(eventAttendingLists.length == 0){
+    if (eventAttendingLists.length == 0) {
       setState(ViewState.Idle);
       Navigator.of(context).pop();
-    } else{
+    } else {
       setState(ViewState.Idle);
     }
+  }
+
+  inviteProfile(BuildContext context, int index) async {
+    updateValue(true);
+
+    for (int i = 0; i < (eventDetail.attendingProfileKeys?.length ?? 0); i++) {
+      if (index == i) {
+        cid = eventDetail.attendingProfileKeys![i];
+      }
+    }
+    // await mmyEngine!.inviteProfile(cid ?? "").catchError((e) {
+    //   updateValue(false);
+    //   DialogHelper.showMessage(context, e.message);
+    // });
+    status[index] = 'Invited contact';
+
+    updateValue(false);
+    DialogHelper.showMessage(context, "Invitation send Successfully");
   }
 }

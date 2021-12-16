@@ -149,3 +149,10 @@ extension TimeOfDayExtension on TimeOfDay {
     return 0;
   }
 }
+
+extension on List {
+  bool equals(List list) {
+    if(this.length!=list.length) return false;
+    return this.every((item) => list.contains(item));
+  }
+}

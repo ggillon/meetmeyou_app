@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
             bottomNavigationBar: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: provider.unRespondedEvent == 0
+                  icon: provider.unRespondedEvent <= 0
                       ? ImageView(
                           path: ImageConstants.home_icon,
                         )
@@ -63,7 +63,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 provider.unRespondedEvent)
                           ],
                         ),
-                  activeIcon: provider.unRespondedEvent == 0
+                  activeIcon: provider.unRespondedEvent <= 0
                       ? ImageView(
                           path: ImageConstants.home_icon_green,
                         )
@@ -92,7 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: provider.unRespondedInvite == 0
+                  icon: provider.unRespondedInvite <= 0
                       ? ImageView(
                           path: ImageConstants.contacts_icon,
                         )
@@ -107,7 +107,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 provider.unRespondedInvite)
                           ],
                         ),
-                  activeIcon: provider.unRespondedInvite == 0
+                  activeIcon: provider.unRespondedInvite <= 0
                       ? ImageView(
                           path: ImageConstants.contacts_icon_green,
                         )

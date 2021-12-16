@@ -459,6 +459,11 @@ class _HomePageState extends State<HomePage>
               .then((value) {
             provider.getIndexChanging(context);
           });
+        } else if (provider.getEventBtnStatus(event) == "cancelled") {
+          CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+            Navigator.of(context).pop();
+            provider.deleteEvent(context, event.eid);
+          });
         } else {
           Container();
         }
@@ -477,6 +482,7 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
+
 
   @override
   bool get wantKeepAlive => true;

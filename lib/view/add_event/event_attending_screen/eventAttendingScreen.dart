@@ -23,7 +23,7 @@ class EventAttendingScreen extends StatelessWidget {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
-        key: _scaffoldKey,
+          key: _scaffoldKey,
           appBar: DialogHelper.appBarWithBack(scaler, context),
           backgroundColor: ColorConstants.colorWhite,
           body: BaseView<EventAttendingProvider>(
@@ -126,36 +126,47 @@ class EventAttendingScreen extends StatelessWidget {
             ? "Event Edit"
             : cList[index] is Contact
                 ? ""
-                : "Listed profile",
-        addIconTapAction: () {}, deleteIconTapAction: () {
+                : provider.status[index].isEmpty ? "Listed profile" : provider.status[index],
+        addIconTapAction: () {
+          provider.inviteProfile(context, index);
+        }, deleteIconTapAction: () {
       deleteIconAlertDialog(context, scaler, cList, index, provider);
     });
   }
 
-
-  deleteIconAlertDialog(BuildContext context, ScreenScaler scaler, List<dynamic> cList, int index,  EventAttendingProvider provider) {
+  deleteIconAlertDialog(BuildContext context, ScreenScaler scaler,
+      List<dynamic> cList, int index, EventAttendingProvider provider) {
     return showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text("remove_attendant".tr()).semiBoldText(ColorConstants.colorBlack,
-              scaler.getTextSize(9.8), TextAlign.center),
-          content:Text("remove_attendant_text".tr()).regularText(ColorConstants.colorBlack,
-              scaler.getTextSize(7.9), TextAlign.center),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text("cancel".tr()).regularText(ColorConstants.primaryColor,
-                  scaler.getTextSize(9.8), TextAlign.center),
-            ),
-            CupertinoDialogAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                provider.removeContactsFromEvent(_scaffoldKey.currentContext!, cList[index].cid);
-              },
-              child: Text("remove".tr()).semiBoldText(ColorConstants.primaryColor,
-                  scaler.getTextSize(9.8), TextAlign.center),
-            )
-          ],
-        ));
+              title: Text("remove_attendant".tr()).semiBoldText(
+                  ColorConstants.colorBlack,
+                  scaler.getTextSize(9.8),
+                  TextAlign.center),
+              content: Text("remove_attendant_text".tr()).regularText(
+                  ColorConstants.colorBlack,
+                  scaler.getTextSize(7.9),
+                  TextAlign.center),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("cancel".tr()).regularText(
+                      ColorConstants.primaryColor,
+                      scaler.getTextSize(9.8),
+                      TextAlign.center),
+                ),
+                CupertinoDialogAction(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    provider.removeContactsFromEvent(
+                        _scaffoldKey.currentContext!, cList[index].cid);
+                  },
+                  child: Text("remove".tr()).semiBoldText(
+                      ColorConstants.primaryColor,
+                      scaler.getTextSize(9.8),
+                      TextAlign.center),
+                )
+              ],
+            ));
   }
 }

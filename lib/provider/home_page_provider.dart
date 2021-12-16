@@ -189,12 +189,23 @@ class HomePageProvider extends BaseProvider {
     eventDetail.endDateAndTime = event.end;
     eventDetail.eventLocation = event.location;
     eventDetail.eventDescription = event.description;
+    eventDetail.event = event;
+    List<String> valuesList = [];
+    for (var value in event.invitedContacts.values) {
+      valuesList.add(value);
+    }
     List<String> keysList = [];
-
     for (var key in event.invitedContacts.keys) {
       keysList.add(key);
     }
-    eventDetail.contactCIDs = keysList;
+    List<String> contactsKeys = [];
+    for (int i = 0; i < keysList.length; i++) {
+      if(valuesList[i] != "Organiser"){
+        contactsKeys.add(keysList[i]);
+      }
+    }
+
+    eventDetail.contactCIDs = contactsKeys;
   }
 
   Future unRespondedEvents(
@@ -205,9 +216,23 @@ class HomePageProvider extends BaseProvider {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
-    if (eventDetail.unRespondedEvent! > eventDetail.unRespondedEvent1!.toInt()) {
+    if (eventDetail.unRespondedEvent! >
+        eventDetail.unRespondedEvent1!.toInt()) {
       dashboardProvider.updateEventNotificationCount();
     }
+    setState(ViewState.Idle);
+  }
+
+  deleteEvent(BuildContext context, String eid) async {
+    setState(ViewState.Busy);
+
+    await mmyEngine!.deleteEvent(eid).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    getIndexChanging(context);
+
     setState(ViewState.Idle);
   }
 }

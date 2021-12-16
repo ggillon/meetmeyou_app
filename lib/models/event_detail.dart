@@ -9,6 +9,7 @@ class EventDetail{
   Color? btnBGColor;
   Map? eventMapData;
   List<String>? attendingProfileKeys = [];
+  List<String>? allAttendingProfileKeys = [];
   String? eventPhotoUrl;
   int? unRespondedEvent = 0;
   int? unRespondedEvent1 = 0;
@@ -27,8 +28,9 @@ class EventDetail{
   DateTime? endDateAndTime;
   String? eventLocation;
   String? eventDescription;
+  Event? event;
 
-  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent});
+  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys});
 
-  EventDetail.editEvent({this.editEvent, this.photoUrlEvent, this.eventName, this.startDateAndTime, this.endDateAndTime, this.eventLocation, this.eventDescription});
+  EventDetail.editEvent({this.editEvent, this.photoUrlEvent, this.eventName, this.startDateAndTime, this.endDateAndTime, this.eventLocation, this.eventDescription, this.event});
 }

@@ -459,6 +459,56 @@ class CommonWidgets {
         });
   }
 
+ static eventCancelBottomSheet(BuildContext context, ScreenScaler scaler,
+      {VoidCallback? delete}) {
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: scaler.getHeight(0.5)),
+              Container(
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorMediumGray,
+                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                height: scaler.getHeight(0.4),
+                width: scaler.getWidth(12),
+              ),
+              Column(
+                children: [
+                  SizedBox(height: scaler.getHeight(0.9)),
+                  GestureDetector(
+                    onTap: delete,
+                    child: Text("delete_event".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                  SizedBox(height: scaler.getHeight(2)),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                  child: Text("cancel".tr()).semiBoldText(
+                      ColorConstants.colorRed,
+                      scaler.getTextSize(11),
+                      TextAlign.center),
+                ),
+              ),
+              SizedBox(height: scaler.getHeight(1)),
+            ],
+          );
+        });
+  }
+
   static Widget notificationBadge(ScreenScaler scaler, int count) {
     return Positioned(
             right: -3,

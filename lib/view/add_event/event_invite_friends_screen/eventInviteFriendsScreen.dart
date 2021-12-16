@@ -14,9 +14,15 @@ import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
-class EventInviteFriendsScreen extends StatelessWidget {
+class EventInviteFriendsScreen extends StatefulWidget {
   EventInviteFriendsScreen({Key? key}) : super(key: key);
 
+  @override
+  State<EventInviteFriendsScreen> createState() =>
+      _EventInviteFriendsScreenState();
+}
+
+class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
   final searchBarController = TextEditingController();
 
   @override
@@ -29,6 +35,11 @@ class EventInviteFriendsScreen extends StatelessWidget {
         body: BaseView<EventInviteFriendsProvider>(
           onModelReady: (provider) {
             provider.getConfirmedContactsList(context);
+            provider.contactsKeys.addAll(provider.eventDetail.contactCIDs);
+            // for(int i = 0 ; i< provider.groupList.length; i++) {
+            //   groupCheckValue =  await provider.checkIsGroupInvited(context, provider.groupList[i]);
+            //   provider.groupCheckIsSelected1(groupCheckValue!);
+            // }
           },
           builder: (context, provider, _) {
             return Padding(
@@ -54,8 +65,10 @@ class EventInviteFriendsScreen extends StatelessWidget {
                     onToggleCallback: (value) {
                       provider.toggle = value;
                       if (value == 0) {
+                        provider.contactsKeys = provider.eventDetail.contactCIDs;
                         provider.getConfirmedContactsList(context);
                       } else {
+                        provider.contactsKeys = provider.eventDetail.contactCIDs;
                         provider.getGroupList(context);
                       }
                       provider.updateToggleValue(true);
@@ -286,7 +299,11 @@ class EventInviteFriendsScreen extends StatelessWidget {
                 CommonWidgets.profileCardNameAndEmailDesign(
                     scaler,
                     contactOrGroupList[index].displayName,
-                    provider.toggle == 0 ? contactOrGroupList[index].email : contactOrGroupList[index].group.length.toString() + " " + "members".tr()),
+                    provider.toggle == 0
+                        ? contactOrGroupList[index].email
+                        : contactOrGroupList[index].group.length.toString() +
+                            " " +
+                            "members".tr()),
                 provider.toggle == 0
                     ? Container(
                         width: scaler.getWidth(8),
@@ -325,7 +342,10 @@ class EventInviteFriendsScreen extends StatelessWidget {
                                 width: scaler.getWidth(4.5),
                                 child: CircularProgressIndicator())
                             : Checkbox(
-                                value: provider.groupCheckIsSelected(index),
+                                value: provider.eventDetail.editEvent == true
+                                    ? provider.groupCheck(
+                                        contactOrGroupList[index], index)
+                                    : provider.groupCheckIsSelected(index),
                                 onChanged: (bool? value) {
                                   if (value!) {
                                     List<String> keysList = [];
@@ -355,8 +375,52 @@ class EventInviteFriendsScreen extends StatelessWidget {
                                         provider.groupList[index]);
                                   }
                                 },
-                              ),
-                      ),
+                              )
+                        // FutureBuilder<bool>(
+                        //         future: provider.checkIsGroupInvited(
+                        //             context, contactOrGroupList[index]),
+                        //         builder:
+                        //             (context, AsyncSnapshot<bool> snapshot) {
+                        //           if (snapshot.hasData) {
+                        //             return Checkbox(
+                        //               value: snapshot.data,
+                        //                  //  await provider.checkIsGroupInvited(context, contactOrGroupList[index]),
+                        //                 //  provider.groupCheckIsSelected(index),
+                        //               onChanged: (bool? value) {
+                        //                 if (value!) {
+                        //                   List<String> keysList = [];
+                        //                   for (var key in provider
+                        //                       .groupList[index].group.keys) {
+                        //                     keysList.add(key);
+                        //                   }
+                        //                   // provider.addContactToGroupCidList(
+                        //                   //     index, provider.groupList[index]);
+                        //                   provider.inviteGroupToEvent(
+                        //                       context,
+                        //                       keysList,
+                        //                       index,
+                        //                       provider.groupList[index]);
+                        //                 } else {
+                        //                   List<String> keysList = [];
+                        //                   for (var key in provider
+                        //                       .groupList[index].group.keys) {
+                        //                     keysList.add(key);
+                        //                   }
+                        //                   // provider.removeContactFromGroupCidList(
+                        //                   //     index, provider.groupList[index]);
+                        //                   provider.removeGroupFromEvent(
+                        //                       context,
+                        //                       keysList,
+                        //                       index,
+                        //                       provider.groupList[index]);
+                        //                 }
+                        //               },
+                        //             );
+                        //           } else {
+                        //             return CircularProgressIndicator();
+                        //           }
+                        //         })
+                        ),
               ],
             ),
           ),

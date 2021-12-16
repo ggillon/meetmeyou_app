@@ -135,5 +135,6 @@
   "remove" : "Remove",
   "invite_more_friends": "Invite More Friends",
   "sure_to_delete_user" : "Are you sure you want to delete user?",
-  "sure_to_cancel_event" : "Are you sure you want to cancel event?"
+  "sure_to_cancel_event" : "Are you sure you want to cancel event?",
+  "delete_event" : "Delete Event"
 }

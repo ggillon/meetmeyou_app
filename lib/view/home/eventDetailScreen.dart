@@ -32,7 +32,7 @@ class EventDetailScreen extends StatelessWidget {
           onModelReady: (provider) {
             provider.eventGoingLength();
             provider.getUsersProfileUrl(context);
-            provider.getOrganiserProfileUrl(context);
+            provider.getOrganiserProfileUrl(context, event.organiserID);
           },
           builder: (context, provider, _) {
             return SingleChildScrollView(
@@ -89,7 +89,13 @@ class EventDetailScreen extends StatelessWidget {
                                   .then((value) {
                                     provider.updateValue(true);
                               });
-                            } else {
+                            } else if (provider.eventDetail.eventBtnStatus == "cancelled") {
+                              CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+                                Navigator.of(context).pop();
+                                provider.deleteEvent(context, provider.eventDetail.eid.toString());
+                              });
+                            }
+                            else {
                               Container();
                             }
                           }),

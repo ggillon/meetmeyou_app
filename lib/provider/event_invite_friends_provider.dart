@@ -1,3 +1,4 @@
+import 'package:collection/src/list_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -89,6 +90,8 @@ class EventInviteFriendsProvider extends BaseProvider {
     }
   }
 
+  bool? groupCheckValue = false;
+
   getGroupList(BuildContext context) async {
     setState(ViewState.Busy);
 
@@ -108,6 +111,11 @@ class EventInviteFriendsProvider extends BaseProvider {
 
       groupList = groupValue;
       value = List<bool>.filled(groupList.length, false);
+      // for(int i = 0 ; i< groupList.length; i++) {
+      //
+      //   groupCheckValue =  await checkIsGroupInvited(context, groupList[i]);
+      //  groupCheckIsSelected1(groupCheckValue!);
+      // }
       //isGroupChecked = List<bool>.filled(groupList.length, false);
     } else {
       setState(ViewState.Idle);
@@ -137,6 +145,39 @@ class EventInviteFriendsProvider extends BaseProvider {
     var value = eventDetail.groupIndexList
         .any((element) => element == index.toString());
     return value;
+  }
+
+  //  groupCheckIsSelected1(bool val) {
+  //   print(val);
+  //   return val;
+  // }
+  List<String> contactsKeys = [];
+  groupCheck(Contact contact, int index) {
+    List<String> groupKeysList = [];
+    for (var key in contact.group.keys) {
+      groupKeysList.add(key);
+    }
+    contactsKeys.sort((a, b) {
+      return a
+          .toString()
+          .toLowerCase()
+          .compareTo(b.toString().toLowerCase());
+    });
+
+    groupKeysList.sort((a, b) {
+      return a
+          .toString()
+          .toLowerCase()
+          .compareTo(b.toString().toLowerCase());
+    });
+
+    if (contactsKeys.equals(groupKeysList)) {
+      return true;
+    } else {
+      var value = eventDetail.groupIndexList
+          .any((element) => element == index.toString());
+      return value;
+    }
   }
 
   // Future inviteContactsToEvent(BuildContext context, List<String> CIDs) async {
@@ -205,6 +246,7 @@ class EventInviteFriendsProvider extends BaseProvider {
       }
     }
 
+   // eventDetail.contactCIDs.addAll(keysList.toSet().toList());
     await mmyEngine!
         .inviteContactsToEvent(eventDetail.eid.toString(),
             CIDs: keysList.toSet().toList())
@@ -228,7 +270,8 @@ class EventInviteFriendsProvider extends BaseProvider {
         }
       }
     }
-
+    // eventDetail.contactCIDs = [];
+    contactsKeys = [];
     await mmyEngine!
         .removeContactsFromEvent(eventDetail.eid.toString(),
             CIDs: keysList.toSet().toList())
@@ -249,19 +292,26 @@ class EventInviteFriendsProvider extends BaseProvider {
   removeContactFromGroupCidList(int ind, Contact groupContact) {
     var index = eventDetail.groupIndexList
         .indexWhere((element) => element == ind.toString());
-    eventDetail.groupIndexList.removeAt(index);
+    if (index == -1) {
+      eventDetail.groupIndexList.remove(ind);
+    } else {
+      eventDetail.groupIndexList.removeAt(index);
+    }
+
     eventDetail.checkGroupList.remove(groupContact);
+
     notifyListeners();
   }
 
-   checkIsGroupInvited(BuildContext context, Contact contact) async {
+  Future<bool> checkIsGroupInvited(
+      BuildContext context, Contact contact) async {
     updateGroupValue(true);
-
-   var value =  await mmyEngine!.isGroupInvited(eventDetail.eid.toString(), contact.cid).catchError((e) {
+    var value = await mmyEngine!
+        .isGroupInvited(eventDetail.eid.toString(), contact.cid)
+        .catchError((e) {
       updateGroupValue(false);
       DialogHelper.showMessage(context, e.message);
     });
-
     updateGroupValue(false);
     return value;
   }
