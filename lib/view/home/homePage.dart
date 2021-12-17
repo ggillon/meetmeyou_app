@@ -460,10 +460,14 @@ class _HomePageState extends State<HomePage>
             provider.getIndexChanging(context);
           });
         } else if (provider.getEventBtnStatus(event) == "cancelled") {
-          CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
-            Navigator.of(context).pop();
-            provider.deleteEvent(context, event.eid);
-          });
+          if (provider.userDetail.cid == event.organiserID) {
+            CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+              Navigator.of(context).pop();
+              provider.deleteEvent(context, event.eid);
+            });
+          } else {
+            Container();
+          }
         } else {
           Container();
         }
@@ -482,7 +486,6 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
-
 
   @override
   bool get wantKeepAlive => true;

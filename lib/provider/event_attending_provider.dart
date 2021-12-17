@@ -35,29 +35,6 @@ class EventAttendingProvider extends BaseProvider {
 
   List<Contact> eventAttendingLists = [];
 
-//  List<Contact> friendsAttendingEventLists = [];
-
-  // Future getContacts(BuildContext context) async {
-  //   setState(ViewState.Busy);
-  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-  //
-  //   for (int i = 0; i < (eventDetail.attendingProfileKeys?.length ?? 0); i++) {
-  //     var value = await mmyEngine!
-  //         .getContact(eventDetail.attendingProfileKeys![i])
-  //         .catchError((e) async {
-  //       //  setState(ViewState.Idle);
-  //       await getUserDetail(context, eventDetail.attendingProfileKeys![i]);
-  //       // DialogHelper.showMessage(context, e.message);
-  //     });
-  //     if (value != null) {
-  //       eventAttendingLists.add(value);
-  //       status.add("");
-  //     }
-  //   }
-  //   setState(ViewState.Idle);
-  //   print(status);
-  // }
-
   Future getContactsFromProfile(BuildContext context) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
@@ -75,24 +52,6 @@ class EventAttendingProvider extends BaseProvider {
     }
     setState(ViewState.Idle);
   }
-
-  // Future getUserDetail(BuildContext context, String key) async {
-  //   setState(ViewState.Busy);
-  //
-  //   //  mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-  //
-  //   //  for (var key in eventDetail.eventMapData!.keys) {
-  //   var value =
-  //       await mmyEngine!.getUserProfile(user: false, uid: key).catchError((e) {
-  //     setState(ViewState.Idle);
-  //     DialogHelper.showMessage(context, e.message);
-  //   });
-  //   eventAttendingLists.add(value);
-  //   status.add("Listed profile");
-  //   //  }
-  //   // print(eventAttendingLists);
-  //   // setState(ViewState.Idle);
-  // }
 
   Future removeContactsFromEvent(BuildContext context, String CID) async {
     setState(ViewState.Busy);

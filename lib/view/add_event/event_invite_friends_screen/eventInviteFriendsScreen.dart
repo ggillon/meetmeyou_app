@@ -36,10 +36,6 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
           onModelReady: (provider) {
             provider.getConfirmedContactsList(context);
             provider.contactsKeys.addAll(provider.eventDetail.contactCIDs);
-            // for(int i = 0 ; i< provider.groupList.length; i++) {
-            //   groupCheckValue =  await provider.checkIsGroupInvited(context, provider.groupList[i]);
-            //   provider.groupCheckIsSelected1(groupCheckValue!);
-            // }
           },
           builder: (context, provider, _) {
             return Padding(
@@ -65,10 +61,12 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                     onToggleCallback: (value) {
                       provider.toggle = value;
                       if (value == 0) {
-                        provider.contactsKeys = provider.eventDetail.contactCIDs;
+                        provider.contactsKeys =
+                            provider.eventDetail.contactCIDs;
                         provider.getConfirmedContactsList(context);
                       } else {
-                        provider.contactsKeys = provider.eventDetail.contactCIDs;
+                        provider.contactsKeys =
+                            provider.eventDetail.contactCIDs;
                         provider.getGroupList(context);
                       }
                       provider.updateToggleValue(true);
@@ -159,36 +157,14 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                   ),
                                 ),
                   SizedBox(height: scaler.getHeight(1)),
-                  // provider.value == true
-                  //     ? Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )
-                  //     :
                   Container(
                     child: DialogHelper.btnWidget(
                         scaler,
                         context,
                         "invite_friends".tr(),
                         ColorConstants.primaryColor, funOnTap: () {
-                      // List<String> contactsCidList = [];
-                      // List<String> keysList = [];
-                      // if (provider.eventDetail.checkGroupList.isNotEmpty) {
-                      //   for (int i = 0;
-                      //       i < provider.eventDetail.checkGroupList.length;
-                      //       i++) {
-                      //     for (var key in provider
-                      //         .eventDetail.checkGroupList[i].group.keys) {
-                      //       keysList.add(key);
-                      //     }
-                      //   }
-                      // }
-                      // contactsCidList.addAll(provider.eventDetail.contactCIDs);
-                      // contactsCidList.addAll(keysList);
-                      // print(contactsCidList.toSet().toList());
                       if (provider.eventDetail.contactCIDs.isNotEmpty ||
                           provider.eventDetail.groupIndexList.isNotEmpty) {
-                        // provider.inviteContactsToEvent(
-                        //     context, contactsCidList.toSet().toList());
                         Navigator.of(context).pop();
                       } else {
                         DialogHelper.showMessage(
@@ -353,8 +329,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                         .groupList[index].group.keys) {
                                       keysList.add(key);
                                     }
-                                    // provider.addContactToGroupCidList(
-                                    //     index, provider.groupList[index]);
+
                                     provider.inviteGroupToEvent(
                                         context,
                                         keysList,
@@ -366,8 +341,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                         .groupList[index].group.keys) {
                                       keysList.add(key);
                                     }
-                                    // provider.removeContactFromGroupCidList(
-                                    //     index, provider.groupList[index]);
+
                                     provider.removeGroupFromEvent(
                                         context,
                                         keysList,
@@ -375,52 +349,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                         provider.groupList[index]);
                                   }
                                 },
-                              )
-                        // FutureBuilder<bool>(
-                        //         future: provider.checkIsGroupInvited(
-                        //             context, contactOrGroupList[index]),
-                        //         builder:
-                        //             (context, AsyncSnapshot<bool> snapshot) {
-                        //           if (snapshot.hasData) {
-                        //             return Checkbox(
-                        //               value: snapshot.data,
-                        //                  //  await provider.checkIsGroupInvited(context, contactOrGroupList[index]),
-                        //                 //  provider.groupCheckIsSelected(index),
-                        //               onChanged: (bool? value) {
-                        //                 if (value!) {
-                        //                   List<String> keysList = [];
-                        //                   for (var key in provider
-                        //                       .groupList[index].group.keys) {
-                        //                     keysList.add(key);
-                        //                   }
-                        //                   // provider.addContactToGroupCidList(
-                        //                   //     index, provider.groupList[index]);
-                        //                   provider.inviteGroupToEvent(
-                        //                       context,
-                        //                       keysList,
-                        //                       index,
-                        //                       provider.groupList[index]);
-                        //                 } else {
-                        //                   List<String> keysList = [];
-                        //                   for (var key in provider
-                        //                       .groupList[index].group.keys) {
-                        //                     keysList.add(key);
-                        //                   }
-                        //                   // provider.removeContactFromGroupCidList(
-                        //                   //     index, provider.groupList[index]);
-                        //                   provider.removeGroupFromEvent(
-                        //                       context,
-                        //                       keysList,
-                        //                       index,
-                        //                       provider.groupList[index]);
-                        //                 }
-                        //               },
-                        //             );
-                        //           } else {
-                        //             return CircularProgressIndicator();
-                        //           }
-                        //         })
-                        ),
+                              )),
               ],
             ),
           ),

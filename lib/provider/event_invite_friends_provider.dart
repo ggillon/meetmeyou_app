@@ -90,7 +90,6 @@ class EventInviteFriendsProvider extends BaseProvider {
     }
   }
 
-  bool? groupCheckValue = false;
 
   getGroupList(BuildContext context) async {
     setState(ViewState.Busy);
@@ -111,12 +110,6 @@ class EventInviteFriendsProvider extends BaseProvider {
 
       groupList = groupValue;
       value = List<bool>.filled(groupList.length, false);
-      // for(int i = 0 ; i< groupList.length; i++) {
-      //
-      //   groupCheckValue =  await checkIsGroupInvited(context, groupList[i]);
-      //  groupCheckIsSelected1(groupCheckValue!);
-      // }
-      //isGroupChecked = List<bool>.filled(groupList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -131,26 +124,11 @@ class EventInviteFriendsProvider extends BaseProvider {
   }
 
   bool groupCheckIsSelected(int index) {
-    // List<String> keysList = [];
-    // for (var key in groupData.group.keys) {
-    //   keysList.add(key);
-    // }
-    // bool? val;
-    // for (int i = 0; i < keysList.length; i++) {
-    //   var value = groupCidList.any((element) => element == keysList[i]);
-    //   val = value;
-    // }
-    //
-    // return val!;
     var value = eventDetail.groupIndexList
         .any((element) => element == index.toString());
     return value;
   }
 
-  //  groupCheckIsSelected1(bool val) {
-  //   print(val);
-  //   return val;
-  // }
   List<String> contactsKeys = [];
   groupCheck(Contact contact, int index) {
     List<String> groupKeysList = [];

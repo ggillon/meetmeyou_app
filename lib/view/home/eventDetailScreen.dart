@@ -95,12 +95,17 @@ class EventDetailScreen extends StatelessWidget {
                               });
                             } else if (provider.eventDetail.eventBtnStatus ==
                                 "cancelled") {
-                              CommonWidgets.eventCancelBottomSheet(
-                                  context, scaler, delete: () {
-                                Navigator.of(context).pop();
-                                provider.deleteEvent(context,
-                                    provider.eventDetail.eid.toString());
-                              });
+                              if (provider.userDetail.cid ==
+                                  event.organiserID) {
+                                CommonWidgets.eventCancelBottomSheet(
+                                    context, scaler, delete: () {
+                                  Navigator.of(context).pop();
+                                  provider.deleteEvent(context,
+                                      provider.eventDetail.eid.toString());
+                                });
+                              } else {
+                                Container();
+                              }
                             } else {
                               Container();
                             }
