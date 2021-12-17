@@ -32,7 +32,9 @@ abstract class MMYEngine {
 
   /// Get a contact, invitation or group from DB
   Future<Contact> getContact(String cid);
-  /// Get a contact, invitation or group from DB
+  /// Get a contact from a profile reference;
+  Future<Contact?> getContactFromProfile(String uid);
+  /// Delete contact
   Future<void> deleteContact(String cid);
   /// Get all contacts from contact list
   Future<List<Contact>> getContacts({bool confirmedContacts=false, bool groups=false, bool invitedContacts=false, bool invitations=false, bool rejectedContacts=false});
@@ -156,6 +158,11 @@ class MMY implements MMYEngine {
   @override
   Future<Contact> getContact(String cid) {
     return contactLib.getContact(_currentUser, cid: cid);
+  }
+
+  @override
+  Future<Contact?> getContactFromProfile(String uid) {
+    return contactLib.getContactFromProfile(_currentUser, uid: uid);
   }
 
   @override

@@ -61,6 +61,30 @@ Future<Contact> getContact(User currentUser, {required String cid}) async {
   return await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
 }
 
+// Get a contact from a profile (for event invitation)
+Future<Contact?> getContactFromProfile(User currentUser, {required String uid}) async {
+  Profile? profile;
+  Contact? contact;
+  String status = CONTACT_PROFILE;
+  try {
+    profile = await FirestoreDB(uid: currentUser.uid).getProfile(uid);
+    contact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, uid);
+  } catch(e) {}
+
+  if(contact != null) {
+    status = contact.status;
+  }
+
+  if(profile != null) {
+    return Contact(
+        cid: profile.uid, uid: profile.uid,
+        displayName: profile.displayName, firstName: profile.firstName, lastName: profile.lastName,
+        email: profile.email, countryCode: profile.countryCode, phoneNumber: profile.phoneNumber,
+        photoURL: profile.photoURL, addresses: profile.addresses,
+        about: profile.about, other: profile.other, group: EMPTY_MAP, status: status);
+  }
+}
+
 // Delete a particular contact
 Future<void> deleteContact(User currentUser, {required String cid}) async {
   return await FirestoreDB(uid: currentUser.uid).deleteContact(currentUser.uid, cid);
