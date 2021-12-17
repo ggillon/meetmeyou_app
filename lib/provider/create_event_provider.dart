@@ -199,6 +199,23 @@ class CreateEventProvider extends BaseProvider {
       eventDetail.endDateAndTime = value.end;
       eventDetail.eventLocation = value.location;
       eventDetail.eventDescription = value.description;
+      List<String> valuesList = [];
+      for (var value
+      in value.invitedContacts.values) {
+        valuesList.add(value);
+      }
+      List<String> keysList = [];
+      for (var key in value.invitedContacts.keys) {
+        keysList.add(key);
+      }
+      List<String> contactsKeys = [];
+      for (int i = 0; i < keysList.length; i++) {
+        if (valuesList[i] != "Organiser") {
+          contactsKeys.add(keysList[i]);
+        }
+      }
+
+      eventDetail.contactCIDs = contactsKeys;
       // DialogHelper.showMessage(context, "Event updated Successfully");
       Navigator.of(context).pop();
     }

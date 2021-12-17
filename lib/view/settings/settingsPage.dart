@@ -34,102 +34,100 @@ class SettingsPage extends StatelessWidget {
             provider.getUserDetail(context);
           },
           builder: (context, provider, _) {
-            return Padding(
-              padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Card(
-                    shadowColor: ColorConstants.colorWhite,
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: scaler.getBorderRadiusCircular(10)),
-                    child: CustomShape(
-                      child: userDetails(scaler, context, provider),
-                      bgColor: ColorConstants.colorWhite,
-                      radius: scaler.getBorderRadiusCircular(10),
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                  ),
-                  SizedBox(height: scaler.getHeight(2.5)),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.person_icon,
-                              "invite_friends".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.inviteFriendsScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.person_icon,
-                              "rejected_invites".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.rejectedInvitesScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.archive_icon,
-                              "history".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.historyScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.calendar_icon,
-                              "calender_settings".tr(),
-                              true, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.calendarSettingsScreen);
-                          }),
-                          SizedBox(height: scaler.getHeight(1)),
-                          CommonWidgets.settingsPageCard(
-                              scaler,
-                              context,
-                              ImageConstants.about_icon,
-                              "about".tr(),
-                              false, onTapCard: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.aboutPage);
-                          }),
-                          SizedBox(height: scaler.getHeight(1.5)),
-                          DialogHelper.btnWidget(scaler, context, "logout".tr(),
-                              ColorConstants.primaryColor, funOnTap: () {
-                            auth.signOut();
-                            provider.userDetail.profileUrl = null;
-                            SharedPref.clearSharePref();
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                RoutesConstants.loginOptions, (route) => false);
-                          }),
-                          DialogHelper.btnWidget(
-                              scaler,
-                              context,
-                              "delete_user".tr(),
-                              ColorConstants.colorRed, funOnTap: () {
-                            DialogHelper.showDialogWithTwoButtons(
-                                context,
-                                "delete_user".tr(),
-                                "sure_to_delete_user".tr());
-                          }),
-                        ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Card(
+                      shadowColor: ColorConstants.colorWhite,
+                      elevation: 3.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: scaler.getBorderRadiusCircular(10)),
+                      child: CustomShape(
+                        child: userDetails(scaler, context, provider),
+                        bgColor: ColorConstants.colorWhite,
+                        radius: scaler.getBorderRadiusCircular(10),
+                        width: MediaQuery.of(context).size.width,
                       ),
                     ),
-                  ),
-                  SizedBox(height: scaler.getHeight(1)),
-                ],
+                    SizedBox(height: scaler.getHeight(2.5)),
+                    Column(
+                      children: [
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.person_icon,
+                            "invite_friends".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.inviteFriendsScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.person_icon,
+                            "rejected_invites".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.rejectedInvitesScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.archive_icon,
+                            "history".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.historyScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.calendar_icon,
+                            "calender_settings".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.calendarSettingsScreen);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
+                            ImageConstants.about_icon,
+                            "about".tr(),
+                            false, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.aboutPage);
+                        }),
+                        SizedBox(height: scaler.getHeight(1.5)),
+                        DialogHelper.btnWidget(scaler, context, "logout".tr(),
+                            ColorConstants.primaryColor, funOnTap: () {
+                          auth.signOut();
+                          provider.userDetail.profileUrl = null;
+                          SharedPref.clearSharePref();
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              RoutesConstants.loginOptions, (route) => false);
+                        }),
+                        DialogHelper.btnWidget(
+                            scaler,
+                            context,
+                            "delete_user".tr(),
+                            ColorConstants.colorRed, funOnTap: () {
+                          DialogHelper.showDialogWithTwoButtons(
+                              context,
+                              "delete_user".tr(),
+                              "sure_to_delete_user".tr());
+                        }),
+                      ],
+                    ),
+                    SizedBox(height: scaler.getHeight(1)),
+                  ],
+                ),
               ),
             );
           },

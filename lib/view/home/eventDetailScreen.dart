@@ -20,11 +20,12 @@ import 'package:provider/provider.dart';
 
 class EventDetailScreen extends StatelessWidget {
   final Event event;
+
   EventDetailScreen({Key? key, required this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-   // final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
+    // final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
@@ -67,17 +68,20 @@ class EventDetailScreen extends StatelessWidget {
                               CommonWidgets.respondToEventBottomSheet(
                                   context, scaler, going: () {
                                 Navigator.of(context).pop();
-                                    provider.dashboardProvider.updateEventNotificationCount();
+                                provider.dashboardProvider
+                                    .updateEventNotificationCount();
                                 provider.replyToEvent(
                                     context, event.eid, EVENT_ATTENDING);
                               }, notGoing: () {
                                 Navigator.of(context).pop();
-                                provider.dashboardProvider.updateEventNotificationCount();
+                                provider.dashboardProvider
+                                    .updateEventNotificationCount();
                                 provider.replyToEvent(
                                     context, event.eid, EVENT_NOT_ATTENDING);
                               }, hide: () {
                                 Navigator.of(context).pop();
-                                provider.dashboardProvider.updateEventNotificationCount();
+                                provider.dashboardProvider
+                                    .updateEventNotificationCount();
                                 provider.replyToEvent(
                                     context, event.eid, EVENT_NOT_INTERESTED);
                               });
@@ -87,15 +91,17 @@ class EventDetailScreen extends StatelessWidget {
                               Navigator.pushNamed(context,
                                       RoutesConstants.createEventScreen)
                                   .then((value) {
-                                    provider.updateValue(true);
+                                provider.updateValue(true);
                               });
-                            } else if (provider.eventDetail.eventBtnStatus == "cancelled") {
-                              CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+                            } else if (provider.eventDetail.eventBtnStatus ==
+                                "cancelled") {
+                              CommonWidgets.eventCancelBottomSheet(
+                                  context, scaler, delete: () {
                                 Navigator.of(context).pop();
-                                provider.deleteEvent(context, provider.eventDetail.eid.toString());
+                                provider.deleteEvent(context,
+                                    provider.eventDetail.eid.toString());
                               });
-                            }
-                            else {
+                            } else {
                               Container();
                             }
                           }),
@@ -198,10 +204,9 @@ class EventDetailScreen extends StatelessWidget {
                         scaler.getTextSize(9.5),
                         TextAlign.left),
                     SizedBox(height: scaler.getHeight(2)),
-                    Text(provider.eventDetail.eventDescription ?? "").regularText(
-                        ColorConstants.colorBlack,
-                        scaler.getTextSize(10),
-                        TextAlign.left),
+                    Text(provider.eventDetail.eventDescription ?? "")
+                        .regularText(ColorConstants.colorBlack,
+                            scaler.getTextSize(10), TextAlign.left),
                     SizedBox(height: scaler.getHeight(2.5)),
                     eventDiscussionCard(scaler)
                   ],
@@ -364,10 +369,10 @@ class EventDetailScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(DateTimeHelper.getMonthByName(provider.eventDetail.startDateAndTime ?? DateTime.now())).regularText(
-                ColorConstants.primaryColor,
-                scaler.getTextSize(11),
-                TextAlign.center),
+            Text(DateTimeHelper.getMonthByName(
+                    provider.eventDetail.startDateAndTime ?? DateTime.now()))
+                .regularText(ColorConstants.primaryColor,
+                    scaler.getTextSize(11), TextAlign.center),
             Text(provider.eventDetail.startDateAndTime!.day <= 9
                     ? "0" +
                         provider.eventDetail.startDateAndTime!.day.toString()

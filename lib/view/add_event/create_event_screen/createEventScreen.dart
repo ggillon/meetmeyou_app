@@ -576,6 +576,7 @@ class CreateEventScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
+                hideKeyboard(context);
                 provider.selectTimeDialog(context, true);
               },
               child: Container(
@@ -637,6 +638,7 @@ class CreateEventScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
+                hideKeyboard(context);
                 provider.selectTimeDialog(context, false);
               },
               child: Container(
