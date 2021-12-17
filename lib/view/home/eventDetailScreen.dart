@@ -111,6 +111,7 @@ class EventDetailScreen extends StatelessWidget {
                     provider.eventAttendingLength == 0
                         ? Container()
                         : GestureDetector(
+                            behavior: HitTestBehavior.translucent,
                             onTap: () {
                               provider.eventDetail.attendingProfileKeys =
                                   provider.eventAttendingKeysList;

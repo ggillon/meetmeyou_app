@@ -51,6 +51,7 @@ class HomePageProvider extends BaseProvider {
     });
 
     userDetail.cid = userProfile.uid;
+    userDetail.email = userProfile.email;
     // userDetail.profileUrl = userProfile.photoURL;
 
     setState(ViewState.Idle);

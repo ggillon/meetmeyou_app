@@ -28,7 +28,7 @@ class EventAttendingScreen extends StatelessWidget {
           backgroundColor: ColorConstants.colorWhite,
           body: BaseView<EventAttendingProvider>(
             onModelReady: (provider) {
-              provider.getContacts(context);
+              provider.getContactsFromProfile(context);
             },
             builder: (context, provider, _) {
               return Padding(
@@ -91,7 +91,7 @@ class EventAttendingScreen extends StatelessWidget {
   }
 
   Widget eventAttendingList(BuildContext context, ScreenScaler scaler,
-      List<dynamic> cList, EventAttendingProvider provider) {
+      List<Contact> cList, EventAttendingProvider provider) {
     return Expanded(
       child: SingleChildScrollView(
         child: ListView.builder(
@@ -117,19 +117,21 @@ class EventAttendingScreen extends StatelessWidget {
   }
 
   Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
-      List<dynamic> cList, int index, EventAttendingProvider provider) {
+      List<Contact> cList, int index, EventAttendingProvider provider) {
     return CommonWidgets.userContactCard(
         scaler, cList[index].email, cList[index].displayName,
         profileImg: cList[index].photoURL,
         search: true,
         searchStatus: provider.eventDetail.eventBtnStatus == "edit"
             ? "Event Edit"
-            : cList[index] is Contact
+            : cList[index].status == "Confirmed contact"
                 ? ""
-                : provider.status[index].isEmpty ? "Listed profile" : provider.status[index],
+                : cList[index].email == provider.userDetail.email
+                    ? ""
+                    : cList[index].status,
         addIconTapAction: () {
-          provider.inviteProfile(context, index);
-        }, deleteIconTapAction: () {
+      provider.inviteProfile(context, cList[index]);
+    }, deleteIconTapAction: () {
       deleteIconAlertDialog(context, scaler, cList, index, provider);
     });
   }

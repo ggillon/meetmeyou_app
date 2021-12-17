@@ -6,14 +6,14 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/profile.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class EventAttendingProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
-  List<String> status = [];
-  String? cid;
+  UserDetail userDetail = locator<UserDetail>();
 
   bool _value = false;
 
@@ -33,48 +33,66 @@ class EventAttendingProvider extends BaseProvider {
     notifyListeners();
   }
 
-  List<dynamic> eventAttendingLists = [];
+  List<Contact> eventAttendingLists = [];
 
 //  List<Contact> friendsAttendingEventLists = [];
 
-  Future getContacts(BuildContext context) async {
+  // Future getContacts(BuildContext context) async {
+  //   setState(ViewState.Busy);
+  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   for (int i = 0; i < (eventDetail.attendingProfileKeys?.length ?? 0); i++) {
+  //     var value = await mmyEngine!
+  //         .getContact(eventDetail.attendingProfileKeys![i])
+  //         .catchError((e) async {
+  //       //  setState(ViewState.Idle);
+  //       await getUserDetail(context, eventDetail.attendingProfileKeys![i]);
+  //       // DialogHelper.showMessage(context, e.message);
+  //     });
+  //     if (value != null) {
+  //       eventAttendingLists.add(value);
+  //       status.add("");
+  //     }
+  //   }
+  //   setState(ViewState.Idle);
+  //   print(status);
+  // }
+
+  Future getContactsFromProfile(BuildContext context) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     for (int i = 0; i < (eventDetail.attendingProfileKeys?.length ?? 0); i++) {
       var value = await mmyEngine!
-          .getContact(eventDetail.attendingProfileKeys![i])
+          .getContactFromProfile(eventDetail.attendingProfileKeys![i])
           .catchError((e) async {
-        //  setState(ViewState.Idle);
-        await getUserDetail(context, eventDetail.attendingProfileKeys![i]);
-        // DialogHelper.showMessage(context, e.message);
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
       });
       if (value != null) {
         eventAttendingLists.add(value);
-        status.add("");
       }
     }
     setState(ViewState.Idle);
-    print(status);
   }
 
-  Future getUserDetail(BuildContext context, String key) async {
-    setState(ViewState.Busy);
-
-    //  mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    //  for (var key in eventDetail.eventMapData!.keys) {
-    var value =
-        await mmyEngine!.getUserProfile(user: false, uid: key).catchError((e) {
-      setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
-    });
-    eventAttendingLists.add(value);
-    status.add("Listed profile");
-    //  }
-    // print(eventAttendingLists);
-    // setState(ViewState.Idle);
-  }
+  // Future getUserDetail(BuildContext context, String key) async {
+  //   setState(ViewState.Busy);
+  //
+  //   //  mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   //  for (var key in eventDetail.eventMapData!.keys) {
+  //   var value =
+  //       await mmyEngine!.getUserProfile(user: false, uid: key).catchError((e) {
+  //     setState(ViewState.Idle);
+  //     DialogHelper.showMessage(context, e.message);
+  //   });
+  //   eventAttendingLists.add(value);
+  //   status.add("Listed profile");
+  //   //  }
+  //   // print(eventAttendingLists);
+  //   // setState(ViewState.Idle);
+  // }
 
   Future removeContactsFromEvent(BuildContext context, String CID) async {
     setState(ViewState.Busy);
@@ -87,7 +105,7 @@ class EventAttendingProvider extends BaseProvider {
 
     eventDetail.attendingProfileKeys?.remove(CID);
     eventAttendingLists.clear();
-    await getContacts(context);
+    await getContactsFromProfile(context);
 
     if (eventAttendingLists.length == 0) {
       setState(ViewState.Idle);
@@ -97,20 +115,14 @@ class EventAttendingProvider extends BaseProvider {
     }
   }
 
-  inviteProfile(BuildContext context, int index) async {
+  inviteProfile(BuildContext context, Contact contact) async {
     updateValue(true);
 
-    for (int i = 0; i < (eventDetail.attendingProfileKeys?.length ?? 0); i++) {
-      if (index == i) {
-        cid = eventDetail.attendingProfileKeys![i];
-      }
-    }
-    // await mmyEngine!.inviteProfile(cid ?? "").catchError((e) {
-    //   updateValue(false);
-    //   DialogHelper.showMessage(context, e.message);
-    // });
-    status[index] = 'Invited contact';
-
+    await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    contact.status = 'Invited contact';
     updateValue(false);
     DialogHelper.showMessage(context, "Invitation send Successfully");
   }

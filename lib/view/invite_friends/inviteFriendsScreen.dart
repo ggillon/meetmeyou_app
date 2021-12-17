@@ -26,17 +26,9 @@ class InviteFriendsScreen extends StatelessWidget {
         key: _scaffoldKey,
         backgroundColor: ColorConstants.colorWhite,
         appBar: DialogHelper.appBarWithBack(scaler, context),
-        // floatingActionButton: Padding(
-        //   padding: scaler.getPaddingAll(10.0),
-        //   child: DialogHelper.btnWidget(
-        //       scaler, context, "invite".tr(), ColorConstants.primaryColor),
-        // ),
-        // floatingActionButtonLocation:  FloatingActionButtonLocation.centerFloat,
         body: BaseView<InviteFriendsProvider>(
           onModelReady: (provider) {
             provider.getPhoneContacts(_scaffoldKey.currentContext!);
-            // provider.isChecked =
-            //     List<bool>.filled(provider.contactList.length, false);
           },
           builder: (context, provider, _) {
             return Padding(

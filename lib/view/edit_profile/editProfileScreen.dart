@@ -182,7 +182,6 @@ class EditProfileScreen extends StatelessWidget {
                                   height: scaler.getHeight(0.2),
                                 ),
                                 TextFormField(
-                                  //   enabled: signUpType!=StringConstants.social,
                                   textCapitalization:
                                       TextCapitalization.sentences,
                                   controller: firstNameController,
@@ -194,9 +193,7 @@ class EditProfileScreen extends StatelessWidget {
                                           "Cody",
                                           scaler,
                                           ColorConstants.primaryColor),
-                                  onFieldSubmitted: (data) {
-                                    // FocusScope.of(context).requestFocus(nodes[1]);
-                                  },
+                                  onFieldSubmitted: (data) {},
                                   textInputAction: TextInputAction.next,
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
@@ -222,7 +219,6 @@ class EditProfileScreen extends StatelessWidget {
                                   height: scaler.getHeight(0.2),
                                 ),
                                 TextFormField(
-                                  // enabled: signUpType!=StringConstants.social,
                                   textCapitalization:
                                       TextCapitalization.sentences,
                                   controller: lastNameController,
@@ -234,9 +230,7 @@ class EditProfileScreen extends StatelessWidget {
                                           "Fisher",
                                           scaler,
                                           ColorConstants.primaryColor),
-                                  onFieldSubmitted: (data) {
-                                    // FocusScope.of(context).requestFocus(nodes[1]);
-                                  },
+                                  onFieldSubmitted: (data) {},
                                   textInputAction: TextInputAction.next,
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
@@ -262,7 +256,6 @@ class EditProfileScreen extends StatelessWidget {
                                   height: scaler.getHeight(0.2),
                                 ),
                                 TextFormField(
-                                  //   enabled: signUpType!=StringConstants.social,
                                   controller: emailController,
                                   style: ViewDecoration.textFieldStyle(
                                       scaler.getTextSize(9.5),
@@ -272,9 +265,7 @@ class EditProfileScreen extends StatelessWidget {
                                           "sample@gmail.com",
                                           scaler,
                                           ColorConstants.primaryColor),
-                                  onFieldSubmitted: (data) {
-                                    // FocusScope.of(context).requestFocus(nodes[1]);
-                                  },
+                                  onFieldSubmitted: (data) {},
                                   textInputAction: TextInputAction.next,
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
@@ -302,12 +293,7 @@ class EditProfileScreen extends StatelessWidget {
                                   height: scaler.getHeight(0.2),
                                 ),
                                 Container(
-                               //   height: scaler.getHeight(3.8),
                                   child: TextFormField(
-                                    // inputFormatters: <TextInputFormatter>[
-                                    //   LengthLimitingTextInputFormatter(10),
-                                    //   FilteringTextInputFormatter.digitsOnly,
-                                    // ],
                                     controller: phoneNumberController,
                                     style: ViewDecoration.textFieldStyle(
                                         scaler.getTextSize(9.5),
@@ -339,9 +325,7 @@ class EditProfileScreen extends StatelessWidget {
                                         alignLeft: false,
                                       ),
                                     ),
-                                    onFieldSubmitted: (data) {
-                                      // FocusScope.of(context).requestFocus(nodes[1]);
-                                    },
+                                    onFieldSubmitted: (data) {},
                                     textInputAction: TextInputAction.next,
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
@@ -400,9 +384,7 @@ class EditProfileScreen extends StatelessWidget {
                                             scaler,
                                             ColorConstants.primaryColor,
                                             icon: Icons.map),
-                                    onFieldSubmitted: (data) {
-                                      // FocusScope.of(context).requestFocus(nodes[1]);
-                                    },
+                                    onFieldSubmitted: (data) {},
                                     textInputAction: TextInputAction.next,
                                     keyboardType: TextInputType.streetAddress,
                                     validator: (value) {},
