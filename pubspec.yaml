@@ -63,6 +63,7 @@ dependencies:
   shimmer: ^2.0.0
   contacts_service: ^0.6.3
   mailer: ^5.0.2
+  device_calendar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

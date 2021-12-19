@@ -106,5 +106,8 @@
         <key>NSContactsUsageDescription</key>
         <string>This app requires contacts access to function properly.</string>
 
+        <key>NSCalendarsUsageDescription</key>
+        <string>INSERT_REASON_HERE</string>
+
 	</dict>
 </plist>

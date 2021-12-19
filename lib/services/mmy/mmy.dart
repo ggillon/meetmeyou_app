@@ -1,13 +1,16 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
 import 'event.dart' as eventLib;
+import 'package:meetmeyou_app/services/calendar/calendar.dart' as calendarLib;
 import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 
 
@@ -108,6 +111,14 @@ abstract class MMYEngine {
   //Future<Event> replyEventForm(String eid, {required Map answers});
   ///  List answers to form
   //Future<List<Map>> listAnswersToForm(String eid);
+
+  /// CALENDAR FUNCTIONS
+  /// Get the CalendarEvents from mobile or web calendar
+  Future<List<CalendarEvent>> getCalendarEvents();
+  /// Set the parameters for calender
+  Future<void> setCalendarParams({required bool sync, required bool display});
+  /// Get the parameters for calendar
+  Future<Map<String, dynamic>> getCalendarParams();
 }
 
 class MMY implements MMYEngine {
@@ -366,6 +377,26 @@ class MMY implements MMYEngine {
   @override
   String getEventLink(String eid) {
     return 'http://event.meetmeyou.com/$eid';
+  }
+
+  @override
+  Future<List<CalendarEvent>> getCalendarEvents() async {
+    return calendarLib.getCalendarEvents();
+  }
+
+  @override
+  Future<void> setCalendarParams({required bool sync, required bool display}) async {
+    await profileLib.setProfileParameter(_currentUser, param: 'calendar_sync', value: sync);
+    await profileLib.setProfileParameter(_currentUser, param: 'calendar_display', value: display);
+  }
+
+  @override
+  Future<Map<String, dynamic>> getCalendarParams() async {
+    Map<String, dynamic> params = EMPTY_MAP;
+    Profile profile = await profileLib.getUserProfile(_currentUser);
+    params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
+    params['calendar_display'] = profile.parameters['calendar_display'] ?? true;
+    return params;
   }
 
 }
