@@ -64,9 +64,13 @@ dependencies:
   url_launcher: ^6.0.15
   contacts_service: ^0.6.3
   mailer: ^5.0.2
+<<<<<<< HEAD
   flutter_switch: ^0.3.2
   image_stack: ^2.1.0
 
+=======
+  device_calendar: ^4.0.1
+>>>>>>> c2e67cda1a26aabebc8e43524a6b09977f9154b0
 
 dev_dependencies:
   flutter_test:
