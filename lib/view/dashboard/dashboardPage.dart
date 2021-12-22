@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/add_event/addEventScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/settings/settingsPage.dart';
@@ -23,8 +24,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    Text('Calender Page',
-        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    CalendarPage(),
     AddEventScreen(),
     ContactsScreen(),
     SettingsPage()

@@ -1,6 +1,8 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
@@ -54,13 +56,12 @@ class InviteFriendsProvider extends BaseProvider {
     });
     if (await Permission.contacts.request().isDenied) {
       setState(ViewState.Idle);
-      return errorDialog(context, 'Please allow contacts access');
+      return CommonWidgets.errorDialog(context, 'allow_contact_access'.tr());
     } else if (await Permission.contacts.request().isPermanentlyDenied) {
       setState(ViewState.Idle);
-      return errorDialog(
+      return CommonWidgets.errorDialog(
           context,
-          'Please enable contacts access '
-          'permission in system settings');
+          'enable_contact_access_permission'.tr());
     } else if (value.isNotEmpty) {
       setState(ViewState.Idle);
       value.sort((a, b) {
@@ -77,23 +78,6 @@ class InviteFriendsProvider extends BaseProvider {
     notifyListeners();
   }
 
-  errorDialog(BuildContext context, String content) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-              title: Text('Permissions error'),
-              content: Text(content),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    openAppSettings();
-                  }
-                )
-              ],
-            ));
-  }
 
   Future onTapInviteBtn(BuildContext context) async {
     updateValue(true);

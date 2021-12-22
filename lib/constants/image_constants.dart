@@ -50,4 +50,6 @@ class ImageConstants {
   static const event_chat_icon = "images/ic_event_chat.svg";
   static const event_remove_icon = "images/ic_remove_event.svg";
   static const splash = "images/splash.png";
+  static const calendar_event_icon = "images/ic_calendar_event.svg";
+  static const calendar_listEvent_icon = "images/ic_calendar_listEvent.svg";
 }

@@ -1,4 +1,5 @@
 import 'package:easy_localization/src/public_ext.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -6,6 +7,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CommonWidgets {
   static Widget phoneNoAndAddressFun(
@@ -530,5 +532,23 @@ class CommonWidgets {
               ),
             ),
           );
+  }
+
+ static errorDialog(BuildContext context, String content) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text('Permissions error'),
+          content: Text(content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  openAppSettings();
+                }
+            )
+          ],
+        ));
   }
 }

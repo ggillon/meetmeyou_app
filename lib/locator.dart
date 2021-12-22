@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/calendarProvider.dart';
+import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
 import 'package:meetmeyou_app/provider/create_event_provider.dart';
 import 'package:meetmeyou_app/provider/event_attending_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
@@ -37,6 +40,7 @@ void setupLocator() {
   locator.registerLazySingleton<UserDetail>(() => UserDetail());
   locator.registerLazySingleton<GroupDetail>(() => GroupDetail());
   locator.registerLazySingleton<EventDetail>(() => EventDetail());
+  locator.registerLazySingleton<CalendarDetail>(() => CalendarDetail());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -61,6 +65,9 @@ void setupLocator() {
   locator.registerFactory<HomePageProvider>(() => HomePageProvider());
   locator.registerFactory<EventDetailProvider>(() => EventDetailProvider());
   locator.registerFactory<EventAttendingProvider>(() => EventAttendingProvider());
+  locator.registerFactory<CalendarProvider>(() => CalendarProvider());
+  locator.registerFactory<CalendarSettingsProvider>(() => CalendarSettingsProvider());
+
 
 
   /*

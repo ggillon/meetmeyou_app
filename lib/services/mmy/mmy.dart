@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -114,7 +115,7 @@ abstract class MMYEngine {
 
   /// CALENDAR FUNCTIONS
   /// Get the CalendarEvents from mobile or web calendar
-  Future<List<CalendarEvent>> getCalendarEvents();
+  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context);
   /// Set the parameters for calender
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
@@ -380,8 +381,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<CalendarEvent>> getCalendarEvents() async {
-    return calendarLib.getCalendarEvents();
+  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
+    return calendarLib.getCalendarEvents(context);
   }
 
   @override
@@ -392,7 +393,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Map<String, dynamic>> getCalendarParams() async {
-    Map<String, dynamic> params = EMPTY_MAP;
+    Map<String, dynamic> params = Map<String, dynamic>();
     Profile profile = await profileLib.getUserProfile(_currentUser);
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;

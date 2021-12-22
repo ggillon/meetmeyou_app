@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -9,6 +10,7 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 class SettingsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
+  CalendarDetail calendarDetail = locator<CalendarDetail>();
 
   bool _isLoading = false;
 
@@ -45,4 +47,18 @@ class SettingsProvider extends BaseProvider {
     setState(ViewState.Idle);
   }
 
+  Future getCalendarParams(BuildContext context) async {
+    updateLoadingStatus(true);
+  //  mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    final response = await mmyEngine!.getCalendarParams().catchError((e) {
+      updateLoadingStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (response != null) {
+      calendarDetail.calendarSync = response['calendar_sync'];
+      calendarDetail.calendarDisplay = response['calendar_display'];
+    }
+    updateLoadingStatus(false);
+  }
 }

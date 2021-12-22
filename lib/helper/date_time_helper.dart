@@ -40,7 +40,8 @@ class DateTimeHelper {
   static convertEventDateToTimeFormat(DateTime date) {
     int hour = date.hour;
     int min = date.minute;
-    String formattedTime =  "${hour <= 9 ? "0" + hour.toString() : hour}:${min <= 9 ? "0" + min.toString() : min}";
+    String formattedTime =
+        "${hour <= 9 ? "0" + hour.toString() : hour}:${min <= 9 ? "0" + min.toString() : min}";
     return formattedTime;
   }
 
@@ -72,4 +73,9 @@ class DateTimeHelper {
     return mon.substring(0, 3);
   }
 
+  static getFullMonthByName(DateTime date) {
+    int month = date.month;
+    String mon = MONTHS[month - 1];
+    return mon;
+  }
 }

@@ -136,5 +136,12 @@
   "invite_more_friends": "Invite More Friends",
   "sure_to_delete_user" : "Are you sure you want to delete user?",
   "sure_to_cancel_event" : "Are you sure you want to cancel event?",
-  "delete_event" : "Delete Event"
+  "delete_event" : "Delete Event",
+  "calendar" : "Calendar",
+  "loading_your_events" : "Loading your events.....",
+  "allow_contact_access" : "Please allow contacts access",
+  "enable_contact_access_permission" : "Please enable contacts access permission in system settings",
+  "enable_calendar_permission" : "Please enable Calendar access permission in system settings to show all events",
+  "synchronise_with_local_calendar" : "Synchronise with local calendar",
+  "display_non_MeetMeYou_events" : "Display non-MeetMeYou events"
 }

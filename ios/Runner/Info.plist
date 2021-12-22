@@ -106,16 +106,14 @@
         <key>NSMicrophoneUsageDescription</key>
 	    <string>Used to capture audio for image picker plugin</string>
 
-<<<<<<< HEAD
+
         <key>LSApplicationQueriesSchemes</key>
         <array>
           <string>https</string>
           <string>http</string>
         </array>
-=======
         <key>NSCalendarsUsageDescription</key>
         <string>INSERT_REASON_HERE</string>
 
->>>>>>> c2e67cda1a26aabebc8e43524a6b09977f9154b0
 	</dict>
 </plist>

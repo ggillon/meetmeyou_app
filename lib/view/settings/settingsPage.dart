@@ -32,6 +32,7 @@ class SettingsPage extends StatelessWidget {
           onModelReady: (provider) {
             this.provider = provider;
             provider.getUserDetail(context);
+            provider.getCalendarParams(context);
           },
           builder: (context, provider, _) {
             return SingleChildScrollView(
