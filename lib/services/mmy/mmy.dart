@@ -1,6 +1,5 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -20,7 +19,7 @@ abstract class MMYEngine {
   /// PROFILE ///
 
   /// Get the user profile or create new one
-  Future<Profile> getUserProfile({bool user = true, String? uid});
+  Future<Profile> getUserProfile();
   /// Update the user profile
   Future<Profile> updateProfile({String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters});
   /// Get the user profile or create new one, leveraging the Auth user info
@@ -115,7 +114,7 @@ abstract class MMYEngine {
 
   /// CALENDAR FUNCTIONS
   /// Get the CalendarEvents from mobile or web calendar
-  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context);
+  Future<List<CalendarEvent>> getCalendarEvents();
   /// Set the parameters for calender
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
@@ -129,8 +128,8 @@ class MMY implements MMYEngine {
   final User _currentUser;
 
   @override
-  Future<Profile> getUserProfile({bool user = true, String? uid}) {
-    return profileLib.getUserProfile(_currentUser, user: user, uid: uid);
+  Future<Profile> getUserProfile() {
+    return profileLib.getUserProfile(_currentUser);
   }
 
   @override
@@ -162,7 +161,7 @@ class MMY implements MMYEngine {
   @override
   Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, File? photoFile, String about = ''}) async {
     if (photoFile!=null)
-      photoURL = await storageLib.storeGroupPicture(photoFile, eid: _currentUser.uid);
+      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
     final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
     return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
   }
@@ -223,7 +222,7 @@ class MMY implements MMYEngine {
   @override
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about}) async {
     if (photoFile!=null)
-      photoURL = await storageLib.storeGroupPicture(photoFile, eid: cid);
+      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
     return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
   }
 
@@ -381,8 +380,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
-    return calendarLib.getCalendarEvents(context);
+  Future<List<CalendarEvent>> getCalendarEvents() async {
+    return calendarLib.getCalendarEvents(_currentUser.uid);
   }
 
   @override
@@ -393,7 +392,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Map<String, dynamic>> getCalendarParams() async {
-    Map<String, dynamic> params = Map<String, dynamic>();
+    Map<String, dynamic> params = EMPTY_MAP;
     Profile profile = await profileLib.getUserProfile(_currentUser);
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;
