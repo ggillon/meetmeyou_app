@@ -1,7 +1,55 @@
 import 'package:device_calendar/device_calendar.dart' as device;
 import 'package:meetmeyou_app/models/calendar_event.dart';
+import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/services/database/database.dart';
 
-Future<List<CalendarEvent>> getCalendarEvents() async {
+Future<bool> checkCalendar() async {
+  bool result=false;
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  final calendarsResult = await plugin.retrieveCalendars();
+  calendarsResult.data!.forEach((element) {
+    if (element.name == "MeetMeYou") {
+      result = true;
+    }
+  });
+  return result;
+}
+
+Future<String?> createCalendar() async {
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  if(!(await checkCalendar())) {
+    final result = await plugin.createCalendar('MeetMeYou');
+    if (!result.isSuccess) {
+      throw('Error in creating calendar');
+    } else {
+      return result.data!;
+    }
+  } else {
+    return getCaldendarID();
+  }
+}
+
+Future<String?> getCaldendarID() async {
+  String result='';
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  final calendarsResult = await plugin.retrieveCalendars();
+  calendarsResult.data!.forEach((element) {
+    if (element.name == "MeetMeYou") {
+      result = element.id!;
+    }
+  });
+  if (result != '') {
+    return result;
+  } else {
+    return await createCalendar();
+  }
+}
+
+void updateEvent(Event event) async {
+  
+}
+
+Future<List<CalendarEvent>> getCalendarEvents(String uid) async {
   List<CalendarEvent> returnList = [];
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
   final calendarsResult = await plugin.retrieveCalendars();
@@ -24,6 +72,19 @@ Future<List<CalendarEvent>> getCalendarEvents() async {
         }
       }
     }
+  }
+  // Code for MeetMeYou Events (to be adapted)
+  List<Event> events = await FirestoreDB(uid: uid).getUserEvents(uid);
+  for (Event e in events) {
+    CalendarEvent entry = CalendarEvent(
+        title: e.title,
+        start: e.start,
+        end: e.end,
+        meetMeYou: true,
+        eid: e.eid,
+        eventStatus: e.invitedContacts[uid],
+        description: e.description);
+    returnList.add(entry);
   }
   return returnList;
 }

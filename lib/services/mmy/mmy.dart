@@ -381,7 +381,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<CalendarEvent>> getCalendarEvents() async {
-    return calendarLib.getCalendarEvents();
+    return calendarLib.getCalendarEvents(_currentUser.uid);
   }
 
   @override
