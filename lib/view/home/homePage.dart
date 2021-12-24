@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
@@ -273,11 +274,11 @@ class _HomePageState extends State<HomePage>
                 onTap: () {
                   provider.setEventValuesForEdit(eventList[index]);
                   provider.eventDetail.eventBtnStatus =
-                      provider.getEventBtnStatus(eventList[index]);
+                      CommonEventFunction.getEventBtnStatus(eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.textColor =
-                      provider.getEventBtnColorStatus(eventList[index]);
+                      CommonEventFunction.getEventBtnColorStatus(eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.btnBGColor =
-                      provider.getEventBtnColorStatus(eventList[index],
+                      CommonEventFunction.getEventBtnColorStatus(eventList[index], provider.userDetail.cid.toString(),
                           textColor: false);
                   provider.eventDetail.eventMapData =
                       eventList[index].invitedContacts;
@@ -439,7 +440,7 @@ class _HomePageState extends State<HomePage>
       HomePageProvider provider, DashboardProvider dashboardProvider) {
     return GestureDetector(
       onTap: () {
-        if (provider.getEventBtnStatus(event) == "respond") {
+        if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "respond") {
           CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
             Navigator.of(context).pop();
             dashboardProvider.updateEventNotificationCount();
@@ -453,13 +454,13 @@ class _HomePageState extends State<HomePage>
             dashboardProvider.updateEventNotificationCount();
             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
           });
-        } else if (provider.getEventBtnStatus(event) == "edit") {
+        } else if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "edit") {
           provider.setEventValuesForEdit(event);
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
               .then((value) {
             provider.getIndexChanging(context);
           });
-        } else if (provider.getEventBtnStatus(event) == "cancelled") {
+        } else if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "cancelled") {
           if (provider.userDetail.cid == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
               Navigator.of(context).pop();
@@ -474,10 +475,10 @@ class _HomePageState extends State<HomePage>
       },
       child: CustomShape(
         child: Center(
-            child: Text(provider.getEventBtnStatus(event).toString().tr())
-                .semiBoldText(provider.getEventBtnColorStatus(event),
+            child: Text(CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()).toString().tr())
+                .semiBoldText(CommonEventFunction.getEventBtnColorStatus(event, provider.userDetail.cid.toString()),
                     scaler.getTextSize(9.5), TextAlign.center)),
-        bgColor: provider.getEventBtnColorStatus(event, textColor: false),
+        bgColor: CommonEventFunction.getEventBtnColorStatus(event, provider.userDetail.cid.toString(), textColor: false),
         radius: BorderRadius.all(
           Radius.circular(12),
         ),

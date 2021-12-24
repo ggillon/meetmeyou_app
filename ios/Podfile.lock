@@ -355,6 +355,8 @@ PODS:
     - Flutter
   - contacts_service (0.2.2):
     - Flutter
+  - device_calendar (0.0.1):
+    - Flutter
   - device_info (0.0.1):
     - Flutter
   - FBAEMKit (11.1.0):
@@ -433,6 +435,8 @@ PODS:
   - flutter_facebook_auth (2.0.0):
     - FBSDKCoreKit (~> 11.1.0)
     - FBSDKLoginKit (~> 11.1.0)
+    - Flutter
+  - flutter_native_timezone (0.0.1):
     - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
@@ -519,6 +523,7 @@ PODS:
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
+  - device_calendar (from `.symlinks/plugins/device_calendar/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_auth_oauth (from `.symlinks/plugins/firebase_auth_oauth/ios`)
@@ -526,6 +531,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
+  - flutter_native_timezone (from `.symlinks/plugins/flutter_native_timezone/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -568,6 +574,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   contacts_service:
     :path: ".symlinks/plugins/contacts_service/ios"
+  device_calendar:
+    :path: ".symlinks/plugins/device_calendar/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   firebase_auth:
@@ -582,6 +590,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_facebook_auth:
     :path: ".symlinks/plugins/flutter_facebook_auth/ios"
+  flutter_native_timezone:
+    :path: ".symlinks/plugins/flutter_native_timezone/ios"
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
   image_picker:
@@ -607,6 +617,7 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   cloud_firestore: 8a2843c34901ea2bc6aafcaa1c452f5b4f1ade37
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
+  device_calendar: 9cb33f88a02e19652ec7b8b122ca778f751b1f7b
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   FBAEMKit: 5c8a8d08e5b2c79628490784883e0fcc75b12615
   FBSDKCoreKit: 7ccb8b4bb2b5ee2ad94327b774dc23f03509675d
@@ -624,6 +635,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: 2765944230981e63f8bd2938d9d5819158b7c34c
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_facebook_auth: 528d51ea1324741b366fa87fa5dfd41016422364
+  flutter_native_timezone: 5f05b2de06c9776b4cc70e1839f03de178394d22
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in: de494e5e993986afae63e22a32441e30c35c9823
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9

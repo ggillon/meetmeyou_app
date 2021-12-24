@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -233,9 +234,9 @@ class CreateEventProvider extends BaseProvider {
     });
     if (value != null) {
       setState(ViewState.Idle);
-      eventDetail.eventBtnStatus = getEventBtnStatus(value);
-      eventDetail.btnBGColor = getEventBtnColorStatus(value, textColor: false);
-      eventDetail.textColor = getEventBtnColorStatus(value);
+      eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(value, userDetail.cid.toString());
+      eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(value, userDetail.cid.toString(), textColor: false);
+      eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(value, userDetail.cid.toString());
       Navigator.of(context).pop();
     }
   }
@@ -250,71 +251,71 @@ class CreateEventProvider extends BaseProvider {
     return tempDate;
   }
 
-  getEventBtnStatus(Event event) {
-    List<String> keysList = [];
-    for (var key in event.invitedContacts.keys) {
-      keysList.add(key);
-    }
-    List<String> valuesList = [];
-    for (var value in event.invitedContacts.values) {
-      valuesList.add(value);
-    }
-    for (int i = 0; i < keysList.length; i++) {
-      if (keysList[i] == userDetail.cid) {
-        if (valuesList[i] == "Invited") {
-          return "respond";
-        } else if (valuesList[i] == "Organiser") {
-          return "edit";
-        } else if (valuesList[i] == "Attending") {
-          return "going";
-        } else if (valuesList[i] == "Not Attending") {
-          return "not_going";
-        } else if (valuesList[i] == "Not Interested") {
-          return "hidden";
-        } else if (valuesList[i] == "Canceled") {
-          return "cancelled";
-        }
-      }
-    }
-  }
-
-  getEventBtnColorStatus(Event event, {bool textColor = true}) {
-    List<String> keysList = [];
-    for (var key in event.invitedContacts.keys) {
-      keysList.add(key);
-    }
-    List<String> valuesList = [];
-    for (var value in event.invitedContacts.values) {
-      valuesList.add(value);
-    }
-    for (int i = 0; i < keysList.length; i++) {
-      if (keysList[i] == userDetail.cid) {
-        if (valuesList[i] == "Invited") {
-          return textColor
-              ? ColorConstants.colorWhite
-              : ColorConstants.primaryColor;
-        } else if (valuesList[i] == "Organiser") {
-          return textColor
-              ? ColorConstants.colorWhite
-              : ColorConstants.primaryColor;
-        } else if (valuesList[i] == "Attending") {
-          return textColor
-              ? ColorConstants.primaryColor
-              : ColorConstants.primaryColor.withOpacity(0.2);
-        } else if (valuesList[i] == "Not Attending") {
-          return textColor
-              ? ColorConstants.primaryColor
-              : ColorConstants.primaryColor.withOpacity(0.2);
-        } else if (valuesList[i] == "Not Interested") {
-          return textColor
-              ? ColorConstants.primaryColor
-              : ColorConstants.primaryColor.withOpacity(0.2);
-        } else if (valuesList[i] == "Canceled") {
-          return textColor
-              ? ColorConstants.primaryColor
-              : ColorConstants.primaryColor.withOpacity(0.2);
-        }
-      }
-    }
-  }
+  // getEventBtnStatus(Event event) {
+  //   List<String> keysList = [];
+  //   for (var key in event.invitedContacts.keys) {
+  //     keysList.add(key);
+  //   }
+  //   List<String> valuesList = [];
+  //   for (var value in event.invitedContacts.values) {
+  //     valuesList.add(value);
+  //   }
+  //   for (int i = 0; i < keysList.length; i++) {
+  //     if (keysList[i] == userDetail.cid) {
+  //       if (valuesList[i] == "Invited") {
+  //         return "respond";
+  //       } else if (valuesList[i] == "Organiser") {
+  //         return "edit";
+  //       } else if (valuesList[i] == "Attending") {
+  //         return "going";
+  //       } else if (valuesList[i] == "Not Attending") {
+  //         return "not_going";
+  //       } else if (valuesList[i] == "Not Interested") {
+  //         return "hidden";
+  //       } else if (valuesList[i] == "Canceled") {
+  //         return "cancelled";
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // getEventBtnColorStatus(Event event, {bool textColor = true}) {
+  //   List<String> keysList = [];
+  //   for (var key in event.invitedContacts.keys) {
+  //     keysList.add(key);
+  //   }
+  //   List<String> valuesList = [];
+  //   for (var value in event.invitedContacts.values) {
+  //     valuesList.add(value);
+  //   }
+  //   for (int i = 0; i < keysList.length; i++) {
+  //     if (keysList[i] == userDetail.cid) {
+  //       if (valuesList[i] == "Invited") {
+  //         return textColor
+  //             ? ColorConstants.colorWhite
+  //             : ColorConstants.primaryColor;
+  //       } else if (valuesList[i] == "Organiser") {
+  //         return textColor
+  //             ? ColorConstants.colorWhite
+  //             : ColorConstants.primaryColor;
+  //       } else if (valuesList[i] == "Attending") {
+  //         return textColor
+  //             ? ColorConstants.primaryColor
+  //             : ColorConstants.primaryColor.withOpacity(0.2);
+  //       } else if (valuesList[i] == "Not Attending") {
+  //         return textColor
+  //             ? ColorConstants.primaryColor
+  //             : ColorConstants.primaryColor.withOpacity(0.2);
+  //       } else if (valuesList[i] == "Not Interested") {
+  //         return textColor
+  //             ? ColorConstants.primaryColor
+  //             : ColorConstants.primaryColor.withOpacity(0.2);
+  //       } else if (valuesList[i] == "Canceled") {
+  //         return textColor
+  //             ? ColorConstants.primaryColor
+  //             : ColorConstants.primaryColor.withOpacity(0.2);
+  //       }
+  //     }
+  //   }
+  // }
 }

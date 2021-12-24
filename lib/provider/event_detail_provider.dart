@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -14,6 +15,7 @@ class EventDetailProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
+  CalendarDetail calendarDetail = locator<CalendarDetail>();
   DashboardProvider dashboardProvider  = locator<DashboardProvider>();
   int eventAttendingLength = 0;
   List<String> eventAttendingKeysList = [];
@@ -64,7 +66,7 @@ class EventDetailProvider extends BaseProvider {
         setState(ViewState.Idle);
         DialogHelper.showMessage(context, e.message);
       });
-      eventAttendingPhotoUrlLists.add(value.photoURL);
+     eventAttendingPhotoUrlLists.add(value.photoURL);
     }
     // print(eventAttendingLists);
     setState(ViewState.Idle);
@@ -80,7 +82,7 @@ class EventDetailProvider extends BaseProvider {
     });
 
 
-    userDetail.profileUrl = value.photoURL;
+   userDetail.profileUrl = value.photoURL;
     setState(ViewState.Idle);
   }
 

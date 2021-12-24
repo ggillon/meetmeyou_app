@@ -20,12 +20,12 @@ class DateTimeHelper {
     "December"
   ];
 
-  static dateConversion(DateTime now) {
+  static dateConversion(DateTime now, {bool date = true}) {
     int day = now.day;
     int month = now.month;
     int year = now.year;
     String mon = MONTHS[month - 1];
-    formattedDate = "${day}.${mon} ${year}.";
+    formattedDate = date ? "${day}.${mon} ${year}." : "${day} ${mon} ${year}";
     return formattedDate;
   }
 

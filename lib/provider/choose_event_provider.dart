@@ -1,65 +1,22 @@
-import 'package:device_calendar/device_calendar.dart';
-import 'package:easy_localization/src/public_ext.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
-import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
-import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
-import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:meetmeyou_app/models/event.dart' as eventModel;
 
-class CalendarProvider extends BaseProvider {
+class ChooseEventProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
   CalendarDetail calendarDetail = locator<CalendarDetail>();
   EventDetail eventDetail = locator<EventDetail>();
-  List<CalendarEvent> deviceCalendarEvent = [];
   eventModel.Event? event;
-  bool calendar = true;
-
-  bool iconValue = false;
-
-  void updateIconValue(bool value) {
-    iconValue = value;
-    notifyListeners();
-  }
-
-  List<CalendarEvent> calendarEventDevice = [];
-  List<CalendarEvent> calendarEventMeetMeYou = [];
-  List<CalendarEvent> calendarEvent = [];
-
-  Future getCalendarEvents(BuildContext context) async {
-    setState(ViewState.Busy);
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    var value = await mmyEngine!.getCalendarEvents(context).catchError((e) {
-      setState(ViewState.Idle);
-      //  DialogHelper.showMessage(context, "enable_calendar_permission".tr());
-      CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
-    });
-    if (value != null) {
-      deviceCalendarEvent = value;
-      deviceCalendarEvent.sort((a, b) {
-        return a.start.compareTo(b.start);
-      });
-      setState(ViewState.Idle);
-    } else{
-      setState(ViewState.Idle);
-        DialogHelper.showMessage(context, "enable_calendar_permission".tr());
-    }
-  }
-
+  bool fromEventDetail = false;
   bool eventValue = false;
 
   void updateEventValue(bool value) {
@@ -69,6 +26,7 @@ class CalendarProvider extends BaseProvider {
 
   Future getEvent(BuildContext context, String eid) async {
     updateEventValue(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine!.getEvent(eid).catchError((e) {
       updateEventValue(false);
@@ -88,10 +46,8 @@ class CalendarProvider extends BaseProvider {
       eventDetail.eventMapData = event!.invitedContacts;
       setEventValuesForEdit(event!);
       Navigator.pushNamed(context, RoutesConstants.eventDetailScreen,
-              arguments: event)
-          .then((value) {
-        deviceCalendarEvent = [];
-        getCalendarEvents(context);
+          arguments: event).then((value) {
+            Navigator.of(context).pop();
       });
     } else {
       DialogHelper.showMessage(context, "ERROR! something wrong.");

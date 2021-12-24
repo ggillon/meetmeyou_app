@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
+import 'package:meetmeyou_app/provider/choose_event_provider.dart';
 import 'package:meetmeyou_app/provider/create_event_provider.dart';
 import 'package:meetmeyou_app/provider/event_attending_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
@@ -67,7 +68,7 @@ void setupLocator() {
   locator.registerFactory<EventAttendingProvider>(() => EventAttendingProvider());
   locator.registerFactory<CalendarProvider>(() => CalendarProvider());
   locator.registerFactory<CalendarSettingsProvider>(() => CalendarSettingsProvider());
-
+  locator.registerFactory<ChooseEventProvider>(() => ChooseEventProvider());
 
 
   /*

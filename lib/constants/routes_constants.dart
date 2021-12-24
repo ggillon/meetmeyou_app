@@ -27,4 +27,5 @@ class RoutesConstants {
   static const eventInviteFriendsScreen = "eventInviteFriendsScreen";
   static const eventDetailScreen = "eventDetailScreen";
   static const eventAttendingScreen = "eventAttendingScreen";
+  static const chooseEventScreen = "chooseEventScreen";
 }

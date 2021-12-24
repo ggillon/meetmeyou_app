@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScre
 import 'package:meetmeyou_app/view/add_event/default_photo_page/defaultPhotoPage.dart';
 import 'package:meetmeyou_app/view/add_event/event_attending_screen/eventAttendingScreen.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
+import 'package:meetmeyou_app/view/calendar/choose_event_screen/chooseEventScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/group_contacts/groupContactsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
@@ -153,6 +154,9 @@ class Router {
 
       case RoutesConstants.eventAttendingScreen:
         return MaterialPageRoute(builder: (_) => EventAttendingScreen(), settings: settings);
+
+      case RoutesConstants.chooseEventScreen:
+        return MaterialPageRoute(builder: (_) => ChooseEventScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

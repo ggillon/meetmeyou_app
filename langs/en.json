@@ -143,5 +143,7 @@
   "enable_contact_access_permission" : "Please enable contacts access permission in system settings",
   "enable_calendar_permission" : "Please enable Calendar access permission in system settings to show all events",
   "synchronise_with_local_calendar" : "Synchronise with local calendar",
-  "display_non_MeetMeYou_events" : "Display non-MeetMeYou events"
+  "display_non_MeetMeYou_events" : "Display non-MeetMeYou events",
+  "choose_event" : "Choose event",
+  "fetching_event" : "Fetching event....."
 }

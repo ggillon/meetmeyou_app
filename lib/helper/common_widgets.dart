@@ -5,6 +5,8 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/date_time_helper.dart';
+import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -550,5 +552,51 @@ class CommonWidgets {
             )
           ],
         ));
+  }
+
+ static Widget eventTimeTitleCard(ScreenScaler scaler, CalendarEvent event,{VoidCallback? actionOnCard, bool? isActionOnCard = false}) {
+    return Expanded(
+      child: GestureDetector(
+        onTap : isActionOnCard == true? actionOnCard : (){},
+        child: Card(
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(8.0),
+          ),
+          child: Padding(
+            padding: scaler.getPaddingLTRB(1.5, 1.4, 1.5, 1.4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: scaler.getWidth(70.0),
+                  child: Text(event.title).semiBoldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(9.5), TextAlign.left,
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
+                ),
+                SizedBox(height: scaler.getHeight(0.1)),
+                Text(
+                    event.meetMeYou
+                    ?
+                (event.start.toString().substring(0, 11) ==
+                    event.end.toString().substring(0, 11)
+                    ? event.start.toString().substring(11, 16) +
+                    " : " +
+                    event.end.toString().substring(11, 16)
+                    : event.start.toString().substring(11, 16) +
+                    " : " +
+                    (DateTimeHelper.dateConversion(event.end,
+                        date: false) +
+                        "(${DateTimeHelper.convertEventDateToTimeFormat(event.end)})"))
+                    : event.start.toString().substring(0, 11)
+                )
+                    .regularText(ColorConstants.colorBlack,
+                    scaler.getTextSize(9.5), TextAlign.center),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
