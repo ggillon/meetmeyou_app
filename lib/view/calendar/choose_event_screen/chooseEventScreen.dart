@@ -173,6 +173,7 @@ class ChooseEventScreen extends StatelessWidget {
           SizedBox(width: scaler.getWidth(8.0)),
          CommonWidgets.eventTimeTitleCard(scaler, event, isActionOnCard: true,
               actionOnCard: () {
+
                 if(event.meetMeYou){
                   provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
                 }
