@@ -69,7 +69,10 @@ dependencies:
   device_calendar: ^4.0.1
   table_calendar: ^3.0.3
   paged_vertical_calendar:
-    path: lib/calendar/paged_vertical_calendar
+    git:
+      url: https://github.com/deepakrana0011/vertical_calender.git
+      ref: main
+
 
 dev_dependencies:
   flutter_test:
