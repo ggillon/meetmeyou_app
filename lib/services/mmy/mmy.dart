@@ -2,16 +2,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/event_answer.dart';
+import 'package:meetmeyou_app/models/event_chat_message.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
+import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
 import 'event.dart' as eventLib;
+import 'event_answer.dart' as answerLib;
 import 'package:meetmeyou_app/services/calendar/calendar.dart' as calendarLib;
 import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
+import 'event_chat_message.dart' as messageLib;
 
 
 abstract class MMYEngine {
@@ -108,9 +113,9 @@ abstract class MMYEngine {
   ///  Add/Update a form to an event
   //Future<Event> updateFormToEvent(String eid, {required String formText, required Map form});
   ///  Reply to form to an event
-  //Future<Event> replyEventForm(String eid, {required Map answers});
+  Future<EventAnswer> answerEventForm(String eid, {required Map answers});
   ///  List answers to form
-  //Future<List<Map>> listAnswersToForm(String eid);
+  Future<List<EventAnswer>> emailEventAnswers(String eid);
 
   /// CALENDAR FUNCTIONS
   /// Get the CalendarEvents from mobile or web calendar
@@ -119,6 +124,13 @@ abstract class MMYEngine {
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
   Future<Map<String, dynamic>> getCalendarParams();
+
+  /// Event Message functions
+  /// Get all the chat messages from Event
+  Future<List<EventChatMessage>> getEventChatMessages(String eid);
+  /// Post a new mchat message to Event
+  Future<EventChatMessage> postEventChatMessage(String eid, {required String text});
+
 }
 
 class MMY implements MMYEngine {
@@ -397,6 +409,26 @@ class MMY implements MMYEngine {
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;
     return params;
+  }
+
+  @override
+  Future<List<EventChatMessage>> getEventChatMessages(String eid) async {
+    return messageLib.getEventChatMessages(_currentUser, eid);
+  }
+
+  @override
+  Future<EventChatMessage> postEventChatMessage(String eid, {required String text}) {
+    return messageLib.postEventChatMessages(_currentUser, eid, text);
+  }
+
+  @override
+  Future<EventAnswer> answerEventForm(String eid, {required Map answers}) async {
+    return answerLib.answerEventForm(eid, _currentUser, answers);
+  }
+
+  @override
+  Future<List<EventAnswer>> emailEventAnswers(String eid) async {
+    return answerLib.emailEventAnswers(eid, _currentUser,);
   }
 
 }

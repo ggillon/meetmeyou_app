@@ -3,6 +3,9 @@
 // Service imports
 
 
+import 'package:meetmeyou_app/models/event_answer.dart';
+import 'package:meetmeyou_app/models/event_chat_message.dart';
+
 import 'firestore_service.dart';
 import 'api_path.dart';
 
@@ -33,6 +36,14 @@ abstract class Database {
   Future<Event> getEvent(String eid);
   Future<void> deleteEvent(String eid);
   Future<List<Event>> getUserEvents(String uid);
+
+  // Event Message Functions
+  Future<void> setMessage(String eid, EventChatMessage message);
+  Future<List<EventChatMessage>> getMessages(String eid,);
+
+  // Event Message Functions
+  Future<void> setAnswer(String eid, String uid, EventAnswer answer);
+  Future<List<EventAnswer>> getAnswers(String eid,);
 }
 
 class FirestoreDB implements Database {
@@ -133,6 +144,38 @@ class FirestoreDB implements Database {
         return Profile.fromMap(data);
       },
     );*/
+  }
+
+  @override
+  Future<List<EventChatMessage>> getMessages(String eid) {
+    return _service.getListData(
+        path: APIPath.userContacts(uid),
+        builder: (data) => EventChatMessage.fromMap(data),
+    );
+  }
+
+  @override
+  Future<void> setMessage(String eid, EventChatMessage message) async {
+    _service.setData(
+      path: APIPath.message(eid, message.mid),
+      data: message.toMap(),
+    );
+  }
+
+  @override
+  Future<List<EventAnswer>> getAnswers(String eid) {
+    return _service.getListData(
+      path: APIPath.answers(eid),
+      builder: (data) => EventAnswer.fromMap(data),
+    );
+  }
+
+  @override
+  Future<void> setAnswer(String eid, String uid, EventAnswer answer) async {
+    _service.setData(
+      path: APIPath.answer(eid, uid),
+      data: answer.toMap(),
+    );
   }
 
 
