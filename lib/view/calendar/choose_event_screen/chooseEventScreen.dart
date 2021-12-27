@@ -171,7 +171,7 @@ class ChooseEventScreen extends StatelessWidget {
               provider.eventDetail.eid = event.eid;
              // provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
               Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-              Platform.isAndroid ?  Navigator.of(context).pop() : Container();
+              Navigator.of(context).pop();
               });
             }
           })

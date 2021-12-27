@@ -312,7 +312,8 @@ class EventDetailScreen extends StatelessWidget {
                 Positioned(
                   child: GestureDetector(
                     onTap: () {
-                     provider.calendarDetail.fromCalendarPage == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop();
+                   //  provider.calendarDetail.fromCalendarPage == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                     child: Container(
                         padding: scaler.getPaddingLTRB(3.0, 2, 3.0, 0.0),
