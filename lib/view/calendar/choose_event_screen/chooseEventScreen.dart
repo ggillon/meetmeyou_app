@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
@@ -169,7 +171,7 @@ class ChooseEventScreen extends StatelessWidget {
               provider.eventDetail.eid = event.eid;
              // provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
               Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-                Navigator.of(context).pop();
+              Platform.isAndroid ?  Navigator.of(context).pop() : Container();
               });
             }
           })

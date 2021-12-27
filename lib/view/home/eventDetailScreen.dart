@@ -34,7 +34,9 @@ class EventDetailScreen extends StatelessWidget {
             provider.calendarDetail.fromCalendarPage == true
                 ? Container()
                 : provider.eventGoingLength();
-            provider.getUsersProfileUrl(context);
+            provider.calendarDetail.fromCalendarPage == true
+                ? Container()
+                : provider.getUsersProfileUrl(context);
             provider.calendarDetail.fromCalendarPage == true
                 ? Container()
                 : provider.getOrganiserProfileUrl(
@@ -163,6 +165,9 @@ class EventDetailScreen extends StatelessWidget {
                                               .attendingProfileKeys
                                               ?.length ??
                                           0);
+                                      provider.eventAttendingKeysList = provider.eventDetail.attendingProfileKeys!;
+                                      provider.eventAttendingPhotoUrlLists = [];
+                                      provider.getUsersProfileUrl(context);
                                       provider.updateValue(true);
                                     });
                                   },
@@ -307,7 +312,7 @@ class EventDetailScreen extends StatelessWidget {
                 Positioned(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop();
+                     provider.calendarDetail.fromCalendarPage == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop();
                     },
                     child: Container(
                         padding: scaler.getPaddingLTRB(3.0, 2, 3.0, 0.0),

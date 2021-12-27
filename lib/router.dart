@@ -1,3 +1,4 @@
+import 'package:device_calendar/device_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/models/event.dart';
@@ -6,6 +7,7 @@ import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScre
 import 'package:meetmeyou_app/view/add_event/default_photo_page/defaultPhotoPage.dart';
 import 'package:meetmeyou_app/view/add_event/event_attending_screen/eventAttendingScreen.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
+import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
 import 'package:meetmeyou_app/view/calendar/choose_event_screen/chooseEventScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/contacts/group_contacts/groupContactsScreen.dart';
@@ -157,6 +159,9 @@ class Router {
 
       case RoutesConstants.chooseEventScreen:
         return MaterialPageRoute(builder: (_) => ChooseEventScreen(), settings: settings);
+
+      case RoutesConstants.calendarScreen:
+        return MaterialPageRoute(builder: (_) => CalendarPage(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

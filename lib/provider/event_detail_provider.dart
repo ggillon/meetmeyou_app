@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/models/event.dart' as eventModel;
+import 'package:meetmeyou_app/services/storage/templates.dart';
 
 class EventDetailProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -127,7 +128,7 @@ class EventDetailProvider extends BaseProvider {
       case 6:
         return 6;
       default:
-        return length;
+        return length <= 6 ? length: 6;
     }
   }
 
@@ -156,6 +157,8 @@ class EventDetailProvider extends BaseProvider {
   Future getEvent(BuildContext context, String eid) async {
     updateEventValue(true);
 
+    getUsersProfileUrl(context);
+
     var value = await mmyEngine!.getEvent(eid).catchError((e) {
       updateEventValue(false);
       DialogHelper.showMessage(context, e.message);
@@ -176,6 +179,7 @@ class EventDetailProvider extends BaseProvider {
       eventDetail.organiserName = event!.organiserName;
       eventGoingLength();
       getOrganiserProfileUrl(context, eventDetail.organiserId!);
+      getUsersProfileUrl(context);
       setEventValuesForEdit(event!);
     } else {
       updateEventValue(false);
@@ -211,4 +215,5 @@ class EventDetailProvider extends BaseProvider {
     eventDetail.contactCIDs = contactsKeys;
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 }
