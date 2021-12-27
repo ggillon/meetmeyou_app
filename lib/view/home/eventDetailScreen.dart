@@ -19,9 +19,9 @@ import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:provider/provider.dart';
 
 class EventDetailScreen extends StatelessWidget {
-  final Event event;
+  // final Event event;
 
-  EventDetailScreen({Key? key, required this.event}) : super(key: key);
+  EventDetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,194 +31,240 @@ class EventDetailScreen extends StatelessWidget {
       child: Scaffold(
         body: BaseView<EventDetailProvider>(
           onModelReady: (provider) {
-            provider.eventGoingLength();
+            provider.calendarDetail.fromCalendarPage == true
+                ? Container()
+                : provider.eventGoingLength();
             provider.getUsersProfileUrl(context);
-            provider.getOrganiserProfileUrl(context, event.organiserID);
+            provider.calendarDetail.fromCalendarPage == true
+                ? Container()
+                : provider.getOrganiserProfileUrl(
+                    context, provider.eventDetail.organiserId!);
+            provider.calendarDetail.fromCalendarPage == true
+                ? provider.getEvent(context, provider.eventDetail.eid!)
+                : Container();
           },
           builder: (context, provider, _) {
-            return SingleChildScrollView(
-                child: Column(children: [
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.bottomCenter,
-                children: [
-                  imageView(context, scaler, provider),
-                  Positioned(
-                    bottom: -50,
-                    child: titleDateLocationCard(scaler, provider),
+            return provider.calendarDetail.fromCalendarPage == true &&
+                    provider.eventValue == true
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(child: CircularProgressIndicator()),
+                      SizedBox(height: scaler.getHeight(1)),
+                      Text("fetching_event".tr()).mediumText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(10),
+                          TextAlign.left),
+                    ],
                   )
-                ],
-              ),
-              SizedBox(height: scaler.getHeight(6)),
-              Padding(
-                padding: scaler.getPaddingLTRB(3, 1.0, 3, 1.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    provider.replyEventValue == true
-                        ? Center(child: CircularProgressIndicator())
-                        : CommonWidgets.commonBtn(
-                            scaler,
-                            context,
-                            provider.eventDetail.eventBtnStatus!.tr(),
-                            provider.eventDetail.btnBGColor!,
-                            provider.eventDetail.textColor!, onTapFun: () {
-                            if (provider.eventDetail.eventBtnStatus ==
-                                "respond") {
-                              CommonWidgets.respondToEventBottomSheet(
-                                  context, scaler, going: () {
-                                Navigator.of(context).pop();
-                                provider.dashboardProvider
-                                    .updateEventNotificationCount();
-                                provider.replyToEvent(
-                                    context, event.eid, EVENT_ATTENDING);
-                              }, notGoing: () {
-                                Navigator.of(context).pop();
-                                provider.dashboardProvider
-                                    .updateEventNotificationCount();
-                                provider.replyToEvent(
-                                    context, event.eid, EVENT_NOT_ATTENDING);
-                              }, hide: () {
-                                Navigator.of(context).pop();
-                                provider.dashboardProvider
-                                    .updateEventNotificationCount();
-                                provider.replyToEvent(
-                                    context, event.eid, EVENT_NOT_INTERESTED);
-                              });
-                            } else if (provider.eventDetail.eventBtnStatus ==
-                                "edit") {
-                              // provider.setEventValuesForEdit(event);
-                              Navigator.pushNamed(context,
-                                      RoutesConstants.createEventScreen)
-                                  .then((value) {
-                                provider.updateValue(true);
-                              });
-                            } else if (provider.eventDetail.eventBtnStatus ==
-                                "cancelled") {
-                              if (provider.userDetail.cid ==
-                                  event.organiserID) {
-                                CommonWidgets.eventCancelBottomSheet(
-                                    context, scaler, delete: () {
-                                  Navigator.of(context).pop();
-                                  provider.deleteEvent(context,
-                                      provider.eventDetail.eid.toString());
-                                });
-                              } else {
-                                Container();
-                              }
-                            } else {
-                              Container();
-                            }
-                          }),
-                    SizedBox(height: scaler.getHeight(1)),
-                    organiserCard(scaler, provider),
-                    SizedBox(height: scaler.getHeight(1)),
-                    provider.eventAttendingLength == 0
-                        ? Container()
-                        : GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {
-                              provider.eventDetail.attendingProfileKeys =
-                                  provider.eventAttendingKeysList;
-                              Navigator.pushNamed(context,
-                                      RoutesConstants.eventAttendingScreen)
-                                  .then((value) {
-                                provider.eventAttendingLength = (provider
-                                        .eventDetail
-                                        .attendingProfileKeys
-                                        ?.length ??
-                                    0);
-                                provider.updateValue(true);
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              child: Row(
-                                children: [
-                                  Stack(
-                                    alignment: Alignment.centerRight,
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      ImageStack(
-                                        imageList: provider
-                                            .eventAttendingPhotoUrlLists,
-                                        totalCount: provider
-                                            .eventAttendingPhotoUrlLists.length,
-                                        imageRadius: 25,
-                                        imageCount: provider.imageStackLength(
-                                            provider.eventAttendingPhotoUrlLists
-                                                .length),
-                                        imageBorderColor:
-                                            ColorConstants.colorWhite,
-                                        backgroundColor:
-                                            ColorConstants.primaryColor,
-                                        imageBorderWidth: 1,
-                                        extraCountTextStyle: TextStyle(
-                                            fontSize: 7.7,
-                                            color: ColorConstants.colorWhite,
-                                            fontWeight: FontWeight.w500),
-                                        showTotalCount: false,
-                                      ),
-                                      Positioned(
-                                        right: -22,
-                                        child: provider
-                                                    .eventAttendingPhotoUrlLists
+                : SingleChildScrollView(
+                    child: Column(children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        imageView(context, scaler, provider),
+                        Positioned(
+                          bottom: -50,
+                          child: titleDateLocationCard(scaler, provider),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: scaler.getHeight(6)),
+                    Padding(
+                      padding: scaler.getPaddingLTRB(3, 1.0, 3, 1.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          provider.replyEventValue == true
+                              ? Center(child: CircularProgressIndicator())
+                              : CommonWidgets.commonBtn(
+                                  scaler,
+                                  context,
+                                  provider.eventDetail.eventBtnStatus!.tr(),
+                                  provider.eventDetail.btnBGColor!,
+                                  provider.eventDetail.textColor!,
+                                  onTapFun: () {
+                                  if (provider.eventDetail.eventBtnStatus ==
+                                      "respond") {
+                                    CommonWidgets.respondToEventBottomSheet(
+                                        context, scaler, going: () {
+                                      Navigator.of(context).pop();
+                                      provider.dashboardProvider
+                                          .updateEventNotificationCount();
+                                      provider.replyToEvent(
+                                          context,
+                                          provider.eventDetail.eid!,
+                                          EVENT_ATTENDING);
+                                    }, notGoing: () {
+                                      Navigator.of(context).pop();
+                                      provider.dashboardProvider
+                                          .updateEventNotificationCount();
+                                      provider.replyToEvent(
+                                          context,
+                                          provider.eventDetail.eid!,
+                                          EVENT_NOT_ATTENDING);
+                                    }, hide: () {
+                                      Navigator.of(context).pop();
+                                      provider.dashboardProvider
+                                          .updateEventNotificationCount();
+                                      provider.replyToEvent(
+                                          context,
+                                          provider.eventDetail.eid!,
+                                          EVENT_NOT_INTERESTED);
+                                    });
+                                  } else if (provider
+                                          .eventDetail.eventBtnStatus ==
+                                      "edit") {
+                                    // provider.setEventValuesForEdit(event);
+                                    Navigator.pushNamed(context,
+                                            RoutesConstants.createEventScreen)
+                                        .then((value) {
+                                      provider.updateValue(true);
+                                    });
+                                  } else if (provider
+                                          .eventDetail.eventBtnStatus ==
+                                      "cancelled") {
+                                    if (provider.userDetail.cid ==
+                                        provider.eventDetail.organiserId!) {
+                                      CommonWidgets.eventCancelBottomSheet(
+                                          context, scaler, delete: () {
+                                        Navigator.of(context).pop();
+                                        provider.deleteEvent(
+                                            context,
+                                            provider.eventDetail.eid
+                                                .toString());
+                                      });
+                                    } else {
+                                      Container();
+                                    }
+                                  } else {
+                                    Container();
+                                  }
+                                }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          organiserCard(scaler, provider),
+                          SizedBox(height: scaler.getHeight(1)),
+                          provider.eventAttendingLength == 0
+                              ? Container()
+                              : GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    provider.eventDetail.attendingProfileKeys =
+                                        provider.eventAttendingKeysList;
+                                    Navigator.pushNamed(
+                                            context,
+                                            RoutesConstants
+                                                .eventAttendingScreen)
+                                        .then((value) {
+                                      provider.eventAttendingLength = (provider
+                                              .eventDetail
+                                              .attendingProfileKeys
+                                              ?.length ??
+                                          0);
+                                      provider.updateValue(true);
+                                    });
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Row(
+                                      children: [
+                                        Stack(
+                                          alignment: Alignment.centerRight,
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            ImageStack(
+                                              imageList: provider
+                                                  .eventAttendingPhotoUrlLists,
+                                              totalCount: provider
+                                                  .eventAttendingPhotoUrlLists
+                                                  .length,
+                                              imageRadius: 25,
+                                              imageCount: provider
+                                                  .imageStackLength(provider
+                                                      .eventAttendingPhotoUrlLists
+                                                      .length),
+                                              imageBorderColor:
+                                                  ColorConstants.colorWhite,
+                                              backgroundColor:
+                                                  ColorConstants.primaryColor,
+                                              imageBorderWidth: 1,
+                                              extraCountTextStyle: TextStyle(
+                                                  fontSize: 7.7,
+                                                  color:
+                                                      ColorConstants.colorWhite,
+                                                  fontWeight: FontWeight.w500),
+                                              showTotalCount: false,
+                                            ),
+                                            Positioned(
+                                              right: -22,
+                                              child: provider
+                                                          .eventAttendingPhotoUrlLists
+                                                          .length <=
+                                                      6
+                                                  ? Container()
+                                                  : ClipRRect(
+                                                      borderRadius: scaler
+                                                          .getBorderRadiusCircular(
+                                                              15.0),
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        color: ColorConstants
+                                                            .primaryColor,
+                                                        height: scaler
+                                                            .getHeight(2.0),
+                                                        width:
+                                                            scaler.getWidth(6),
+                                                        child: Text((provider
+                                                                        .eventAttendingPhotoUrlLists
+                                                                        .length -
+                                                                    6)
+                                                                .toString())
+                                                            .mediumText(
+                                                                ColorConstants
+                                                                    .colorWhite,
+                                                                scaler
+                                                                    .getTextSize(
+                                                                        7.7),
+                                                                TextAlign
+                                                                    .center),
+                                                      ),
+                                                    ),
+                                            )
+                                          ],
+                                        ),
+                                        provider.eventAttendingPhotoUrlLists
                                                     .length <=
                                                 6
-                                            ? Container()
-                                            : ClipRRect(
-                                                borderRadius: scaler
-                                                    .getBorderRadiusCircular(
-                                                        15.0),
-                                                child: Container(
-                                                  alignment: Alignment.center,
-                                                  color: ColorConstants
-                                                      .primaryColor,
-                                                  height: scaler.getHeight(2.0),
-                                                  width: scaler.getWidth(6),
-                                                  child: Text((provider
-                                                                  .eventAttendingPhotoUrlLists
-                                                                  .length -
-                                                              6)
-                                                          .toString())
-                                                      .mediumText(
-                                                          ColorConstants
-                                                              .colorWhite,
-                                                          scaler
-                                                              .getTextSize(7.7),
-                                                          TextAlign.center),
-                                                ),
-                                              ),
-                                      )
-                                    ],
+                                            ? SizedBox(
+                                                width: scaler.getWidth(1))
+                                            : SizedBox(
+                                                width: scaler.getWidth(6)),
+                                        Text("going".tr()).regularText(
+                                            ColorConstants.colorGray,
+                                            scaler.getTextSize(8),
+                                            TextAlign.center),
+                                      ],
+                                    ),
                                   ),
-                                  provider.eventAttendingPhotoUrlLists.length <=
-                                          6
-                                      ? SizedBox(width: scaler.getWidth(1))
-                                      : SizedBox(width: scaler.getWidth(6)),
-                                  Text("going".tr()).regularText(
-                                      ColorConstants.colorGray,
-                                      scaler.getTextSize(8),
-                                      TextAlign.center),
-                                ],
-                              ),
-                            ),
-                          ),
-                    SizedBox(height: scaler.getHeight(1)),
-                    Text("event_description".tr()).boldText(
-                        ColorConstants.colorBlack,
-                        scaler.getTextSize(9.5),
-                        TextAlign.left),
-                    SizedBox(height: scaler.getHeight(2)),
-                    Text(provider.eventDetail.eventDescription ?? "")
-                        .regularText(ColorConstants.colorBlack,
-                            scaler.getTextSize(10), TextAlign.left),
-                    SizedBox(height: scaler.getHeight(2.5)),
-                    eventDiscussionCard(scaler)
-                  ],
-                ),
-              )
-            ]));
+                                ),
+                          SizedBox(height: scaler.getHeight(1)),
+                          Text("event_description".tr()).boldText(
+                              ColorConstants.colorBlack,
+                              scaler.getTextSize(9.5),
+                              TextAlign.left),
+                          SizedBox(height: scaler.getHeight(2)),
+                          Text(provider.eventDetail.eventDescription ?? "")
+                              .regularText(ColorConstants.colorBlack,
+                                  scaler.getTextSize(10), TextAlign.left),
+                          SizedBox(height: scaler.getHeight(2.5)),
+                          eventDiscussionCard(scaler)
+                        ],
+                      ),
+                    )
+                  ]));
           },
         ),
       ),
@@ -420,7 +466,9 @@ class EventDetailScreen extends StatelessWidget {
             Expanded(
                 child: Container(
               alignment: Alignment.centerLeft,
-              child: Text(event.organiserName + " " + "(${"organiser".tr()})")
+              child: Text(provider.eventDetail.organiserName! +
+                      " " +
+                      "(${"organiser".tr()})")
                   .semiBoldText(ColorConstants.colorBlack,
                       scaler.getTextSize(9.8), TextAlign.left,
                       maxLines: 1, overflow: TextOverflow.ellipsis),

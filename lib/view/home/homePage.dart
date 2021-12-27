@@ -283,9 +283,11 @@ class _HomePageState extends State<HomePage>
                   provider.eventDetail.eventMapData =
                       eventList[index].invitedContacts;
                   provider.eventDetail.eid = eventList[index].eid;
-                  Navigator.pushNamed(
-                          context, RoutesConstants.eventDetailScreen,
-                          arguments: eventList[index])
+                  provider.eventDetail.organiserId = eventList[index].organiserID;
+                  provider.eventDetail.organiserName = eventList[index].organiserName;
+                  provider.calendarDetail.fromCalendarPage = false;
+                      Navigator.pushNamed(
+                          context, RoutesConstants.eventDetailScreen)
                       .then((value) {
                     provider.getIndexChanging(context);
                     provider.unRespondedEvents(context, dashboardProvider);

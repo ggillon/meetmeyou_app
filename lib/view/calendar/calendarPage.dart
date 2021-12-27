@@ -40,9 +40,10 @@ class CalendarPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    provider.eventValue == true
-                        ? Container()
-                        : Row(
+                    // provider.eventValue == true
+                    //     ? Container()
+                    //     :
+                    Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("calendar".tr()).boldText(
@@ -84,28 +85,28 @@ class CalendarPage extends StatelessWidget {
                                   ],
                                 ),
                               )
-                            : provider.eventValue == true
-                                ? Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Center(
-                                            child: CircularProgressIndicator()),
-                                        SizedBox(height: scaler.getHeight(1)),
-                                        Text("fetching_event".tr()).mediumText(
-                                            ColorConstants.primaryColor,
-                                            scaler.getTextSize(10),
-                                            TextAlign.left),
-                                      ],
-                                    ),
-                                  )
+                            // : provider.eventValue == true
+                            //     ? Expanded(
+                            //         child: Column(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.center,
+                            //           crossAxisAlignment:
+                            //               CrossAxisAlignment.center,
+                            //           children: [
+                            //             Center(
+                            //                 child: CircularProgressIndicator()),
+                            //             SizedBox(height: scaler.getHeight(1)),
+                            //             Text("fetching_event".tr()).mediumText(
+                            //                 ColorConstants.primaryColor,
+                            //                 scaler.getTextSize(10),
+                            //                 TextAlign.left),
+                            //           ],
+                            //         ),
+                            //       )
                                 : Expanded(
                                     child: PagedVerticalCalendar(
                                       startDate: DateTime(2021, 12, 1),
-                                      endDate: DateTime(2024, 12, 31),
+                                      endDate: (DateTime.now().add(Duration(days: 365))),
                                       addAutomaticKeepAlives: true,
                                       monthBuilder: (context, month, year) {
                                         return Column(
@@ -229,14 +230,25 @@ class CalendarPage extends StatelessWidget {
                                                         context);
                                                   });
                                                 } else {
-                                                  provider.getEvent(
-                                                      _scaffoldKey
-                                                          .currentContext!,
-                                                      provider
-                                                          .calendarDetail
-                                                          .calendarEventList![0]
-                                                          .eid
-                                                          .toString());
+                                                  provider.calendarDetail.fromCalendarPage = true;
+                                                  provider.eventDetail.eid =       provider
+                                                      .calendarDetail
+                                                      .calendarEventList![0]
+                                                      .eid
+                                                      .toString();
+                                                  // provider.getEvent(
+                                                  //     _scaffoldKey
+                                                  //         .currentContext!,
+                                                  //     provider
+                                                  //         .calendarDetail
+                                                  //         .calendarEventList![0]
+                                                  //         .eid
+                                                  //         .toString());
+                                                  Navigator.pushNamed(context, RoutesConstants.eventDetailScreen)
+                                                      .then((value) {
+                                                    provider.deviceCalendarEvent = [];
+                                                    provider.getCalendarEvents(context);
+                                                  });
                                                 }
                                               },
                                               child: Container(

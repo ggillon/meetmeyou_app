@@ -13,6 +13,8 @@ class EventDetail{
   String? eventPhotoUrl;
   int? unRespondedEvent = 0;
   int? unRespondedEvent1 = 0;
+  String? organiserId;
+  String? organiserName;
 
   //these variables are used in invite contact and group checkboxes
   List<String> contactCIDs = [];
@@ -30,7 +32,7 @@ class EventDetail{
   String? eventDescription;
   Event? event;
 
-  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys});
+  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys, this.organiserId, this.organiserName});
 
   EventDetail.editEvent({this.editEvent, this.photoUrlEvent, this.eventName, this.startDateAndTime, this.endDateAndTime, this.eventLocation, this.eventDescription, this.event});
 }

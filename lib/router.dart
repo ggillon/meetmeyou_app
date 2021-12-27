@@ -150,7 +150,7 @@ class Router {
         return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(), settings: settings);
 
       case RoutesConstants.eventDetailScreen:
-        return MaterialPageRoute(builder: (_) => EventDetailScreen(event: settings.arguments as Event), settings: settings);
+        return MaterialPageRoute(builder: (_) => EventDetailScreen(), settings: settings);
 
       case RoutesConstants.eventAttendingScreen:
         return MaterialPageRoute(builder: (_) => EventAttendingScreen(), settings: settings);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
@@ -10,13 +11,14 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/models/event.dart' as eventModel;
 
 class EventDetailProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
   CalendarDetail calendarDetail = locator<CalendarDetail>();
-  DashboardProvider dashboardProvider  = locator<DashboardProvider>();
+  DashboardProvider dashboardProvider = locator<DashboardProvider>();
   int eventAttendingLength = 0;
   List<String> eventAttendingKeysList = [];
   String? organiserKey;
@@ -54,7 +56,6 @@ class EventDetailProvider extends BaseProvider {
 
   List<String> eventAttendingPhotoUrlLists = [];
 
-
   Future getUsersProfileUrl(BuildContext context) async {
     setState(ViewState.Busy);
 
@@ -66,23 +67,24 @@ class EventDetailProvider extends BaseProvider {
         setState(ViewState.Idle);
         DialogHelper.showMessage(context, e.message);
       });
-     eventAttendingPhotoUrlLists.add(value.photoURL);
+      eventAttendingPhotoUrlLists.add(value.photoURL);
     }
     // print(eventAttendingLists);
     setState(ViewState.Idle);
   }
 
-  Future getOrganiserProfileUrl(BuildContext context, String organiserUid) async {
+  Future getOrganiserProfileUrl(
+      BuildContext context, String organiserUid) async {
     setState(ViewState.Busy);
 
-    var value = await mmyEngine!.getUserProfile(user: false, uid: organiserUid)
+    var value = await mmyEngine!
+        .getUserProfile(user: false, uid: organiserUid)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
 
-
-   userDetail.profileUrl = value.photoURL;
+    userDetail.profileUrl = value.photoURL;
     setState(ViewState.Idle);
   }
 
@@ -108,8 +110,8 @@ class EventDetailProvider extends BaseProvider {
     Navigator.of(context).pop();
   }
 
-  imageStackLength(int length){
-    switch(length){
+  imageStackLength(int length) {
+    switch (length) {
       case 0:
         return 0;
       case 1:
@@ -129,7 +131,7 @@ class EventDetailProvider extends BaseProvider {
     }
   }
 
-  deleteEvent(BuildContext context, String eid) async{
+  deleteEvent(BuildContext context, String eid) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.deleteEvent(eid).catchError((e) {
@@ -140,4 +142,73 @@ class EventDetailProvider extends BaseProvider {
     setState(ViewState.Idle);
     Navigator.of(context).pop();
   }
+
+  // This function are used when we comes from calendar.
+  eventModel.Event? event;
+
+  bool eventValue = false;
+
+  void updateEventValue(bool value) {
+    eventValue = value;
+    notifyListeners();
+  }
+
+  Future getEvent(BuildContext context, String eid) async {
+    updateEventValue(true);
+
+    var value = await mmyEngine!.getEvent(eid).catchError((e) {
+      updateEventValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      event = value;
+      updateEventValue(false);
+      eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(
+          event!, userDetail.cid.toString());
+      eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
+          event!, userDetail.cid.toString());
+      eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(
+          event!, userDetail.cid.toString(),
+          textColor: false);
+      eventDetail.eventMapData = event!.invitedContacts;
+      eventDetail.organiserId = event!.organiserID;
+      eventDetail.organiserName = event!.organiserName;
+      eventGoingLength();
+      getOrganiserProfileUrl(context, eventDetail.organiserId!);
+      setEventValuesForEdit(event!);
+    } else {
+      updateEventValue(false);
+      DialogHelper.showMessage(context, "ERROR! something wrong.");
+    }
+  }
+
+  setEventValuesForEdit(eventModel.Event event) {
+    eventDetail.editEvent = true;
+    eventDetail.eid = event.eid;
+    eventDetail.photoUrlEvent = event.photoURL;
+    eventDetail.eventName = event.title;
+    eventDetail.startDateAndTime = event.start;
+    eventDetail.endDateAndTime = event.end;
+    eventDetail.eventLocation = event.location;
+    eventDetail.eventDescription = event.description;
+    eventDetail.event = event;
+    List<String> valuesList = [];
+    for (var value in event.invitedContacts.values) {
+      valuesList.add(value);
+    }
+    List<String> keysList = [];
+    for (var key in event.invitedContacts.keys) {
+      keysList.add(key);
+    }
+    List<String> contactsKeys = [];
+    for (int i = 0; i < keysList.length; i++) {
+      if (valuesList[i] != "Organiser") {
+        contactsKeys.add(keysList[i]);
+      }
+    }
+
+    eventDetail.contactCIDs = contactsKeys;
+  }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }

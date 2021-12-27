@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
@@ -30,20 +31,22 @@ class ChooseEventScreen extends StatelessWidget {
             builder: (context, provider, _) {
               return Padding(
                 padding: scaler.getPaddingLTRB(2.8, 0.0, 2.8, 0.0),
-                child: provider.eventValue == true ? Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(child: CircularProgressIndicator()),
-                      SizedBox(height: scaler.getHeight(1)),
-                      Text("fetching_event".tr()).mediumText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(10),
-                          TextAlign.left),
-                    ],
-                  ),
-                ) : Column(
+                child:
+                // provider.eventValue == true ? Expanded(
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       Center(child: CircularProgressIndicator()),
+                //       SizedBox(height: scaler.getHeight(1)),
+                //       Text("fetching_event".tr()).mediumText(
+                //           ColorConstants.primaryColor,
+                //           scaler.getTextSize(10),
+                //           TextAlign.left),
+                //     ],
+                //   ),
+                // ) :
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("choose_event".tr()).boldText(
@@ -162,7 +165,12 @@ class ChooseEventScreen extends StatelessWidget {
           CommonWidgets.eventTimeTitleCard(scaler, event, isActionOnCard: true,
               actionOnCard: () {
             if(event.meetMeYou){
-              provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
+              provider.calendarDetail.fromCalendarPage = true;
+              provider.eventDetail.eid = event.eid;
+             // provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
+              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                Navigator.of(context).pop();
+              });
             }
           })
         ],
@@ -175,7 +183,12 @@ class ChooseEventScreen extends StatelessWidget {
               actionOnCard: () {
 
                 if(event.meetMeYou){
-                  provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
+                  provider.calendarDetail.fromCalendarPage = true;
+                  provider.eventDetail.eid = event.eid;
+                //  provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
+                  Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                    Navigator.of(context).pop();
+                  });
                 }
           })
         ],
