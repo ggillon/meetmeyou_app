@@ -9,6 +9,9 @@ class APIPath {
   static String comment(String eid, String mid) => '/events/$eid/comments/$mid';
   static String comments(String eid) => '/events/$eid/comments/';
 
+  static String message(String eid, String mid) => '/events/$eid/messages/$mid';
+  static String messages(String eid) => '/events/$eid/messages/';
+
   static String eventInvitation(String uid, String eventID) => '/users/$uid/eventInvitations/$eventID';
   static String eventInvitations(String uid) => '/users/$uid/eventInvitations/';
 
