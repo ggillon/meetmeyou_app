@@ -16,7 +16,8 @@ class ViewDecoration {
       Color? fillColor,
       double? radius,
       bool imageView = false,
-      String? path}) {
+      String? path,
+      Color? textFiledColor}) {
     return InputDecoration(
         prefixIcon: prefixIcon == null ? null : prefixIcon,
         suffixIcon: icon == null
@@ -35,7 +36,7 @@ class ViewDecoration {
                   ),
         hintText: fieldName,
         hintStyle: textFieldStyle(
-            scaler.getTextSize(textSize ?? 9.5), ColorConstants.colorGray),
+            scaler.getTextSize(textSize ?? 9.5), textFiledColor ?? ColorConstants.colorGray),
         filled: true,
         isDense: true,
         errorMaxLines: 3,

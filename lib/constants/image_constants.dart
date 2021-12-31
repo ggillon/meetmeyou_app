@@ -52,4 +52,5 @@ class ImageConstants {
   static const splash = "images/splash.png";
   static const calendar_event_icon = "images/ic_calendar_event.svg";
   static const calendar_listEvent_icon = "images/ic_calendar_listEvent.svg";
+  static const discussion_back_arrow = "images/ic_discussion_back_arrow.svg";
 }

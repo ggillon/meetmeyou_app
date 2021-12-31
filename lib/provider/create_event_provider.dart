@@ -43,6 +43,13 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
+  bool question = false;
+
+  void updateQuestionStatus(bool value) {
+    question = value;
+    notifyListeners();
+  }
+
   Future<bool> permissionCheck() async {
     var status = await Permission.storage.status;
     if (Platform.isAndroid) {

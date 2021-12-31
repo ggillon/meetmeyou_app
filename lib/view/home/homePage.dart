@@ -274,19 +274,24 @@ class _HomePageState extends State<HomePage>
                 onTap: () {
                   provider.setEventValuesForEdit(eventList[index]);
                   provider.eventDetail.eventBtnStatus =
-                      CommonEventFunction.getEventBtnStatus(eventList[index], provider.userDetail.cid.toString());
+                      CommonEventFunction.getEventBtnStatus(
+                          eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.textColor =
-                      CommonEventFunction.getEventBtnColorStatus(eventList[index], provider.userDetail.cid.toString());
+                      CommonEventFunction.getEventBtnColorStatus(
+                          eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.btnBGColor =
-                      CommonEventFunction.getEventBtnColorStatus(eventList[index], provider.userDetail.cid.toString(),
+                      CommonEventFunction.getEventBtnColorStatus(
+                          eventList[index], provider.userDetail.cid.toString(),
                           textColor: false);
                   provider.eventDetail.eventMapData =
                       eventList[index].invitedContacts;
                   provider.eventDetail.eid = eventList[index].eid;
-                  provider.eventDetail.organiserId = eventList[index].organiserID;
-                  provider.eventDetail.organiserName = eventList[index].organiserName;
+                  provider.eventDetail.organiserId =
+                      eventList[index].organiserID;
+                  provider.eventDetail.organiserName =
+                      eventList[index].organiserName;
                   provider.calendarDetail.fromCalendarPage = false;
-                      Navigator.pushNamed(
+                  Navigator.pushNamed(
                           context, RoutesConstants.eventDetailScreen)
                       .then((value) {
                     provider.getIndexChanging(context);
@@ -367,15 +372,28 @@ class _HomePageState extends State<HomePage>
                         ImageView(path: ImageConstants.clock_icon),
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
-                          width: scaler.getWidth(37),
-                          child: Text(DateTimeHelper.getWeekDay(
-                                      eventList[index].start) +
-                                  " - " +
-                                  DateTimeHelper.convertEventDateToTimeFormat(
-                                      eventList[index].start) +
-                                  " to " +
-                                  DateTimeHelper.convertEventDateToTimeFormat(
-                                      eventList[index].end))
+                          width: scaler.getWidth(38),
+                          child: Text(eventList[index].start.toString().substring(0, 11) ==
+                                      eventList[index]
+                                          .end
+                                          .toString()
+                                          .substring(0, 11)
+                                  ? DateTimeHelper.getWeekDay(eventList[index].start) +
+                                      " - " +
+                                      DateTimeHelper.convertEventDateToTimeFormat(
+                                          eventList[index].start) +
+                                      " to " +
+                                      DateTimeHelper.convertEventDateToTimeFormat(
+                                          eventList[index].end)
+                                  : DateTimeHelper.getWeekDay(eventList[index].start) +
+                                      " - " +
+                                      DateTimeHelper.convertEventDateToTimeFormat(
+                                          eventList[index].start) +
+                                      " to " +
+                                      DateTimeHelper.dateConversion(
+                                          eventList[index].end,
+                                          date: false) +
+                                      "(${DateTimeHelper.convertEventDateToTimeFormat(eventList[index].end)})")
                               .regularText(ColorConstants.colorGray,
                                   scaler.getTextSize(7.7), TextAlign.left,
                                   maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -388,7 +406,7 @@ class _HomePageState extends State<HomePage>
                         Icon(Icons.map, size: 17),
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
-                          width: scaler.getWidth(37),
+                          width: scaler.getWidth(38),
                           child: Text(eventList[index].location).regularText(
                               ColorConstants.colorGray,
                               scaler.getTextSize(7.7),
@@ -442,7 +460,9 @@ class _HomePageState extends State<HomePage>
       HomePageProvider provider, DashboardProvider dashboardProvider) {
     return GestureDetector(
       onTap: () {
-        if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "respond") {
+        if (CommonEventFunction.getEventBtnStatus(
+                event, provider.userDetail.cid.toString()) ==
+            "respond") {
           CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
             Navigator.of(context).pop();
             dashboardProvider.updateEventNotificationCount();
@@ -456,13 +476,17 @@ class _HomePageState extends State<HomePage>
             dashboardProvider.updateEventNotificationCount();
             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
           });
-        } else if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "edit") {
+        } else if (CommonEventFunction.getEventBtnStatus(
+                event, provider.userDetail.cid.toString()) ==
+            "edit") {
           provider.setEventValuesForEdit(event);
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
               .then((value) {
             provider.getIndexChanging(context);
           });
-        } else if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "cancelled") {
+        } else if (CommonEventFunction.getEventBtnStatus(
+                event, provider.userDetail.cid.toString()) ==
+            "cancelled") {
           if (provider.userDetail.cid == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
               Navigator.of(context).pop();
@@ -477,10 +501,18 @@ class _HomePageState extends State<HomePage>
       },
       child: CustomShape(
         child: Center(
-            child: Text(CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()).toString().tr())
-                .semiBoldText(CommonEventFunction.getEventBtnColorStatus(event, provider.userDetail.cid.toString()),
-                    scaler.getTextSize(9.5), TextAlign.center)),
-        bgColor: CommonEventFunction.getEventBtnColorStatus(event, provider.userDetail.cid.toString(), textColor: false),
+            child: Text(CommonEventFunction.getEventBtnStatus(
+                        event, provider.userDetail.cid.toString())
+                    .toString()
+                    .tr())
+                .semiBoldText(
+                    CommonEventFunction.getEventBtnColorStatus(
+                        event, provider.userDetail.cid.toString()),
+                    scaler.getTextSize(9.5),
+                    TextAlign.center)),
+        bgColor: CommonEventFunction.getEventBtnColorStatus(
+            event, provider.userDetail.cid.toString(),
+            textColor: false),
         radius: BorderRadius.all(
           Radius.circular(12),
         ),

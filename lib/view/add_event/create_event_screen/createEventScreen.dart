@@ -24,6 +24,10 @@ class CreateEventScreen extends StatelessWidget {
   final addressController = TextEditingController();
   final eventDescriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _questionFormKey = GlobalKey<FormState>();
+  List<Column> _fields = [];
+  List<String> questionsList = [];
+  final questionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +219,19 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            questionAndFeedback(scaler, provider),
+                            questionAndFeedback(context, scaler, provider),
+                            provider.isSwitched == true && _fields.length > 0
+                                ? SizedBox(height: scaler.getHeight(1.5))
+                                : SizedBox(height: scaler.getHeight(0.0)),
+                            provider.isSwitched == true
+                                ? questionsListView(provider, scaler)
+                                : Container(),
+                            provider.isSwitched == true
+                                ? SizedBox(height: scaler.getHeight(1.0))
+                                : SizedBox(height: scaler.getHeight(0.0)),
+                            provider.isSwitched == true
+                                ? addQuestion(context, provider, scaler)
+                                : Container(),
                             SizedBox(height: scaler.getHeight(2.5)),
                             provider.eventDetail.editEvent == true
                                 ? GestureDetector(
@@ -255,7 +271,7 @@ class CreateEventScreen extends StatelessWidget {
                                     ),
                                   )
                                 : Container(),
-                            SizedBox(height: scaler.getHeight(7.5)),
+                            SizedBox(height: scaler.getHeight(3.5)),
                             provider.fromInviteScreen ||
                                     provider.eventDetail.editEvent == true
                                 ? provider.state == ViewState.Busy
@@ -274,9 +290,9 @@ class CreateEventScreen extends StatelessWidget {
                                               "sure_to_cancel_event".tr(),
                                               negativeButtonLabel: "No",
                                               positiveButtonPress: () {
-                                                Navigator.of(context).pop();
-                                                provider.cancelEvent(context);
-                                              });
+                                            Navigator.of(context).pop();
+                                            provider.cancelEvent(context);
+                                          });
                                         },
                                         btn1: false,
                                         onTapBtn2: () {
@@ -663,7 +679,7 @@ class CreateEventScreen extends StatelessWidget {
   }
 
   Widget questionAndFeedback(
-      ScreenScaler scaler, CreateEventProvider provider) {
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -687,12 +703,152 @@ class CreateEventScreen extends StatelessWidget {
           padding: 2.0,
           showOnOff: false,
           onToggle: (val) {
+            hideKeyboard(context);
             provider.isSwitched = val;
+            val == true ? Container() : _fields.clear();;
             provider.updateLoadingStatus(true);
           },
         ),
       ],
     );
+  }
+
+  Widget addQuestion(
+      BuildContext context, CreateEventProvider provider, ScreenScaler scaler) {
+    return GestureDetector(
+      onTap: () {
+        popupForAddingQuestion(context, scaler, provider);
+        questionController.clear();
+        hideKeyboard(context);
+      },
+      child: Row(
+        children: [
+          SizedBox(width: scaler.getWidth(1.8)),
+          Icon(Icons.add, color: ColorConstants.primaryColor, size: 15),
+          SizedBox(width: scaler.getWidth(0.2)),
+          Text(provider.isSwitched == true && _fields.length > 0
+                  ? "add_another_question".tr()
+                  : "add_question".tr())
+              .mediumText(ColorConstants.primaryColor, 10.0, TextAlign.left),
+        ],
+      ),
+    );
+  }
+
+  Widget questionsListView(CreateEventProvider provider, ScreenScaler scaler) {
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: _fields.length,
+      itemBuilder: (context, index) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _fields[index],
+            GestureDetector(
+                onTap: () {
+                  _fields.removeAt(index);
+                  provider.updateQuestionStatus(true);
+                },
+                child: Icon(Icons.close))
+          ],
+        );
+      },
+    );
+  }
+
+  questionareTextField(CreateEventProvider provider, ScreenScaler scaler) {
+    // final controller = TextEditingController();
+    final field =
+    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text("${"question".tr()} ${_fields.length + 1}")
+          .boldText(ColorConstants.colorBlack, 9.5, TextAlign.left),
+      SizedBox(height: scaler.getHeight(0.2)),
+      Container(
+        width: scaler.getWidth(78),
+        child: Text(questionController.text).mediumText(
+            ColorConstants.colorBlack, 12, TextAlign.left,
+            maxLines: 2, overflow: TextOverflow.ellipsis),
+      ),
+      SizedBox(height: scaler.getHeight(0.7)),
+    ]);
+
+    //   questionControllers.add(controller);
+
+    _fields.add(field);
+    questionsList.add(questionController.text);
+    provider.updateQuestionStatus(true);
+  }
+
+
+  popupForAddingQuestion(
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Container(
+            width: double.infinity,
+            child: AlertDialog(
+              title: Text('Add_Your_Question'.tr())
+                  .boldText(ColorConstants.colorBlack, 14, TextAlign.left),
+              content: Form(
+                key: _questionFormKey,
+                child: Container(
+                  width: double.maxFinite,
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
+                    controller: questionController,
+                    style: ViewDecoration.textFieldStyle(
+                        scaler.getTextSize(10), ColorConstants.colorBlack),
+                    decoration: ViewDecoration.inputDecorationWithCurve(
+                        "enter_your_question".tr(),
+                        scaler,
+                        ColorConstants.primaryColor,
+                        textSize: 10),
+                    onFieldSubmitted: (data) {
+                      // FocusScope.of(context).requestFocus(nodes[1]);
+                    },
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 2,
+                    validator: (value) {
+                      if (value!.trim().isEmpty) {
+                        return "question_field_cannot_empty".tr();
+                      }
+                      {
+                        return null;
+                      }
+                    },
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                Column(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          if (_questionFormKey.currentState!.validate()) {
+                            questionareTextField(provider, scaler);
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Container(
+                            padding: scaler.getPadding(1, 2),
+                            decoration: BoxDecoration(
+                                color: ColorConstants.primaryColor,
+                                borderRadius:
+                                    scaler.getBorderRadiusCircular(10.0)),
+                            child: Text('submit'.tr()).semiBoldText(
+                                ColorConstants.colorWhite,
+                                12,
+                                TextAlign.left))),
+                    SizedBox(height: scaler.getHeight(0.5))
+                  ],
+                )
+              ],
+            ),
+          );
+        });
   }
 
   selectImageBottomSheet(

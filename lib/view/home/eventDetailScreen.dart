@@ -165,7 +165,8 @@ class EventDetailScreen extends StatelessWidget {
                                               .attendingProfileKeys
                                               ?.length ??
                                           0);
-                                      provider.eventAttendingKeysList = provider.eventDetail.attendingProfileKeys!;
+                                      provider.eventAttendingKeysList = provider
+                                          .eventDetail.attendingProfileKeys!;
                                       provider.eventAttendingPhotoUrlLists = [];
                                       provider.getUsersProfileUrl(context);
                                       provider.updateValue(true);
@@ -265,7 +266,7 @@ class EventDetailScreen extends StatelessWidget {
                               .regularText(ColorConstants.colorBlack,
                                   scaler.getTextSize(10), TextAlign.left),
                           SizedBox(height: scaler.getHeight(2.5)),
-                          eventDiscussionCard(scaler)
+                          eventDiscussionCard(context, scaler)
                         ],
                       ),
                     )
@@ -312,7 +313,7 @@ class EventDetailScreen extends StatelessWidget {
                 Positioned(
                   child: GestureDetector(
                     onTap: () {
-                   //  provider.calendarDetail.fromCalendarPage == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop();
+                      //  provider.calendarDetail.fromCalendarPage == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
                     child: Container(
@@ -374,20 +375,26 @@ class EventDetailScreen extends StatelessWidget {
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
                           width: scaler.getWidth(50),
-                          child: Text(DateTimeHelper.getWeekDay(
-                                      provider.eventDetail.startDateAndTime ??
-                                          DateTime.now()) +
-                                  " - " +
-                                  DateTimeHelper.convertEventDateToTimeFormat(
-                                      provider.eventDetail.startDateAndTime ??
-                                          DateTime.now()) +
-                                  " to " +
-                                  DateTimeHelper.convertEventDateToTimeFormat(
-                                      provider.eventDetail.endDateAndTime ??
-                                          DateTime.now()))
-                              .regularText(ColorConstants.colorGray,
-                                  scaler.getTextSize(9.5), TextAlign.left,
-                                  maxLines: 1, overflow: TextOverflow.ellipsis),
+                          child: Text(provider.eventDetail.startDateAndTime ==
+                                      provider.eventDetail.endDateAndTime
+                                  ? DateTimeHelper.getWeekDay(provider.eventDetail.startDateAndTime ?? DateTime.now()) +
+                                      " - " +
+                                      DateTimeHelper.convertEventDateToTimeFormat(
+                                          provider.eventDetail.startDateAndTime ??
+                                              DateTime.now()) +
+                                      " to " +
+                                      DateTimeHelper.convertEventDateToTimeFormat(
+                                          provider.eventDetail.endDateAndTime ??
+                                              DateTime.now())
+                                  : DateTimeHelper.getWeekDay(provider.eventDetail.startDateAndTime ?? DateTime.now()) +
+                                      " - " +
+                                      DateTimeHelper.convertEventDateToTimeFormat(
+                                          provider.eventDetail.startDateAndTime ??
+                                              DateTime.now()) +
+                                      " to " +
+                                      DateTimeHelper.dateConversion(provider.eventDetail.endDateAndTime ?? DateTime.now(), date: false) +
+                                      " ( ${DateTimeHelper.convertEventDateToTimeFormat(provider.eventDetail.endDateAndTime ?? DateTime.now())})")
+                              .regularText(ColorConstants.colorGray, scaler.getTextSize(9.5), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                         )
                       ],
                     ),
@@ -489,31 +496,36 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget eventDiscussionCard(ScreenScaler scaler) {
-    return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(8)),
-      child: Padding(
-        padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
-        child: Row(
-          children: [
-            ImageView(path: ImageConstants.event_chat_icon),
-            SizedBox(width: scaler.getWidth(2)),
-            Expanded(
-                child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text("event_discussion".tr()).mediumText(
-                  ColorConstants.colorBlack,
-                  scaler.getTextSize(9.5),
-                  TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis),
-            )),
-            SizedBox(width: scaler.getWidth(2)),
-            ImageView(
-              path: ImageConstants.small_arrow_icon,
-            )
-          ],
+  Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RoutesConstants.eventDiscussionScreen);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(8)),
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+          child: Row(
+            children: [
+              ImageView(path: ImageConstants.event_chat_icon),
+              SizedBox(width: scaler.getWidth(2)),
+              Expanded(
+                  child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text("event_discussion".tr()).mediumText(
+                    ColorConstants.colorBlack,
+                    scaler.getTextSize(9.5),
+                    TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+              )),
+              SizedBox(width: scaler.getWidth(2)),
+              ImageView(
+                path: ImageConstants.small_arrow_icon,
+              )
+            ],
+          ),
         ),
       ),
     );

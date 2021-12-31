@@ -149,7 +149,7 @@ class FirestoreDB implements Database {
   @override
   Future<List<EventChatMessage>> getMessages(String eid) {
     return _service.getListData(
-        path: APIPath.userContacts(uid),
+        path: APIPath.messages(eid),
         builder: (data) => EventChatMessage.fromMap(data),
     );
   }

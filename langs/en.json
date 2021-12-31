@@ -145,5 +145,17 @@
   "synchronise_with_local_calendar" : "Synchronise with local calendar",
   "display_non_MeetMeYou_events" : "Display non-MeetMeYou events",
   "choose_event" : "Choose event",
-  "fetching_event" : "Fetching event....."
+  "fetching_event" : "Fetching event.....",
+  "discussion" : "Discussion",
+  "write_something" : "Write something",
+  "error_message" : "ERROR! something wrong.",
+  "loading_discussion" : "Loading Discussion.....",
+  "question" : "Question",
+  "an_answer_field_for_question" : "An answer field for question.",
+  "add_another_question" : "add another question",
+  "add_question" : "add question",
+  "Add_Your_Question" : "Add Your Question",
+  "enter_your_question" : "You can enter your question here",
+  "submit" : "Submit",
+  "question_field_cannot_empty" : "Question field can't be empty"
 }

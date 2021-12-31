@@ -49,7 +49,7 @@ extension ExtendPedding on Widget {
 
 extension ExtendText on Text {
   regularText(Color color, double textSize, TextAlign alignment,
-      {maxLines, overflow, bool underline = false}) {
+      {maxLines, overflow, bool underline = false, bool isHeight = false}) {
     return Text(
       this.data!,
       maxLines: maxLines,
@@ -61,6 +61,7 @@ extension ExtendText on Text {
         fontWeight: FontWeight.w400,
         fontSize: textSize,
         decoration: underline ? TextDecoration.underline : TextDecoration.none,
+        height: isHeight == true  ? 1.5 : 1.0
       ),
     );
   }

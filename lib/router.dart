@@ -19,6 +19,7 @@ import 'package:meetmeyou_app/view/contacts/search_profile/searchProfileScreen.d
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
 import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
@@ -162,6 +163,9 @@ class Router {
 
       case RoutesConstants.calendarScreen:
         return MaterialPageRoute(builder: (_) => CalendarPage(), settings: settings);
+
+      case RoutesConstants.eventDiscussionScreen:
+        return MaterialPageRoute(builder: (_) => EventDiscussionScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());
