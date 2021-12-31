@@ -112,6 +112,8 @@ abstract class MMYEngine {
   //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
   ///  Add/Update a form to an event
   //Future<Event> updateFormToEvent(String eid, {required String formText, required Map form});
+  ///  Add a question to an event (does not save the event)
+  Event addQuestionToEvent(Event event, {required questionNum, required String text});
   ///  Reply to form to an event
   Future<EventAnswer> answerEventForm(String eid, {required Map answers});
   ///  List answers to form
@@ -429,6 +431,13 @@ class MMY implements MMYEngine {
   @override
   Future<List<EventAnswer>> emailEventAnswers(String eid) async {
     return answerLib.emailEventAnswers(eid, _currentUser,);
+  }
+
+  @override
+  Event addQuestionToEvent(Event event, {required questionNum, required String text}) {
+    Map<String, dynamic> question = {'$questionNum. text': text};
+    event.form.addAll(question);
+    return event;
   }
 
 }
