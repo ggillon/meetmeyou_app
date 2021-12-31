@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth_oauth/firebase_auth_oauth.dart';
+import 'package:meetmeyou_app/services/email/email.dart';
 
 abstract class AuthBase {
   User? get currentUser;
@@ -13,13 +14,11 @@ abstract class AuthBase {
   Future<User?> signInWithGoogle();
   Future<User?> signInWithFacebook();
   Future<User?> signInWithApple();
-  Future<String> emailCheckCode(String email);
+  bool emailCheckCode(String email, String OTP);
   Future<String> generateOTP(String email);
   Future<void> signOut();
   Stream<User?> authStateChanges();
   Future<void> deleteUser(User user);
-
-
 }
 
 class Auth implements AuthBase {
@@ -63,6 +62,7 @@ class Auth implements AuthBase {
 
   @override
   Future<User?> signInWithGoogle() async {
+    await signOut();
     try {
       UserCredential userCredential;
       OAuthCredential googleAuthCredential;
@@ -92,7 +92,7 @@ class Auth implements AuthBase {
 
   @override
   Future<User?> signInWithFacebook() async {
-
+    await signOut();
     if(kIsWeb) {
       // Create a new provider
       FacebookAuthProvider facebookProvider = FacebookAuthProvider();
@@ -145,25 +145,25 @@ class Auth implements AuthBase {
   }
 
   @override
-  Future<String> emailCheckCode(String email) async {
-    final precode = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
-    final code = precode.substring(precode.length-4, precode.length);
-    print(code);
-    //TODO: code to email code
-    return code;
+  bool emailCheckCode(String email, String OTP) {
+    final seed = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
+    final code = seed.substring(seed.length-4, seed.length);
+    return (code == OTP);
   }
 
   @override
   Future<String> generateOTP(String email) async {
     final seed = (email.length * email.toString().codeUnitAt(email.length-1) * 747).toString();
     final code = seed.substring(seed.length-4, seed.length);
-    print(code);
-    //TODO: code to email code
+    print('OTP code: $code');
+    sendOTPEmail(email, code);
     return code;
   }
 
   @override
   Future<void> signOut() async {
+    await GoogleSignIn().signOut();
+    await FacebookAuth.instance.logOut();
     await _auth.signOut();
     /*final googleSignIn = GoogleSignIn();
     if (googleSignIn != null)

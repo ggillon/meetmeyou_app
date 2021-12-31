@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meetmeyou_app/tests/contact_test.dart';
+import 'package:meetmeyou_app/tests/event_test.dart';
 import 'package:meetmeyou_app/tests/login_test.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class LandingPage extends StatelessWidget {
         initialData: auth.currentUser,
         builder: (context, snapshot) {
           if (snapshot.data != null)
-            return ContactTest();
+            return EventTest();
           else
             try {
             TestShowSignIn(context);

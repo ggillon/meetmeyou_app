@@ -15,12 +15,12 @@ Widget TestShowProfile(BuildContext context) {
   final auth = Provider.of<AuthBase>(context, listen: false);
 
   return Provider<MMYEngine>(
-    create: (_) => MMY(auth),
+    create: (_) => MMY(auth.currentUser!),
     builder: (context,mmy) => Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<Profile>(
         future: Provider.of<MMYEngine>(context, listen: false).getUserProfile(),
-        initialData: createNoDBProfile(uid: 'uid'), // Generate blank profile for test purposes
+        initialData: createLocalProfile(uid: 'uid'), // Generate blank profile for test purposes
         builder: (context, profile) => Center(
           child: Column(
             children: [
@@ -32,8 +32,8 @@ Widget TestShowProfile(BuildContext context) {
               Text('Profile Display Name: ${profile.data!.displayName}'),
               Text('AuthUser Email: ${profile.data!.email}'),
               Text('AuthUser UID: ${profile.data!.uid}'),
-              (profile.data!.parameters?['New'] != null)
-                  ? Text('Profile isNew: ${profile.data!.parameters!['New']}')
+              (profile.data!.parameters['New'] != null)
+                  ? Text('Profile isNew: ${profile.data!.parameters['New']}')
                   : Text('Profile isNew: param not set'),
               SizedBox(height: 10),
               ElevatedButton(
@@ -73,7 +73,7 @@ Widget TestShowSignIn(BuildContext context) {
                 onPressed: () => auth.signInTestUser(),
                 child: Text('Sign-in with TestUser email')),
             ElevatedButton(
-                onPressed: () => auth.emailCheckCode('ggillon@gmail.com'),
+                onPressed: () => auth.generateOTP('ggillon@gmail.com'),
                 child: Text('Get email code')),
           ],
         ),
