@@ -333,7 +333,7 @@ class SignUpPage extends StatelessWidget {
                             // FocusScope.of(context).requestFocus(nodes[1]);
                           },
                           textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(signed: true, decimal: false),
                           validator: (value) {
                             if (value!.trim().isEmpty) {
                               return null;

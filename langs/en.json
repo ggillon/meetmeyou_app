@@ -157,5 +157,6 @@
   "Add_Your_Question" : "Add Your Question",
   "enter_your_question" : "You can enter your question here",
   "submit" : "Submit",
-  "question_field_cannot_empty" : "Question field can't be empty"
-}
+  "question_field_cannot_empty" : "Question field can't be empty",
+  "cannot_add_more_than_5_que" : "You can't add more than 5 Question"
+ }

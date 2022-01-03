@@ -327,7 +327,7 @@ class EditProfileScreen extends StatelessWidget {
                                     ),
                                     onFieldSubmitted: (data) {},
                                     textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.number,
+                                    keyboardType: TextInputType.numberWithOptions(signed: true, decimal: false),
                                     validator: (value) {
                                       if (value!.trim().isEmpty) {
                                         return "phone_no_cannot_empty".tr();
@@ -403,7 +403,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                           ),
                           OrganizedEventsCard(
-                            showAttendBtn: false,
+                            showEventRespondBtn: false,
                           ),
                           SizedBox(height: scaler.getHeight(1)),
                           Padding(

@@ -37,7 +37,7 @@ class CreateEventScreen extends StatelessWidget {
           backgroundColor: ColorConstants.colorWhite,
           body: BaseView<CreateEventProvider>(
             onModelReady: (provider) {
-              if (provider.eventDetail.editEvent ?? true) {
+              if (provider.eventDetail.editEvent == true) {
                 provider.eventDetail.eventPhotoUrl =
                     provider.eventDetail.photoUrlEvent;
                 eventNameController.text = provider.eventDetail.eventName ?? "";
@@ -219,7 +219,7 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            questionAndFeedback(context, scaler, provider),
+                            provider.eventDetail.editEvent == true ? questionAndFeedback(context, scaler, provider) : Container(),
                             provider.isSwitched == true && _fields.length > 0
                                 ? SizedBox(height: scaler.getHeight(1.5))
                                 : SizedBox(height: scaler.getHeight(0.0)),
@@ -717,7 +717,11 @@ class CreateEventScreen extends StatelessWidget {
       BuildContext context, CreateEventProvider provider, ScreenScaler scaler) {
     return GestureDetector(
       onTap: () {
-        popupForAddingQuestion(context, scaler, provider);
+        if(_fields.length < 5){
+          popupForAddingQuestion(context, scaler, provider);
+        } else{
+          DialogHelper.showMessage(context, "cannot_add_more_than_5_que".tr());
+        }
         questionController.clear();
         hideKeyboard(context);
       },
@@ -757,7 +761,7 @@ class CreateEventScreen extends StatelessWidget {
     );
   }
 
-  questionareTextField(CreateEventProvider provider, ScreenScaler scaler) {
+  questionareText(BuildContext context, CreateEventProvider provider, ScreenScaler scaler) {
     // final controller = TextEditingController();
     final field =
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -777,6 +781,7 @@ class CreateEventScreen extends StatelessWidget {
 
     _fields.add(field);
     questionsList.add(questionController.text);
+    provider.addQuestionToEvent(context, provider.eventDetail.event!, _fields.length, questionController.text);
     provider.updateQuestionStatus(true);
   }
 
@@ -827,10 +832,10 @@ class CreateEventScreen extends StatelessWidget {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          if (_questionFormKey.currentState!.validate()) {
-                            questionareTextField(provider, scaler);
-                            Navigator.of(context).pop();
-                          }
+                            if (_questionFormKey.currentState!.validate()){
+                              questionareText(context, provider, scaler);
+                              Navigator.of(context).pop();
+                            }
                         },
                         child: Container(
                             padding: scaler.getPadding(1, 2),

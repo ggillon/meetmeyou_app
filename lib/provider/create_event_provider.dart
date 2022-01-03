@@ -258,6 +258,24 @@ class CreateEventProvider extends BaseProvider {
     return tempDate;
   }
 
+  bool addQuestion = false;
+
+  void updateAddQuestionStatus(bool value) {
+    addQuestion = value;
+    notifyListeners();
+  }
+
+   addQuestionToEvent(BuildContext context, Event event, int queNo, String queText) {
+    updateAddQuestionStatus(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+   var value =  mmyEngine!.addQuestionToEvent(event, questionNum: queNo, text: queText);
+
+    if(value != null){
+      updateAddQuestionStatus(false);
+    }
+  }
+
   // getEventBtnStatus(Event event) {
   //   List<String> keysList = [];
   //   for (var key in event.invitedContacts.keys) {

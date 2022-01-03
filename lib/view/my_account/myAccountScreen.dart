@@ -83,7 +83,7 @@ class MyAccountScreen extends StatelessWidget {
                   ),
                 ),
                 OrganizedEventsCard(
-                  showAttendBtn: true,
+                  showEventRespondBtn: true,
                 ),
               ],
             ),

@@ -99,7 +99,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            OrganizedEventsCard(showAttendBtn: false),
+                            OrganizedEventsCard(showEventRespondBtn: false),
                             userDetail.checkForInvitation!
                                 ? provider.state == ViewState.Busy
                                 ? Expanded(

@@ -335,12 +335,18 @@ class _HomePageState extends State<HomePage>
             ClipRRect(
               borderRadius:
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
-              child: ImageView(
-                path: eventList[index].photoURL,
-                fit: BoxFit.cover,
-                height: scaler.getHeight(21),
-                width: double.infinity,
-              ),
+              child: eventList[index].photoURL == null
+                  ? Container(
+                      height: scaler.getHeight(21),
+                      width: double.infinity,
+                      color: ColorConstants.primaryColor,
+                    )
+                  : ImageView(
+                      path: eventList[index].photoURL,
+                      fit: BoxFit.cover,
+                      height: scaler.getHeight(21),
+                      width: double.infinity,
+                    ),
             ),
             Positioned(
                 top: scaler.getHeight(1),
@@ -502,9 +508,7 @@ class _HomePageState extends State<HomePage>
       child: CustomShape(
         child: Center(
             child: Text(CommonEventFunction.getEventBtnStatus(
-                        event, provider.userDetail.cid.toString())
-                    .toString()
-                    .tr())
+                        event, provider.userDetail.cid.toString()).toString().tr())
                 .semiBoldText(
                     CommonEventFunction.getEventBtnColorStatus(
                         event, provider.userDetail.cid.toString()),
