@@ -23,11 +23,11 @@ class LoginOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: BaseView<LoginOptionProvider>(builder: (context, provider, _) {
-        return Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          body: Stack(
+    return BaseView<LoginOptionProvider>(builder: (context, provider, _) {
+      return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        body: SafeArea(
+          child: Stack(
             children: [
               Padding(
                 padding: scaler.getPaddingAll(13),
@@ -221,8 +221,8 @@ class LoginOptions extends StatelessWidget {
                   : FullScreenLoader()
             ],
           ),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 }

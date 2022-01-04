@@ -23,15 +23,15 @@ class SearchProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: BaseView<SearchProfileProvider>(
-              onModelReady: (provider) {},
-              builder: (builder, provider, _) {
-                return Padding(
+    return Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: BaseView<SearchProfileProvider>(
+            onModelReady: (provider) {},
+            builder: (builder, provider, _) {
+              return SafeArea(
+                child: Padding(
                   padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -109,9 +109,9 @@ class SearchProfileScreen extends StatelessWidget {
                                 )
                     ],
                   ),
-                );
-              })),
-    );
+                ),
+              );
+            }));
   }
 
   Widget searchBar(BuildContext context, ScreenScaler scaler,

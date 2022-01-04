@@ -22,29 +22,29 @@ class GroupDescriptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context, showEdit: true,
-              editClick: () {
-            Navigator.pushNamed(
-              context,
-              RoutesConstants.createEditGroupScreen,
-            ).then((value) {
-              this.provider.getGroupDetail();
-            //  provider.groupDetail.membersLength = provider.groupDetail.groupConfirmContactList?.length.toString();
-            });
-          }),
-          body: BaseView<GroupDescriptionProvider>(
-            onModelReady: (provider) {
-              this.provider = provider;
-              provider.getGroupContactsList(
-                  context, provider.groupDetail.group!);
-              provider.getGroupDetail();
-              //  provider.groupDetail.groupConfirmContactList = provider.groupContactList;
-            },
-            builder: (builder, provider, _) {
-              return Padding(
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context, showEdit: true,
+            editClick: () {
+          Navigator.pushNamed(
+            context,
+            RoutesConstants.createEditGroupScreen,
+          ).then((value) {
+            this.provider.getGroupDetail();
+          //  provider.groupDetail.membersLength = provider.groupDetail.groupConfirmContactList?.length.toString();
+          });
+        }),
+        body: BaseView<GroupDescriptionProvider>(
+          onModelReady: (provider) {
+            this.provider = provider;
+            provider.getGroupContactsList(
+                context, provider.groupDetail.group!);
+            provider.getGroupDetail();
+            //  provider.groupDetail.groupConfirmContactList = provider.groupContactList;
+          },
+          builder: (builder, provider, _) {
+            return SafeArea(
+              child: Padding(
                 padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,10 +99,10 @@ class GroupDescriptionScreen extends StatelessWidget {
                               )
                   ],
                 ),
-              );
-            },
-          )),
-    );
+              ),
+            );
+          },
+        ));
   }
 
   Widget groupcontactList(ScreenScaler scaler, List<Contact> cList,

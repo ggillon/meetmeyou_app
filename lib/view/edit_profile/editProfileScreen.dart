@@ -40,22 +40,22 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context),
-        body: BaseView<EditProfileProvider>(
-          onModelReady: (provider) {
-            this.provider = provider;
-            provider.setUserDetail(firstNameController, lastNameController,
-                emailController, phoneNumberController, addressController);
-          },
-          builder: (context, provider, _) {
-            return provider.state == ViewState.Busy
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      appBar: DialogHelper.appBarWithBack(scaler, context),
+      body: BaseView<EditProfileProvider>(
+        onModelReady: (provider) {
+          this.provider = provider;
+          provider.setUserDetail(firstNameController, lastNameController,
+              emailController, phoneNumberController, addressController);
+        },
+        builder: (context, provider, _) {
+          return provider.state == ViewState.Busy
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SafeArea(
+                child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -391,14 +391,14 @@ class EditProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: scaler.getHeight(3)),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("organized_events".tr()).boldText(
-                                      ColorConstants.colorBlack,
-                                      scaler.getTextSize(10),
-                                      TextAlign.left),
-                                ),
-                                SizedBox(height: scaler.getHeight(1.5)),
+                                // Container(
+                                //   alignment: Alignment.centerLeft,
+                                //   child: Text("organized_events".tr()).boldText(
+                                //       ColorConstants.colorBlack,
+                                //       scaler.getTextSize(10),
+                                //       TextAlign.left),
+                                // ),
+                                // SizedBox(height: scaler.getHeight(1.5)),
                               ],
                             ),
                           ),
@@ -497,9 +497,9 @@ class EditProfileScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  );
-          },
-        ),
+                  ),
+              );
+        },
       ),
     );
   }

@@ -21,49 +21,47 @@ class EventAttendingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          key: _scaffoldKey,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          backgroundColor: ColorConstants.colorWhite,
-          body: BaseView<EventAttendingProvider>(
-            onModelReady: (provider) {
-              provider.getContactsFromProfile(context);
-            },
-            builder: (context, provider, _) {
-              return Padding(
-                padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    searchBar(context, scaler, provider),
-                    SizedBox(height: scaler.getHeight(1.2)),
-                    Text("attending".tr()).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(12), TextAlign.center),
-                    SizedBox(height: scaler.getHeight(1.0)),
-                    provider.state == ViewState.Busy
-                        ? Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Center(child: CircularProgressIndicator()),
-                                SizedBox(height: scaler.getHeight(1)),
-                                Text("loading_contacts".tr()).mediumText(
-                                    ColorConstants.primaryColor,
-                                    scaler.getTextSize(10),
-                                    TextAlign.left),
-                              ],
-                            ),
-                          )
-                        : eventAttendingList(context, scaler,
-                            provider.eventAttendingLists, provider)
-                  ],
-                ),
-              );
-            },
-          )),
-    );
+    return Scaffold(
+        key: _scaffoldKey,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        backgroundColor: ColorConstants.colorWhite,
+        body: BaseView<EventAttendingProvider>(
+          onModelReady: (provider) {
+            provider.getContactsFromProfile(context);
+          },
+          builder: (context, provider, _) {
+            return Padding(
+              padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  searchBar(context, scaler, provider),
+                  SizedBox(height: scaler.getHeight(1.2)),
+                  Text("attending".tr()).boldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(12), TextAlign.center),
+                  SizedBox(height: scaler.getHeight(1.0)),
+                  provider.state == ViewState.Busy
+                      ? Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(child: CircularProgressIndicator()),
+                              SizedBox(height: scaler.getHeight(1)),
+                              Text("loading_contacts".tr()).mediumText(
+                                  ColorConstants.primaryColor,
+                                  scaler.getTextSize(10),
+                                  TextAlign.left),
+                            ],
+                          ),
+                        )
+                      : eventAttendingList(context, scaler,
+                          provider.eventAttendingLists, provider)
+                ],
+              ),
+            );
+          },
+        ));
   }
 
   Widget searchBar(BuildContext context, ScreenScaler scaler,

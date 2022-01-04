@@ -105,7 +105,7 @@ class CalendarPage extends StatelessWidget {
                             //       )
                                 : Expanded(
                                     child: PagedVerticalCalendar(
-                                      startDate: DateTime(2021, 12, 1),
+                                      startDate: DateTime.now(),
                                       endDate: (DateTime.now().add(Duration(days: 365))),
                                       addAutomaticKeepAlives: true,
                                       monthBuilder: (context, month, year) {

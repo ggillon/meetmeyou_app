@@ -26,46 +26,64 @@ class CreateEventScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _questionFormKey = GlobalKey<FormState>();
   List<Column> _fields = [];
-  List<String> questionsList = [];
+
+  // List<String> questionsList = [];
   final questionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          body: BaseView<CreateEventProvider>(
-            onModelReady: (provider) {
-              if (provider.eventDetail.editEvent == true) {
-                provider.eventDetail.eventPhotoUrl =
-                    provider.eventDetail.photoUrlEvent;
-                eventNameController.text = provider.eventDetail.eventName ?? "";
-                provider.startDate =
-                    provider.eventDetail.startDateAndTime ?? DateTime.now();
-                provider.startTime = TimeOfDay.fromDateTime(
-                    provider.eventDetail.startDateAndTime ?? DateTime.now());
-                provider.endDate =
-                    provider.eventDetail.endDateAndTime ?? DateTime.now();
-                provider.endTime = TimeOfDay.fromDateTime(
-                    provider.eventDetail.endDateAndTime ?? DateTime.now());
-                addressController.text =
-                    provider.eventDetail.eventLocation ?? "";
-                eventDescriptionController.text =
-                    provider.eventDetail.eventDescription ?? "";
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        body: BaseView<CreateEventProvider>(
+          onModelReady: (provider) {
+            if (provider.eventDetail.editEvent == true) {
+              provider.eventDetail.eventPhotoUrl =
+                  provider.eventDetail.photoUrlEvent;
+              eventNameController.text = provider.eventDetail.eventName ?? "";
+              provider.startDate =
+                  provider.eventDetail.startDateAndTime ?? DateTime.now();
+              provider.startTime = TimeOfDay.fromDateTime(
+                  provider.eventDetail.startDateAndTime ?? DateTime.now());
+              provider.endDate =
+                  provider.eventDetail.endDateAndTime ?? DateTime.now();
+              provider.endTime = TimeOfDay.fromDateTime(
+                  provider.eventDetail.endDateAndTime ?? DateTime.now());
+              addressController.text = provider.eventDetail.eventLocation ?? "";
+              eventDescriptionController.text =
+                  provider.eventDetail.eventDescription ?? "";
+
+              // getting questions from map form.
+              if (provider.eventDetail.event!.form.isNotEmpty) {
+                List<String> questionsList = [];
+                for (var value in provider.eventDetail.event!.form.values) {
+                  questionsList.add(value);
+                  questionController.text = value;
+                  questionnaireText(context, provider, scaler, addQue: false);
+                }
+                // List<String> keysList = [];
+                // for (var key in provider.eventDetail.event!.form.keys) {
+                //   keysList.add(key);
+                // }
+
+                if (questionsList.length > 0) {
+                  provider.isSwitched = true;
+                }
               }
-            },
-            builder: (context, provider, _) {
-              return SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      selectedImage(context, scaler, provider),
-                      SizedBox(height: scaler.getHeight(0.5)),
-                      Padding(
-                        padding: scaler.getPaddingAll(11),
+            }
+          },
+          builder: (context, provider, _) {
+            return SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    selectedImage(context, scaler, provider),
+                    //  SizedBox(height: scaler.getHeight(0.5)),
+                    SafeArea(
+                      child: Padding(
+                        padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
                         child: Column(
                           children: [
                             Align(
@@ -219,7 +237,9 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            provider.eventDetail.editEvent == true ? questionAndFeedback(context, scaler, provider) : Container(),
+                            provider.eventDetail.editEvent == true
+                                ? questionAndFeedback(context, scaler, provider)
+                                : Container(),
                             provider.isSwitched == true && _fields.length > 0
                                 ? SizedBox(height: scaler.getHeight(1.5))
                                 : SizedBox(height: scaler.getHeight(0.0)),
@@ -443,13 +463,13 @@ class CreateEventScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            },
-          )),
-    );
+              ),
+            );
+          },
+        ));
   }
 
   Widget selectedImage(
@@ -462,14 +482,14 @@ class CreateEventScreen extends StatelessWidget {
         }
       },
       child: Card(
-        margin: scaler.getMarginAll(0.0),
+        margin: scaler.getMarginLTRB(1.0, 0.0, 1.0, 0.0),
         shadowColor: ColorConstants.colorWhite,
         elevation: 5.0,
         shape: RoundedRectangleBorder(
-            borderRadius: scaler.getBorderRadiusCircularLR(0.0, 0.0, 15, 15)),
+            borderRadius: scaler.getBorderRadiusCircularLR(0.0, 0.0, 16, 16)),
         color: ColorConstants.colorLightGray,
         child: Container(
-          height: scaler.getHeight(30),
+          height: scaler.getHeight(34),
           width: double.infinity,
           child: Column(
             children: [
@@ -477,13 +497,13 @@ class CreateEventScreen extends StatelessWidget {
                 children: [
                   ClipRRect(
                       borderRadius:
-                          scaler.getBorderRadiusCircularLR(0.0, 0.0, 15, 15),
+                          scaler.getBorderRadiusCircularLR(0.0, 0.0, 16, 16),
                       child: provider.image == null
                           ? provider.eventDetail.eventPhotoUrl != null
                               ? ImageView(
                                   path: provider.eventDetail.eventPhotoUrl,
                                   fit: BoxFit.cover,
-                                  height: scaler.getHeight(30),
+                                  height: scaler.getHeight(34),
                                   width: double.infinity,
                                 )
                               : imageSelectedCard(context, scaler)
@@ -491,7 +511,7 @@ class CreateEventScreen extends StatelessWidget {
                               ? ImageView(
                                   file: provider.image,
                                   fit: BoxFit.cover,
-                                  height: scaler.getHeight(30),
+                                  height: scaler.getHeight(34),
                                   width: double.infinity,
                                 )
                               : imageSelectedCard(context, scaler)),
@@ -505,7 +525,7 @@ class CreateEventScreen extends StatelessWidget {
                             },
                             child: Container(
                                 padding:
-                                    scaler.getPaddingLTRB(0.0, 2, 3.0, 0.0),
+                                    scaler.getPaddingLTRB(0.0, 4.0, 3.0, 0.0),
                                 alignment: Alignment.centerRight,
                                 child: ImageView(
                                     path: ImageConstants.close_icon,
@@ -705,7 +725,8 @@ class CreateEventScreen extends StatelessWidget {
           onToggle: (val) {
             hideKeyboard(context);
             provider.isSwitched = val;
-            val == true ? Container() : _fields.clear();;
+            val == true ? Container() : _fields.clear();
+            ;
             provider.updateLoadingStatus(true);
           },
         ),
@@ -716,10 +737,11 @@ class CreateEventScreen extends StatelessWidget {
   Widget addQuestion(
       BuildContext context, CreateEventProvider provider, ScreenScaler scaler) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () {
-        if(_fields.length < 5){
+        if (_fields.length < 5) {
           popupForAddingQuestion(context, scaler, provider);
-        } else{
+        } else {
           DialogHelper.showMessage(context, "cannot_add_more_than_5_que".tr());
         }
         questionController.clear();
@@ -761,10 +783,12 @@ class CreateEventScreen extends StatelessWidget {
     );
   }
 
-  questionareText(BuildContext context, CreateEventProvider provider, ScreenScaler scaler) {
+  questionnaireText(
+      BuildContext context, CreateEventProvider provider, ScreenScaler scaler,
+      {bool addQue = true}) {
     // final controller = TextEditingController();
     final field =
-    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("${"question".tr()} ${_fields.length + 1}")
           .boldText(ColorConstants.colorBlack, 9.5, TextAlign.left),
       SizedBox(height: scaler.getHeight(0.2)),
@@ -780,11 +804,13 @@ class CreateEventScreen extends StatelessWidget {
     //   questionControllers.add(controller);
 
     _fields.add(field);
-    questionsList.add(questionController.text);
-    provider.addQuestionToEvent(context, provider.eventDetail.event!, _fields.length, questionController.text);
+    // questionsList.add(questionController.text);
+    addQue
+        ? provider.addQuestionToEvent(context, provider.eventDetail.event!,
+            _fields.length, questionController.text)
+        : Container();
     provider.updateQuestionStatus(true);
   }
-
 
   popupForAddingQuestion(
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
@@ -832,10 +858,10 @@ class CreateEventScreen extends StatelessWidget {
                   children: [
                     GestureDetector(
                         onTap: () {
-                            if (_questionFormKey.currentState!.validate()){
-                              questionareText(context, provider, scaler);
-                              Navigator.of(context).pop();
-                            }
+                          if (_questionFormKey.currentState!.validate()) {
+                            questionnaireText(context, provider, scaler);
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: Container(
                             padding: scaler.getPadding(1, 2),
@@ -933,7 +959,7 @@ class CreateEventScreen extends StatelessWidget {
                       TextAlign.center),
                 ),
               ),
-              SizedBox(height: scaler.getHeight(1)),
+              SizedBox(height: scaler.getHeight(1.5)),
             ],
           );
         });

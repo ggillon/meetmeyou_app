@@ -85,7 +85,7 @@ class LoginOptionProvider extends BaseProvider {
 
   Future<void> signInWithApple(BuildContext context) async {
     initiateSignInWithApple(context);
-    /*var user = await auth.signInWithApple().catchError((e) {
+    var user = await auth.signInWithApple().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);
     });
@@ -106,9 +106,9 @@ class LoginOptionProvider extends BaseProvider {
         setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
-            RoutesConstants.homePage, (route) => false);
+            RoutesConstants.dashboardPage, (route) => false);
       }
-    }*/
+    }
   }
 
   void initiateSignInWithApple(BuildContext context) async {

@@ -158,5 +158,9 @@
   "enter_your_question" : "You can enter your question here",
   "submit" : "Submit",
   "question_field_cannot_empty" : "Question field can't be empty",
-  "cannot_add_more_than_5_que" : "You can't add more than 5 Question"
+  "cannot_add_more_than_5_que" : "You can't add more than 5 Question",
+  "event_form_questionnaire" : "Event Form Questionnaire",
+  "answer" : "Answer",
+  "submit_answers" : "Submit answers",
+  "answer_required" : "Answer required"
  }

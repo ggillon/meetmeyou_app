@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:image_stack/image_stack.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
@@ -20,6 +21,13 @@ import 'package:provider/provider.dart';
 
 class EventDetailScreen extends StatelessWidget {
   // final Event event;
+  final answer1Controller = TextEditingController();
+  final answer2Controller = TextEditingController();
+  final answer3Controller = TextEditingController();
+  final answer4Controller = TextEditingController();
+  final answer5Controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
   EventDetailScreen({Key? key}) : super(key: key);
 
@@ -27,124 +35,130 @@ class EventDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        body: BaseView<EventDetailProvider>(
-          onModelReady: (provider) {
-            provider.calendarDetail.fromCalendarPage == true
-                ? Container()
-                : provider.eventGoingLength();
-            provider.calendarDetail.fromCalendarPage == true
-                ? Container()
-                : provider.getUsersProfileUrl(context);
-            provider.calendarDetail.fromCalendarPage == true
-                ? Container()
-                : provider.getOrganiserProfileUrl(
-                    context, provider.eventDetail.organiserId!);
-            provider.calendarDetail.fromCalendarPage == true
-                ? provider.getEvent(context, provider.eventDetail.eid!)
-                : Container();
-          },
-          builder: (context, provider, _) {
-            return provider.calendarDetail.fromCalendarPage == true &&
-                    provider.eventValue == true
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+    return Scaffold(
+      key: _scaffoldkey,
+      body: BaseView<EventDetailProvider>(
+        onModelReady: (provider) {
+          provider.calendarDetail.fromCalendarPage == true
+              ? Container()
+              : provider.eventGoingLength();
+          provider.calendarDetail.fromCalendarPage == true
+              ? Container()
+              : provider.getUsersProfileUrl(context);
+          provider.calendarDetail.fromCalendarPage == true
+              ? Container()
+              : provider.getOrganiserProfileUrl(
+                  context, provider.eventDetail.organiserId!);
+          provider.calendarDetail.fromCalendarPage == true
+              ? provider.getEvent(context, provider.eventDetail.eid!)
+              : Container();
+        },
+        builder: (context, provider, _) {
+          return provider.calendarDetail.fromCalendarPage == true &&
+                  provider.eventValue == true
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(child: CircularProgressIndicator()),
+                    SizedBox(height: scaler.getHeight(1)),
+                    Text("fetching_event".tr()).mediumText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(10),
+                        TextAlign.left),
+                  ],
+                )
+              : SingleChildScrollView(
+                  child: Column(children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.bottomCenter,
                     children: [
-                      Center(child: CircularProgressIndicator()),
-                      SizedBox(height: scaler.getHeight(1)),
-                      Text("fetching_event".tr()).mediumText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(10),
-                          TextAlign.left),
+                      imageView(context, scaler, provider),
+                      Positioned(
+                        bottom: -48,
+                        child: titleDateLocationCard(scaler, provider),
+                      )
                     ],
-                  )
-                : SingleChildScrollView(
-                    child: Column(children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        imageView(context, scaler, provider),
-                        Positioned(
-                          bottom: -50,
-                          child: titleDateLocationCard(scaler, provider),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: scaler.getHeight(6)),
-                    Padding(
-                      padding: scaler.getPaddingLTRB(3, 1.0, 3, 1.0),
+                  ),
+                  SizedBox(height: scaler.getHeight(3.5)),
+                  SafeArea(
+                    child: Padding(
+                      padding: scaler.getPaddingLTRB(3, 1.0, 3, 1.5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          provider.replyEventValue == true
-                              ? Center(child: CircularProgressIndicator())
-                              : CommonWidgets.commonBtn(
-                                  scaler,
-                                  context,
-                                  provider.eventDetail.eventBtnStatus!.tr(),
-                                  provider.eventDetail.btnBGColor!,
-                                  provider.eventDetail.textColor!,
-                                  onTapFun: () {
-                                  if (provider.eventDetail.eventBtnStatus ==
-                                      "respond") {
-                                    CommonWidgets.respondToEventBottomSheet(
-                                        context, scaler, going: () {
-                                      Navigator.of(context).pop();
-                                      provider.dashboardProvider
-                                          .updateEventNotificationCount();
-                                      provider.replyToEvent(
-                                          context,
-                                          provider.eventDetail.eid!,
-                                          EVENT_ATTENDING);
-                                    }, notGoing: () {
-                                      Navigator.of(context).pop();
-                                      provider.dashboardProvider
-                                          .updateEventNotificationCount();
-                                      provider.replyToEvent(
-                                          context,
-                                          provider.eventDetail.eid!,
-                                          EVENT_NOT_ATTENDING);
-                                    }, hide: () {
-                                      Navigator.of(context).pop();
-                                      provider.dashboardProvider
-                                          .updateEventNotificationCount();
-                                      provider.replyToEvent(
-                                          context,
-                                          provider.eventDetail.eid!,
-                                          EVENT_NOT_INTERESTED);
-                                    });
-                                  } else if (provider
-                                          .eventDetail.eventBtnStatus ==
-                                      "edit") {
-                                    // provider.setEventValuesForEdit(event);
-                                    Navigator.pushNamed(context,
-                                            RoutesConstants.createEventScreen)
-                                        .then((value) {
-                                      provider.updateValue(true);
-                                    });
-                                  } else if (provider
-                                          .eventDetail.eventBtnStatus ==
-                                      "cancelled") {
-                                    if (provider.userDetail.cid ==
-                                        provider.eventDetail.organiserId!) {
-                                      CommonWidgets.eventCancelBottomSheet(
-                                          context, scaler, delete: () {
-                                        Navigator.of(context).pop();
-                                        provider.deleteEvent(
-                                            context,
-                                            provider.eventDetail.eid
-                                                .toString());
-                                      });
-                                    } else {
-                                      Container();
+                          if (provider.value == true)
+                            Center(child: CircularProgressIndicator())
+                          else
+                            CommonWidgets.commonBtn(
+                                scaler,
+                                context,
+                                provider.eventDetail.eventBtnStatus!.tr(),
+                                provider.eventDetail.btnBGColor!,
+                                provider.eventDetail.textColor!, onTapFun: () {
+                              if (provider.eventDetail.eventBtnStatus ==
+                                  "respond") {
+                                CommonWidgets.respondToEventBottomSheet(
+                                    context, scaler, going: () {
+                                  if (provider
+                                      .eventDetail.event!.form.isNotEmpty) {
+                                    List<String> questionsList = [];
+                                    for (var value in provider
+                                        .eventDetail.event!.form.values) {
+                                      questionsList.add(value);
                                     }
+                                    Navigator.of(context).pop();
+                                    alertForQuestionnaireAnswers(
+                                        _scaffoldkey.currentContext!,
+                                        scaler,
+                                        questionsList,
+                                        provider);
                                   } else {
-                                    Container();
+                                    Navigator.of(context).pop();
+                                    provider.replyToEvent(
+                                        context,
+                                        provider.eventDetail.eid!,
+                                        EVENT_ATTENDING);
                                   }
-                                }),
+                                }, notGoing: () {
+                                  Navigator.of(context).pop();
+                                  provider.replyToEvent(
+                                      context,
+                                      provider.eventDetail.eid!,
+                                      EVENT_NOT_ATTENDING);
+                                }, hide: () {
+                                  Navigator.of(context).pop();
+                                  provider.replyToEvent(
+                                      context,
+                                      provider.eventDetail.eid!,
+                                      EVENT_NOT_INTERESTED);
+                                });
+                              } else if (provider.eventDetail.eventBtnStatus ==
+                                  "edit") {
+                                // provider.setEventValuesForEdit(event);
+                                Navigator.pushNamed(context,
+                                        RoutesConstants.createEventScreen)
+                                    .then((value) {
+                                  provider.updateBackValue(true);
+                                });
+                              } else if (provider.eventDetail.eventBtnStatus ==
+                                  "cancelled") {
+                                if (provider.userDetail.cid ==
+                                    provider.eventDetail.organiserId!) {
+                                  CommonWidgets.eventCancelBottomSheet(
+                                      context, scaler, delete: () {
+                                    Navigator.of(context).pop();
+                                    provider.deleteEvent(context,
+                                        provider.eventDetail.eid.toString());
+                                  });
+                                } else {
+                                  Container();
+                                }
+                              } else {
+                                Container();
+                              }
+                            }),
                           SizedBox(height: scaler.getHeight(1)),
                           organiserCard(scaler, provider),
                           SizedBox(height: scaler.getHeight(1)),
@@ -155,10 +169,8 @@ class EventDetailScreen extends StatelessWidget {
                                   onTap: () {
                                     provider.eventDetail.attendingProfileKeys =
                                         provider.eventAttendingKeysList;
-                                    Navigator.pushNamed(
-                                            context,
-                                            RoutesConstants
-                                                .eventAttendingScreen)
+                                    Navigator.pushNamed(context,
+                                            RoutesConstants.eventAttendingScreen)
                                         .then((value) {
                                       provider.eventAttendingLength = (provider
                                               .eventDetail
@@ -169,7 +181,7 @@ class EventDetailScreen extends StatelessWidget {
                                           .eventDetail.attendingProfileKeys!;
                                       provider.eventAttendingPhotoUrlLists = [];
                                       provider.getUsersProfileUrl(context);
-                                      provider.updateValue(true);
+                                      provider.updateBackValue(true);
                                     });
                                   },
                                   child: Container(
@@ -219,10 +231,9 @@ class EventDetailScreen extends StatelessWidget {
                                                             Alignment.center,
                                                         color: ColorConstants
                                                             .primaryColor,
-                                                        height: scaler
-                                                            .getHeight(2.0),
-                                                        width:
-                                                            scaler.getWidth(6),
+                                                        height:
+                                                            scaler.getHeight(2.0),
+                                                        width: scaler.getWidth(6),
                                                         child: Text((provider
                                                                         .eventAttendingPhotoUrlLists
                                                                         .length -
@@ -234,8 +245,7 @@ class EventDetailScreen extends StatelessWidget {
                                                                 scaler
                                                                     .getTextSize(
                                                                         7.7),
-                                                                TextAlign
-                                                                    .center),
+                                                                TextAlign.center),
                                                       ),
                                                     ),
                                             )
@@ -244,10 +254,8 @@ class EventDetailScreen extends StatelessWidget {
                                         provider.eventAttendingPhotoUrlLists
                                                     .length <=
                                                 6
-                                            ? SizedBox(
-                                                width: scaler.getWidth(1))
-                                            : SizedBox(
-                                                width: scaler.getWidth(6)),
+                                            ? SizedBox(width: scaler.getWidth(1))
+                                            : SizedBox(width: scaler.getWidth(6)),
                                         Text("going".tr()).regularText(
                                             ColorConstants.colorGray,
                                             scaler.getTextSize(8),
@@ -269,10 +277,10 @@ class EventDetailScreen extends StatelessWidget {
                           eventDiscussionCard(context, scaler)
                         ],
                       ),
-                    )
-                  ]));
-          },
-        ),
+                    ),
+                  )
+                ]));
+        },
       ),
     );
   }
@@ -284,10 +292,10 @@ class EventDetailScreen extends StatelessWidget {
       shadowColor: ColorConstants.colorWhite,
       elevation: 5.0,
       shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircularLR(0.0, 0.0, 15, 15)),
+          borderRadius: scaler.getBorderRadiusCircularLR(0.0, 0.0, 16, 16)),
       color: ColorConstants.colorLightGray,
       child: Container(
-        height: scaler.getHeight(30),
+        height: scaler.getHeight(34),
         width: double.infinity,
         child: Column(
           children: [
@@ -295,18 +303,18 @@ class EventDetailScreen extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius:
-                      scaler.getBorderRadiusCircularLR(0.0, 0.0, 15, 15),
+                      scaler.getBorderRadiusCircularLR(0.0, 0.0, 16, 16),
                   child: provider.eventDetail.photoUrlEvent == null ||
                           provider.eventDetail.photoUrlEvent == ""
                       ? Container(
                           color: ColorConstants.primaryColor,
-                          height: scaler.getHeight(30),
+                          height: scaler.getHeight(34),
                           width: double.infinity,
                         )
                       : ImageView(
                           path: provider.eventDetail.photoUrlEvent,
                           fit: BoxFit.cover,
-                          height: scaler.getHeight(30),
+                          height: scaler.getHeight(34),
                           width: double.infinity,
                         ),
                 ),
@@ -317,7 +325,7 @@ class EventDetailScreen extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 2, 3.0, 0.0),
+                        padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 0.0),
                         alignment: Alignment.centerRight,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -529,5 +537,120 @@ class EventDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  alertForQuestionnaireAnswers(BuildContext context, ScreenScaler scaler,
+      List<String> questionsList, EventDetailProvider provider) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Container(
+            width: double.infinity,
+            child: AlertDialog(
+                title: Text("event_form_questionnaire".tr())
+                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                content: Container(
+                  width: scaler.getWidth(75),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: questionsList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("${index + 1}. ${questionsList[index]}")
+                                  .mediumText(ColorConstants.colorBlack, 12,
+                                      TextAlign.left,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis),
+                              SizedBox(height: scaler.getHeight(0.2)),
+                              TextFormField(
+                                textCapitalization: TextCapitalization.sentences,
+                                controller: answerController(index),
+                                style: ViewDecoration.textFieldStyle(
+                                    scaler.getTextSize(9.5),
+                                    ColorConstants.colorBlack),
+                                decoration:
+                                    ViewDecoration.inputDecorationWithCurve(
+                                        " ${"answer".tr()} ${index + 1}",
+                                        scaler,
+                                        ColorConstants.primaryColor),
+                                onFieldSubmitted: (data) {
+                                  // FocusScope.of(context).requestFocus(nodes[1]);
+                                },
+                                textInputAction: TextInputAction.done,
+                                keyboardType: TextInputType.name,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "answer_required".tr();
+                                  }
+                                  {
+                                    return null;
+                                  }
+                                },
+                              ),
+                              SizedBox(height: scaler.getHeight(1.0)),
+                            ],
+                          );
+                        }),
+                  ),
+                ),
+                actions: <Widget>[
+                  Column(
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              final Map<String, dynamic> answersMap = {
+                                "1. text": answer1Controller.text,
+                                "2. text": answer2Controller.text,
+                                "3. text": answer3Controller.text,
+                                "4. text": answer4Controller.text,
+                                "5. text": answer5Controller.text
+                              };
+                              Navigator.of(context).pop();
+                              provider.answersToEventQuestionnaire(
+                                  _scaffoldkey.currentContext!,
+                                  provider.eventDetail.eid!,
+                                  answersMap);
+                            }
+                          },
+                          child: Container(
+                              padding: scaler.getPadding(1, 2),
+                              decoration: BoxDecoration(
+                                  color: ColorConstants.primaryColor,
+                                  borderRadius:
+                                      scaler.getBorderRadiusCircular(10.0)),
+                              child: Text('submit_answers'.tr()).semiBoldText(
+                                  ColorConstants.colorWhite,
+                                  12,
+                                  TextAlign.left))),
+                      SizedBox(height: scaler.getHeight(0.5))
+                    ],
+                  )
+                ]),
+          );
+        });
+  }
+
+  answerController(int index) {
+    switch (index) {
+      case 0:
+        return answer1Controller;
+
+      case 1:
+        return answer2Controller;
+
+      case 2:
+        return answer3Controller;
+
+      case 3:
+        return answer4Controller;
+
+      case 4:
+        return answer5Controller;
+    }
   }
 }

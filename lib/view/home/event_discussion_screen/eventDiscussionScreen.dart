@@ -22,27 +22,27 @@ class EventDiscussionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: GestureDetector(
-        onTap: () {
-          hideKeyboard(context);
-        },
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          backgroundColor: ColorConstants.colorWhite,
-          body: BaseView<EventDiscussionProvider>(
-            onModelReady: (provider) async {
-              provider.getEventChatMessages(context);
-              const fiveSeconds = const Duration(milliseconds: 500);
+    return GestureDetector(
+      onTap: () {
+        hideKeyboard(context);
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: ColorConstants.colorWhite,
+        body: BaseView<EventDiscussionProvider>(
+          onModelReady: (provider) async {
+            provider.getEventChatMessages(context);
+            const fiveSeconds = const Duration(milliseconds: 500);
 
-              provider.clockTimer = Timer.periodic(fiveSeconds, (Timer t) {
-                //   provider.eventChatList.clear();
-                provider.getEventChatMessages(context,
-                    load: false, jump: false);
-              });
-            },
-            builder: (context, provider, _) {
-              return Padding(
+            provider.clockTimer = Timer.periodic(fiveSeconds, (Timer t) {
+              //   provider.eventChatList.clear();
+              provider.getEventChatMessages(context,
+                  load: false, jump: false);
+            });
+          },
+          builder: (context, provider, _) {
+            return SafeArea(
+              child: Padding(
                 padding: scaler.getPaddingLTRB(3.0, 1.0, 3.0, 0.5),
                 child: Column(
                   children: [
@@ -85,9 +85,9 @@ class EventDiscussionScreen extends StatelessWidget {
                     writeSomethingTextField(context, scaler, provider)
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

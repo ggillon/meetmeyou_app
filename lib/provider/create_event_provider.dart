@@ -265,11 +265,11 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-   addQuestionToEvent(BuildContext context, Event event, int queNo, String queText) {
+ Future addQuestionToEvent(BuildContext context, Event event, int queNo, String queText) async{
     updateAddQuestionStatus(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-   var value =  mmyEngine!.addQuestionToEvent(event, questionNum: queNo, text: queText);
+   var value =  await mmyEngine!.addQuestionToEvent(event, questionNum: queNo, text: queText);
 
     if(value != null){
       updateAddQuestionStatus(false);

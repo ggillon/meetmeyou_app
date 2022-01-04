@@ -402,63 +402,65 @@ class CommonWidgets {
         ),
         context: context,
         builder: (BuildContext context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: scaler.getHeight(0.5)),
-              Container(
-                decoration: BoxDecoration(
-                    color: ColorConstants.colorMediumGray,
-                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                height: scaler.getHeight(0.4),
-                width: scaler.getWidth(12),
-              ),
-              Column(
-                children: [
-                  SizedBox(height: scaler.getHeight(2)),
-                  GestureDetector(
-                    onTap: going,
-                    child: Text("going_to_event".tr()).regularText(
-                        ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
-                        TextAlign.center),
-                  ),
-                  SizedBox(height: scaler.getHeight(0.9)),
-                  Divider(),
-                  SizedBox(height: scaler.getHeight(0.9)),
-                  GestureDetector(
-                    onTap: notGoing,
-                    child: Text("not_going_to_event".tr()).regularText(
-                        ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
-                        TextAlign.center),
-                  ),
-                  SizedBox(height: scaler.getHeight(0.9)),
-                  Divider(),
-                  SizedBox(height: scaler.getHeight(0.9)),
-                  GestureDetector(
-                    onTap: hide,
-                    child: Text("hide_event".tr()).regularText(
-                        ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
-                        TextAlign.center),
-                  ),
-                  SizedBox(height: scaler.getHeight(2)),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Center(
-                  child: Text("cancel".tr()).semiBoldText(
-                      ColorConstants.colorRed,
-                      scaler.getTextSize(11),
-                      TextAlign.center),
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: scaler.getHeight(0.5)),
+                Container(
+                  decoration: BoxDecoration(
+                      color: ColorConstants.colorMediumGray,
+                      borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                  height: scaler.getHeight(0.4),
+                  width: scaler.getWidth(12),
                 ),
-              ),
-              SizedBox(height: scaler.getHeight(1)),
-            ],
+                Column(
+                  children: [
+                    SizedBox(height: scaler.getHeight(2)),
+                    GestureDetector(
+                      onTap: going,
+                      child: Text("going_to_event".tr()).regularText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(11),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    Divider(),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    GestureDetector(
+                      onTap: notGoing,
+                      child: Text("not_going_to_event".tr()).regularText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(11),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    Divider(),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    GestureDetector(
+                      onTap: hide,
+                      child: Text("hide_event".tr()).regularText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(11),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(2)),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Center(
+                    child: Text("cancel".tr()).semiBoldText(
+                        ColorConstants.colorRed,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                ),
+               // SizedBox(height: scaler.getHeight(0.5)),
+              ],
+            ),
           );
         });
   }

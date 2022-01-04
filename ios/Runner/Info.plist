@@ -115,5 +115,10 @@
         <key>NSCalendarsUsageDescription</key>
         <string>INSERT_REASON_HERE</string>
 
+        <key>UIUserInterfaceStyle</key>
+        <string>Light</string>
+        <key>UIViewControllerBasedStatusBarAppearance</key>
+        <true/>
+
 	</dict>
 </plist>

@@ -11,11 +11,11 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context),
-        body: Padding(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      appBar: DialogHelper.appBarWithBack(scaler, context),
+      body: SafeArea(
+        child: Padding(
           padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 2.5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

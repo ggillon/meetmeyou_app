@@ -18,25 +18,30 @@ class _OrganizedEventCardShimmerState extends State<OrganizedEventCardShimmer> {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return CarouselSlider.builder(
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
-        return Container(
-            width: MediaQuery.of(context).size.width / 1.2,
-            decoration: BoxDecoration(
-                color: ColorConstants.colorLightGray,
-                borderRadius: scaler.getBorderRadiusCircular(8.0)),
-            child: Shimmer.fromColors(
-                baseColor: ColorConstants.colorWhitishGray,
-                highlightColor: ColorConstants.colorLightGray,
-                child: eventCard(context, scaler)));
-      },
-      options: CarouselOptions(
-        height: scaler.getHeight(30),
-        enableInfiniteScroll: false,
-        // aspectRatio: 1.5,
-        viewportFraction: 0.9,
-      ),
+    return Column(
+      children: [
+        SizedBox(height: scaler.getHeight(1.5)),
+        CarouselSlider.builder(
+          itemCount: 10,
+          itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
+            return Container(
+                width: MediaQuery.of(context).size.width / 1.2,
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorLightGray,
+                    borderRadius: scaler.getBorderRadiusCircular(8.0)),
+                child: Shimmer.fromColors(
+                    baseColor: ColorConstants.colorWhitishGray,
+                    highlightColor: ColorConstants.colorLightGray,
+                    child: eventCard(context, scaler)));
+          },
+          options: CarouselOptions(
+            height: scaler.getHeight(30),
+            enableInfiniteScroll: false,
+            // aspectRatio: 1.5,
+            viewportFraction: 0.9,
+          ),
+        ),
+      ],
     );
   }
 

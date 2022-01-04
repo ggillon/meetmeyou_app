@@ -39,19 +39,19 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        body: BaseView<SignUpProvider>(
-          onModelReady: (provider) {
-            if (signUpType == StringConstants.social) {
-              firstNameController.text = provider.userDetail.firstName ?? '';
-              lastNameController.text = provider.userDetail.lastName ?? '';
-              emailController.text = provider.userDetail.email ?? '';
-            }
-          },
-          builder: (context, provider, _) {
-            return SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      body: BaseView<SignUpProvider>(
+        onModelReady: (provider) {
+          if (signUpType == StringConstants.social) {
+            firstNameController.text = provider.userDetail.firstName ?? '';
+            lastNameController.text = provider.userDetail.lastName ?? '';
+            emailController.text = provider.userDetail.email ?? '';
+          }
+        },
+        builder: (context, provider, _) {
+          return SafeArea(
+            child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
                 child: Padding(
@@ -473,9 +473,9 @@ class SignUpPage extends StatelessWidget {
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -19,6 +19,7 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   SharedPref.prefs = await SharedPreferences.getInstance();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.white,
     statusBarColor: Colors.white,
     statusBarIconBrightness: Brightness.dark,
     statusBarBrightness: Brightness.dark,
