@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -16,6 +17,7 @@ import 'package:permission_handler/permission_handler.dart';
 class EditProfileProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
+  EventDetail eventDetail = locator<EventDetail>();
   String? imageUrl;
   File? image;
   String? countryCode;

@@ -332,7 +332,7 @@ class SignUpPage extends StatelessWidget {
                           onFieldSubmitted: (data) {
                             // FocusScope.of(context).requestFocus(nodes[1]);
                           },
-                          textInputAction: TextInputAction.next,
+                          textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.numberWithOptions(signed: true, decimal: false),
                           validator: (value) {
                             if (value!.trim().isEmpty) {

@@ -13,10 +13,12 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:paged_vertical_calendar/paged_vertical_calendar.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -228,6 +230,7 @@ class CalendarPage extends StatelessWidget {
                                                       .then((value) {
                                                     provider.getCalendarEvents(
                                                         context);
+                                                    provider.unRespondedEventsApi(context);
                                                   });
                                                 } else {
                                                   provider.calendarDetail.fromCalendarPage = true;
@@ -248,6 +251,7 @@ class CalendarPage extends StatelessWidget {
                                                       .then((value) {
                                                     provider.deviceCalendarEvent = [];
                                                     provider.getCalendarEvents(context);
+                                                    provider.unRespondedEventsApi(context);
                                                   });
                                                 }
                                               },

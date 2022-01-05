@@ -60,6 +60,16 @@ class CalendarProvider extends BaseProvider {
     }
   }
 
+  Future unRespondedEventsApi(BuildContext context) async {
+    setState(ViewState.Busy);
+    eventDetail.unRespondedEvent1 = await mmyEngine!.unrespondedEvents().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    setState(ViewState.Idle);
+  }
+
   // bool eventValue = false;
   //
   // void updateEventValue(bool value) {

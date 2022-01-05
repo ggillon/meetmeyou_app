@@ -33,6 +33,7 @@ class OrganizeEventCardProvider extends BaseProvider{
     if (value != null) {
       setState(ViewState.Idle);
       eventLists = value;
+      eventDetail.eventListLength = eventLists.length;
     }
   }
 

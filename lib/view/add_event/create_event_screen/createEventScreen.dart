@@ -292,11 +292,17 @@ class CreateEventScreen extends StatelessWidget {
                                   )
                                 : Container(),
                             SizedBox(height: scaler.getHeight(3.5)),
-                            provider.fromInviteScreen ||
+                            provider.fromInviteScreen  == true ||
                                     provider.eventDetail.editEvent == true
                                 ? provider.state == ViewState.Busy
                                     ? Center(
-                                        child: CircularProgressIndicator(),
+                                        child: Column(
+                                          children: [
+                                            CircularProgressIndicator(),
+                                            SizedBox(
+                                                height: scaler.getHeight(1.5)),
+                                          ],
+                                        ),
                                       )
                                     : CommonWidgets.expandedRowButton(
                                         context,
@@ -387,7 +393,8 @@ class CreateEventScreen extends StatelessWidget {
                                         child: Column(
                                           children: [
                                             CircularProgressIndicator(),
-                                            SizedBox(height: scaler.getHeight(1.5)),
+                                            SizedBox(
+                                                height: scaler.getHeight(1.5)),
                                           ],
                                         ),
                                       )

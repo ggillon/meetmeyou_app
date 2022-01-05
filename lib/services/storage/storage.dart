@@ -13,8 +13,7 @@ Future<String> storeProfilePicture(File file, {required String uid}) async {
   imageLib.Image image = imageLib.decodeImage(file.readAsBytesSync())!;
   imageLib.Image profilePicture = imageLib.copyResize(image, height: 720);
   final profileFile = File(await getFilePath(uid));
-  File profilePic =
-      await profileFile.writeAsBytes(imageLib.encodePng(profilePicture));
+  File profilePic = await profileFile.writeAsBytes(imageLib.encodePng(profilePicture));
   // File profilePic = await File('${uid}.png').writeAsBytes(imageLib.encodePng(profilePicture));
   await FirebaseStorage.instance.ref(path).putFile(profilePic);
   return FirebaseStorage.instance.ref(path).getDownloadURL();

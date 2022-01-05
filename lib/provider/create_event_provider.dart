@@ -175,8 +175,7 @@ class CreateEventProvider extends BaseProvider {
           .then((value) {
         // fromInviteScreen = true;
         // updateLoadingStatus(true);
-        // hideKeyboard(context);
-        //dashboardProvider.onItemTapped(0);
+         hideKeyboard(context);
         Navigator.of(context).pop();
       });
     }

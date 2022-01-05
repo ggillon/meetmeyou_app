@@ -38,10 +38,10 @@ class OrganizedEventsCard extends StatelessWidget {
     }, builder: (context, provider, _) {
       return provider.state == ViewState.Busy
           ? OrganizedEventCardShimmer(showEventRespondBtn: showEventRespondBtn)
-          : Column(
+          : provider.eventLists.length > 0 ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
+                  Padding(
                   padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
                   child: Text("organized_events".tr()).boldText(
                       ColorConstants.colorBlack,
@@ -114,7 +114,7 @@ class OrganizedEventsCard extends StatelessWidget {
                   ),
                 ),
               ],
-            );
+            ): Container();
     });
   }
 

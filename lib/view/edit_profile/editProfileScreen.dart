@@ -55,7 +55,7 @@ class EditProfileScreen extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 )
               : SafeArea(
-                child: SingleChildScrollView(
+                  child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -326,8 +326,10 @@ class EditProfileScreen extends StatelessWidget {
                                       ),
                                     ),
                                     onFieldSubmitted: (data) {},
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.numberWithOptions(signed: true, decimal: false),
+                                    textInputAction: TextInputAction.done,
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            signed: true, decimal: false),
                                     validator: (value) {
                                       if (value!.trim().isEmpty) {
                                         return "phone_no_cannot_empty".tr();
@@ -405,7 +407,9 @@ class EditProfileScreen extends StatelessWidget {
                           OrganizedEventsCard(
                             showEventRespondBtn: false,
                           ),
-                          SizedBox(height: scaler.getHeight(1)),
+                          provider.eventDetail.eventListLength!.toInt() > 0
+                              ? SizedBox(height: scaler.getHeight(1))
+                              : SizedBox(height: scaler.getHeight(9)),
                           Padding(
                             padding: scaler.getPaddingLTRB(2, 0.0, 2, 1),
                             child: Row(
@@ -498,7 +502,7 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-              );
+                );
         },
       ),
     );
