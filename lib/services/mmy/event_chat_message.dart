@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
+import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 
 
@@ -27,7 +28,11 @@ Future<List<EventChatMessage>> getEventChatMessages(User currentUser, String eid
 }
 
 Future<EventChatMessage> postEventChatMessages(User currentUser, String eid, String text,) async {
-  EventChatMessage message = EventChatMessage(eid: eid, uid: currentUser.uid, mid: midGenerator(), timeCreated: DateTime.now(), timeEdited: DateTime.now(), text: text);
+  Profile profile = (await FirestoreDB(uid: currentUser.uid).getProfile(currentUser.uid))!;
+  EventChatMessage message = EventChatMessage(eid: eid, uid: currentUser.uid, mid: midGenerator(),
+      displayName: profile.displayName,
+      photoURL: profile.photoURL,
+      timeCreated: DateTime.now(), timeEdited: DateTime.now(), text: text);
   await FirestoreDB(uid: currentUser.uid).setMessage(eid, message);
   return message;
 }
