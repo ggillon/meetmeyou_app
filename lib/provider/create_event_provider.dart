@@ -173,9 +173,11 @@ class CreateEventProvider extends BaseProvider {
       //   DialogHelper.showMessage(context, "Event created Successfully");
       Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen)
           .then((value) {
-        fromInviteScreen = true;
-        updateLoadingStatus(true);
-        hideKeyboard(context);
+        // fromInviteScreen = true;
+        // updateLoadingStatus(true);
+        // hideKeyboard(context);
+        //dashboardProvider.onItemTapped(0);
+        Navigator.of(context).pop();
       });
     }
   }

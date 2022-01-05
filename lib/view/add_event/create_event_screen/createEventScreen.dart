@@ -384,7 +384,12 @@ class CreateEventScreen extends StatelessWidget {
                                         })
                                 : provider.state == ViewState.Busy
                                     ? Center(
-                                        child: CircularProgressIndicator(),
+                                        child: Column(
+                                          children: [
+                                            CircularProgressIndicator(),
+                                            SizedBox(height: scaler.getHeight(1.5)),
+                                          ],
+                                        ),
                                       )
                                     : CommonWidgets.commonBtn(
                                         scaler,

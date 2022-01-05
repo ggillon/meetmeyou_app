@@ -35,10 +35,7 @@ class HomePageProvider extends BaseProvider {
 
   tabChangeEvent(BuildContext context) {
     tabController?.addListener(() {
-      //   selectedIndex = tabController!.index;
-      // setState(ViewState.Busy);
       getIndexChanging(context);
-      //  setState(ViewState.Idle);
       notifyListeners();
     });
   }
