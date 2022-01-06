@@ -84,14 +84,14 @@ class CreateEventProvider extends BaseProvider {
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
     if (type == 1) {
-      final pickedFile = await picker.pickImage(source: ImageSource.camera);
+      final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 1440);
       image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
       }
       notifyListeners();
     } else {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 1440);
       image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
@@ -152,16 +152,14 @@ class CreateEventProvider extends BaseProvider {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!
-        .createEvent(
-            title: title,
-            location: location,
-            description: description,
-            photoFile: photoFile ?? null,
-            photoURL: photoURL ?? "",
-            start: startDateTime,
-            end: endDateTime)
-        .catchError((e) {
+    var value = await mmyEngine!.createEvent(
+        title: title,
+        location: location,
+        description: description,
+        photoFile: photoFile ?? null,
+        photoURL: photoURL ?? "",
+        start: startDateTime,
+        end: endDateTime).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -175,7 +173,7 @@ class CreateEventProvider extends BaseProvider {
           .then((value) {
         // fromInviteScreen = true;
         // updateLoadingStatus(true);
-         hideKeyboard(context);
+        hideKeyboard(context);
         Navigator.of(context).pop();
       });
     }
@@ -192,8 +190,7 @@ class CreateEventProvider extends BaseProvider {
             location: location,
             description: description,
             photoURL: eventDetail.eventPhotoUrl ?? "",
-            photoFile:
-                eventDetail.eventPhotoUrl == null ? photoFile ?? null : null,
+            photoFile: eventDetail.eventPhotoUrl == "" ? image ?? null : null,
             start: startDateTime,
             end: endDateTime)
         .catchError((e) {

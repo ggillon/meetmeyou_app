@@ -87,11 +87,11 @@ class EditProfileProvider extends BaseProvider {
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
     if (type == 1) {
-      final pickedFile = await picker.pickImage(source: ImageSource.camera);
+      final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
       image = File(pickedFile!.path);
       notifyListeners();
     } else {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 720);
     //  image = File(pickedFile!.path);
       if (pickedFile != null) {
         image = File(pickedFile.path);

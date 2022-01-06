@@ -32,18 +32,17 @@ class EventDiscussionScreen extends StatelessWidget {
         body: BaseView<EventDiscussionProvider>(
           onModelReady: (provider) async {
             provider.getEventChatMessages(context);
-            const fiveSeconds = const Duration(milliseconds: 500);
+            const milliSecTime = const Duration(milliseconds: 500);
 
-            provider.clockTimer = Timer.periodic(fiveSeconds, (Timer t) {
+            provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
               //   provider.eventChatList.clear();
-              provider.getEventChatMessages(context,
-                  load: false, jump: false);
+              provider.getEventChatMessages(context, load: false, jump: false);
             });
           },
           builder: (context, provider, _) {
             return SafeArea(
               child: Padding(
-                padding: scaler.getPaddingLTRB(3.0, 1.0, 3.0, 0.5),
+                padding: scaler.getPaddingLTRB(3.5, 1.0, 3.0, 0.5),
                 child: Column(
                   children: [
                     Row(
@@ -100,28 +99,17 @@ class EventDiscussionScreen extends StatelessWidget {
         onNotification: (scrollNotification) {
           if (provider.scrollController.position.userScrollDirection ==
               ScrollDirection.reverse) {
-            print("HELLO reverse");
+           // print("HELLO reverse");
             provider.isJump = false;
-
           } else if (provider.scrollController.position.userScrollDirection ==
               ScrollDirection.forward) {
-            print("HELLO forward");
+           // print("HELLO forward");
             provider.isJump = false;
-
           } else if (provider.scrollController.position.userScrollDirection ==
               ScrollDirection.idle) {
-            print("HELLO idle");
+          //  print("HELLO idle");
             provider.isJump = false;
-
           }
-          // if (scrollNotification is ScrollStartNotification) {
-          //   print("top");
-          // } else if (scrollNotification is ScrollUpdateNotification) {
-          //   print("bottom");
-          // } else if (scrollNotification is ScrollEndNotification) {
-          //   provider.scrollController
-          //       .jumpTo(provider.scrollController.position.maxScrollExtent);
-          // }
           return true;
         },
         child: ListView.builder(
@@ -135,23 +123,35 @@ class EventDiscussionScreen extends StatelessWidget {
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(width: scaler.getWidth(2)),
-                  Container(
-                    padding: scaler.getPaddingLTRB(2.0, 0.8, 2.0, 0.8),
-                    decoration: BoxDecoration(
-                        color: provider.userDetail.cid ==
-                                provider.eventChatList[index].uid
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorLightGray,
-                        borderRadius: scaler.getBorderRadiusCircular(8.0)),
-                    child: Text(provider.eventChatList[index].text).regularText(
-                        provider.userDetail.cid ==
-                                provider.eventChatList[index].uid
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorBlack,
-                        10.0,
-                        TextAlign.left,
-                        isHeight: true),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      provider.userDetail.cid == provider.eventChatList[index].uid ? Container() : discussionUserNameAndImage(scaler, provider, index),
+                   //   SizedBox(width: scaler.getWidth(1.0)),
+                      Expanded(
+                        child: Container(
+                          padding: scaler.getPaddingLTRB(2.0, 0.8, 2.0, 0.8),
+                          decoration: BoxDecoration(
+                              color: provider.userDetail.cid ==
+                                      provider.eventChatList[index].uid
+                                  ? ColorConstants.primaryColor
+                                  : ColorConstants.colorLightGray,
+                              borderRadius:
+                                  scaler.getBorderRadiusCircular(8.0)),
+                          child: Text(provider.eventChatList[index].text)
+                              .regularText(
+                                  provider.userDetail.cid ==
+                                          provider.eventChatList[index].uid
+                                      ? ColorConstants.colorWhite
+                                      : ColorConstants.colorBlack,
+                                  10.0,
+                                  TextAlign.left,
+                                  isHeight: true),
+                        ),
+                      ),
+                     provider.userDetail.cid == provider.eventChatList[index].uid ? SizedBox(width: scaler.getWidth(1.5)) : Container(),
+                      provider.userDetail.cid == provider.eventChatList[index].uid ? discussionUserNameAndImage(scaler, provider, index) : Container(),
+                    ],
                   ),
                   SizedBox(height: scaler.getHeight(2))
                 ],
@@ -191,6 +191,44 @@ class EventDiscussionScreen extends StatelessWidget {
         textInputAction: TextInputAction.send,
         keyboardType: TextInputType.name,
       ),
+    );
+  }
+
+  Widget discussionUserNameAndImage(
+      ScreenScaler scaler, EventDiscussionProvider provider, int index) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: scaler.getWidth(8.5),
+          height: scaler.getWidth(8.5),
+          child: ClipRRect(
+            borderRadius: scaler.getBorderRadiusCircular(10.0),
+            child: provider.eventChatList[index].photoURL == null
+                ? Container(
+                    width: scaler.getWidth(8.5),
+                    height: scaler.getWidth(8.5),
+                    color: ColorConstants.primaryColor,
+                  )
+                : ImageView(
+                    path: provider.eventChatList[index].photoURL,
+                    width: scaler.getWidth(8.5),
+                    height: scaler.getWidth(8.5),
+                    fit: BoxFit.cover,
+                  ),
+          ),
+        ),
+        SizedBox(height: scaler.getHeight(0.2)),
+        Container(
+          width: provider.userDetail.cid == provider.eventChatList[index].uid ? scaler.getWidth(8) : scaler.getWidth(11),
+          child: Text(provider.eventChatList[index].displayName == null
+                  ? ""
+                  : provider.eventChatList[index].displayName)
+              .semiBoldText(ColorConstants.colorBlack, scaler.getTextSize(7.7),
+                  TextAlign.left,
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+        )
+      ],
     );
   }
 }
