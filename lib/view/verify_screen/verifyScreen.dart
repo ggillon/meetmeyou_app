@@ -24,15 +24,15 @@ class VerifyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        body: BaseView<VerifyProvider>(
-          onModelReady: (provider) {
-            provider.userDetail=this.userDetail;
-          },
-          builder: (context, provider, _) {
-            return Stack(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      body: BaseView<VerifyProvider>(
+        onModelReady: (provider) {
+          provider.userDetail=this.userDetail;
+        },
+        builder: (context, provider, _) {
+          return SafeArea(
+            child: Stack(
               children: [
                 SingleChildScrollView(
                   child: Padding(
@@ -182,9 +182,9 @@ class VerifyScreen extends StatelessWidget {
                           CircularProgressIndicator(),
                         ])):Container()
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

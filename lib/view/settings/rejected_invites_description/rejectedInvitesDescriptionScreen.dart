@@ -18,11 +18,11 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: SingleChildScrollView(
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
@@ -51,18 +51,18 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                           "address".tr(),
                           userDetail.address!),
                       SizedBox(height: scaler.getHeight(3)),
-                      Text("organized_events".tr()).boldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
-                          TextAlign.left),
-                      SizedBox(height: scaler.getHeight(1.5)),
+                      // Text("organized_events".tr()).boldText(
+                      //     ColorConstants.colorBlack,
+                      //     scaler.getTextSize(10),
+                      //     TextAlign.left),
+                      // SizedBox(height: scaler.getHeight(1.5)),
                     ],
                   ),
                 ),
-                OrganizedEventsCard(showAttendBtn: false),
+                OrganizedEventsCard(showEventRespondBtn: false),
               ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 }

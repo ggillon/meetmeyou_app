@@ -24,23 +24,23 @@ class MyAccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context, showEdit: true,
-            editClick: () {
-          Navigator.pushNamed(context, RoutesConstants.editProfileScreen)
-              .then((value) {
-            this.provider!.updateLoadingStatus(true);
-            this.provider!.getUserDetail();
-          });
-        }),
-        body: BaseView<MyAccountProvider>(onModelReady: (provider) {
-          this.provider = provider;
-          provider.getUserDetail();
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      appBar: DialogHelper.appBarWithBack(scaler, context, showEdit: true,
+          editClick: () {
+        Navigator.pushNamed(context, RoutesConstants.editProfileScreen)
+            .then((value) {
           this.provider!.updateLoadingStatus(true);
-        }, builder: (context, provider, _) {
-          return SingleChildScrollView(
+          this.provider!.getUserDetail();
+        });
+      }),
+      body: BaseView<MyAccountProvider>(onModelReady: (provider) {
+        this.provider = provider;
+        provider.getUserDetail();
+        this.provider!.updateLoadingStatus(true);
+      }, builder: (context, provider, _) {
+        return SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -74,22 +74,22 @@ class MyAccountScreen extends StatelessWidget {
                           "address".tr(),
                           provider.address!),
                       SizedBox(height: scaler.getHeight(3)),
-                      Text("organized_events".tr()).boldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
-                          TextAlign.left),
-                      SizedBox(height: scaler.getHeight(1.5)),
+                      // Text("organized_events".tr()).boldText(
+                      //     ColorConstants.colorBlack,
+                      //     scaler.getTextSize(10),
+                      //     TextAlign.left),
+                      // SizedBox(height: scaler.getHeight(1.5)),
                     ],
                   ),
                 ),
                 OrganizedEventsCard(
-                  showAttendBtn: true,
+                  showEventRespondBtn: true,
                 ),
               ],
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 }

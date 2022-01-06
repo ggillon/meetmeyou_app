@@ -28,17 +28,17 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context),
-        body: BaseView<EventInviteFriendsProvider>(
-          onModelReady: (provider) {
-            provider.getConfirmedContactsList(context);
-            provider.contactsKeys.addAll(provider.eventDetail.contactCIDs);
-          },
-          builder: (context, provider, _) {
-            return Padding(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      appBar: DialogHelper.appBarWithBack(scaler, context),
+      body: BaseView<EventInviteFriendsProvider>(
+        onModelReady: (provider) {
+          provider.getConfirmedContactsList(context);
+          provider.contactsKeys.addAll(provider.eventDetail.contactCIDs);
+        },
+        builder: (context, provider, _) {
+          return SafeArea(
+            child: Padding(
               padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -175,9 +175,9 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                   SizedBox(height: scaler.getHeight(1)),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

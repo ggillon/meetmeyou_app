@@ -24,14 +24,14 @@ class ChooseEventScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: BaseView<ChooseEventProvider>(
-            builder: (context, provider, _) {
-              return Padding(
+    return Scaffold(
+      key: _scaffoldKey,
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: BaseView<ChooseEventProvider>(
+          builder: (context, provider, _) {
+            return SafeArea(
+              child: Padding(
                 padding: scaler.getPaddingLTRB(2.8, 0.0, 2.8, 0.0),
                 child:
                 // provider.eventValue == true ? Expanded(
@@ -59,10 +59,10 @@ class ChooseEventScreen extends StatelessWidget {
                     eventLists(scaler, provider)
                   ],
                 ),
-              );
-            },
-          )),
-    );
+              ),
+            );
+          },
+        ));
   }
 
   Widget eventLists(ScreenScaler scaler, ChooseEventProvider provider) {

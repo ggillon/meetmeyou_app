@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
@@ -34,210 +35,236 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin<HomePage> {
+  final answer1Controller = TextEditingController();
+  final answer2Controller = TextEditingController();
+  final answer3Controller = TextEditingController();
+  final answer4Controller = TextEditingController();
+  final answer5Controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final dashBoardProvider =
-        Provider.of<DashboardProvider>(context, listen: false);
-    ScreenScaler scaler = new ScreenScaler()..init(context);
+    Provider.of<DashboardProvider>(context, listen: false);
+    ScreenScaler scaler = new ScreenScaler()
+      ..init(context);
     return SafeArea(
       child: Scaffold(
-          //     body: Container(
-          //         child: Center(
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       Text("Home Page").semiBoldText(ColorConstants.colorBlack,
-          //           scaler.getTextSize(10), TextAlign.center),
-          //       SizedBox(
-          //         height: scaler.getHeight(3),
-          //       ),
-          //       GestureDetector(
-          //         onTap: () {
-          //           auth.signOut();
-          //           UserDetail userDetail = locator<UserDetail>();
-          //           userDetail.profileUrl = null;
-          //           SharedPref.clearSharePref();
-          //           //SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, false);
-          //           Navigator.of(context).pushNamedAndRemoveUntil(
-          //               RoutesConstants.loginOptions, (route) => false);
-          //         },
-          //         child: Text("Sign Out").semiBoldText(ColorConstants.primaryColor,
-          //             scaler.getTextSize(14), TextAlign.center),
-          //       ),
-          //     ],
-          //   ),
-          // ))
+        //     body: Container(
+        //         child: Center(
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     children: [
+        //       Text("Home Page").semiBoldText(ColorConstants.colorBlack,
+        //           scaler.getTextSize(10), TextAlign.center),
+        //       SizedBox(
+        //         height: scaler.getHeight(3),
+        //       ),
+        //       GestureDetector(
+        //         onTap: () {
+        //           auth.signOut();
+        //           UserDetail userDetail = locator<UserDetail>();
+        //           userDetail.profileUrl = null;
+        //           SharedPref.clearSharePref();
+        //           //SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, false);
+        //           Navigator.of(context).pushNamedAndRemoveUntil(
+        //               RoutesConstants.loginOptions, (route) => false);
+        //         },
+        //         child: Text("Sign Out").semiBoldText(ColorConstants.primaryColor,
+        //             scaler.getTextSize(14), TextAlign.center),
+        //       ),
+        //     ],
+        //   ),
+        // ))
           body: BaseView<HomePageProvider>(
-        onModelReady: (provider) {
-          provider.getUserDetail(context);
-          widget.provider = provider;
-          provider.tabController = TabController(length: 5, vsync: this);
-          provider.tabChangeEvent(context);
-          provider.getIndexChanging(context);
-        },
-        builder: (context, provider, _) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: scaler.getPaddingLTRB(2.5, 2.0, 4.5, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("home".tr()).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(16), TextAlign.left),
-                    ImageView(path: ImageConstants.search_icon)
-                  ],
-                ),
-              ),
-              SizedBox(height: scaler.getHeight(2.0)),
-              Padding(
-                padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
-                child: Text("my_upcoming_events".tr()).boldText(
-                    ColorConstants.colorBlack,
-                    scaler.getTextSize(12),
-                    TextAlign.left),
-              ),
-              SizedBox(height: scaler.getHeight(0.5)),
-              Padding(
-                padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
-                child: TabBar(
-                  labelPadding: scaler.getPadding(0.0, 1.5),
-                  indicatorColor: Colors.transparent,
-                  controller: widget.provider?.tabController,
-                  isScrollable: true,
-                  onTap: (index) {
-                    if (provider.tabController!.indexIsChanging) {
-                      provider.getIndexChanging(context);
-                    }
-                    provider.updateValue(true);
-                  },
-                  tabs: [
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 0
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('all'.tr()).mediumText(
-                            provider.tabController!.index == 0
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 1
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('going'.tr()).mediumText(
-                            provider.tabController!.index == 1
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 2
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('not_going'.tr()).mediumText(
-                            provider.tabController!.index == 2
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 3
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('not_replied'.tr()).mediumText(
-                            provider.tabController!.index == 3
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 4
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('hidden'.tr()).mediumText(
-                            provider.tabController!.index == 4
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: provider.tabController,
-                  children: <Widget>[
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
+            onModelReady: (provider) {
+              provider.getUserDetail(context);
+              widget.provider = provider;
+              provider.tabController = TabController(length: 5, vsync: this);
+              provider.tabChangeEvent(context);
+              provider.getIndexChanging(context);
+              WidgetsBinding.instance!.addPostFrameCallback((_){
+                if ((provider.eventDetail.unRespondedEvent ?? 0) >
+                    (provider.eventDetail.unRespondedEvent1 ?? 0)) {
+                  dashBoardProvider.updateEventNotificationCount();
+                  provider.unRespondedEventsApi(context);
+                }
+              });
+
+            },
+            builder: (context, provider, _) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: scaler.getPaddingLTRB(2.5, 2.0, 4.5, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("home".tr()).boldText(ColorConstants.colorBlack,
+                            scaler.getTextSize(16), TextAlign.left),
+                        ImageView(path: ImageConstants.search_icon)
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: scaler.getHeight(2.0)),
+                  Padding(
+                    padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
+                    child: Text("my_upcoming_events".tr()).boldText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(12),
+                        TextAlign.left),
+                  ),
+                  SizedBox(height: scaler.getHeight(0.5)),
+                  Padding(
+                    padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
+                    child: TabBar(
+                      labelPadding: scaler.getPadding(0.0, 1.5),
+                      indicatorColor: Colors.transparent,
+                      controller: widget.provider?.tabController,
+                      isScrollable: true,
+                      onTap: (index) {
+                        if (provider.tabController!.indexIsChanging) {
+                          provider.getIndexChanging(context);
+                        }
+                        provider.updateValue(true);
+                      },
+                      tabs: [
+                        Tab(
+                            child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(
+                                  15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(
+                                    3.0, 0.5, 3.0, 0.5),
+                                color: provider.tabController!.index == 0
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('all'.tr()).mediumText(
+                                    provider.tabController!.index == 0
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(9.5),
+                                    TextAlign.left),
+                              ),
+                            )),
+                        Tab(
+                            child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(
+                                  15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(
+                                    3.0, 0.5, 3.0, 0.5),
+                                color: provider.tabController!.index == 1
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('going'.tr()).mediumText(
+                                    provider.tabController!.index == 1
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(9.5),
+                                    TextAlign.left),
+                              ),
+                            )),
+                        Tab(
+                            child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(
+                                  15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(
+                                    3.0, 0.5, 3.0, 0.5),
+                                color: provider.tabController!.index == 2
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('not_going'.tr()).mediumText(
+                                    provider.tabController!.index == 2
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(9.5),
+                                    TextAlign.left),
+                              ),
+                            )),
+                        Tab(
+                            child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(
+                                  15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(
+                                    3.0, 0.5, 3.0, 0.5),
+                                color: provider.tabController!.index == 3
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('not_replied'.tr()).mediumText(
+                                    provider.tabController!.index == 3
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(9.5),
+                                    TextAlign.left),
+                              ),
+                            )),
+                        Tab(
+                            child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(
+                                  15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(
+                                    3.0, 0.5, 3.0, 0.5),
+                                color: provider.tabController!.index == 4
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('hidden'.tr()).mediumText(
+                                    provider.tabController!.index == 4
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(9.5),
+                                    TextAlign.left),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: provider.tabController,
+                      children: <Widget>[
+                        provider.state == ViewState.Busy
+                            ? loading(scaler)
+                            : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
                             : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
+                            provider, dashBoardProvider),
+                        provider.state == ViewState.Busy
+                            ? loading(scaler)
+                            : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
                             : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
+                            provider, dashBoardProvider),
+                        provider.state == ViewState.Busy
+                            ? loading(scaler)
+                            : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
                             : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
+                            provider, dashBoardProvider),
+                        provider.state == ViewState.Busy
+                            ? loading(scaler)
+                            : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
                             : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
+                            provider, dashBoardProvider),
+                        provider.state == ViewState.Busy
+                            ? loading(scaler)
+                            : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
                             : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      )),
+                            provider, dashBoardProvider),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          )),
     );
   }
 
@@ -292,10 +319,11 @@ class _HomePageState extends State<HomePage>
                       eventList[index].organiserName;
                   provider.calendarDetail.fromCalendarPage = false;
                   Navigator.pushNamed(
-                          context, RoutesConstants.eventDetailScreen)
+                      context, RoutesConstants.eventDetailScreen)
                       .then((value) {
                     provider.getIndexChanging(context);
                     provider.unRespondedEvents(context, dashboardProvider);
+                    provider.unRespondedEventsApi(context);
                     // if (provider.eventDetail.unRespondedEvent! > provider.eventDetail.unRespondedEvent1!.toInt()) {
                     //   dashboardProvider.updateEventNotificationCount();
                     // }
@@ -320,8 +348,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget eventCard(
-      ScreenScaler scaler,
+  Widget eventCard(ScreenScaler scaler,
       BuildContext context,
       List<Event> eventList,
       int index,
@@ -334,8 +361,14 @@ class _HomePageState extends State<HomePage>
           children: [
             ClipRRect(
               borderRadius:
-                  scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
-              child: ImageView(
+              scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
+              child: eventList[index].photoURL == null
+                  ? Container(
+                height: scaler.getHeight(21),
+                width: double.infinity,
+                color: ColorConstants.primaryColor,
+              )
+                  : ImageView(
                 path: eventList[index].photoURL,
                 fit: BoxFit.cover,
                 height: scaler.getHeight(21),
@@ -373,30 +406,34 @@ class _HomePageState extends State<HomePage>
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
                           width: scaler.getWidth(38),
-                          child: Text(eventList[index].start.toString().substring(0, 11) ==
-                                      eventList[index]
-                                          .end
-                                          .toString()
-                                          .substring(0, 11)
-                                  ? DateTimeHelper.getWeekDay(eventList[index].start) +
-                                      " - " +
-                                      DateTimeHelper.convertEventDateToTimeFormat(
-                                          eventList[index].start) +
-                                      " to " +
-                                      DateTimeHelper.convertEventDateToTimeFormat(
-                                          eventList[index].end)
-                                  : DateTimeHelper.getWeekDay(eventList[index].start) +
-                                      " - " +
-                                      DateTimeHelper.convertEventDateToTimeFormat(
-                                          eventList[index].start) +
-                                      " to " +
-                                      DateTimeHelper.dateConversion(
-                                          eventList[index].end,
-                                          date: false) +
-                                      "(${DateTimeHelper.convertEventDateToTimeFormat(eventList[index].end)})")
+                          child: Text(eventList[index].start.toString()
+                              .substring(0, 11) ==
+                              eventList[index]
+                                  .end
+                                  .toString()
+                                  .substring(0, 11)
+                              ? DateTimeHelper.getWeekDay(
+                              eventList[index].start) +
+                              " - " +
+                              DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList[index].start) +
+                              " to " +
+                              DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList[index].end)
+                              : DateTimeHelper.getWeekDay(
+                              eventList[index].start) +
+                              " - " +
+                              DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList[index].start) +
+                              " to " +
+                              DateTimeHelper.dateConversion(
+                                  eventList[index].end,
+                                  date: false) +
+                              "(${DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList[index].end)})")
                               .regularText(ColorConstants.colorGray,
-                                  scaler.getTextSize(7.7), TextAlign.left,
-                                  maxLines: 1, overflow: TextOverflow.ellipsis),
+                              scaler.getTextSize(7.7), TextAlign.left,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         )
                       ],
                     ),
@@ -442,10 +479,10 @@ class _HomePageState extends State<HomePage>
                 scaler.getTextSize(8.5),
                 TextAlign.center),
             Text(event.start.day <= 9
-                    ? "0" + event.start.day.toString()
-                    : event.start.day.toString())
+                ? "0" + event.start.day.toString()
+                : event.start.day.toString())
                 .boldText(ColorConstants.colorBlack, scaler.getTextSize(11),
-                    TextAlign.center)
+                TextAlign.center)
           ],
         ),
         bgColor: ColorConstants.colorWhite,
@@ -461,12 +498,27 @@ class _HomePageState extends State<HomePage>
     return GestureDetector(
       onTap: () {
         if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+            event, provider.userDetail.cid.toString()) ==
             "respond") {
+          answer1Controller.clear();
+          answer2Controller.clear();
+          answer3Controller.clear();
+          answer4Controller.clear();
+          answer5Controller.clear();
           CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
-            Navigator.of(context).pop();
-            dashboardProvider.updateEventNotificationCount();
-            provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+            if (event.form.values.isNotEmpty) {
+              List<String> questionsList = [];
+              for (var value in event.form.values) {
+                questionsList.add(value);
+              }
+              Navigator.of(context).pop();
+              alertForQuestionnaireAnswers(context, scaler, event,
+                  questionsList, provider, dashboardProvider);
+            } else {
+              Navigator.of(context).pop();
+              dashboardProvider.updateEventNotificationCount();
+              provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+            }
           }, notGoing: () {
             Navigator.of(context).pop();
             dashboardProvider.updateEventNotificationCount();
@@ -477,7 +529,7 @@ class _HomePageState extends State<HomePage>
             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+            event, provider.userDetail.cid.toString()) ==
             "edit") {
           provider.setEventValuesForEdit(event);
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
@@ -485,7 +537,7 @@ class _HomePageState extends State<HomePage>
             provider.getIndexChanging(context);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+            event, provider.userDetail.cid.toString()) ==
             "cancelled") {
           if (provider.userDetail.cid == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
@@ -502,14 +554,14 @@ class _HomePageState extends State<HomePage>
       child: CustomShape(
         child: Center(
             child: Text(CommonEventFunction.getEventBtnStatus(
-                        event, provider.userDetail.cid.toString())
-                    .toString()
-                    .tr())
+                event, provider.userDetail.cid.toString())
+                .toString()
+                .tr())
                 .semiBoldText(
-                    CommonEventFunction.getEventBtnColorStatus(
-                        event, provider.userDetail.cid.toString()),
-                    scaler.getTextSize(9.5),
-                    TextAlign.center)),
+                CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.userDetail.cid.toString()),
+                scaler.getTextSize(9.5),
+                TextAlign.center)),
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.userDetail.cid.toString(),
             textColor: false),
@@ -520,6 +572,125 @@ class _HomePageState extends State<HomePage>
         height: scaler.getHeight(3.5),
       ),
     );
+  }
+
+  alertForQuestionnaireAnswers(BuildContext context,
+      ScreenScaler scaler,
+      Event event,
+      List<String> questionsList,
+      HomePageProvider provider,
+      DashboardProvider dashboardProvider) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Container(
+            width: double.infinity,
+            child: AlertDialog(
+                title: Text("event_form_questionnaire".tr())
+                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                content: Form(
+                  key: _formKey,
+                  child: Container(
+                   // height: scaler.getHeight(40),
+                    width: scaler.getWidth(75),
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: questionsList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("${index + 1}. ${questionsList[index]}")
+                                  .mediumText(ColorConstants.colorBlack, 12,
+                                  TextAlign.left,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis),
+                              SizedBox(height: scaler.getHeight(0.2)),
+                              TextFormField(
+                                textCapitalization: TextCapitalization.sentences,
+                                controller: answerController(index),
+                                style: ViewDecoration.textFieldStyle(
+                                    scaler.getTextSize(9.5),
+                                    ColorConstants.colorBlack),
+                                decoration:
+                                ViewDecoration.inputDecorationWithCurve(
+                                    " ${"answer".tr()} ${index + 1}",
+                                    scaler,
+                                    ColorConstants.primaryColor),
+                                onFieldSubmitted: (data) {
+                                  // FocusScope.of(context).requestFocus(nodes[1]);
+                                },
+                                textInputAction: TextInputAction.done,
+                                keyboardType: TextInputType.name,
+                                validator: (value) {
+                                  if (value!.trim().isEmpty) {
+                                    return "answer_required".tr();
+                                  }
+                                  {
+                                    return null;
+                                  }
+                                },
+                              ),
+                              SizedBox(height: scaler.getHeight(1.0)),
+                            ],
+                          );
+                        }),
+                  ),
+                ),
+                actions: <Widget>[
+                  Column(
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                               dashboardProvider.updateEventNotificationCount();
+                              final Map<String, dynamic> answersMap = {
+                                "1. text": answer1Controller.text,
+                                "2. text": answer2Controller.text,
+                                "3. text": answer3Controller.text,
+                                "4. text": answer4Controller.text,
+                                "5. text": answer5Controller.text};
+                              Navigator.of(context).pop();
+                              provider.answersToEventQuestionnaire(context, event.eid, answersMap);
+                            }
+
+                          },
+                          child: Container(
+                              padding: scaler.getPadding(1, 2),
+                              decoration: BoxDecoration(
+                                  color: ColorConstants.primaryColor,
+                                  borderRadius:
+                                  scaler.getBorderRadiusCircular(10.0)),
+                              child: Text('submit_answers'.tr()).semiBoldText(
+                                  ColorConstants.colorWhite,
+                                  12,
+                                  TextAlign.left))),
+                      SizedBox(height: scaler.getHeight(0.5))
+                    ],
+                  )
+                ]),
+          );
+        });
+  }
+
+  answerController(int index) {
+    switch (index) {
+      case 0:
+        return answer1Controller;
+
+      case 1:
+        return answer2Controller;
+
+      case 2:
+        return answer3Controller;
+
+      case 3:
+        return answer4Controller;
+
+      case 4:
+        return answer5Controller;
+    }
   }
 
   @override

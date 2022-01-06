@@ -68,6 +68,7 @@ dependencies:
   image_stack: ^2.1.0
   device_calendar: ^4.0.1
   table_calendar: ^3.0.3
+  path_provider: ^2.0.8
   paged_vertical_calendar:
     git:
       url: https://github.com/deepakrana0011/vertical_calender.git

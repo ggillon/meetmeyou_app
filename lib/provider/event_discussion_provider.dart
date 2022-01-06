@@ -95,24 +95,5 @@ class EventDiscussionProvider extends BaseProvider {
     await getEventChatMessages(context, load: false);
     updateValue(false);
   }
-
-  Future getContactsFromProfile(BuildContext context) async {
-    setState(ViewState.Busy);
-    //  mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    for (int i = 0; i < (eventChatList.length); i++) {
-      var value = await mmyEngine!
-          .getContactFromProfile(eventChatList[i].uid)
-          .catchError((e) async {
-        setState(ViewState.Idle);
-        DialogHelper.showMessage(context, e.message);
-      });
-      if (value != null) {
-        setState(ViewState.Idle);
-        eventAttendingLists.add(value);
-      } else {
-        setState(ViewState.Idle);
-        DialogHelper.showMessage(context, "error_message".tr());
-      }
-    }
-  }
+  
 }

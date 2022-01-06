@@ -23,10 +23,10 @@ class DefaultPhotoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhitishGray,
-        body: Column(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhitishGray,
+      body: SafeArea(
+        child: Column(
           children: [
             Container(
               height: scaler.getHeight(75),

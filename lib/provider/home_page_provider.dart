@@ -35,10 +35,7 @@ class HomePageProvider extends BaseProvider {
 
   tabChangeEvent(BuildContext context) {
     tabController?.addListener(() {
-      //   selectedIndex = tabController!.index;
-      // setState(ViewState.Busy);
       getIndexChanging(context);
-      //  setState(ViewState.Idle);
       notifyListeners();
     });
   }
@@ -170,7 +167,7 @@ class HomePageProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future replyToEvent(BuildContext context, String eid, String response) async {
+  Future replyToEvent(BuildContext context, String eid, String response, {bool idle = true}) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.replyToEvent(eid, response: response).catchError((e) {
@@ -180,7 +177,7 @@ class HomePageProvider extends BaseProvider {
 
     getIndexChanging(context);
 
-    setState(ViewState.Idle);
+   idle == true ?  setState(ViewState.Idle) : setState(ViewState.Busy);
   }
 
   setEventValuesForEdit(Event event) {
@@ -226,6 +223,16 @@ class HomePageProvider extends BaseProvider {
     setState(ViewState.Idle);
   }
 
+  Future unRespondedEventsApi(BuildContext context) async {
+    setState(ViewState.Busy);
+    eventDetail.unRespondedEvent = await mmyEngine!.unrespondedEvents().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    setState(ViewState.Idle);
+  }
+
   deleteEvent(BuildContext context, String eid) async {
     setState(ViewState.Busy);
 
@@ -238,4 +245,19 @@ class HomePageProvider extends BaseProvider {
 
     setState(ViewState.Idle);
   }
+
+
+ Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers) async{
+   setState(ViewState.Busy);
+
+   await mmyEngine!.answerEventForm(eid, answers: answers).catchError((e) {
+     setState(ViewState.Idle);
+     DialogHelper.showMessage(context, e.message);
+   });
+
+  await replyToEvent(context, eid, EVENT_ATTENDING, idle: false);
+   setState(ViewState.Idle);
+ }
+
+
 }

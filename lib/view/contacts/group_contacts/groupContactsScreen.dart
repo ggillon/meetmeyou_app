@@ -21,16 +21,16 @@ class GroupContactsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: BaseView<GroupContactsProvider>(onModelReady: (provider) {
-            // provider.isChecked =
-            //     List<bool>.filled(provider.myContactListName.length, false);
-            provider.getConfirmedContactsList(context);
-          }, builder: (builder, provider, _) {
-            return Padding(
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: BaseView<GroupContactsProvider>(onModelReady: (provider) {
+          // provider.isChecked =
+          //     List<bool>.filled(provider.myContactListName.length, false);
+          provider.getConfirmedContactsList(context);
+        }, builder: (builder, provider, _) {
+          return SafeArea(
+            child: Padding(
               padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,9 +68,9 @@ class GroupContactsScreen extends StatelessWidget {
                           : contactList(scaler, provider)
                 ],
               ),
-            );
-          })),
-    );
+            ),
+          );
+        }));
   }
 
   Widget searchBar(ScreenScaler scaler, GroupContactsProvider provider) {

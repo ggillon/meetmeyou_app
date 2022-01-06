@@ -53,6 +53,7 @@ class DashboardProvider extends BaseProvider {
     });
 
     eventDetail.unRespondedEvent = unRespondedEvent;
+    eventDetail.unRespondedEvent1 = unRespondedEvent;
     setState(ViewState.Idle);
   }
 

@@ -30,15 +30,15 @@ class _IntroductionPageState extends State<IntroductionPage> {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()
       ..init(context);
-    return SafeArea(
-      child: BaseView<IntroductionProvider>(
-        onModelReady: (provider){
-           provider.setUpList();
-        },
-        builder: (context,provider,_){
-          return Scaffold(
-            backgroundColor: ColorConstants.colorWhite,
-            body: Padding(
+    return BaseView<IntroductionProvider>(
+      onModelReady: (provider){
+         provider.setUpList();
+      },
+      builder: (context,provider,_){
+        return Scaffold(
+          backgroundColor: ColorConstants.colorWhite,
+          body: SafeArea(
+            child: Padding(
               padding: scaler.getPaddingAll(13),
               child: Center(
                 child: Column(
@@ -99,9 +99,9 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

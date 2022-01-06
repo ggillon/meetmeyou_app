@@ -25,18 +25,18 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: BaseView<LoginProvider>(
-              /*onModelReady: (provider){
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: BaseView<LoginProvider>(
+            /*onModelReady: (provider){
 
-              },*/
-              builder: (context, provider, _) {
-                return Padding(
+            },*/
+            builder: (context, provider, _) {
+              return SafeArea(
+                child: Padding(
                   padding: scaler.getPaddingAll(13),
                   child: Column(
                     children: [
@@ -193,9 +193,9 @@ class LoginPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

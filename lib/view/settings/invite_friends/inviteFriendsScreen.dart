@@ -21,17 +21,17 @@ class InviteFriendsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context),
-        body: BaseView<InviteFriendsProvider>(
-          onModelReady: (provider) {
-            provider.getPhoneContacts(_scaffoldKey.currentContext!);
-          },
-          builder: (context, provider, _) {
-            return Padding(
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: ColorConstants.colorWhite,
+      appBar: DialogHelper.appBarWithBack(scaler, context),
+      body: BaseView<InviteFriendsProvider>(
+        onModelReady: (provider) {
+          provider.getPhoneContacts(_scaffoldKey.currentContext!);
+        },
+        builder: (context, provider, _) {
+          return SafeArea(
+            child: Padding(
               padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -83,9 +83,9 @@ class InviteFriendsScreen extends StatelessWidget {
                   )
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -15,16 +15,16 @@ class CalendarSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context),
-        body: BaseView<CalendarSettingsProvider>(
-          onModelReady: (provider){
-          //  provider.getCalendarParams(context);
-          },
-          builder: (context, provider, _){
-            return  Padding(
+    return Scaffold(
+      backgroundColor: ColorConstants.colorWhite,
+      appBar: DialogHelper.appBarWithBack(scaler, context),
+      body: BaseView<CalendarSettingsProvider>(
+        onModelReady: (provider){
+        //  provider.getCalendarParams(context);
+        },
+        builder: (context, provider, _){
+          return  SafeArea(
+            child: Padding(
               padding: scaler.getPaddingLTRB(3.0, 0.0, 3.5, 2.5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,10 +42,10 @@ class CalendarSettingsScreen extends StatelessWidget {
                   displayNonMeetMeYouEventToggle(context, scaler, provider),
                 ],
               ),
-            );
-          },
-        )
-      ),
+            ),
+          );
+        },
+      )
     );
   }
 

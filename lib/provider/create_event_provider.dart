@@ -84,14 +84,14 @@ class CreateEventProvider extends BaseProvider {
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
     if (type == 1) {
-      final pickedFile = await picker.pickImage(source: ImageSource.camera);
+      final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 1440);
       image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
       }
       notifyListeners();
     } else {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 1440);
       image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
@@ -152,16 +152,14 @@ class CreateEventProvider extends BaseProvider {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!
-        .createEvent(
-            title: title,
-            location: location,
-            description: description,
-            photoFile: photoFile ?? null,
-            photoURL: photoURL ?? "",
-            start: startDateTime,
-            end: endDateTime)
-        .catchError((e) {
+    var value = await mmyEngine!.createEvent(
+        title: title,
+        location: location,
+        description: description,
+        photoFile: photoFile ?? null,
+        photoURL: photoURL ?? "",
+        start: startDateTime,
+        end: endDateTime).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -173,9 +171,10 @@ class CreateEventProvider extends BaseProvider {
       //   DialogHelper.showMessage(context, "Event created Successfully");
       Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen)
           .then((value) {
-        fromInviteScreen = true;
-        updateLoadingStatus(true);
+        // fromInviteScreen = true;
+        // updateLoadingStatus(true);
         hideKeyboard(context);
+        Navigator.of(context).pop();
       });
     }
   }
@@ -191,8 +190,7 @@ class CreateEventProvider extends BaseProvider {
             location: location,
             description: description,
             photoURL: eventDetail.eventPhotoUrl ?? "",
-            photoFile:
-                eventDetail.eventPhotoUrl == null ? photoFile ?? null : null,
+            photoFile: eventDetail.eventPhotoUrl == "" ? image ?? null : null,
             start: startDateTime,
             end: endDateTime)
         .catchError((e) {
@@ -256,6 +254,24 @@ class CreateEventProvider extends BaseProvider {
     // print(dateTimeString);
     // print(tempDate);
     return tempDate;
+  }
+
+  bool addQuestion = false;
+
+  void updateAddQuestionStatus(bool value) {
+    addQuestion = value;
+    notifyListeners();
+  }
+
+ Future addQuestionToEvent(BuildContext context, Event event, int queNo, String queText) async{
+    updateAddQuestionStatus(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+   var value =  await mmyEngine!.addQuestionToEvent(event, questionNum: queNo, text: queText);
+
+    if(value != null){
+      updateAddQuestionStatus(false);
+    }
   }
 
   // getEventBtnStatus(Event event) {

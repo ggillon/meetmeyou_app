@@ -24,6 +24,13 @@ class EventDetailProvider extends BaseProvider {
   List<String> eventAttendingKeysList = [];
   String? organiserKey;
 
+ bool backValue = false;
+
+  updateBackValue(bool value) {
+    backValue = value;
+    notifyListeners();
+  }
+
   bool _value = false;
 
   bool get value => _value;
@@ -89,16 +96,7 @@ class EventDetailProvider extends BaseProvider {
     setState(ViewState.Idle);
   }
 
-  bool _replyEventValue = false;
-
-  bool get replyEventValue => _replyEventValue;
-
-  updateReplyEventValue(bool value) {
-    _replyEventValue = value;
-    notifyListeners();
-  }
-
-  Future replyToEvent(BuildContext context, String eid, String response) async {
+  Future replyToEvent(BuildContext context, String eid, String response, {bool idle = true}) async {
     updateValue(true);
     // mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
@@ -107,8 +105,8 @@ class EventDetailProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
 
-    updateValue(false);
-    Navigator.of(context).pop();
+   idle == true ?  updateValue(false) : updateValue(true);
+    idle == true ?  Navigator.of(context).pop() : Container();
   }
 
   imageStackLength(int length) {
@@ -215,5 +213,20 @@ class EventDetailProvider extends BaseProvider {
     eventDetail.contactCIDs = contactsKeys;
   }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+  Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers) async{
+    updateValue(true);
+
+    await mmyEngine!.answerEventForm(eid, answers: answers).catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    await replyToEvent(context, eid, EVENT_ATTENDING, idle: false);
+    updateValue(false);
+    Navigator.of(context).pop();
+  }
 
 }

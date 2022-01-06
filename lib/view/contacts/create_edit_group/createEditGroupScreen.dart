@@ -28,20 +28,20 @@ class CreateEditGroupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: BaseView<CreateEditGroupProvider>(onModelReady: (provider) {
-            groupNameController.text = provider.groupDetail.createGroup ?? false
-                ? ""
-                : provider.groupDetail.groupName ?? "";
-            descriptionController.text =
-                provider.groupDetail.createGroup ?? false
-                    ? ""
-                    : provider.groupDetail.about ?? "";
-          }, builder: (context, provider, _) {
-            return LayoutBuilder(builder: (context, constraint) {
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: BaseView<CreateEditGroupProvider>(onModelReady: (provider) {
+          groupNameController.text = provider.groupDetail.createGroup ?? false
+              ? ""
+              : provider.groupDetail.groupName ?? "";
+          descriptionController.text =
+              provider.groupDetail.createGroup ?? false
+                  ? ""
+                  : provider.groupDetail.about ?? "";
+        }, builder: (context, provider, _) {
+          return SafeArea(
+            child: LayoutBuilder(builder: (context, constraint) {
               return SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraint.maxHeight),
@@ -370,8 +370,8 @@ class CreateEditGroupScreen extends StatelessWidget {
                   ),
                 ),
               );
-            });
-          })),
-    );
+            }),
+          );
+        }));
   }
 }

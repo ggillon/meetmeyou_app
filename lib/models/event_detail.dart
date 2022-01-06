@@ -31,8 +31,11 @@ class EventDetail{
   String? eventLocation;
   String? eventDescription;
   Event? event;
+  Map? questionnaire;
 
-  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys, this.organiserId, this.organiserName});
+  int? eventListLength;
 
-  EventDetail.editEvent({this.editEvent, this.photoUrlEvent, this.eventName, this.startDateAndTime, this.endDateAndTime, this.eventLocation, this.eventDescription, this.event});
+  EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys, this.organiserId, this.organiserName, this.eventListLength});
+
+  EventDetail.editEvent({this.editEvent, this.photoUrlEvent, this.eventName, this.startDateAndTime, this.endDateAndTime, this.eventLocation, this.eventDescription, this.event, this.questionnaire});
 }

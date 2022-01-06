@@ -20,14 +20,14 @@ class RejectedInvitesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
-          appBar: DialogHelper.appBarWithBack(scaler, context),
-          body: BaseView<RejectedInvitesProvider>(onModelReady: (provider) {
-            provider.getRejectedInvitesList(context);
-          }, builder: (builder, provider, _) {
-            return Padding(
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: BaseView<RejectedInvitesProvider>(onModelReady: (provider) {
+          provider.getRejectedInvitesList(context);
+        }, builder: (builder, provider, _) {
+          return SafeArea(
+            child: Padding(
               padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,9 +65,9 @@ class RejectedInvitesScreen extends StatelessWidget {
                           : contactList(scaler, provider)
                 ],
               ),
-            );
-          })),
-    );
+            ),
+          );
+        }));
   }
 
   Widget searchBar(ScreenScaler scaler, RejectedInvitesProvider provider) {

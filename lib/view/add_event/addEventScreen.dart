@@ -7,7 +7,9 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:provider/provider.dart';
 
 class AddEventScreen extends StatelessWidget {
    AddEventScreen({Key? key}) : super(key: key);
@@ -15,6 +17,8 @@ class AddEventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dashBoardProvider =
+    Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
@@ -27,7 +31,7 @@ class AddEventScreen extends StatelessWidget {
               Text("create_event".tr()).boldText(ColorConstants.colorBlack,
                   scaler.getTextSize(16), TextAlign.left),
               SizedBox(height: scaler.getHeight(2)),
-              eventCard(context, scaler)
+              eventCard(context, scaler, dashBoardProvider)
             ],
           ),
         ),
@@ -35,13 +39,15 @@ class AddEventScreen extends StatelessWidget {
     );
   }
 
-  Widget eventCard(BuildContext context, ScreenScaler scaler) {
+  Widget eventCard(BuildContext context, ScreenScaler scaler, DashboardProvider dashboardProvider) {
     return GestureDetector(
       onTap: () {
         eventDetail.eventPhotoUrl = null;
         eventDetail.editEvent = false;
         eventDetail.contactCIDs = [];
-        Navigator.of(context).pushNamed(RoutesConstants.createEventScreen);
+        Navigator.of(context).pushNamed(RoutesConstants.createEventScreen).then((value) {
+          dashboardProvider.onItemTapped(0);
+        });
       },
       child: Card(
         shadowColor: ColorConstants.colorWhite,

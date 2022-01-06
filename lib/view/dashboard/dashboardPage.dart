@@ -33,119 +33,117 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: BaseView<DashboardProvider>(
-        onModelReady: (provider) {
-          provider.onItemTapped(0);
-          provider.unRespondedInvites(context);
-          provider.unRespondedEvents(context);
-        },
-        builder: (context, provider, _) {
-          return Scaffold(
-            body: Center(
-              child: _widgetOptions.elementAt(provider.selectedIndex),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: provider.unRespondedEvent <= 0
-                      ? ImageView(
-                          path: ImageConstants.home_icon,
-                        )
-                      : Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            ImageView(
-                              path: ImageConstants.home_icon,
-                            ),
-                            CommonWidgets.notificationBadge(scaler,
-                                provider.unRespondedEvent)
-                          ],
-                        ),
-                  activeIcon: provider.unRespondedEvent <= 0
-                      ? ImageView(
-                          path: ImageConstants.home_icon_green,
-                        )
-                      : Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            ImageView(
-                              path: ImageConstants.home_icon_green,
-                            ),
-                            CommonWidgets.notificationBadge(scaler,
-                                provider.unRespondedEvent)
-                          ],
-                        ),
-                  label: 'Home',
+    return BaseView<DashboardProvider>(
+      onModelReady: (provider) {
+        provider.onItemTapped(0);
+        provider.unRespondedInvites(context);
+        provider.unRespondedEvents(context);
+      },
+      builder: (context, provider, _) {
+        return Scaffold(
+          body: Center(
+            child: _widgetOptions.elementAt(provider.selectedIndex),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: provider.unRespondedEvent <= 0
+                    ? ImageView(
+                        path: ImageConstants.home_icon,
+                      )
+                    : Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topRight,
+                        children: [
+                          ImageView(
+                            path: ImageConstants.home_icon,
+                          ),
+                          CommonWidgets.notificationBadge(scaler,
+                              provider.unRespondedEvent)
+                        ],
+                      ),
+                activeIcon: provider.unRespondedEvent <= 0
+                    ? ImageView(
+                        path: ImageConstants.home_icon_green,
+                      )
+                    : Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topRight,
+                        children: [
+                          ImageView(
+                            path: ImageConstants.home_icon_green,
+                          ),
+                          CommonWidgets.notificationBadge(scaler,
+                              provider.unRespondedEvent)
+                        ],
+                      ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: ImageView(path: ImageConstants.calendar_icon),
+                activeIcon: ImageView(
+                  path: ImageConstants.calendar_icon_green,
                 ),
-                BottomNavigationBarItem(
-                  icon: ImageView(path: ImageConstants.calendar_icon),
-                  activeIcon: ImageView(
-                    path: ImageConstants.calendar_icon_green,
-                  ),
-                  label: 'Calender',
+                label: 'Calender',
+              ),
+              BottomNavigationBarItem(
+                icon: ImageView(path: ImageConstants.add_icon),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: provider.unRespondedInvite <= 0
+                    ? ImageView(
+                        path: ImageConstants.contacts_icon,
+                      )
+                    : Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topRight,
+                        children: [
+                          ImageView(
+                            path: ImageConstants.contacts_icon,
+                          ),
+                          CommonWidgets.notificationBadge(scaler,
+                              provider.unRespondedInvite)
+                        ],
+                      ),
+                activeIcon: provider.unRespondedInvite <= 0
+                    ? ImageView(
+                        path: ImageConstants.contacts_icon_green,
+                      )
+                    : Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topRight,
+                        children: [
+                          ImageView(
+                            path: ImageConstants.contacts_icon_green,
+                          ),
+                          CommonWidgets.notificationBadge(scaler,
+                              provider.unRespondedInvite)
+                        ],
+                      ),
+                label: 'Invite Friends',
+              ),
+              BottomNavigationBarItem(
+                icon: ImageView(path: ImageConstants.settings_icon),
+                activeIcon: ImageView(
+                  path: ImageConstants.settings_icon_green,
                 ),
-                BottomNavigationBarItem(
-                  icon: ImageView(path: ImageConstants.add_icon),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: provider.unRespondedInvite <= 0
-                      ? ImageView(
-                          path: ImageConstants.contacts_icon,
-                        )
-                      : Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            ImageView(
-                              path: ImageConstants.contacts_icon,
-                            ),
-                            CommonWidgets.notificationBadge(scaler,
-                                provider.unRespondedInvite)
-                          ],
-                        ),
-                  activeIcon: provider.unRespondedInvite <= 0
-                      ? ImageView(
-                          path: ImageConstants.contacts_icon_green,
-                        )
-                      : Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            ImageView(
-                              path: ImageConstants.contacts_icon_green,
-                            ),
-                            CommonWidgets.notificationBadge(scaler,
-                                provider.unRespondedInvite)
-                          ],
-                        ),
-                  label: 'Invite Friends',
-                ),
-                BottomNavigationBarItem(
-                  icon: ImageView(path: ImageConstants.settings_icon),
-                  activeIcon: ImageView(
-                    path: ImageConstants.settings_icon_green,
-                  ),
-                  label: 'Settings',
-                ),
-              ],
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: ColorConstants.colorWhite,
-              currentIndex: provider.selectedIndex,
-              selectedItemColor: ColorConstants.primaryColor,
-              unselectedItemColor: ColorConstants.colorGray,
-              iconSize: 25,
-              onTap: provider.onItemTapped,
-              elevation: 5,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-            ),
-          );
-        },
-      ),
+                label: 'Settings',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: ColorConstants.colorWhite,
+            currentIndex: provider.selectedIndex,
+            selectedItemColor: ColorConstants.primaryColor,
+            unselectedItemColor: ColorConstants.colorGray,
+            iconSize: 25,
+            onTap: provider.onItemTapped,
+            elevation: 5,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+          ),
+        );
+      },
     );
   }
 }
