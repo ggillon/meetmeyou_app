@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -61,6 +62,8 @@ class HomePageProvider extends BaseProvider {
   Future getUserEvents(BuildContext context, {List<String>? filters}) async {
     setState(ViewState.Busy);
     //mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //  await FirebaseFirestore.instance.terminate();
+   // await FirebaseFirestore.instance.clearPersistence();
 
     var value =
         await mmyEngine!.getUserEvents(filters: filters).catchError((e) {

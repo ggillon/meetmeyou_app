@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
@@ -107,10 +108,12 @@ class SettingsPage extends StatelessWidget {
                         }),
                         SizedBox(height: scaler.getHeight(1.5)),
                         DialogHelper.btnWidget(scaler, context, "logout".tr(),
-                            ColorConstants.primaryColor, funOnTap: () {
+                            ColorConstants.primaryColor, funOnTap: () async {
                           auth.signOut();
                           provider.userDetail.profileUrl = null;
                           SharedPref.clearSharePref();
+                          // await FirebaseFirestore.instance.terminate();
+                          // await FirebaseFirestore.instance.clearPersistence();
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               RoutesConstants.loginOptions, (route) => false);
                         }),

@@ -292,7 +292,7 @@ class CreateEventScreen extends StatelessWidget {
                                   )
                                 : Container(),
                             SizedBox(height: scaler.getHeight(3.5)),
-                            provider.fromInviteScreen  == true ||
+                            provider.fromInviteScreen == true ||
                                     provider.eventDetail.editEvent == true
                                 ? provider.state == ViewState.Busy
                                     ? Center(
@@ -402,8 +402,9 @@ class CreateEventScreen extends StatelessWidget {
                                         scaler,
                                         context,
                                         "next".tr(),
-                                        ColorConstants.colorNewGray,
-                                        ColorConstants.colorGray, onTapFun: () {
+                                        ColorConstants.primaryColor,
+                                        ColorConstants.colorWhite,
+                                        onTapFun: () {
                                         // Navigator.pushNamed(
                                         //         context,
                                         //         RoutesConstants
@@ -679,7 +680,12 @@ class CreateEventScreen extends StatelessWidget {
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
                 height: scaler.getHeight(2.5),
-                child: Text(DateTimeHelper.dateConversion(provider.endDate))
+                child: Text(
+                    // provider.startTime.hour >= 21
+                    //     ? DateTimeHelper.dateConversion(
+                    //         provider.endDate.add(Duration(days: 1)))
+                    //     :
+                DateTimeHelper.dateConversion(provider.endDate))
                     .regularText(ColorConstants.colorGray,
                         scaler.getTextSize(9.5), TextAlign.center),
               ),

@@ -29,6 +29,7 @@ class CommonEventFunction{
         }
       }
     }
+    return "";
   }
 
  static getEventBtnColorStatus(eventModel.Event event, String userCid,{bool textColor = true}) {

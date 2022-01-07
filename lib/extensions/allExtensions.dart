@@ -56,13 +56,13 @@ extension ExtendText on Text {
       overflow: overflow,
       textAlign: alignment,
       style: TextStyle(
-        color: color,
-        fontFamily: StringConstants.spProDisplay,
-        fontWeight: FontWeight.w400,
-        fontSize: textSize,
-        decoration: underline ? TextDecoration.underline : TextDecoration.none,
-        height: isHeight == true  ? 1.5 : 1.0
-      ),
+          color: color,
+          fontFamily: StringConstants.spProDisplay,
+          fontWeight: FontWeight.w400,
+          fontSize: textSize,
+          decoration:
+              underline ? TextDecoration.underline : TextDecoration.none,
+          height: isHeight == true ? 1.5 : 1.0),
     );
   }
 
@@ -139,6 +139,7 @@ extension StringExtension on String {
 
 extension TimeOfDayExtension on TimeOfDay {
   int isCompareTo(TimeOfDay other) {
+    // if (hour < other.hour + 3) return 1;
     if (hour < other.hour) return -1;
     if (hour > other.hour) return 1;
     if (hour < other.hour) {
@@ -149,11 +150,28 @@ extension TimeOfDayExtension on TimeOfDay {
     if (minute < other.minute) return -1;
     return 0;
   }
+
+  TimeOfDay addHour(int hour) {
+    if (this.hour == 21) {
+      return this.replacing(hour: 00, minute: this.minute);
+    } else if (this.hour == 22) {
+      return this.replacing(hour: 01, minute: this.minute);
+    } else if (this.hour == 23) {
+      return this.replacing(hour: 02, minute: this.minute);
+    }
+    // else if (this.hour == 00) {
+    //   return this.replacing(hour: 03, minute: this.minute);
+    // }
+    else {
+      return this.replacing(hour: this.hour + hour, minute: this.minute);
+    }
+    //return this.replacing(hour: this.hour + hour, minute: this.minute);
+  }
 }
 
 extension on List {
   bool equals(List list) {
-    if(this.length!=list.length) return false;
+    if (this.length != list.length) return false;
     return this.every((item) => list.contains(item));
   }
 }
