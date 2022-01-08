@@ -53,6 +53,17 @@ class FirestoreService {
     return snapshots.docs.map((snapshot) => builder(snapshot.data())).toList();
   }
 
+  Future<List<T>> getListDataWhereFieldIsPresent<T>({
+    required String path,
+    required String field,
+    required T Function(Map<String, dynamic> data) builder,
+  }) async {
+
+    final docRef = FirebaseFirestore.instance.collection(path).where(field, isNotEqualTo: '');
+    final snapshots = await docRef.get();
+    return snapshots.docs.map((snapshot) => builder(snapshot.data())).toList();
+  }
+
 
   Future<void> deleteData({required String path,}) async {
     final docRef = FirebaseFirestore.instance.doc(path);

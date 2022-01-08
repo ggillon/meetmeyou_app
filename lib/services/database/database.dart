@@ -130,27 +130,28 @@ class FirestoreDB implements Database {
   }
 
   Future<List<Event>> getUserEvents(String uid) async {
+
+
+    return _service.getListDataWhereFieldIsPresent(
+        path: APIPath.events(),
+        field: 'invitedContacts.$uid',
+        builder: (data) {
+          return Event.fromMap(data);
+        });
+
     return _service.collectionStreamWhereFieldPresent(
         path: APIPath.events(),
         field: 'invitedContacts.$uid',
         builder: (data) {
           return Event.fromMap(data);
         }).first;
-    /*return await _service.getListDataWhere(
-      path: APIPath.events(),
-      field: 'invitedContacts.$eid',
-      value: 'query',
-      builder: (data) {
-        return Profile.fromMap(data);
-      },
-    );*/
   }
 
   @override
   Future<List<EventChatMessage>> getMessages(String eid) {
     return _service.getListData(
-        path: APIPath.userContacts(uid),
-        builder: (data) => EventChatMessage.fromMap(data),
+      path: APIPath.messages(eid),
+      builder: (data) => EventChatMessage.fromMap(data),
     );
   }
 
