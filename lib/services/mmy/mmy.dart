@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -18,6 +19,7 @@ import 'event_answer.dart' as answerLib;
 import 'package:meetmeyou_app/services/calendar/calendar.dart' as calendarLib;
 import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 import 'event_chat_message.dart' as messageLib;
+import 'date_option.dart' as dateLib;
 
 
 abstract class MMYEngine {
@@ -104,13 +106,16 @@ abstract class MMYEngine {
   Future<int> unrespondedEvents();
 
   /// Add a date option to event
-  //Future<Event> addDateToEvent(String eid, {required DateTime start, required DateTime end});
+  Future<String> addDateToEvent(String eid, {required DateTime start, required DateTime end});
   /// Remove a date from an event
-  //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
-  /// Answer a date attendence for an event
-  //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
-  /// Chose a date for an event
-  //Future<Event> removeDateFromEvent(String eid, {required DateTime start});
+  Future<void> removeDateFromEvent(String eid, String did);
+  /// Get all dates options from an event (in date start order)
+  Future<List<DateOption>> getDateOptionsFromEvent(String eid);
+  /// Answer a date attendance for an event
+  Future<void> answerDateOption(String eid, String did, bool attend);
+  /// Select final date for an event
+  Future<Event> selectFinalDate(String eid, String did);
+
   ///  Add/Update a form to an event
   //Future<Event> updateFormToEvent(String eid, {required String formText, required Map form});
   ///  Add a question to an event (does not save the event)
@@ -230,8 +235,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<void> inviteProfile(String uid) {
-    return contactLib.inviteProfile(_currentUser, uid: uid);
+  Future<void> inviteProfile(String uid) async {
+    contactLib.inviteProfile(_currentUser, uid: uid);
   }
 
   @override
@@ -439,7 +444,31 @@ class MMY implements MMYEngine {
     Map<String, dynamic> question = {'$questionNum. text': text};
     event.form.addAll(question);
     return eventLib.createEvent(_currentUser, event);
+  }
 
+  @override
+  Future<String> addDateToEvent(String eid, {required DateTime start, required DateTime end}) async {
+    return dateLib.addDateToEvent(_currentUser, eid, start, end);
+  }
+
+  @override
+  Future<void> answerDateOption(String eid, String did, bool attend) async {
+    return dateLib.answerDateOption(_currentUser, eid, did, attend);
+  }
+
+  @override
+  Future<void> removeDateFromEvent(String eid, String did) async {
+    dateLib.removeDateFromEvent(_currentUser, eid, did);
+  }
+
+  @override
+  Future<Event> selectFinalDate(String eid, String did) async {
+    return dateLib.selectFinalDate(_currentUser, eid, did);
+  }
+
+  @override
+  Future<List<DateOption>> getDateOptionsFromEvent(String eid) async {
+    return dateLib.getDateOptionsFromEvent(_currentUser, eid);
   }
 
 }
