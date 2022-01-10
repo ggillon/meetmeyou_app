@@ -62,8 +62,6 @@ class HomePageProvider extends BaseProvider {
   Future getUserEvents(BuildContext context, {List<String>? filters}) async {
     setState(ViewState.Busy);
     //mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-  //  await FirebaseFirestore.instance.terminate();
-   // await FirebaseFirestore.instance.clearPersistence();
 
     var value =
         await mmyEngine!.getUserEvents(filters: filters).catchError((e) {

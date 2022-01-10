@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -24,6 +25,7 @@ class CreateEventProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
+  MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
 
   File? image;
 
@@ -34,6 +36,7 @@ class CreateEventProvider extends BaseProvider {
   TimeOfDay endTime = TimeOfDay.now().addHour(3);
   bool isSwitched = false;
   bool fromInviteScreen = false;
+  bool addMultipleDate = false;
 
   bool _isLoading = false;
 
@@ -48,6 +51,13 @@ class CreateEventProvider extends BaseProvider {
 
   void updateQuestionStatus(bool value) {
     question = value;
+    notifyListeners();
+  }
+
+  bool multipleDateUi = false;
+
+  void updateMultipleDateUiStatus(bool value) {
+    multipleDateUi = value;
     notifyListeners();
   }
 

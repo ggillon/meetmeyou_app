@@ -1,5 +1,6 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:image_stack/image_stack.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -33,6 +34,7 @@ class EventDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   // SystemChrome.setEnabledSystemUIOverlays([]);
     // final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
@@ -653,4 +655,5 @@ class EventDetailScreen extends StatelessWidget {
         return answer5Controller;
     }
   }
+
 }

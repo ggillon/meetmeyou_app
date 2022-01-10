@@ -1,5 +1,6 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';

@@ -2,6 +2,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:image/image.dart' as imageLib;
 import 'package:meetmeyou_app/constants/string_constants.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<String> storeFile(File file, {required String path}) async {
   await FirebaseStorage.instance.ref(path).putFile(file);

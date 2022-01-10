@@ -77,6 +77,7 @@ class CreateEventScreen extends StatelessWidget {
               child: Form(
                 key: _formKey,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     selectedImage(context, scaler, provider),
@@ -120,25 +121,66 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text("start_date_and_time".tr()).boldText(
-                                  Colors.black,
-                                  scaler.getTextSize(9.5),
-                                  TextAlign.center),
+                            provider.addMultipleDate == true
+                                ? provider.multipleDateOption.date.length ==
+                                            0 ||
+                                        provider.multipleDateOption.date
+                                                .length ==
+                                            null
+                                    ? addDateCard(context, scaler, provider)
+                                    : multipleDateCard(
+                                        context, scaler, provider)
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text("start_date_and_time".tr())
+                                            .boldText(
+                                                Colors.black,
+                                                scaler.getTextSize(9.5),
+                                                TextAlign.center),
+                                      ),
+                                      SizedBox(height: scaler.getHeight(0.2)),
+                                      startDateTimePickField(
+                                          context, scaler, provider),
+                                      SizedBox(height: scaler.getHeight(1.5)),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text("end_date_and_time".tr())
+                                            .boldText(
+                                                Colors.black,
+                                                scaler.getTextSize(9.5),
+                                                TextAlign.center),
+                                      ),
+                                      SizedBox(height: scaler.getHeight(0.2)),
+                                      endDateTimePickField(
+                                          context, scaler, provider),
+                                    ],
+                                  ),
+                            SizedBox(height: scaler.getHeight(0.5)),
+                            GestureDetector(
+                              onTap: () {
+                                provider.addMultipleDate =
+                                    !provider.addMultipleDate;
+                                provider.updateMultipleDateUiStatus(true);
+                              },
+                              child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.add,
+                                          color: ColorConstants.primaryColor,
+                                          size: 16),
+                                      Text("add_multiple_date_options".tr())
+                                          .mediumText(
+                                              ColorConstants.primaryColor,
+                                              scaler.getTextSize(10),
+                                              TextAlign.center)
+                                    ],
+                                  )),
                             ),
-                            SizedBox(height: scaler.getHeight(0.2)),
-                            startDateTimePickField(context, scaler, provider),
-                            SizedBox(height: scaler.getHeight(1.5)),
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text("end_date_and_time".tr()).boldText(
-                                  Colors.black,
-                                  scaler.getTextSize(9.5),
-                                  TextAlign.center),
-                            ),
-                            SizedBox(height: scaler.getHeight(0.2)),
-                            endDateTimePickField(context, scaler, provider),
                             SizedBox(height: scaler.getHeight(1.5)),
                             Align(
                               alignment: Alignment.bottomLeft,
@@ -188,12 +230,12 @@ class CreateEventScreen extends StatelessWidget {
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.streetAddress,
                                 validator: (value) {
-                                  if (value!.trim().isEmpty) {
-                                    return "event_location_required".tr();
-                                  }
-                                  {
-                                    return null;
-                                  }
+                                  // if (value!.trim().isEmpty) {
+                                  //   return "event_location_required".tr();
+                                  // }
+                                  // {
+                                  //   return null;
+                                  // }
                                 },
                               ),
                             ),
@@ -681,11 +723,11 @@ class CreateEventScreen extends StatelessWidget {
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
                 height: scaler.getHeight(2.5),
                 child: Text(
-                    // provider.startTime.hour >= 21
-                    //     ? DateTimeHelper.dateConversion(
-                    //         provider.endDate.add(Duration(days: 1)))
-                    //     :
-                DateTimeHelper.dateConversion(provider.endDate))
+                        // provider.startTime.hour >= 21
+                        //     ? DateTimeHelper.dateConversion(
+                        //         provider.endDate.add(Duration(days: 1)))
+                        //     :
+                        DateTimeHelper.dateConversion(provider.endDate))
                     .regularText(ColorConstants.colorGray,
                         scaler.getTextSize(9.5), TextAlign.center),
               ),
@@ -713,6 +755,86 @@ class CreateEventScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget addDateCard(
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RoutesConstants.multipleDateTimeScreen);
+        provider.updateMultipleDateUiStatus(true);
+      },
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: Container(
+          // color: ColorConstants.colorLightGray,
+          // shape: RoundedRectangleBorder(
+          //   side: BorderSide(color: ColorConstants.colorWhitishGray, width: 1),
+          //   borderRadius: BorderRadius.circular(20.0),
+          // ),
+          decoration: BoxDecoration(
+              color: ColorConstants.colorLightGray,
+              borderRadius: scaler.getBorderRadiusCircular(12.0),
+              boxShadow: [
+                BoxShadow(
+                    color: ColorConstants.colorWhitishGray, spreadRadius: 1)
+              ]),
+          child: Padding(
+            padding: scaler.getPaddingLTRB(6.5, 3.0, 6.5, 3.0),
+            child: Icon(Icons.add, size: 40, color: ColorConstants.colorGray),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget multipleDateCard(
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
+    return Container(
+      height: scaler.getHeight(12),
+      child: ListView.builder(
+        physics: ClampingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: provider.multipleDateOption.date.length,
+          itemBuilder: (context, index) {
+            return Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                padding: scaler.getPaddingLTRB(1.5, 1.0, 1.5, 1.0),
+                 width: scaler.getWidth(25),
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorLightGray,
+                    borderRadius: scaler.getBorderRadiusCircular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                          color: ColorConstants.colorWhitishGray, spreadRadius: 1)
+                    ]),
+                child: Column(
+                  children: [
+                    Text("${DateTimeHelper.getMonthByName(provider.multipleDateOption.date[index])} "
+                            " ${provider.multipleDateOption.date[index].year}")
+                        .semiBoldText(
+                            Colors.deepOrangeAccent, 15, TextAlign.center),
+                    SizedBox(height: scaler.getHeight(0.2)),
+                    Text(provider.multipleDateOption.date[index].day.toString())
+                        .boldText(
+                            ColorConstants.colorBlack, 30.0, TextAlign.center),
+                    SizedBox(height: scaler.getHeight(0.2)),
+                    Text(DateTimeHelper.getWeekDay(
+                            provider.multipleDateOption.date[index]))
+                        .mediumText(
+                            ColorConstants.colorBlack, 14, TextAlign.center),
+                    SizedBox(height: scaler.getHeight(0.1)),
+                    Text("${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])}  ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}")
+                        .regularText(
+                            ColorConstants.colorGray, 13, TextAlign.center),
+                  ],
+                ),
+              ),
+            );
+          }),
     );
   }
 
