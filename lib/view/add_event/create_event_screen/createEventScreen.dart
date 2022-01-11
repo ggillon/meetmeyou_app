@@ -122,9 +122,10 @@ class CreateEventScreen extends StatelessWidget {
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
                             provider.addMultipleDate == true
-                                ? provider.multipleDateOption.date.length ==
+                                ? provider.multipleDateOption.startDate
+                                                .length ==
                                             0 ||
-                                        provider.multipleDateOption.date
+                                        provider.multipleDateOption.startDate
                                                 .length ==
                                             null
                                     ? addDateCard(context, scaler, provider)
@@ -143,7 +144,7 @@ class CreateEventScreen extends StatelessWidget {
                                           optionsDesign(scaler, provider),
                                           SizedBox(
                                               height: scaler.getHeight(0.5)),
-                                          multipleDateCard(
+                                          multipleDateCardListView(
                                               context, scaler, provider),
                                         ],
                                       )
@@ -181,10 +182,17 @@ class CreateEventScreen extends StatelessWidget {
                                 ? GestureDetector(
                                     onTap: () {
                                       provider.addMultipleDate = false;
-                                      provider.multipleDateOption.date.clear();
+                                      provider.multipleDateOption.startDate
+                                          .clear();
+                                      provider.multipleDateOption.endDate
+                                          .clear();
                                       provider.multipleDateOption.startTime
                                           .clear();
                                       provider.multipleDateOption.endTime
+                                          .clear();
+                                      provider.multipleDateOption.startDateTime
+                                          .clear();
+                                      provider.multipleDateOption.endDateTime
                                           .clear();
                                       provider.updateMultipleDateUiStatus(true);
                                     },
@@ -220,19 +228,19 @@ class CreateEventScreen extends StatelessWidget {
                                           ],
                                         )),
                                   ),
-                            // SizedBox(height: scaler.getHeight(1.5)),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     selectFinalDateAlert(context, scaler, provider);
-                            //   },
-                            //   child: Align(
-                            //       alignment: Alignment.bottomLeft,
-                            //       child: Text("select_final_date".tr())
-                            //           .mediumText(
-                            //               ColorConstants.primaryColor,
-                            //               scaler.getTextSize(10),
-                            //               TextAlign.center)),
-                            // ),
+                            SizedBox(height: scaler.getHeight(1.5)),
+                            GestureDetector(
+                              onTap: () {
+                                selectFinalDateAlert(context, scaler, provider);
+                              },
+                              child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text("select_final_date".tr())
+                                      .mediumText(
+                                          ColorConstants.primaryColor,
+                                          scaler.getTextSize(10),
+                                          TextAlign.center)),
+                            ),
                             SizedBox(height: scaler.getHeight(1.5)),
                             Align(
                               alignment: Alignment.bottomLeft,
@@ -454,12 +462,14 @@ class CreateEventScreen extends StatelessWidget {
                                                     addressController.text,
                                                     eventDescriptionController
                                                         .text,
-                                                    provider.dateTimeFormat(
-                                                        provider.startDate,
-                                                        provider.startTime),
-                                                    provider.dateTimeFormat(
-                                                        provider.endDate,
-                                                        provider.endTime),
+                                                    DateTimeHelper
+                                                        .dateTimeFormat(
+                                                            provider.startDate,
+                                                            provider.startTime),
+                                                    DateTimeHelper
+                                                        .dateTimeFormat(
+                                                            provider.endDate,
+                                                            provider.endTime),
                                                     photoURL: provider
                                                         .eventDetail
                                                         .eventPhotoUrl);
@@ -471,10 +481,10 @@ class CreateEventScreen extends StatelessWidget {
                                                   addressController.text,
                                                   eventDescriptionController
                                                       .text,
-                                                  provider.dateTimeFormat(
+                                                  DateTimeHelper.dateTimeFormat(
                                                       provider.startDate,
                                                       provider.startTime),
-                                                  provider.dateTimeFormat(
+                                                  DateTimeHelper.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
                                                   photoURL: provider.eventDetail
@@ -539,10 +549,10 @@ class CreateEventScreen extends StatelessWidget {
                                                   addressController.text,
                                                   eventDescriptionController
                                                       .text,
-                                                  provider.dateTimeFormat(
+                                                  DateTimeHelper.dateTimeFormat(
                                                       provider.startDate,
                                                       provider.startTime),
-                                                  provider.dateTimeFormat(
+                                                  DateTimeHelper.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
                                                   photoURL: provider.eventDetail
@@ -555,10 +565,10 @@ class CreateEventScreen extends StatelessWidget {
                                                 eventNameController.text,
                                                 addressController.text,
                                                 eventDescriptionController.text,
-                                                provider.dateTimeFormat(
+                                                DateTimeHelper.dateTimeFormat(
                                                     provider.startDate,
                                                     provider.startTime),
-                                                provider.dateTimeFormat(
+                                                DateTimeHelper.dateTimeFormat(
                                                     provider.endDate,
                                                     provider.endTime),
                                                 photoURL: provider
@@ -816,6 +826,8 @@ class CreateEventScreen extends StatelessWidget {
       onTap: () {
         Navigator.pushNamed(context, RoutesConstants.multipleDateTimeScreen)
             .then((value) {
+              // print(provider.multipleDateOption.startDateTime);
+              // print(provider.multipleDateOption.endDateTime);
           provider.updateMultipleDateUiStatus(true);
         });
       },
@@ -843,7 +855,7 @@ class CreateEventScreen extends StatelessWidget {
     );
   }
 
-  Widget multipleDateCard(
+  Widget multipleDateCardListView(
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -851,12 +863,12 @@ class CreateEventScreen extends StatelessWidget {
         children: [
           Container(
             // color: Colors.red,
-            height: scaler.getHeight(13.5),
+            height: scaler.getHeight(14.5),
             child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                itemCount: provider.multipleDateOption.date.length,
+                itemCount: provider.multipleDateOption.startDate.length,
                 itemBuilder: (context, index) {
                   return multiDateCardDesign(scaler, provider, index);
                 }),
@@ -883,48 +895,46 @@ class CreateEventScreen extends StatelessWidget {
             BoxShadow(color: ColorConstants.colorWhitishGray, spreadRadius: 1)
           ]),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("${DateTimeHelper.getMonthByName(provider.multipleDateOption.date[index])} "
-                  " ${provider.multipleDateOption.date[index].year}")
+          Text("${DateTimeHelper.getMonthByName(provider.multipleDateOption.startDate[index])} "
+                  " ${provider.multipleDateOption.startDate[index].year}")
               .semiBoldText(Colors.deepOrangeAccent, 12, TextAlign.center),
           SizedBox(height: scaler.getHeight(0.2)),
-          Text(provider.multipleDateOption.date[index].day.toString())
+          Text(provider.multipleDateOption.startDate[index].day.toString())
               .boldText(ColorConstants.colorBlack, 30.0, TextAlign.center),
           SizedBox(height: scaler.getHeight(0.2)),
           Text(DateTimeHelper.getWeekDay(
-                  provider.multipleDateOption.date[index]))
+                  provider.multipleDateOption.startDate[index]))
               .mediumText(ColorConstants.colorBlack, 11, TextAlign.center),
           SizedBox(height: scaler.getHeight(0.1)),
-          Text("${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])}  ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}")
-              .regularText(ColorConstants.colorGray, 10, TextAlign.center),
+         Container(
+           width: scaler.getWidth(20),
+           child:  Text((provider.multipleDateOption.startDate[index].toString().substring(0,11)) == (provider.multipleDateOption.endDate[index].toString().substring(0,11)) ?
+           "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}" :
+           "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])} (${DateTimeHelper.dateConversion(provider.multipleDateOption.endDate[index], date: false)})")
+               .regularText(ColorConstants.colorGray, 10, TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
+         )
         ],
       ),
     );
   }
 
-  Widget optionsDesign(ScreenScaler scaler, CreateEventProvider provider){
-   return Row(
+  Widget optionsDesign(ScreenScaler scaler, CreateEventProvider provider) {
+    return Row(
       children: [
         Icon(Icons.calendar_today),
-        SizedBox(
-            width: scaler.getWidth(1.5)),
-        Text("${provider.multipleDateOption.date.length} ${"options".tr()}")
-            .mediumText(
-            ColorConstants
-                .colorBlackDown,
-            scaler.getTextSize(9.5),
-            TextAlign.center),
+        SizedBox(width: scaler.getWidth(1.5)),
+        Text("${provider.multipleDateOption.startDate.length} ${"options".tr()}")
+            .mediumText(ColorConstants.colorBlackDown, scaler.getTextSize(9.5),
+                TextAlign.center),
         Expanded(
             child: Container(
-                alignment:
-                Alignment.centerRight,
+                alignment: Alignment.centerRight,
                 child: ImageView(
-                  path: ImageConstants
-                      .small_arrow_icon,
-                  color: ColorConstants
-                      .colorGray,
-                  height: scaler
-                      .getHeight(1.5),
+                  path: ImageConstants.small_arrow_icon,
+                  color: ColorConstants.colorGray,
+                  height: scaler.getHeight(1.5),
                 )))
       ],
     );
@@ -1197,87 +1207,113 @@ class CreateEventScreen extends StatelessWidget {
         });
   }
 
-  selectFinalDateAlert(BuildContext context, ScreenScaler scaler, CreateEventProvider provider){
+  selectFinalDateAlert(
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
     return showDialog(
         context: context,
         builder: (context) {
           return Container(
-            width: double.infinity,
-            child: AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-              insetPadding: EdgeInsets.fromLTRB(10.0, 24.0, 10.0, 24.0),
-              title:  Column(
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).pop();
-                    },
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: ImageView(path: ImageConstants.eventFinalDateAlert_close),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text("select_final_date".tr()).semiBoldText(
-                        ColorConstants.colorBlack,
-                        scaler.getTextSize(9.5),
-                        TextAlign.center),
-                  ),
-                  SizedBox(
-                      height: scaler.getHeight(1.5)),
-                  optionsDesign(scaler, provider),
-                ],
-              ),
-              content: Container(
-                //  color: Colors.red,
-                height: scaler.getHeight(25.0),
-                width: scaler.getWidth(90.0),
-                child:  GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: provider.multipleDateOption.date.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 5.0,
-                      mainAxisSpacing: 5.0
-                  ),
-                  itemBuilder: (BuildContext context, int index){
-                    return Container(
-                      margin: scaler.getMarginLTRB(0.5, 0.5, 0.5, 0.5),
-                      padding: scaler.getPaddingLTRB(1.5, 0.5, 1.5, 0.5),
-                      decoration: BoxDecoration(
-                          color: ColorConstants.colorLightGray,
-                          borderRadius: scaler.getBorderRadiusCircular(12.0),
-                          boxShadow: [
-                            BoxShadow(color: ColorConstants.colorWhitishGray, spreadRadius: 1)
-                          ]),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("${DateTimeHelper.getMonthByName(provider.multipleDateOption.date[index])} "
-                              " ${provider.multipleDateOption.date[index].year}")
-                              .semiBoldText(Colors.deepOrangeAccent, 12, TextAlign.center),
-                          SizedBox(height: scaler.getHeight(0.2)),
-                          Text(provider.multipleDateOption.date[index].day.toString())
-                              .boldText(ColorConstants.colorBlack, 25.0, TextAlign.center),
-                          SizedBox(height: scaler.getHeight(0.2)),
-                          Text(DateTimeHelper.getWeekDay(
-                              provider.multipleDateOption.date[index]))
-                              .mediumText(ColorConstants.colorBlack, 11, TextAlign.center),
-                          SizedBox(height: scaler.getHeight(0.1)),
-                          Text("${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])}  ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}")
-                              .regularText(ColorConstants.colorGray, 10, TextAlign.center),
-                        ],
+              width: double.infinity,
+              child: AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
+                title: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: ImageView(
+                            path: ImageConstants.eventFinalDateAlert_close),
                       ),
-                    );
-                  },
-                )
-              ),
-              actions: [
-                CommonWidgets.commonBtn(scaler, context, "select_that_date".tr(), ColorConstants.colorNewGray, ColorConstants.colorGray)
-              ],
-            )
-          );
-    });
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("select_final_date".tr()).semiBoldText(
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(9.5),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(1.5)),
+                    optionsDesign(scaler, provider),
+                  ],
+                ),
+                content: Container(
+                    //  color: Colors.red,
+                    height: scaler.getHeight(25.0),
+                    width: scaler.getWidth(100.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: provider.multipleDateOption.startDate.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 2.0,
+                          mainAxisSpacing: 3.0),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: (){
+                            provider.selectedIndex = index;
+                            provider.updateMultipleDateUiStatus(true);
+                          },
+                          child: Container(
+                            // color: Colors.red,
+                            // height: scaler.getHeight(17.0),
+                            margin: scaler.getMarginLTRB(0.5, 0.5, 0.5, 0.5),
+                            padding: scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
+                            decoration: BoxDecoration(
+                                color: ColorConstants.colorLightGray,
+                                borderRadius:
+                                    scaler.getBorderRadiusCircular(12.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: provider.selectedIndex == index ? ColorConstants.primaryColor : ColorConstants.colorWhitishGray,
+                                      spreadRadius: 1)
+                                ]),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                        "${DateTimeHelper.getMonthByName(provider.multipleDateOption.startDate[index])} "
+                                        " ${provider.multipleDateOption.startDate[index].year}")
+                                    .semiBoldText(Colors.deepOrangeAccent, 11,
+                                        TextAlign.center),
+                                SizedBox(height: scaler.getHeight(0.2)),
+                                Text(provider
+                                        .multipleDateOption.startDate[index].day
+                                        .toString())
+                                    .boldText(ColorConstants.colorBlack, 24.0,
+                                        TextAlign.center),
+                                SizedBox(height: scaler.getHeight(0.2)),
+                                Text(DateTimeHelper.getWeekDay(provider
+                                        .multipleDateOption.startDate[index]))
+                                    .mediumText(ColorConstants.colorBlack, 10,
+                                        TextAlign.center),
+                                SizedBox(height: scaler.getHeight(0.1)),
+                                Container(
+                                  width: scaler.getWidth(20),
+                                  child:  Text((provider.multipleDateOption.startDate[index].toString().substring(0,11)) == (provider.multipleDateOption.endDate[index].toString().substring(0,11)) ?
+                                  "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}" :
+                                  "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])} (${DateTimeHelper.dateConversion(provider.multipleDateOption.endDate[index], date: false)})")
+                                      .regularText(ColorConstants.colorGray, 8.5, TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    )),
+                actions: [
+                  CommonWidgets.commonBtn(
+                      scaler,
+                      context,
+                      "select_that_date".tr(),
+                      ColorConstants.colorNewGray,
+                      ColorConstants.colorGray)
+                ],
+              ));
+        });
   }
 }

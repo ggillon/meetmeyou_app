@@ -35,15 +35,20 @@ class MultipleDateTmeScreen extends StatelessWidget {
                       scaler.getTextSize(14),
                       TextAlign.left),
                   SizedBox(height: scaler.getHeight(2.5)),
-                  Text("choose_date".tr()).boldText(ColorConstants.colorBlack,
+                  Text("choose_start_date".tr()).boldText(ColorConstants.colorBlack,
                       scaler.getTextSize(9.5), TextAlign.center),
                   SizedBox(height: scaler.getHeight(0.5)),
-                  chooseDate(context, scaler, provider),
+                  chooseStartDate(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.5)),
                   Text("start_time".tr()).boldText(ColorConstants.colorBlack,
                       scaler.getTextSize(9.5), TextAlign.center),
                   SizedBox(height: scaler.getHeight(0.5)),
                   chooseStartTime(context, scaler, provider),
+                  SizedBox(height: scaler.getHeight(1.5)),
+                  Text("choose_end_date".tr()).boldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(9.5), TextAlign.center),
+                  SizedBox(height: scaler.getHeight(0.5)),
+                  chooseEndDate(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.5)),
                   Text("end_time".tr()).boldText(ColorConstants.colorBlack,
                       scaler.getTextSize(9.5), TextAlign.center),
@@ -58,9 +63,12 @@ class MultipleDateTmeScreen extends StatelessWidget {
                               "add_date_to_event".tr(),
                               ColorConstants.primaryColor,
                               ColorConstants.colorWhite, onTapFun: (){
-                                  provider.multipleDateOption.date.add(provider.date);
+                                  provider.multipleDateOption.startDate.add(provider.startDate);
+                                  provider.multipleDateOption.endDate.add(provider.endDate);
                                 provider.multipleDateOption.startTime.add(provider.startTime);
                                 provider.multipleDateOption.endTime.add(provider.endTime);
+                                provider.multipleDateOption.startDateTime.add(DateTimeHelper.dateTimeFormat(provider.startDate, provider.startTime));
+                                provider.multipleDateOption.endDateTime.add(DateTimeHelper.dateTimeFormat(provider.endDate, provider.endTime));
                                 provider.setState(ViewState.Busy);
                                 Navigator.of(context).pop();
                           }))),
@@ -74,7 +82,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
     );
   }
 
-  Widget chooseDate(BuildContext context, ScreenScaler scaler,
+  Widget chooseStartDate(BuildContext context, ScreenScaler scaler,
       MultipleDateTimeProvider provider) {
     return GestureDetector(
       onTap: () {
@@ -92,9 +100,34 @@ class MultipleDateTmeScreen extends StatelessWidget {
           child: Container(
             padding: scaler.getPaddingLTRB(1.5, 0.0, 1.5, 0.0),
             alignment: Alignment.centerLeft,
-            child: Text(DateTimeHelper.dateConversion(provider.date))
+            child: Text(DateTimeHelper.dateConversion(provider.startDate))
                 .regularText(ColorConstants.colorBlackDown,
                     scaler.getTextSize(9.5), TextAlign.center),
+          )),
+    );
+  }
+
+  Widget chooseEndDate(BuildContext context, ScreenScaler scaler,
+      MultipleDateTimeProvider provider) {
+    return GestureDetector(
+      onTap: () {
+        provider.pickDateDialog(context, false);
+      },
+      child: Container(
+          height: scaler.getHeight(4),
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: ColorConstants.colorLightGray,
+              border: Border.all(
+                color: ColorConstants.colorLightGray,
+              ),
+              borderRadius: scaler.getBorderRadiusCircular(8.0)),
+          child: Container(
+            padding: scaler.getPaddingLTRB(1.5, 0.0, 1.5, 0.0),
+            alignment: Alignment.centerLeft,
+            child: Text(DateTimeHelper.dateConversion(provider.endDate))
+                .regularText(ColorConstants.colorBlackDown,
+                scaler.getTextSize(9.5), TextAlign.center),
           )),
     );
   }

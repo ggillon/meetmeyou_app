@@ -78,4 +78,14 @@ class DateTimeHelper {
     String mon = MONTHS[month - 1];
     return mon;
   }
+
+  static dateTimeFormat(DateTime date, TimeOfDay time) {
+    String dateTimeString =
+        date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
+    DateTime tempDate =
+    new DateFormat("yyyy-MM-dd hh:mm").parse(dateTimeString);
+    // print(dateTimeString);
+    // print(tempDate);
+    return tempDate;
+  }
 }

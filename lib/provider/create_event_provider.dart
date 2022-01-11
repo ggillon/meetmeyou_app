@@ -37,6 +37,7 @@ class CreateEventProvider extends BaseProvider {
   bool isSwitched = false;
   bool fromInviteScreen = false;
   bool addMultipleDate = false;
+  int? selectedIndex;
 
   bool _isLoading = false;
 
@@ -159,7 +160,7 @@ class CreateEventProvider extends BaseProvider {
     if (checkOrEndStartTime == true) {
       startTime = pickedTime;
       startTimeFun();
-      dateTimeFormat(startDate, startTime);
+      //dateTimeFormat(startDate, startTime);
     } else {
       endTime = pickedTime;
       endTimeFun(context);
@@ -338,16 +339,6 @@ class CreateEventProvider extends BaseProvider {
           value, userDetail.cid.toString());
       Navigator.of(context).pop();
     }
-  }
-
-  dateTimeFormat(DateTime date, TimeOfDay time) {
-    String dateTimeString =
-        date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
-    DateTime tempDate =
-        new DateFormat("yyyy-MM-dd hh:mm").parse(dateTimeString);
-    // print(dateTimeString);
-    // print(tempDate);
-    return tempDate;
   }
 
   bool addQuestion = false;
