@@ -78,7 +78,7 @@ abstract class MMYEngine {
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, required DateTime start, required DateTime end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
   /// Update an event
   Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,});
   /// Get status of user
@@ -300,8 +300,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, required DateTime start, required DateTime end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions}) async {
-    Event event = await eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions}) async {
+    Event event = await eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start ?? startDateOptions!.first, end: end ?? endDateOptions!.last);
     if(startDateOptions != null && endDateOptions != null) {
       for(int i=0; i<startDateOptions.length; i++) {
         await dateLib.addDateToEvent(_currentUser, event.eid, startDateOptions[i], endDateOptions[i]);
