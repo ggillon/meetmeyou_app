@@ -20,6 +20,9 @@ class MultipleDateTmeScreen extends StatelessWidget {
       appBar: DialogHelper.appBarWithBack(scaler, context),
       backgroundColor: ColorConstants.colorWhite,
       body: BaseView<MultipleDateTimeProvider>(
+        onModelReady: (provider){
+       //   provider.startDate = provider.date;
+        },
         builder: (context, provider, _) {
           return SafeArea(
             child: Padding(
