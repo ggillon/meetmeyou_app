@@ -34,9 +34,7 @@ class DashboardProvider extends BaseProvider {
 
   Future unRespondedInvites(BuildContext context) async {
     setState(ViewState.Busy);
-
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
     unRespondedInvite = await mmyEngine!.unrespondedInvites().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);

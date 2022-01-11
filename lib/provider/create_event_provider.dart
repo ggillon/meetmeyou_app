@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
@@ -30,7 +31,7 @@ class CreateEventProvider extends BaseProvider {
   DateTime startDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay.now();
   DateTime endDate = DateTime.now();
-  TimeOfDay endTime = TimeOfDay.now();
+  TimeOfDay endTime = TimeOfDay.now().addHour(3);
   bool isSwitched = false;
   bool fromInviteScreen = false;
 
@@ -84,14 +85,16 @@ class CreateEventProvider extends BaseProvider {
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
     if (type == 1) {
-      final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 1440);
+      final pickedFile = await picker.pickImage(
+          source: ImageSource.camera, imageQuality: 90, maxHeight: 1440);
       image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
       }
       notifyListeners();
     } else {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 1440);
+      final pickedFile = await picker.pickImage(
+          source: ImageSource.gallery, imageQuality: 90, maxHeight: 1440);
       image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
@@ -100,29 +103,36 @@ class CreateEventProvider extends BaseProvider {
     }
   }
 
+  bool dateCheck = false;
+
   //Method for showing the date picker
   void pickDateDialog(BuildContext context, bool checkOrEndStartDate) {
     showDatePicker(
             context: context,
-            initialDate: DateTime.now(),
-            //which date will display when user open the picker
-            firstDate: DateTime.now(),
-            //what will be the previous supported year in picker
-            lastDate: DateTime(
-                2100)) //what will be the up to supported date in picker
+            initialDate: checkOrEndStartDate
+                ? DateTime.now()
+                : dateCheck ? endDate : DateTime(startDate.year, startDate.month, startDate.day),
+            firstDate: checkOrEndStartDate
+                ? DateTime.now()
+                : dateCheck ? endDate : DateTime(startDate.year, startDate.month, startDate.day),
+            lastDate: DateTime(2100))
         .then((pickedDate) {
-      //then usually do the future job
       if (pickedDate == null) {
-        //if user tap cancel then this function will stop
         return;
       }
       //for rebuilding the ui
-      if (checkOrEndStartDate) {
+      if (checkOrEndStartDate == true) {
         startDate = pickedDate;
+        if (startDate.isAfter(endDate)) {
+          endDate = startDate;
+          notifyListeners();
+          return;
+        }
+        startTimeFun();
       } else {
         endDate = pickedDate;
+        endTimeFun(context);
       }
-
       notifyListeners();
     });
   }
@@ -131,19 +141,88 @@ class CreateEventProvider extends BaseProvider {
       BuildContext context, bool checkOrEndStartTime) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: startTime,
+      initialTime: checkOrEndStartTime ? startTime : endTime,
     );
     if (pickedTime == null) {
       return;
     }
-    if (checkOrEndStartTime) {
+    if (checkOrEndStartTime == true) {
       startTime = pickedTime;
+      startTimeFun();
       dateTimeFormat(startDate, startTime);
     } else {
       endTime = pickedTime;
+      endTimeFun(context);
     }
 
     notifyListeners();
+  }
+
+
+  startTimeFun(){
+    // start time
+    int startTimeHour = startTime.hour;
+    int endTimeHour = endTime.hour;
+    if (startTime.hour >= 21) {
+      if (startDate
+          .toString()
+          .substring(0, 11)
+          .compareTo(endDate.toString().substring(0, 11)) ==
+          0){
+        endDate = startDate.add(Duration(days: 1));
+        dateCheck = true;
+      }
+    } else {
+     // endDate = startDate;
+     // dateCheck = false;
+    }
+    if (startDate
+        .toString()
+        .substring(0, 11)
+        .compareTo(endDate.toString().substring(0, 11)) ==
+        0) {
+      if (startTimeHour > endTimeHour) {
+        endTime = startTime.addHour(3);
+      } else if (startTimeHour == endTimeHour) {
+        if (startTime.minute <= endTime.minute ||
+            startTime.minute >= endTime.minute) {
+          endTime = startTime.addHour(3);
+        }
+      } else if ((endTimeHour.toInt() - startTimeHour.toInt()) < 3) {
+        endTime = startTime.addHour(3);
+      } else if ((endTimeHour.toInt() - startTimeHour.toInt()) == 3) {
+        if (startTime.minute > endTime.minute) {
+          endTime = startTime.addHour(3);
+        }
+      }
+    }
+  }
+
+  endTimeFun(BuildContext context){
+    // for end time
+    int startTimeHour = startTime.hour;
+    int endTimeHour = endTime.hour;
+    if (startDate
+        .toString()
+        .substring(0, 11)
+        .compareTo(endDate.toString().substring(0, 11)) ==
+        0) {
+      if (endTimeHour < startTimeHour + 3) {
+        endTime = startTime.addHour(3);
+        DialogHelper.showMessage(
+            context, "End time should 3 hours greater than Start time.");
+      } else if (endTimeHour == startTimeHour + 3) {
+        if (endTime.minute < startTime.minute) {
+          endTime = startTime.addHour(3);
+          DialogHelper.showMessage(
+              context, "End time should 3 hours greater than Start time.");
+        }
+      }
+      // else if (startTime.isCompareTo(endTime) == 1) {
+      //   DialogHelper.showMessage(context,
+      //       "Select correct time.");
+      // }
+    }
   }
 
   Future createEvent(BuildContext context, String title, String location,
@@ -152,14 +231,16 @@ class CreateEventProvider extends BaseProvider {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!.createEvent(
-        title: title,
-        location: location,
-        description: description,
-        photoFile: photoFile ?? null,
-        photoURL: photoURL ?? "",
-        start: startDateTime,
-        end: endDateTime).catchError((e) {
+    var value = await mmyEngine!
+        .createEvent(
+            title: title,
+            location: location,
+            description: description,
+            photoFile: photoFile ?? null,
+            photoURL: photoURL ?? "",
+            start: startDateTime,
+            end: endDateTime)
+        .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -206,8 +287,7 @@ class CreateEventProvider extends BaseProvider {
       eventDetail.eventLocation = value.location;
       eventDetail.eventDescription = value.description;
       List<String> valuesList = [];
-      for (var value
-      in value.invitedContacts.values) {
+      for (var value in value.invitedContacts.values) {
         valuesList.add(value);
       }
       List<String> keysList = [];
@@ -239,9 +319,13 @@ class CreateEventProvider extends BaseProvider {
     });
     if (value != null) {
       setState(ViewState.Idle);
-      eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(value, userDetail.cid.toString());
-      eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(value, userDetail.cid.toString(), textColor: false);
-      eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(value, userDetail.cid.toString());
+      eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(
+          value, userDetail.cid.toString());
+      eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(
+          value, userDetail.cid.toString(),
+          textColor: false);
+      eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
+          value, userDetail.cid.toString());
       Navigator.of(context).pop();
     }
   }
@@ -263,82 +347,84 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
- Future addQuestionToEvent(BuildContext context, Event event, int queNo, String queText) async{
+  Future addQuestionToEvent(
+      BuildContext context, Event event, int queNo, String queText) async {
     updateAddQuestionStatus(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-   var value =  await mmyEngine!.addQuestionToEvent(event, questionNum: queNo, text: queText);
+    var value = await mmyEngine!
+        .addQuestionToEvent(event, questionNum: queNo, text: queText);
 
-    if(value != null){
+    if (value != null) {
       updateAddQuestionStatus(false);
     }
   }
 
-  // getEventBtnStatus(Event event) {
-  //   List<String> keysList = [];
-  //   for (var key in event.invitedContacts.keys) {
-  //     keysList.add(key);
-  //   }
-  //   List<String> valuesList = [];
-  //   for (var value in event.invitedContacts.values) {
-  //     valuesList.add(value);
-  //   }
-  //   for (int i = 0; i < keysList.length; i++) {
-  //     if (keysList[i] == userDetail.cid) {
-  //       if (valuesList[i] == "Invited") {
-  //         return "respond";
-  //       } else if (valuesList[i] == "Organiser") {
-  //         return "edit";
-  //       } else if (valuesList[i] == "Attending") {
-  //         return "going";
-  //       } else if (valuesList[i] == "Not Attending") {
-  //         return "not_going";
-  //       } else if (valuesList[i] == "Not Interested") {
-  //         return "hidden";
-  //       } else if (valuesList[i] == "Canceled") {
-  //         return "cancelled";
-  //       }
-  //     }
-  //   }
-  // }
-  //
-  // getEventBtnColorStatus(Event event, {bool textColor = true}) {
-  //   List<String> keysList = [];
-  //   for (var key in event.invitedContacts.keys) {
-  //     keysList.add(key);
-  //   }
-  //   List<String> valuesList = [];
-  //   for (var value in event.invitedContacts.values) {
-  //     valuesList.add(value);
-  //   }
-  //   for (int i = 0; i < keysList.length; i++) {
-  //     if (keysList[i] == userDetail.cid) {
-  //       if (valuesList[i] == "Invited") {
-  //         return textColor
-  //             ? ColorConstants.colorWhite
-  //             : ColorConstants.primaryColor;
-  //       } else if (valuesList[i] == "Organiser") {
-  //         return textColor
-  //             ? ColorConstants.colorWhite
-  //             : ColorConstants.primaryColor;
-  //       } else if (valuesList[i] == "Attending") {
-  //         return textColor
-  //             ? ColorConstants.primaryColor
-  //             : ColorConstants.primaryColor.withOpacity(0.2);
-  //       } else if (valuesList[i] == "Not Attending") {
-  //         return textColor
-  //             ? ColorConstants.primaryColor
-  //             : ColorConstants.primaryColor.withOpacity(0.2);
-  //       } else if (valuesList[i] == "Not Interested") {
-  //         return textColor
-  //             ? ColorConstants.primaryColor
-  //             : ColorConstants.primaryColor.withOpacity(0.2);
-  //       } else if (valuesList[i] == "Canceled") {
-  //         return textColor
-  //             ? ColorConstants.primaryColor
-  //             : ColorConstants.primaryColor.withOpacity(0.2);
-  //       }
-  //     }
-  //   }
-  // }
+// getEventBtnStatus(Event event) {
+//   List<String> keysList = [];
+//   for (var key in event.invitedContacts.keys) {
+//     keysList.add(key);
+//   }
+//   List<String> valuesList = [];
+//   for (var value in event.invitedContacts.values) {
+//     valuesList.add(value);
+//   }
+//   for (int i = 0; i < keysList.length; i++) {
+//     if (keysList[i] == userDetail.cid) {
+//       if (valuesList[i] == "Invited") {
+//         return "respond";
+//       } else if (valuesList[i] == "Organiser") {
+//         return "edit";
+//       } else if (valuesList[i] == "Attending") {
+//         return "going";
+//       } else if (valuesList[i] == "Not Attending") {
+//         return "not_going";
+//       } else if (valuesList[i] == "Not Interested") {
+//         return "hidden";
+//       } else if (valuesList[i] == "Canceled") {
+//         return "cancelled";
+//       }
+//     }
+//   }
+// }
+//
+// getEventBtnColorStatus(Event event, {bool textColor = true}) {
+//   List<String> keysList = [];
+//   for (var key in event.invitedContacts.keys) {
+//     keysList.add(key);
+//   }
+//   List<String> valuesList = [];
+//   for (var value in event.invitedContacts.values) {
+//     valuesList.add(value);
+//   }
+//   for (int i = 0; i < keysList.length; i++) {
+//     if (keysList[i] == userDetail.cid) {
+//       if (valuesList[i] == "Invited") {
+//         return textColor
+//             ? ColorConstants.colorWhite
+//             : ColorConstants.primaryColor;
+//       } else if (valuesList[i] == "Organiser") {
+//         return textColor
+//             ? ColorConstants.colorWhite
+//             : ColorConstants.primaryColor;
+//       } else if (valuesList[i] == "Attending") {
+//         return textColor
+//             ? ColorConstants.primaryColor
+//             : ColorConstants.primaryColor.withOpacity(0.2);
+//       } else if (valuesList[i] == "Not Attending") {
+//         return textColor
+//             ? ColorConstants.primaryColor
+//             : ColorConstants.primaryColor.withOpacity(0.2);
+//       } else if (valuesList[i] == "Not Interested") {
+//         return textColor
+//             ? ColorConstants.primaryColor
+//             : ColorConstants.primaryColor.withOpacity(0.2);
+//       } else if (valuesList[i] == "Canceled") {
+//         return textColor
+//             ? ColorConstants.primaryColor
+//             : ColorConstants.primaryColor.withOpacity(0.2);
+//       }
+//     }
+//   }
+// }
 }
