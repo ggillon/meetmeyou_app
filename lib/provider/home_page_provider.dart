@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -24,6 +25,7 @@ class HomePageProvider extends BaseProvider {
   TabController? tabController;
   int selectedIndex = 0;
   Color textColor = ColorConstants.colorWhite;
+  MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
 
   bool _value = false;
 
@@ -260,5 +262,15 @@ class HomePageProvider extends BaseProvider {
    setState(ViewState.Idle);
  }
 
+
+  clearMultiDateOption(){
+    // clear multi date and time lists
+    multipleDateOption.startDate.clear();
+    multipleDateOption.endDate.clear();
+    multipleDateOption.startTime.clear();
+    multipleDateOption.endTime.clear();
+    multipleDateOption.startDateTime.clear();
+    multipleDateOption.endDateTime.clear();
+  }
 
 }

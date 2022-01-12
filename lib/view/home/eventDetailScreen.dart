@@ -139,6 +139,7 @@ class EventDetailScreen extends StatelessWidget {
                               } else if (provider.eventDetail.eventBtnStatus ==
                                   "edit") {
                                 // provider.setEventValuesForEdit(event);
+                                provider.clearMultiDateOption();
                                 Navigator.pushNamed(context,
                                         RoutesConstants.createEventScreen)
                                     .then((value) {

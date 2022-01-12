@@ -533,6 +533,7 @@ class _HomePageState extends State<HomePage>
             event, provider.userDetail.cid.toString()) ==
             "edit") {
           provider.setEventValuesForEdit(event);
+          provider.clearMultiDateOption();
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
               .then((value) {
             provider.getIndexChanging(context);

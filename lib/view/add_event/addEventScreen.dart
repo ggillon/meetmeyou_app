@@ -7,6 +7,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 class AddEventScreen extends StatelessWidget {
    AddEventScreen({Key? key}) : super(key: key);
   EventDetail eventDetail = locator<EventDetail>();
+   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,13 @@ class AddEventScreen extends StatelessWidget {
         eventDetail.eventPhotoUrl = null;
         eventDetail.editEvent = false;
         eventDetail.contactCIDs = [];
+        // clear multi date and time lists
+        multipleDateOption.startDate.clear();
+        multipleDateOption.endDate.clear();
+        multipleDateOption.startTime.clear();
+        multipleDateOption.endTime.clear();
+        multipleDateOption.startDateTime.clear();
+        multipleDateOption.endDateTime.clear();
         Navigator.of(context).pushNamed(RoutesConstants.createEventScreen).then((value) {
           dashboardProvider.onItemTapped(0);
         });

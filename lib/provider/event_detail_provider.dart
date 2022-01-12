@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -23,6 +24,7 @@ class EventDetailProvider extends BaseProvider {
   int eventAttendingLength = 0;
   List<String> eventAttendingKeysList = [];
   String? organiserKey;
+  MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
 
  bool backValue = false;
 
@@ -229,4 +231,14 @@ class EventDetailProvider extends BaseProvider {
     Navigator.of(context).pop();
   }
 
+
+  clearMultiDateOption(){
+    // clear multi date and time lists
+    multipleDateOption.startDate.clear();
+    multipleDateOption.endDate.clear();
+    multipleDateOption.startTime.clear();
+    multipleDateOption.endTime.clear();
+    multipleDateOption.startDateTime.clear();
+    multipleDateOption.endDateTime.clear();
+  }
 }
