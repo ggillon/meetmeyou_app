@@ -128,8 +128,8 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            provider.getMultipleDate == true
-                                ? MultiDateShimmer()
+                            provider.getMultipleDate == true ||  provider.finalDate == true
+                          ? MultiDateShimmer()
                                 : provider.addMultipleDate == true
                                     ? provider.multipleDateOption.startDate
                                                     .length ==
@@ -1313,72 +1313,12 @@ class CreateEventScreen extends StatelessWidget {
                                 provider.updateMultipleDateUiStatus(true);
                               });
                             },
-                            child: Container(
-                              // color: Colors.red,
-                              // height: scaler.getHeight(17.0),
-                              margin: scaler.getMarginLTRB(0.5, 0.5, 0.5, 0.5),
-                              padding:
-                                  scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
-                              decoration: BoxDecoration(
-                                  color: ColorConstants.colorLightGray,
-                                  borderRadius:
-                                      scaler.getBorderRadiusCircular(12.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: provider.selectedIndex == index
-                                            ? ColorConstants.primaryColor
-                                            : ColorConstants.colorWhitishGray,
-                                        spreadRadius: 1)
-                                  ]),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                          "${DateTimeHelper.getMonthByName(provider.multipleDateOption.startDate[index])} "
-                                          " ${provider.multipleDateOption.startDate[index].year}")
-                                      .semiBoldText(Colors.deepOrangeAccent, 11,
-                                          TextAlign.center),
-                                  SizedBox(height: scaler.getHeight(0.2)),
-                                  Text(provider.multipleDateOption
-                                          .startDate[index].day
-                                          .toString())
-                                      .boldText(ColorConstants.colorBlack, 24.0,
-                                          TextAlign.center),
-                                  SizedBox(height: scaler.getHeight(0.2)),
-                                  Text(DateTimeHelper.getWeekDay(provider
-                                          .multipleDateOption.startDate[index]))
-                                      .mediumText(ColorConstants.colorBlack, 10,
-                                          TextAlign.center),
-                                  SizedBox(height: scaler.getHeight(0.1)),
-                                  Container(
-                                    width: scaler.getWidth(20),
-                                    child: Text((provider.multipleDateOption
-                                                    .startDate[index]
-                                                    .toString()
-                                                    .substring(0, 11)) ==
-                                                (provider.multipleDateOption
-                                                    .endDate[index]
-                                                    .toString()
-                                                    .substring(0, 11))
-                                            ? "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}"
-                                            : "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])} (${DateTimeHelper.dateConversion(provider.multipleDateOption.endDate[index], date: false)})")
-                                        .regularText(ColorConstants.colorGray,
-                                            8.5, TextAlign.center,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis),
-                                  )
-                                ],
-                              ),
-                            ),
+                            child: CommonWidgets.gridViewOfMultiDateAlertDialog(scaler, provider.multipleDate, index, selectedIndex: provider.selectedIndex)
                           );
                         },
                       )),
                   actions: [
-                    provider.finalDate == true
-                        ? Center(child: CircularProgressIndicator())
-                        : CommonWidgets.commonBtn(
+                   CommonWidgets.commonBtn(
                             scaler,
                             context,
                             "select_that_date".tr(),

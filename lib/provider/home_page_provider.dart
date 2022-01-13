@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
@@ -170,7 +171,8 @@ class HomePageProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future replyToEvent(BuildContext context, String eid, String response, {bool idle = true}) async {
+  Future replyToEvent(BuildContext context, String eid, String response,
+      {bool idle = true}) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.replyToEvent(eid, response: response).catchError((e) {
@@ -180,7 +182,7 @@ class HomePageProvider extends BaseProvider {
 
     getIndexChanging(context);
 
-   idle == true ?  setState(ViewState.Idle) : setState(ViewState.Busy);
+    idle == true ? setState(ViewState.Idle) : setState(ViewState.Busy);
   }
 
   setEventValuesForEdit(Event event) {
@@ -203,7 +205,7 @@ class HomePageProvider extends BaseProvider {
     }
     List<String> contactsKeys = [];
     for (int i = 0; i < keysList.length; i++) {
-      if(valuesList[i] != "Organiser"){
+      if (valuesList[i] != "Organiser") {
         contactsKeys.add(keysList[i]);
       }
     }
@@ -228,7 +230,8 @@ class HomePageProvider extends BaseProvider {
 
   Future unRespondedEventsApi(BuildContext context) async {
     setState(ViewState.Busy);
-    eventDetail.unRespondedEvent = await mmyEngine!.unrespondedEvents().catchError((e) {
+    eventDetail.unRespondedEvent =
+        await mmyEngine!.unrespondedEvents().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -249,21 +252,46 @@ class HomePageProvider extends BaseProvider {
     setState(ViewState.Idle);
   }
 
+  Future answersToEventQuestionnaire(
+      BuildContext context, String eid, Map answers) async {
+    setState(ViewState.Busy);
 
- Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers) async{
-   setState(ViewState.Busy);
+    await mmyEngine!.answerEventForm(eid, answers: answers).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
 
-   await mmyEngine!.answerEventForm(eid, answers: answers).catchError((e) {
-     setState(ViewState.Idle);
-     DialogHelper.showMessage(context, e.message);
-   });
+    await replyToEvent(context, eid, EVENT_ATTENDING, idle: false);
+    setState(ViewState.Idle);
+  }
 
-  await replyToEvent(context, eid, EVENT_ATTENDING, idle: false);
-   setState(ViewState.Idle);
- }
+  // Multi date
+  List<DateOption> multipleDate = [];
+  bool getMultipleDate = false;
 
+  void updateGetMultipleDate(bool value) {
+    getMultipleDate = value;
+    notifyListeners();
+  }
 
-  clearMultiDateOption(){
+  Future getMultipleDateOptionsFromEvent(
+      BuildContext context, String eid) async {
+    updateGetMultipleDate(true);
+      mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    Navigator.of(context).pop();
+    var value = await mmyEngine!.getDateOptionsFromEvent(eid).catchError((e) {
+      updateGetMultipleDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      multipleDate = value;
+      //  addMultiDateTimeValue(multipleDate);
+      updateGetMultipleDate(false);
+    }
+  }
+
+  clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
     multipleDateOption.endDate.clear();
@@ -273,4 +301,29 @@ class HomePageProvider extends BaseProvider {
     multipleDateOption.endDateTime.clear();
   }
 
+  // Future<void> answerDateOption(String eid, String did, bool attend);
+  bool attendDateBtnColor = false;
+  String? selectedAttendDateDid;
+  String? selectedAttendDateEid;
+  int? selectedMultiDateIndex;
+
+  bool answerMultiDate = false;
+
+  updateMultiDate(bool value) {
+    answerMultiDate = value;
+    notifyListeners();
+  }
+
+  Future answerMultiDateOption(
+      BuildContext context, String eid, String did) async {
+    updateMultiDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.answerDateOption(eid, did, true).catchError((e) {
+      updateMultiDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateMultiDate(false);
+  }
 }

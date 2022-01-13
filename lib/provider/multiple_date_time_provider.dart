@@ -83,18 +83,24 @@ class MultipleDateTimeProvider extends BaseProvider {
       endDate = endDate;
     }
 
-    if (startTimeHour > endTimeHour) {
-      endTime = startTime.addHour(3);
-    } else if (startTimeHour == endTimeHour) {
-      if (startTime.minute <= endTime.minute ||
-          startTime.minute >= endTime.minute) {
+    if (startDate
+        .toString()
+        .substring(0, 11)
+        .compareTo(endDate.toString().substring(0, 11)) ==
+        0) {
+      if (startTimeHour > endTimeHour) {
         endTime = startTime.addHour(3);
-      }
-    } else if ((endTimeHour.toInt() - startTimeHour.toInt()) < 3) {
-      endTime = startTime.addHour(3);
-    } else if ((endTimeHour.toInt() - startTimeHour.toInt()) == 3) {
-      if (startTime.minute > endTime.minute) {
+      } else if (startTimeHour == endTimeHour) {
+        if (startTime.minute <= endTime.minute ||
+            startTime.minute >= endTime.minute) {
+          endTime = startTime.addHour(3);
+        }
+      } else if ((endTimeHour.toInt() - startTimeHour.toInt()) < 3) {
         endTime = startTime.addHour(3);
+      } else if ((endTimeHour.toInt() - startTimeHour.toInt()) == 3) {
+        if (startTime.minute > endTime.minute) {
+          endTime = startTime.addHour(3);
+        }
       }
     }
   }

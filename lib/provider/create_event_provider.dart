@@ -434,17 +434,20 @@ addMultiDateTimeValue(List<DateOption> multipleDate){
 
   Future selectFinalDate(BuildContext context, String did) async{
     updateFinalDate(true);
-
+    Navigator.of(context).pop();
   var value =  await mmyEngine!.selectFinalDate(eventDetail.eid.toString(), did).catchError((e) {
       updateFinalDate(false);
       DialogHelper.showMessage(context, e.message);
     });
 
   if(value != null){
-    updateFinalDate(false);
     eventDetail.event = value;
     addMultipleDate = false;
-    Navigator.of(context).pop();
+    startDate = value.start;
+    endDate = value.end;
+    startTime = TimeOfDay.fromDateTime(value.start);
+    endTime = TimeOfDay.fromDateTime(value.end);
+    updateFinalDate(false);
     getMultipleDateOptionsFromEvent(context, eventDetail.eid.toString(), multiDateList: false);
   }
   }

@@ -174,5 +174,6 @@
   "end_time" : "End time",
   "add_date_to_event" : "Add date to event",
   "select_final_date" : "Select final date",
-  "select_that_date" : "Select that date"
+  "select_that_date" : "Select that date",
+  "which_days_could_you_attend" : "Which days could you attend ?"
    }

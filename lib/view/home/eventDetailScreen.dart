@@ -11,6 +11,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
@@ -54,6 +55,7 @@ class EventDetailScreen extends StatelessWidget {
           provider.calendarDetail.fromCalendarPage == true
               ? provider.getEvent(context, provider.eventDetail.eid!)
               : Container();
+     //     provider.getMultipleDateOptionsFromEvent(context, provider.eventDetail.eid!);
         },
         builder: (context, provider, _) {
           return provider.calendarDetail.fromCalendarPage == true &&
@@ -90,7 +92,7 @@ class EventDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (provider.value == true)
+                          if (provider.value == true || provider.getMultipleDate == true)
                             Center(child: CircularProgressIndicator())
                           else
                             CommonWidgets.commonBtn(
@@ -103,6 +105,15 @@ class EventDetailScreen extends StatelessWidget {
                                   "respond") {
                                 CommonWidgets.respondToEventBottomSheet(
                                     context, scaler, going: () {
+                                if(provider.eventDetail.event!.multipleDates == true){
+                                  provider
+                                      .getMultipleDateOptionsFromEvent(context, provider.eventDetail.event!.eid)
+                                      .then((value) {
+                                   // Navigator.of(context).pop();
+                                    alertForMultiDateAnswers(context, scaler, provider.multipleDate,
+                                        provider);
+                                  });
+                                } else{
                                   if (provider
                                       .eventDetail.event!.form.isNotEmpty) {
                                     List<String> questionsList = [];
@@ -123,6 +134,7 @@ class EventDetailScreen extends StatelessWidget {
                                         provider.eventDetail.eid!,
                                         EVENT_ATTENDING);
                                   }
+                                }
                                 }, notGoing: () {
                                   Navigator.of(context).pop();
                                   provider.replyToEvent(
@@ -386,8 +398,8 @@ class EventDetailScreen extends StatelessWidget {
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
                           width: scaler.getWidth(50),
-                          child: Text(provider.eventDetail.startDateAndTime ==
-                                      provider.eventDetail.endDateAndTime
+                          child: Text(provider.eventDetail.startDateAndTime.toString().substring(0,11) ==
+                                      provider.eventDetail.endDateAndTime.toString().substring(0,11)
                                   ? DateTimeHelper.getWeekDay(provider.eventDetail.startDateAndTime ?? DateTime.now()) +
                                       " - " +
                                       DateTimeHelper.convertEventDateToTimeFormat(
@@ -655,6 +667,100 @@ class EventDetailScreen extends StatelessWidget {
       case 4:
         return answer5Controller;
     }
+  }
+
+  alertForMultiDateAnswers(
+      BuildContext context,
+      ScreenScaler scaler,
+      List<DateOption> multiDate,
+      EventDetailProvider provider) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, StateSetter setInnerState) {
+            return Container(
+                width: double.infinity,
+                child: AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                  insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
+                  title: CommonWidgets.answerMultiDateAlertTitle(context, scaler),
+                  content: Container(
+                    //  color: Colors.red,
+                    height: scaler.getHeight(25.0),
+                    width: scaler.getWidth(100.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: provider.multipleDate.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 2.0,
+                          mainAxisSpacing: 3.0),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setInnerState(() {
+                              provider.selectedMultiDateIndex = index;
+                              provider.attendDateBtnColor = true;
+                              provider.selectedAttendDateDid =
+                                  multiDate[index].did;
+                              provider.selectedAttendDateEid =  multiDate[index].eid;
+                            });
+                          },
+                          child: CommonWidgets.gridViewOfMultiDateAlertDialog(
+                              scaler, multiDate, index,
+                              selectedIndex: provider.selectedMultiDateIndex),
+                        );
+                      },
+                    ),
+                  ),
+                  actions: [
+                    provider.answerMultiDate == true
+                        ? Center(child: CircularProgressIndicator())
+                        : CommonWidgets.commonBtn(
+                        scaler,
+                        context,
+                        "submit".tr(),
+                        provider.attendDateBtnColor == true
+                            ? ColorConstants.primaryColor
+                            : ColorConstants.colorNewGray,
+                        provider.attendDateBtnColor == true
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorGray,
+                        onTapFun: provider.attendDateBtnColor == true ||
+                            provider.selectedAttendDateDid != null
+                            ? () {
+                            setInnerState((){
+                              provider
+                                  .answerMultiDateOption(context, provider.selectedAttendDateEid.toString(), provider.selectedAttendDateDid.toString())
+                                  .then((value) {
+                                if (provider
+                                    .eventDetail.event!.form.isNotEmpty) {
+                                  List<String> questionsList = [];
+                                  for (var value in provider
+                                      .eventDetail.event!.form.values) {
+                                    questionsList.add(value);
+                                  }
+                                  Navigator.of(context).pop();
+                                  alertForQuestionnaireAnswers(
+                                      _scaffoldkey.currentContext!,
+                                      scaler,
+                                      questionsList,
+                                      provider);
+                                } else {
+                                  Navigator.of(context).pop();
+                                  provider.replyToEvent(
+                                      _scaffoldkey.currentContext!,
+                                      provider.eventDetail.eid!,
+                                      EVENT_ATTENDING);
+                                }
+                              });
+                            });
+                        }
+                            : () {})
+                  ],
+                ));
+          });
+        });
   }
 
 }

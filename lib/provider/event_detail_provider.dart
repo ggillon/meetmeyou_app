@@ -4,6 +4,7 @@ import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
@@ -232,6 +233,34 @@ class EventDetailProvider extends BaseProvider {
   }
 
 
+  // Multi date~~~~~~~~~~~~~~~
+
+  List<DateOption> multipleDate = [];
+  bool getMultipleDate = false;
+
+  void updateGetMultipleDate(bool value) {
+    getMultipleDate = value;
+    notifyListeners();
+  }
+
+  Future getMultipleDateOptionsFromEvent(
+      BuildContext context, String eid) async {
+    updateGetMultipleDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    Navigator.of(context).pop();
+    var value = await mmyEngine!.getDateOptionsFromEvent(eid).catchError((e) {
+      updateGetMultipleDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      multipleDate = value;
+      //  addMultiDateTimeValue(multipleDate);
+      updateGetMultipleDate(false);
+    }
+  }
+
+
   clearMultiDateOption(){
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
@@ -240,5 +269,31 @@ class EventDetailProvider extends BaseProvider {
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
+  }
+
+  bool attendDateBtnColor = false;
+  String? selectedAttendDateDid;
+  String? selectedAttendDateEid;
+  int? selectedMultiDateIndex;
+
+
+  bool answerMultiDate = false;
+
+  updateMultiDate(bool value) {
+    answerMultiDate = value;
+    notifyListeners();
+  }
+
+  Future answerMultiDateOption(
+      BuildContext context, String eid, String did) async {
+    updateMultiDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.answerDateOption(eid, did, true).catchError((e) {
+      updateMultiDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateMultiDate(false);
   }
 }
