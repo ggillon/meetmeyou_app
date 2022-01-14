@@ -38,6 +38,7 @@ class CreateEventProvider extends BaseProvider {
   bool isSwitched = false;
   bool fromInviteScreen = false;
   bool addMultipleDate = false;
+  bool removeMultiDate = false;
   int? selectedIndex;
 
   bool _isLoading = false;

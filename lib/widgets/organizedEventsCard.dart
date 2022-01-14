@@ -107,7 +107,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                       scaler.getBorderRadiusCircular(10)),
                               child: CustomShape(
                                   child: eventCard(scaler, context, provider,
-                                      provider.eventLists[index]),
+                                      provider.eventLists[index], index),
                                   bgColor: ColorConstants.colorWhite,
                                   radius: scaler.getBorderRadiusCircular(10),
                                   width:
@@ -130,7 +130,7 @@ class OrganizedEventsCard extends StatelessWidget {
   }
 
   Widget eventCard(ScreenScaler scaler, BuildContext context,
-      OrganizeEventCardProvider provider, Event eventList) {
+      OrganizeEventCardProvider provider, Event eventList, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -187,7 +187,7 @@ class OrganizedEventsCard extends StatelessWidget {
                   ? SizedBox(width: scaler.getWidth(1))
                   : SizedBox(width: scaler.getWidth(0)),
               showEventRespondBtn
-                  ? eventRespondBtn(context, scaler, eventList, provider)
+                  ? eventRespondBtn(context, scaler, eventList, provider, index)
                   : Container()
             ],
           ),
@@ -224,7 +224,7 @@ class OrganizedEventsCard extends StatelessWidget {
   }
 
   Widget eventRespondBtn(BuildContext context, ScreenScaler scaler, Event event,
-      OrganizeEventCardProvider provider) {
+      OrganizeEventCardProvider provider, int index) {
     return GestureDetector(
       onTap: () {
         if (CommonEventFunction.getEventBtnStatus(
@@ -239,7 +239,7 @@ class OrganizedEventsCard extends StatelessWidget {
             provider.homePageProvider.getUserDetail(context);
             if (event.multipleDates == true) {
               provider
-                  .getMultipleDateOptionsFromEvent(context, event.eid)
+                  .getMultipleDateOptionsFromEvent(context, event.eid, index)
                   .then((value) {
                 alertForMultiDateAnswers(
                     context, scaler, provider.multipleDate, provider, event);
@@ -291,7 +291,7 @@ class OrganizedEventsCard extends StatelessWidget {
       },
       child: CustomShape(
         child: Center(
-            child: provider.getMultipleDate == true
+            child: provider.getMultipleDate[index] == true
                 ? Container(
                 height: scaler.getHeight(1.5),
                 width: scaler.getWidth(3.0),

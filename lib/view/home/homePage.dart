@@ -445,7 +445,7 @@ class _HomePageState extends State<HomePage>
               ),
               SizedBox(width: scaler.getWidth(1)),
               eventRespondBtn(
-                  scaler, eventList[index], provider, dashboardProvider)
+                  scaler, eventList[index], provider, dashboardProvider, index)
             ],
           ),
         )
@@ -481,7 +481,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget eventRespondBtn(ScreenScaler scaler, Event event,
-      HomePageProvider provider, DashboardProvider dashboardProvider) {
+      HomePageProvider provider, DashboardProvider dashboardProvider, int index) {
     return GestureDetector(
       onTap: () {
         if (CommonEventFunction.getEventBtnStatus(
@@ -495,7 +495,7 @@ class _HomePageState extends State<HomePage>
           CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
             if (event.multipleDates == true) {
               provider
-                  .getMultipleDateOptionsFromEvent(context, event.eid)
+                  .getMultipleDateOptionsFromEvent(context, event.eid, index)
                   .then((value) {
                 alertForMultiDateAnswers(context, scaler, provider.multipleDate,
                     provider, event, dashboardProvider);
@@ -550,7 +550,7 @@ class _HomePageState extends State<HomePage>
       },
       child: CustomShape(
         child: Center(
-            child: provider.getMultipleDate == true
+            child: provider.getMultipleDate[index] == true
                 ? Container(
                     height: scaler.getHeight(1.5),
                     width: scaler.getWidth(3.0),

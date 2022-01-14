@@ -20,8 +20,8 @@ class MultipleDateTmeScreen extends StatelessWidget {
       appBar: DialogHelper.appBarWithBack(scaler, context),
       backgroundColor: ColorConstants.colorWhite,
       body: BaseView<MultipleDateTimeProvider>(
-        onModelReady: (provider){
-       //   provider.startDate = provider.date;
+        onModelReady: (provider) {
+          //   provider.startDate = provider.date;
         },
         builder: (context, provider, _) {
           return SafeArea(
@@ -35,8 +35,10 @@ class MultipleDateTmeScreen extends StatelessWidget {
                       scaler.getTextSize(14),
                       TextAlign.left),
                   SizedBox(height: scaler.getHeight(2.5)),
-                  Text("choose_start_date".tr()).boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5), TextAlign.center),
+                  Text("choose_start_date".tr()).boldText(
+                      ColorConstants.colorBlack,
+                      scaler.getTextSize(9.5),
+                      TextAlign.center),
                   SizedBox(height: scaler.getHeight(0.5)),
                   chooseStartDate(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.5)),
@@ -45,8 +47,10 @@ class MultipleDateTmeScreen extends StatelessWidget {
                   SizedBox(height: scaler.getHeight(0.5)),
                   chooseStartTime(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.5)),
-                  Text("choose_end_date".tr()).boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5), TextAlign.center),
+                  Text("choose_end_date".tr()).boldText(
+                      ColorConstants.colorBlack,
+                      scaler.getTextSize(9.5),
+                      TextAlign.center),
                   SizedBox(height: scaler.getHeight(0.5)),
                   chooseEndDate(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.5)),
@@ -62,15 +66,33 @@ class MultipleDateTmeScreen extends StatelessWidget {
                               context,
                               "add_date_to_event".tr(),
                               ColorConstants.primaryColor,
-                              ColorConstants.colorWhite, onTapFun: (){
-                                  provider.multipleDateOption.startDate.add(provider.startDate);
-                                  provider.multipleDateOption.endDate.add(provider.endDate);
-                                provider.multipleDateOption.startTime.add(provider.startTime);
-                                provider.multipleDateOption.endTime.add(provider.endTime);
-                                provider.multipleDateOption.startDateTime.add(DateTimeHelper.dateTimeFormat(provider.startDate, provider.startTime));
-                                provider.multipleDateOption.endDateTime.add(DateTimeHelper.dateTimeFormat(provider.endDate, provider.endTime));
-                                provider.setState(ViewState.Busy);
-                                Navigator.of(context).pop();
+                              ColorConstants.colorWhite, onTapFun: () {
+                            if(provider.multipleDateOption.startDate.any((element) { return element.toString().substring(0,11) == provider.startDate.toString().substring(0,11);}) &&
+                                provider.multipleDateOption.endDate.any((element) { return element.toString().substring(0,11) == provider.endDate.toString().substring(0,11);}) &&
+                                provider.multipleDateOption.startTime.contains(provider.startTime) &&
+                                provider.multipleDateOption.endTime.contains(provider.endTime)){
+                                  DialogHelper.showMessage(context,
+                                      "Previous added date and time can't added again.");
+                            }
+                            else{
+                              provider.multipleDateOption.startDate
+                                  .add(provider.startDate);
+                              provider.multipleDateOption.endDate
+                                  .add(provider.endDate);
+                              provider.multipleDateOption.startTime
+                                  .add(provider.startTime);
+                              provider.multipleDateOption.endTime
+                                  .add(provider.endTime);
+                              provider.multipleDateOption.startDateTime.add(
+                                  DateTimeHelper.dateTimeFormat(
+                                      provider.startDate, provider.startTime));
+                              provider.multipleDateOption.endDateTime.add(
+                                  DateTimeHelper.dateTimeFormat(
+                                      provider.endDate, provider.endTime));
+                              provider.setState(ViewState.Busy);
+                              Navigator.of(context).pop();
+                            }
+
                           }))),
                   SizedBox(height: scaler.getHeight(0.5)),
                 ],
@@ -127,7 +149,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(DateTimeHelper.dateConversion(provider.endDate))
                 .regularText(ColorConstants.colorBlackDown,
-                scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(9.5), TextAlign.center),
           )),
     );
   }

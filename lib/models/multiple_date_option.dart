@@ -8,5 +8,5 @@ class MultipleDateOption{
 
   List<DateTime> startDateTime = [];
   List<DateTime> endDateTime = [];
- // MultipleDateOption({this.date, this.startTime, this.endTime});
+
 }

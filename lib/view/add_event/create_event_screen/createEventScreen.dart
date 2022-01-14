@@ -199,22 +199,27 @@ class CreateEventScreen extends StatelessWidget {
                                 : provider.addMultipleDate == true
                                     ? GestureDetector(
                                         onTap: () {
-                                          provider.addMultipleDate = false;
+                                          if(provider.multipleDateOption.startDate.isEmpty){
+                                            provider.addMultipleDate = false;
+                                            provider.multipleDateOption.startDateTime.clear();
+                                            provider.multipleDateOption.endDateTime.clear();
+                                          }
+                                          provider.removeMultiDate = true;
                                           hideKeyboard(context);
-                                          provider.multipleDateOption.startDate
-                                              .clear();
-                                          provider.multipleDateOption.endDate
-                                              .clear();
-                                          provider.multipleDateOption.startTime
-                                              .clear();
-                                          provider.multipleDateOption.endTime
-                                              .clear();
-                                          provider
-                                              .multipleDateOption.startDateTime
-                                              .clear();
-                                          provider
-                                              .multipleDateOption.endDateTime
-                                              .clear();
+                                          // provider.multipleDateOption.startDate
+                                          //     .clear();
+                                          // provider.multipleDateOption.endDate
+                                          //     .clear();
+                                          // provider.multipleDateOption.startTime
+                                          //     .clear();
+                                          // provider.multipleDateOption.endTime
+                                          //     .clear();
+                                          // provider
+                                          //     .multipleDateOption.startDateTime
+                                          //     .clear();
+                                          // provider
+                                          //     .multipleDateOption.endDateTime
+                                          //     .clear();
                                           provider
                                               .updateMultipleDateUiStatus(true);
                                         },
@@ -256,7 +261,7 @@ class CreateEventScreen extends StatelessWidget {
                             provider.eventDetail.editEvent == true
                                 ? Container()
                                 : SizedBox(height: scaler.getHeight(1.5)),
-                            provider.eventDetail.event?.multipleDates == true
+                            (provider.eventDetail.event?.multipleDates == true && provider.eventDetail.editEvent == true)
                                 ? GestureDetector(
                                     onTap: () {
                                       hideKeyboard(context);
@@ -275,7 +280,7 @@ class CreateEventScreen extends StatelessWidget {
                                                 TextAlign.center)),
                                   )
                                 : Container(),
-                            provider.eventDetail.event?.multipleDates == true
+                            (provider.eventDetail.event?.multipleDates == true && provider.eventDetail.editEvent == true)
                                 ? SizedBox(height: scaler.getHeight(1.5))
                                 : Container(),
                             Align(
@@ -861,6 +866,7 @@ class CreateEventScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         hideKeyboard(context);
+        provider.removeMultiDate = false;
         Navigator.pushNamed(context, RoutesConstants.multipleDateTimeScreen)
             .then((value) {
           // print(provider.multipleDateOption.startDateTime);
@@ -907,7 +913,34 @@ class CreateEventScreen extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: provider.multipleDateOption.startDate.length,
                 itemBuilder: (context, index) {
-                  return multiDateCardDesign(scaler, provider, index);
+                  return  provider.removeMultiDate == true ?  Stack(
+                    children: [
+                      multiDateCardDesign(scaler, provider, index),
+                      Positioned(
+                        right: 0.0,
+                        child: GestureDetector(
+                          onTap: (){
+                           provider.multipleDateOption.startDate.removeAt(index);
+                           provider.multipleDateOption.endDate.removeAt(index);
+                           provider.multipleDateOption.startTime.removeAt(index);
+                           provider.multipleDateOption.endTime.removeAt(index);
+                           if(provider.multipleDateOption.startDate.isEmpty){
+                             provider.addMultipleDate = false;
+                           }
+                           provider.updateMultipleDateUiStatus(true);
+                          },
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: CircleAvatar(
+                              radius: 14.0,
+                              backgroundColor: ColorConstants.colorWhite,
+                              child: Icon(Icons.close, color: ColorConstants.primaryColor),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ) :  multiDateCardDesign(scaler, provider, index);;
                 }),
           ),
           provider.eventDetail.editEvent == true

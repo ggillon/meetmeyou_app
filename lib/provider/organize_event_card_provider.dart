@@ -37,6 +37,7 @@ class OrganizeEventCardProvider extends BaseProvider{
       setState(ViewState.Idle);
       eventLists = value;
       eventDetail.eventListLength = eventLists.length;
+      getMultipleDate = List<bool>.filled(eventLists.length, false);
     }
   }
 
@@ -92,27 +93,27 @@ class OrganizeEventCardProvider extends BaseProvider{
 
   // Multi date
   List<DateOption> multipleDate = [];
-  bool getMultipleDate = false;
+  late List<bool> getMultipleDate = [];
 
-  void updateGetMultipleDate(bool value) {
-    getMultipleDate = value;
+  void updateGetMultipleDate(bool value, int index) {
+    getMultipleDate[index] = value;
     notifyListeners();
   }
 
   Future getMultipleDateOptionsFromEvent(
-      BuildContext context, String eid) async {
-    updateGetMultipleDate(true);
+      BuildContext context, String eid, int index) async {
+    updateGetMultipleDate(true, index);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     Navigator.of(context).pop();
     var value = await mmyEngine!.getDateOptionsFromEvent(eid).catchError((e) {
-      updateGetMultipleDate(false);
+      updateGetMultipleDate(false, index);
       DialogHelper.showMessage(context, e.message);
     });
 
     if (value != null) {
       multipleDate = value;
       //  addMultiDateTimeValue(multipleDate);
-      updateGetMultipleDate(false);
+      updateGetMultipleDate(false, index);
     }
   }
 
