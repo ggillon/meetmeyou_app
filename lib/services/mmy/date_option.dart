@@ -64,6 +64,12 @@ Future<void> answerDateOption(User currentUser, String eid, String did, bool att
   db.setDateOption(eid, date);
 }
 
+Future<bool> dateOptionStatus(User currentUser, String eid, String did) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  DateOption date = await db.getDateOption(eid, did);
+  return (date.invitedContacts[currentUser.uid] == EVENT_ATTENDING);
+}
+
 Future<void> invitedMultipleDates(User currentUser, String eid, String uid) async {
   final db = FirestoreDB(uid: currentUser.uid);
   final dateList = await db.getAllDateOptions(eid);
