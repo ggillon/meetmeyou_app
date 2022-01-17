@@ -331,12 +331,12 @@ class CreateEventScreen extends StatelessWidget {
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.streetAddress,
                                 validator: (value) {
-                                  // if (value!.trim().isEmpty) {
-                                  //   return "event_location_required".tr();
-                                  // }
-                                  // {
-                                  //   return null;
-                                  // }
+                                  if (value!.trim().isEmpty) {
+                                    return "event_location_required".tr();
+                                  }
+                                  {
+                                    return null;
+                                  }
                                 },
                               ),
                             ),
@@ -924,6 +924,8 @@ class CreateEventScreen extends StatelessWidget {
                            provider.multipleDateOption.endDate.removeAt(index);
                            provider.multipleDateOption.startTime.removeAt(index);
                            provider.multipleDateOption.endTime.removeAt(index);
+                           provider.multipleDateOption.startDateTime.removeAt(index);
+                           provider.multipleDateOption.endDateTime.removeAt(index);
                            if(provider.multipleDateOption.startDate.isEmpty){
                              provider.addMultipleDate = false;
                            }
