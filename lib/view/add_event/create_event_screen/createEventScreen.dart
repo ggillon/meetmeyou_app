@@ -869,19 +869,12 @@ class CreateEventScreen extends StatelessWidget {
         provider.removeMultiDate = false;
         Navigator.pushNamed(context, RoutesConstants.multipleDateTimeScreen)
             .then((value) {
-          // print(provider.multipleDateOption.startDateTime);
-          // print(provider.multipleDateOption.endDateTime);
           provider.updateMultipleDateUiStatus(true);
         });
       },
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Container(
-          // color: ColorConstants.colorLightGray,
-          // shape: RoundedRectangleBorder(
-          //   side: BorderSide(color: ColorConstants.colorWhitishGray, width: 1),
-          //   borderRadius: BorderRadius.circular(20.0),
-          // ),c
           decoration: BoxDecoration(
               color: ColorConstants.colorLightGray,
               borderRadius: scaler.getBorderRadiusCircular(12.0),
@@ -921,7 +914,7 @@ class CreateEventScreen extends StatelessWidget {
                         child: GestureDetector(
                           onTap: (){
                            provider.multipleDateOption.startDate.removeAt(index);
-                           provider.multipleDateOption.endDate.removeAt(index);
+                         //  provider.multipleDateOption.endDate.removeAt(index);
                            provider.multipleDateOption.startTime.removeAt(index);
                            provider.multipleDateOption.endTime.removeAt(index);
                            provider.multipleDateOption.startDateTime.removeAt(index);
@@ -986,14 +979,16 @@ class CreateEventScreen extends StatelessWidget {
           SizedBox(height: scaler.getHeight(0.1)),
           Container(
             width: scaler.getWidth(20),
-            child: Text((provider.multipleDateOption.startDate[index]
-                            .toString()
-                            .substring(0, 11)) ==
-                        (provider.multipleDateOption.endDate[index]
-                            .toString()
-                            .substring(0, 11))
-                    ? "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}"
-                    : "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])} (${DateTimeHelper.dateConversion(provider.multipleDateOption.endDate[index], date: false)})")
+            child: Text(
+    // (provider.multipleDateOption.startDate[index]
+    //                         .toString()
+    //                         .substring(0, 11)) ==
+    //                     (provider.multipleDateOption.endDate[index]
+    //                         .toString()
+    //                         .substring(0, 11))
+    //                 ?
+    "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])}")
+                 //   : "${DateTimeHelper.timeConversion(provider.multipleDateOption.startTime[index])} - ${DateTimeHelper.timeConversion(provider.multipleDateOption.endTime[index])} (${DateTimeHelper.dateConversion(provider.multipleDateOption.endDate[index], date: false)})")
                 .regularText(ColorConstants.colorGray, 10, TextAlign.center,
                     maxLines: 2, overflow: TextOverflow.ellipsis),
           )

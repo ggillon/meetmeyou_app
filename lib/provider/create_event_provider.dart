@@ -358,7 +358,7 @@ class CreateEventProvider extends BaseProvider {
   clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
-    multipleDateOption.endDate.clear();
+  //  multipleDateOption.endDate.clear();
     multipleDateOption.startTime.clear();
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
@@ -418,7 +418,7 @@ class CreateEventProvider extends BaseProvider {
 addMultiDateTimeValue(List<DateOption> multipleDate){
   for (int i = 0; i < multipleDate.length; i++) {
     multipleDateOption.startDate.add(multipleDate[i].start);
-    multipleDateOption.endDate.add(multipleDate[i].end);
+//    multipleDateOption.endDate.add(multipleDate[i].end);
     multipleDateOption.startTime
         .add(TimeOfDay.fromDateTime(multipleDate[i].start));
     multipleDateOption.endTime

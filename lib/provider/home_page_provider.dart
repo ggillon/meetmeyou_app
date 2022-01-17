@@ -295,7 +295,7 @@ class HomePageProvider extends BaseProvider {
   clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
-    multipleDateOption.endDate.clear();
+  //  multipleDateOption.endDate.clear();
     multipleDateOption.startTime.clear();
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
