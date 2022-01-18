@@ -316,7 +316,7 @@ class EventDetailProvider extends BaseProvider {
     updateStatusMultiDate(false);
   }
 
-  List<String> eidsOfMultiDate = [];
+  List<String> eidsOfMultiDateSelected = [];
 
   Future listOfDateSelected(BuildContext context, String eid) async {
     updateStatusMultiDate(true);
@@ -328,7 +328,7 @@ class EventDetailProvider extends BaseProvider {
     });
 
     if (value != null) {
-      eidsOfMultiDate = value;
+      eidsOfMultiDateSelected = value;
       updateStatusMultiDate(false);
     }
   }
