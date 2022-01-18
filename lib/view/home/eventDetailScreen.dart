@@ -60,6 +60,7 @@ class EventDetailScreen extends StatelessWidget {
         provider.eventDetail.event?.multipleDates == true ? provider.getMultipleDateOptionsFromEvent(
               context, provider.eventDetail.eid!,
               onBtnClick: false) : Container();
+          provider.eventDetail.event?.multipleDates == true ? provider.listOfDateSelected(context, provider.eventDetail.eid!) : Container();
         },
         builder: (context, provider, _) {
           return provider.calendarDetail.fromCalendarPage == true &&

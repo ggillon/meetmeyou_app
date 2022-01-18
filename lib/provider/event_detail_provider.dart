@@ -263,7 +263,7 @@ class EventDetailProvider extends BaseProvider {
   clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
- //   multipleDateOption.endDate.clear();
+    //   multipleDateOption.endDate.clear();
     multipleDateOption.startTime.clear();
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
@@ -314,5 +314,22 @@ class EventDetailProvider extends BaseProvider {
     print(value);
 
     updateStatusMultiDate(false);
+  }
+
+  List<String> eidsOfMultiDate = [];
+
+  Future listOfDateSelected(BuildContext context, String eid) async {
+    updateStatusMultiDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.listDateSelected(eid).catchError((e) {
+      updateStatusMultiDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      eidsOfMultiDate = value;
+      updateStatusMultiDate(false);
+    }
   }
 }
