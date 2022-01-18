@@ -283,11 +283,11 @@ class EventDetailProvider extends BaseProvider {
   }
 
   Future answerMultiDateOption(
-      BuildContext context, String eid, String did) async {
+      BuildContext context, String eid, String did, bool attend) async {
     updateMultiDate(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!.answerDateOption(eid, did, true).catchError((e) {
+    await mmyEngine!.answerDateOption(eid, did, attend).catchError((e) {
       updateMultiDate(false);
       DialogHelper.showMessage(context, e.message);
     });

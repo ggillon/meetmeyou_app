@@ -302,29 +302,28 @@ class HomePageProvider extends BaseProvider {
     multipleDateOption.endDateTime.clear();
   }
 
-  // Future<void> answerDateOption(String eid, String did, bool attend);
-  bool attendDateBtnColor = false;
-  String? selectedAttendDateDid;
-  String? selectedAttendDateEid;
-  int? selectedMultiDateIndex;
+  // bool attendDateBtnColor = false;
+  // String? selectedAttendDateDid;
+  // String? selectedAttendDateEid;
+  // int? selectedMultiDateIndex;
 
-  bool answerMultiDate = false;
-
-  updateMultiDate(bool value) {
-    answerMultiDate = value;
-    notifyListeners();
-  }
-
-  Future answerMultiDateOption(
-      BuildContext context, String eid, String did) async {
-    updateMultiDate(true);
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    await mmyEngine!.answerDateOption(eid, did, true).catchError((e) {
-      updateMultiDate(false);
-      DialogHelper.showMessage(context, e.message);
-    });
-
-    updateMultiDate(false);
-  }
+  // bool answerMultiDate = false;
+  //
+  // updateMultiDate(bool value) {
+  //   answerMultiDate = value;
+  //   notifyListeners();
+  // }
+  //
+  // Future answerMultiDateOption(
+  //     BuildContext context, String eid, String did) async {
+  //   updateMultiDate(true);
+  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   await mmyEngine!.answerDateOption(eid, did, true).catchError((e) {
+  //     updateMultiDate(false);
+  //     DialogHelper.showMessage(context, e.message);
+  //   });
+  //
+  //   updateMultiDate(false);
+  // }
 }

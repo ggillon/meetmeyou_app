@@ -294,6 +294,7 @@ class CreateEventScreen extends StatelessWidget {
                             GestureDetector(
                               onTap: () async {
                                 hideKeyboard(context);
+                                provider.removeMultiDate = false;
                                 Navigator.pushNamed(
                                         context, RoutesConstants.autoComplete)
                                     .then((value) {
@@ -634,6 +635,8 @@ class CreateEventScreen extends StatelessWidget {
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
     return GestureDetector(
       onTap: () async {
+        hideKeyboard(context);
+        provider.removeMultiDate = false;
         var value = await provider.permissionCheck();
         if (value) {
           selectImageBottomSheet(context, scaler, provider);

@@ -237,14 +237,14 @@ class OrganizedEventsCard extends StatelessWidget {
           answer5Controller.clear();
           CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
             provider.homePageProvider.getUserDetail(context);
-            if (event.multipleDates == true) {
-              provider
-                  .getMultipleDateOptionsFromEvent(context, event.eid, index)
-                  .then((value) {
-                alertForMultiDateAnswers(
-                    context, scaler, provider.multipleDate, provider, event);
-              });
-            } else {
+            // if (event.multipleDates == true) {
+            //   provider
+            //       .getMultipleDateOptionsFromEvent(context, event.eid, index)
+            //       .then((value) {
+            //     alertForMultiDateAnswers(
+            //         context, scaler, provider.multipleDate, provider, event);
+            //   });
+            // } else {
               if (event.form.values.isNotEmpty) {
                 List<String> questionsList = [];
                 for (var value in event.form.values) {
@@ -257,7 +257,7 @@ class OrganizedEventsCard extends StatelessWidget {
                 Navigator.of(context).pop();
                 provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
               }
-            }
+         //   }
           }, notGoing: () {
             Navigator.of(context).pop();
             provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
@@ -436,102 +436,102 @@ class OrganizedEventsCard extends StatelessWidget {
     }
   }
 
-  alertForMultiDateAnswers(
-      BuildContext context,
-      ScreenScaler scaler,
-      List<DateOption> multiDate,
-      OrganizeEventCardProvider provider,
-      Event event) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (context, StateSetter setInnerState) {
-            return Container(
-                width: double.infinity,
-                child: AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                  insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
-                  title:
-                      CommonWidgets.answerMultiDateAlertTitle(context, scaler),
-                  content: Container(
-                    //  color: Colors.red,
-                    height: scaler.getHeight(25.0),
-                    width: scaler.getWidth(100.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: provider.multipleDate.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 2.0,
-                          mainAxisSpacing: 3.0),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setInnerState(() {
-                              provider.selectedMultiDateIndex = index;
-                              provider.attendDateBtnColor = true;
-                              provider.selectedAttendDateDid =
-                                  multiDate[index].did;
-                              provider.selectedAttendDateEid =
-                                  multiDate[index].eid;
-                            });
-                          },
-                          child: CommonWidgets.gridViewOfMultiDateAlertDialog(
-                              scaler, multiDate, index,
-                              selectedIndex: provider.selectedMultiDateIndex),
-                        );
-                      },
-                    ),
-                  ),
-                  actions: [
-                    provider.answerMultiDate == true
-                        ? Center(child: CircularProgressIndicator())
-                        : CommonWidgets.commonBtn(
-                            scaler,
-                            context,
-                            "submit".tr(),
-                            provider.attendDateBtnColor == true
-                                ? ColorConstants.primaryColor
-                                : ColorConstants.colorNewGray,
-                            provider.attendDateBtnColor == true
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            onTapFun: provider.attendDateBtnColor == true ||
-                                    provider.selectedAttendDateDid != null
-                                ? () {
-                                    setInnerState(() {
-                                      provider
-                                          .answerMultiDateOption(
-                                              context,
-                                              provider.selectedAttendDateEid
-                                                  .toString(),
-                                              provider.selectedAttendDateDid
-                                                  .toString())
-                                          .then((value) {
-                                        if (event.form.values.isNotEmpty) {
-                                          List<String> questionsList = [];
-                                          for (var value in event.form.values) {
-                                            questionsList.add(value);
-                                          }
-                                          Navigator.of(context).pop();
-                                          alertForQuestionnaireAnswers(
-                                              context,
-                                              scaler,
-                                              event,
-                                              questionsList,
-                                              provider);
-                                        } else {
-                                          Navigator.of(context).pop();
-                                          provider.replyToEvent(context,
-                                              event.eid, EVENT_ATTENDING);
-                                        }
-                                      });
-                                    });
-                                  }
-                                : () {})
-                  ],
-                ));
-          });
-        });
-  }
+  // alertForMultiDateAnswers(
+  //     BuildContext context,
+  //     ScreenScaler scaler,
+  //     List<DateOption> multiDate,
+  //     OrganizeEventCardProvider provider,
+  //     Event event) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return StatefulBuilder(builder: (context, StateSetter setInnerState) {
+  //           return Container(
+  //               width: double.infinity,
+  //               child: AlertDialog(
+  //                 contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+  //                 insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
+  //                 title:
+  //                     CommonWidgets.answerMultiDateAlertTitle(context, scaler),
+  //                 content: Container(
+  //                   //  color: Colors.red,
+  //                   height: scaler.getHeight(25.0),
+  //                   width: scaler.getWidth(100.0),
+  //                   child: GridView.builder(
+  //                     shrinkWrap: true,
+  //                     itemCount: provider.multipleDate.length,
+  //                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //                         crossAxisCount: 3,
+  //                         crossAxisSpacing: 2.0,
+  //                         mainAxisSpacing: 3.0),
+  //                     itemBuilder: (context, index) {
+  //                       return GestureDetector(
+  //                         onTap: () {
+  //                           setInnerState(() {
+  //                             provider.selectedMultiDateIndex = index;
+  //                             provider.attendDateBtnColor = true;
+  //                             provider.selectedAttendDateDid =
+  //                                 multiDate[index].did;
+  //                             provider.selectedAttendDateEid =
+  //                                 multiDate[index].eid;
+  //                           });
+  //                         },
+  //                         child: CommonWidgets.gridViewOfMultiDateAlertDialog(
+  //                             scaler, multiDate, index,
+  //                             selectedIndex: provider.selectedMultiDateIndex),
+  //                       );
+  //                     },
+  //                   ),
+  //                 ),
+  //                 actions: [
+  //                   provider.answerMultiDate == true
+  //                       ? Center(child: CircularProgressIndicator())
+  //                       : CommonWidgets.commonBtn(
+  //                           scaler,
+  //                           context,
+  //                           "submit".tr(),
+  //                           provider.attendDateBtnColor == true
+  //                               ? ColorConstants.primaryColor
+  //                               : ColorConstants.colorNewGray,
+  //                           provider.attendDateBtnColor == true
+  //                               ? ColorConstants.colorWhite
+  //                               : ColorConstants.colorGray,
+  //                           onTapFun: provider.attendDateBtnColor == true ||
+  //                                   provider.selectedAttendDateDid != null
+  //                               ? () {
+  //                                   setInnerState(() {
+  //                                     provider
+  //                                         .answerMultiDateOption(
+  //                                             context,
+  //                                             provider.selectedAttendDateEid
+  //                                                 .toString(),
+  //                                             provider.selectedAttendDateDid
+  //                                                 .toString())
+  //                                         .then((value) {
+  //                                       if (event.form.values.isNotEmpty) {
+  //                                         List<String> questionsList = [];
+  //                                         for (var value in event.form.values) {
+  //                                           questionsList.add(value);
+  //                                         }
+  //                                         Navigator.of(context).pop();
+  //                                         alertForQuestionnaireAnswers(
+  //                                             context,
+  //                                             scaler,
+  //                                             event,
+  //                                             questionsList,
+  //                                             provider);
+  //                                       } else {
+  //                                         Navigator.of(context).pop();
+  //                                         provider.replyToEvent(context,
+  //                                             event.eid, EVENT_ATTENDING);
+  //                                       }
+  //                                     });
+  //                                   });
+  //                                 }
+  //                               : () {})
+  //                 ],
+  //               ));
+  //         });
+  //       });
+  // }
 }
