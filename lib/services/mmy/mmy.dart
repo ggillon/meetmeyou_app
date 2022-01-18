@@ -114,6 +114,8 @@ abstract class MMYEngine {
   Future<void> answerDateOption(String eid, String did, bool attend);
   /// Get status of dateOption for an event date
   Future<bool> dateOptionStatus(String eid, String did);
+  /// Get list of dates selected
+  Future<List<String>> listDateSelected(String eid);
   /// Select final date for an event
   Future<Event> selectFinalDate(String eid, String did);
 
@@ -465,6 +467,11 @@ class MMY implements MMYEngine {
   @override
   Future<bool> dateOptionStatus(String eid, String did) async {
     return dateLib.dateOptionStatus(_currentUser, eid, did);
+  }
+
+  @override
+  Future<List<String>> listDateSelected(String eid) async {
+    return dateLib.listDateSelected(_currentUser, eid);
   }
 
   @override

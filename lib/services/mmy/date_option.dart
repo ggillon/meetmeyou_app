@@ -70,6 +70,18 @@ Future<bool> dateOptionStatus(User currentUser, String eid, String did) async {
   return (date.invitedContacts[currentUser.uid] == EVENT_ATTENDING);
 }
 
+Future<List<String>> listDateSelected(User currentUser, String eid,) async {
+  List<String> results = [];
+  final db = FirestoreDB(uid: currentUser.uid);
+  final dates = await db.getAllDateOptions(eid);
+  for (DateOption date in dates) {
+    if(date.invitedContacts.containsKey(currentUser.uid)) {
+      results.add(date.did);
+    }
+  }
+  return results;
+}
+
 Future<void> invitedMultipleDates(User currentUser, String eid, String uid) async {
   final db = FirestoreDB(uid: currentUser.uid);
   final dateList = await db.getAllDateOptions(eid);
