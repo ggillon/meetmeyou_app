@@ -76,7 +76,8 @@ Future<List<String>> listDateSelected(User currentUser, String eid,) async {
   final dates = await db.getAllDateOptions(eid);
   for (DateOption date in dates) {
     if(date.invitedContacts.containsKey(currentUser.uid)) {
-      if(date.invitedContacts[currentUser.uid] == EVENT_ATTENDING) results.add(date.did);
+      if(date.invitedContacts[currentUser.uid] == EVENT_ATTENDING)
+        results.add(date.did);
     }
   }
   return results;
