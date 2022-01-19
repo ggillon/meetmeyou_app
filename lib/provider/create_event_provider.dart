@@ -13,8 +13,10 @@ import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -24,6 +26,7 @@ class CreateEventProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
+  MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
 
   File? image;
 
@@ -34,6 +37,9 @@ class CreateEventProvider extends BaseProvider {
   TimeOfDay endTime = TimeOfDay.now().addHour(3);
   bool isSwitched = false;
   bool fromInviteScreen = false;
+  bool addMultipleDate = false;
+  bool removeMultiDate = false;
+  int? selectedIndex;
 
   bool _isLoading = false;
 
@@ -48,6 +54,13 @@ class CreateEventProvider extends BaseProvider {
 
   void updateQuestionStatus(bool value) {
     question = value;
+    notifyListeners();
+  }
+
+  bool multipleDateUi = false;
+
+  void updateMultipleDateUiStatus(bool value) {
+    multipleDateUi = value;
     notifyListeners();
   }
 
@@ -111,10 +124,14 @@ class CreateEventProvider extends BaseProvider {
             context: context,
             initialDate: checkOrEndStartDate
                 ? DateTime.now()
-                : dateCheck ? endDate : DateTime(startDate.year, startDate.month, startDate.day),
+                : dateCheck
+                    ? endDate
+                    : DateTime(startDate.year, startDate.month, startDate.day),
             firstDate: checkOrEndStartDate
                 ? DateTime.now()
-                : dateCheck ? endDate : DateTime(startDate.year, startDate.month, startDate.day),
+                : dateCheck
+                    ? endDate
+                    : DateTime(startDate.year, startDate.month, startDate.day),
             lastDate: DateTime(2100))
         .then((pickedDate) {
       if (pickedDate == null) {
@@ -149,7 +166,7 @@ class CreateEventProvider extends BaseProvider {
     if (checkOrEndStartTime == true) {
       startTime = pickedTime;
       startTimeFun();
-      dateTimeFormat(startDate, startTime);
+      //dateTimeFormat(startDate, startTime);
     } else {
       endTime = pickedTime;
       endTimeFun(context);
@@ -158,28 +175,27 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-
-  startTimeFun(){
+  startTimeFun() {
     // start time
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
     if (startTime.hour >= 21) {
       if (startDate
-          .toString()
-          .substring(0, 11)
-          .compareTo(endDate.toString().substring(0, 11)) ==
-          0){
+              .toString()
+              .substring(0, 11)
+              .compareTo(endDate.toString().substring(0, 11)) ==
+          0) {
         endDate = startDate.add(Duration(days: 1));
         dateCheck = true;
       }
     } else {
-     // endDate = startDate;
-     // dateCheck = false;
+      // endDate = startDate;
+      // dateCheck = false;
     }
     if (startDate
-        .toString()
-        .substring(0, 11)
-        .compareTo(endDate.toString().substring(0, 11)) ==
+            .toString()
+            .substring(0, 11)
+            .compareTo(endDate.toString().substring(0, 11)) ==
         0) {
       if (startTimeHour > endTimeHour) {
         endTime = startTime.addHour(3);
@@ -198,14 +214,14 @@ class CreateEventProvider extends BaseProvider {
     }
   }
 
-  endTimeFun(BuildContext context){
+  endTimeFun(BuildContext context) {
     // for end time
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
     if (startDate
-        .toString()
-        .substring(0, 11)
-        .compareTo(endDate.toString().substring(0, 11)) ==
+            .toString()
+            .substring(0, 11)
+            .compareTo(endDate.toString().substring(0, 11)) ==
         0) {
       if (endTimeHour < startTimeHour + 3) {
         endTime = startTime.addHour(3);
@@ -238,8 +254,13 @@ class CreateEventProvider extends BaseProvider {
             description: description,
             photoFile: photoFile ?? null,
             photoURL: photoURL ?? "",
-            start: startDateTime,
-            end: endDateTime)
+            start: addMultipleDate == true ? null : startDateTime,
+            end: addMultipleDate == true ? null : endDateTime,
+            startDateOptions: addMultipleDate == true
+                ? multipleDateOption.startDateTime
+                : null,
+            endDateOptions:
+                addMultipleDate == true ? multipleDateOption.endDateTime : null)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
@@ -249,6 +270,8 @@ class CreateEventProvider extends BaseProvider {
       eventDetail.eid = value.eid;
       photoFile = null;
       eventDetail.eventPhotoUrl = value.photoURL;
+
+      clearMultiDateOption();
       //   DialogHelper.showMessage(context, "Event created Successfully");
       Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen)
           .then((value) {
@@ -302,6 +325,7 @@ class CreateEventProvider extends BaseProvider {
       }
 
       eventDetail.contactCIDs = contactsKeys;
+      clearMultiDateOption();
       // DialogHelper.showMessage(context, "Event updated Successfully");
       Navigator.of(context).pop();
     }
@@ -326,18 +350,19 @@ class CreateEventProvider extends BaseProvider {
           textColor: false);
       eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
           value, userDetail.cid.toString());
+      clearMultiDateOption();
       Navigator.of(context).pop();
     }
   }
 
-  dateTimeFormat(DateTime date, TimeOfDay time) {
-    String dateTimeString =
-        date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
-    DateTime tempDate =
-        new DateFormat("yyyy-MM-dd hh:mm").parse(dateTimeString);
-    // print(dateTimeString);
-    // print(tempDate);
-    return tempDate;
+  clearMultiDateOption() {
+    // clear multi date and time lists
+    multipleDateOption.startDate.clear();
+  //  multipleDateOption.endDate.clear();
+    multipleDateOption.startTime.clear();
+    multipleDateOption.endTime.clear();
+    multipleDateOption.startDateTime.clear();
+    multipleDateOption.endDateTime.clear();
   }
 
   bool addQuestion = false;
@@ -353,11 +378,79 @@ class CreateEventProvider extends BaseProvider {
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine!
-        .addQuestionToEvent(event, questionNum: queNo, text: queText);
+        .addQuestionToEvent(event, questionNum: queNo, text: queText)
+        .catchError((e) {
+      updateAddQuestionStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
 
     if (value != null) {
       updateAddQuestionStatus(false);
     }
+  }
+
+  List<DateOption> multipleDate = [];
+  bool getMultipleDate = false;
+
+  void updateGetMultipleDate(bool value) {
+    getMultipleDate = value;
+    notifyListeners();
+  }
+
+  Future getMultipleDateOptionsFromEvent(
+      BuildContext context, String eid, {bool multiDateList = true}) async {
+    updateGetMultipleDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.getDateOptionsFromEvent(eid).catchError((e) {
+      updateGetMultipleDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      multipleDate = value;
+      multiDateList == true ?  addMultipleDate = true : addMultipleDate = false;
+      multiDateList == true ? addMultiDateTimeValue(multipleDate): clearMultiDateOption();
+      updateGetMultipleDate(false);
+    }
+  }
+
+addMultiDateTimeValue(List<DateOption> multipleDate){
+  for (int i = 0; i < multipleDate.length; i++) {
+    multipleDateOption.startDate.add(multipleDate[i].start);
+//    multipleDateOption.endDate.add(multipleDate[i].end);
+    multipleDateOption.startTime
+        .add(TimeOfDay.fromDateTime(multipleDate[i].start));
+    multipleDateOption.endTime
+        .add(TimeOfDay.fromDateTime(multipleDate[i].end));
+  }
+}
+
+  bool finalDate = false;
+
+  void updateFinalDate(bool value) {
+    finalDate = value;
+    notifyListeners();
+  }
+
+  Future selectFinalDate(BuildContext context, String did) async{
+    updateFinalDate(true);
+    Navigator.of(context).pop();
+  var value =  await mmyEngine!.selectFinalDate(eventDetail.eid.toString(), did).catchError((e) {
+      updateFinalDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+  if(value != null){
+    eventDetail.event = value;
+    addMultipleDate = false;
+    startDate = value.start;
+    endDate = value.end;
+    startTime = TimeOfDay.fromDateTime(value.start);
+    endTime = TimeOfDay.fromDateTime(value.end);
+    updateFinalDate(false);
+    getMultipleDateOptionsFromEvent(context, eventDetail.eid.toString(), multiDateList: false);
+  }
   }
 
 // getEventBtnStatus(Event event) {

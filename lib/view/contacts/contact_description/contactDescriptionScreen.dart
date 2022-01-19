@@ -121,7 +121,8 @@ class ContactDescriptionScreen extends StatelessWidget {
                                   userDetail.cid!, true, "Accept");
                             }),
                           )
-                              : Container()
+                              : Container(),
+                          SizedBox(height: scaler.getHeight(1.5))
                         ],
                       ),
                     ),

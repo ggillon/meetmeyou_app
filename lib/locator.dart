@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
@@ -24,6 +25,7 @@ import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/provider/login_provider.dart';
+import 'package:meetmeyou_app/provider/multiple_date_time_provider.dart';
 import 'package:meetmeyou_app/provider/my_account_provider.dart';
 import 'package:meetmeyou_app/provider/contact_description_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
@@ -44,6 +46,7 @@ void setupLocator() {
   locator.registerLazySingleton<GroupDetail>(() => GroupDetail());
   locator.registerLazySingleton<EventDetail>(() => EventDetail());
   locator.registerLazySingleton<CalendarDetail>(() => CalendarDetail());
+  locator.registerLazySingleton<MultipleDateOption>(() => MultipleDateOption());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -73,6 +76,7 @@ void setupLocator() {
   locator.registerFactory<ChooseEventProvider>(() => ChooseEventProvider());
   locator.registerFactory<EventDiscussionProvider>(() => EventDiscussionProvider());
   locator.registerFactory<OrganizeEventCardProvider>(() => OrganizeEventCardProvider());
+  locator.registerFactory<MultipleDateTimeProvider>(() => MultipleDateTimeProvider());
 
 
   /*

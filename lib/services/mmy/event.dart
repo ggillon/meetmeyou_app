@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
@@ -67,16 +68,33 @@ Future<Event> updateEvent(User currentUser, String? eid, {String? title, String?
 }
 
 Future<Event> updateInvitations(User currentUser, String eid, Map invitations) async {
-  Event event = await FirestoreDB(uid: currentUser.uid).getEvent(eid);
+  final db = FirestoreDB(uid: currentUser.uid);
+  Event event = await db.getEvent(eid);
   event.invitedContacts.addAll(invitations);
-  await FirestoreDB(uid: currentUser.uid).setEvent(event);
+  if(event.multipleDates) {
+    final eventDates = await db.getAllDateOptions(eid);
+    for(DateOption date in eventDates) {
+      date.invitedContacts.addAll(invitations);
+      await db.setDateOption(eid, date);
+    }
+  }
+  await db.setEvent(event);
   return event;
 }
 
 Future<Event> removeInvitations(User currentUser, String eid, List<String> CIDs) async {
-  Event event = await FirestoreDB(uid: currentUser.uid).getEvent(eid);
-  for(String CID in CIDs)
+  final db = FirestoreDB(uid: currentUser.uid);
+  Event event = await db.getEvent(eid);
+  for(String CID in CIDs) {
     event.invitedContacts.remove(CID);
+    if(event.multipleDates) {
+      final eventDates = await db.getAllDateOptions(eid);
+      for(DateOption date in eventDates) {
+        date.invitedContacts.remove(CID);
+        await db.setDateOption(eid, date);
+      }
+    }
+  }
   await FirestoreDB(uid: currentUser.uid).setEvent(event);
   return event;
 }

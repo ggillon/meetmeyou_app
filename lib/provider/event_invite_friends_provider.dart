@@ -149,13 +149,30 @@ class EventInviteFriendsProvider extends BaseProvider {
           .compareTo(b.toString().toLowerCase());
     });
 
-    if (contactsKeys.equals(groupKeysList)) {
-      return true;
-    } else {
+    if(groupKeysList.isNotEmpty){
+      for(int i = 0 ; i< groupKeysList.length ; i++){
+        if (contactsKeys.contains(groupKeysList[i])) {
+          return true;
+        } else {
+          var value = eventDetail.groupIndexList
+              .any((element) => element == index.toString());
+          return value;
+        }
+      }
+    } else{
       var value = eventDetail.groupIndexList
           .any((element) => element == index.toString());
       return value;
     }
+
+
+    // if (contactsKeys.equals(groupKeysList)) {
+    //   return true;
+    // } else {
+    //   var value = eventDetail.groupIndexList
+    //       .any((element) => element == index.toString());
+    //   return value;
+    // }
   }
 
   // Future inviteContactsToEvent(BuildContext context, List<String> CIDs) async {
@@ -249,7 +266,10 @@ class EventInviteFriendsProvider extends BaseProvider {
       }
     }
     // eventDetail.contactCIDs = [];
-    contactsKeys = [];
+   // contactsKeys = [];
+    for(int i =0 ; i <  CIDs.length ; i++){
+      contactsKeys.remove(CIDs[i]);
+    }
     await mmyEngine!
         .removeContactsFromEvent(eventDetail.eid.toString(),
             CIDs: keysList.toSet().toList())

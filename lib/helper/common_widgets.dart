@@ -7,6 +7,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -599,6 +600,86 @@ class CommonWidgets {
           ),
         ),
       ),
+    );
+  }
+
+
+  static gridViewOfMultiDateAlertDialog(ScreenScaler scaler, List<DateOption> multiDate, int index, {int? selectedIndex}){
+    return  Container(
+      margin: scaler.getMarginLTRB(0.5, 0.5, 0.5, 0.5),
+      padding:
+      scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
+      decoration: BoxDecoration(
+          color: ColorConstants.colorLightGray,
+          borderRadius:
+          scaler.getBorderRadiusCircular(12.0),
+          boxShadow: [
+            BoxShadow(
+                color: selectedIndex == index ? ColorConstants.primaryColor : ColorConstants.colorWhitishGray,
+                spreadRadius: 1)
+          ]),
+      child: Column(
+        mainAxisAlignment:
+        MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+              "${DateTimeHelper.getMonthByName(multiDate[index].start)} "
+                  " ${multiDate[index].start.year}")
+              .semiBoldText(Colors.deepOrangeAccent, 11,
+              TextAlign.center),
+          SizedBox(height: scaler.getHeight(0.2)),
+          Text(multiDate[index].start.day
+              .toString())
+              .boldText(ColorConstants.colorBlack, 24.0,
+              TextAlign.center),
+          SizedBox(height: scaler.getHeight(0.2)),
+          Text(DateTimeHelper.getWeekDay(multiDate[index].start))
+              .mediumText(ColorConstants.colorBlack, 10,
+              TextAlign.center),
+          SizedBox(height: scaler.getHeight(0.1)),
+          Container(
+            width: scaler.getWidth(20),
+            child: Text((multiDate[index].start
+                .toString()
+                .substring(0, 11)) ==
+                (multiDate[index].end
+                    .toString()
+                    .substring(0, 11))
+                ? "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))}"
+                : "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))} (${DateTimeHelper.dateConversion(multiDate[index].end, date: false)})")
+                .regularText(ColorConstants.colorGray,
+                8.5, TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
+          )
+        ],
+      ),
+    );
+  }
+
+  static answerMultiDateAlertTitle(BuildContext context, ScreenScaler scaler){
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: ImageView(
+              path: ImageConstants.eventFinalDateAlert_close,
+              height: scaler.getHeight(1.0),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("which_days_could_you_attend".tr())
+              .boldText(ColorConstants.colorBlack, 12.5,
+              TextAlign.center),
+        ),
+      ],
     );
   }
 }

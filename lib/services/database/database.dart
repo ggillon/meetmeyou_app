@@ -3,6 +3,7 @@
 // Service imports
 
 
+import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
 
@@ -41,9 +42,15 @@ abstract class Database {
   Future<void> setMessage(String eid, EventChatMessage message);
   Future<List<EventChatMessage>> getMessages(String eid,);
 
-  // Event Message Functions
+  // Event Form Functions
   Future<void> setAnswer(String eid, String uid, EventAnswer answer);
   Future<List<EventAnswer>> getAnswers(String eid,);
+
+  // Event MultipleDates Functions
+  Future<DateOption> getDateOption(String eid, String did,);
+  Future<List<DateOption>> getAllDateOptions(String eid,);
+  Future<void> setDateOption(String eid, DateOption date);
+  Future<void> deleteDateOption(String eid, String did);
 }
 
 class FirestoreDB implements Database {
@@ -130,20 +137,14 @@ class FirestoreDB implements Database {
   }
 
   Future<List<Event>> getUserEvents(String uid) async {
-    return _service.collectionStreamWhereFieldPresent(
+
+
+    return _service.getListDataWhereFieldIsPresent(
         path: APIPath.events(),
         field: 'invitedContacts.$uid',
         builder: (data) {
           return Event.fromMap(data);
-        }).first;
-    /*return await _service.getListDataWhere(
-      path: APIPath.events(),
-      field: 'invitedContacts.$eid',
-      value: 'query',
-      builder: (data) {
-        return Profile.fromMap(data);
-      },
-    );*/
+        });
   }
 
   @override
@@ -178,5 +179,35 @@ class FirestoreDB implements Database {
     );
   }
 
+  @override
+  Future<List<DateOption>> getAllDateOptions(String eid) {
+    return _service.getListData(
+      path: APIPath.eventDates(eid),
+      builder: (data) => DateOption.fromMap(data),
+    );
+  }
+
+  @override
+  Future<DateOption> getDateOption(String eid, String did) async {
+    return _service.getData(
+      path: APIPath.eventDate(eid, did),
+      builder: (data) {return DateOption.fromMap(data);},
+    );
+  }
+
+  @override
+  Future<void> setDateOption(String eid, DateOption date) async {
+    _service.setData(
+      path: APIPath.eventDate(eid, date.did),
+      data: date.toMap(),
+    );
+  }
+
+  @override
+  Future<void> deleteDateOption(String eid, String did) async {
+    _service.deleteData(
+      path: APIPath.eventDate(eid, did),
+    );
+  }
 
 }

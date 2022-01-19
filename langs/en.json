@@ -162,5 +162,18 @@
   "event_form_questionnaire" : "Event Form Questionnaire",
   "answer" : "Answer",
   "submit_answers" : "Submit answers",
-  "answer_required" : "Answer required"
- }
+  "answer_required" : "Answer required",
+  "add_multiple_date_options" : "add multiple date options",
+  "remove_multiple_date_options" : "remove multiple date options",
+  "date_options" : "Date Options",
+  "options" : "Options",
+  "choose_date_time" : "Choose Date Time",
+  "choose_date" : "Choose date",
+  "choose_end_date" : "Choose end date",
+  "start_time" : "Start time",
+  "end_time" : "End time",
+  "add_date_to_event" : "Add date to event",
+  "select_final_date" : "Select final date",
+  "select_that_date" : "Select that date",
+  "which_days_could_you_attend" : "Which days could you attend ?"
+   }
