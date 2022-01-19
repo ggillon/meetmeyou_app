@@ -89,6 +89,10 @@ abstract class MMYEngine {
   Future<void> deleteEvent(String eid);
   /// Get even link
   String getEventLink(String eid);
+  /// Get even text
+  String getEventText(String eid);
+  /// Handle Link Event
+  Future<void>inviteURL(String eid);
   /// Invite contact to event
   Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs});
   /// Invite group to event
@@ -103,6 +107,7 @@ abstract class MMYEngine {
   Future<void> replyToEvent(String eid, {required String response});
   /// Number of unresponded events
   Future<int> unrespondedEvents();
+
 
   /// Add a date option to event
   Future<String> addDateToEvent(String eid, {required DateTime start, required DateTime end});
@@ -404,7 +409,19 @@ class MMY implements MMYEngine {
 
   @override
   String getEventLink(String eid) {
-    return 'http://event.meetmeyou.com/$eid';
+    return 'http://event.meetmeyou.com/?eid=$eid';
+  }
+
+  @override
+  String getEventText(String eid) {
+    return 'Please find invite to my Event: http://event.meetmeyou.com/?eid=$eid';
+  }
+
+  @override
+  Future<void>inviteURL(String eid) async {
+    Event event = await eventLib.getEvent(_currentUser, eid);
+    await contactLib.linkProfiles(_currentUser, uid: event.organiserID); // ensure both user and organiser are friends
+    await inviteContactsToEvent(eid, CIDs: [_currentUser.uid]);
   }
 
   @override
