@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 import 'helper/shared_pref.dart';
 import 'test.dart';
 import 'router.dart' as router;
@@ -18,8 +19,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
-  // await FirebaseFirestore.instance.terminate();
-  // await FirebaseFirestore.instance.clearPersistence();
   SharedPref.prefs = await SharedPreferences.getInstance();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white,
@@ -65,6 +64,7 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
 
   MaterialColor color = const MaterialColor(0xFF00B9A7, <int, Color>{
     50: Color(0xFF00B9A7),

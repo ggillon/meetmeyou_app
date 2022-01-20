@@ -129,41 +129,43 @@ class EventDiscussionScreen extends StatelessWidget {
                       provider.userDetail.cid == provider.eventChatList[index].uid ? Container() : discussionUserNameAndImage(scaler, provider, index),
                       provider.userDetail.cid == provider.eventChatList[index].uid ? Container() : SizedBox(width: scaler.getWidth(1.0)),
                       Container(
-                        height: scaler.getHeight(4.6),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            provider.userDetail.cid == provider.eventChatList[index].uid ? Container() : Container(
-                              width: scaler.getWidth(20),
-                              child: Text(provider.eventChatList[index].displayName == null
-                                  ? ""
-                                  : "${provider.eventChatList[index].displayName} :")
-                                  .semiBoldText(ColorConstants.colorBlack, scaler.getTextSize(7.7),
-                                  TextAlign.left,
-                                  maxLines: 1, overflow: TextOverflow.ellipsis),
-                            ),
-                            Container(
-                              width: scaler.getWidth(72),
-                              padding: scaler.getPaddingLTRB(2.0, 0.8, 2.0, 0.8),
-                              decoration: BoxDecoration(
-                                  color: provider.userDetail.cid ==
-                                          provider.eventChatList[index].uid
-                                      ? ColorConstants.primaryColor
-                                      : ColorConstants.colorLightGray,
-                                  borderRadius:
-                                      scaler.getBorderRadiusCircular(8.0)),
-                              child: Text(provider.eventChatList[index].text)
-                                  .regularText(
-                                      provider.userDetail.cid ==
-                                              provider.eventChatList[index].uid
-                                          ? ColorConstants.colorWhite
-                                          : ColorConstants.colorBlack,
-                                      10.0,
-                                      TextAlign.left,
-                                      isHeight: true),
-                            ),
-                          ],
+                     //   height: scaler.getHeight(44.6),
+                        child: Expanded(
+                          child: Column(
+                       //   mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              provider.userDetail.cid == provider.eventChatList[index].uid ? Container() : Container(
+                                width: scaler.getWidth(20),
+                                child: Text(provider.eventChatList[index].displayName == null
+                                    ? ""
+                                    : "${provider.eventChatList[index].displayName} :")
+                                    .semiBoldText(ColorConstants.colorBlack, scaler.getTextSize(7.7),
+                                    TextAlign.left,
+                                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                              ),
+                              Container(
+                                width: scaler.getWidth(72),
+                                padding: scaler.getPaddingLTRB(2.0, 0.8, 2.0, 0.8),
+                                decoration: BoxDecoration(
+                                    color: provider.userDetail.cid ==
+                                            provider.eventChatList[index].uid
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorLightGray,
+                                    borderRadius:
+                                        scaler.getBorderRadiusCircular(8.0)),
+                                child: Text(provider.eventChatList[index].text)
+                                    .regularText(
+                                        provider.userDetail.cid ==
+                                                provider.eventChatList[index].uid
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorBlack,
+                                        10.0,
+                                        TextAlign.left,
+                                        isHeight: true),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                      provider.userDetail.cid == provider.eventChatList[index].uid ? SizedBox(width: scaler.getWidth(1.5)) : Container(),
@@ -238,7 +240,7 @@ class EventDiscussionScreen extends StatelessWidget {
         ),
         SizedBox(height: scaler.getHeight(0.2)),
         provider.userDetail.cid != provider.eventChatList[index].uid ? Container() : Container(
-          width: provider.userDetail.cid == provider.eventChatList[index].uid ? scaler.getWidth(8) : scaler.getWidth(11),
+          width: provider.userDetail.cid == provider.eventChatList[index].uid ? scaler.getWidth(10) : scaler.getWidth(11),
           child: Text(provider.eventChatList[index].displayName == null
                   ? ""
                   : provider.eventChatList[index].displayName)

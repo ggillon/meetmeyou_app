@@ -120,5 +120,29 @@
         <key>UIViewControllerBasedStatusBarAppearance</key>
         <true/>
 
+ <!-- Permission options for the `contacts` group -->
+    <key>NSContactsUsageDescription</key>
+    <string>contacts</string>
+
+    <!-- Permission options for the `calendar` group -->
+        <key>NSCalendarsUsageDescription</key>
+        <string>Calendars</string>
+
+<key>FlutterDeepLinkingEnabled</key>
+<true/>
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>meetmeyou.com</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+    <string>http</string>
+    </array>
+    </dict>
+</array>
+
 	</dict>
 </plist>

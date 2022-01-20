@@ -20,8 +20,6 @@ import 'package:provider/provider.dart';
 class ContactDescriptionScreen extends StatelessWidget {
   ContactDescriptionScreen({Key? key}) : super(key: key);
 
-  UserDetail userDetail = locator<UserDetail>();
-
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
@@ -45,15 +43,15 @@ class ContactDescriptionScreen extends StatelessWidget {
                               children: [
                                 SizedBox(height: scaler.getHeight(2)),
                                 CommonWidgets.userDetails(scaler,
-                                    profilePic: userDetail.profileUrl,
-                                    firstName: userDetail.firstName
+                                    profilePic: provider.userDetail.profileUrl,
+                                    firstName: provider.userDetail.firstName
                                         .toString()
                                         .capitalize(),
-                                    lastName: userDetail.lastName
+                                    lastName: provider.userDetail.lastName
                                         .toString()
                                         .capitalize(),
-                                    email: userDetail.email,
-                                    actionOnEmail: userDetail.checkForInvitation!
+                                    email: provider.userDetail.email,
+                                    actionOnEmail: provider.userDetail.checkForInvitation!
                                         ? () {}
                                         : () {
                                       provider.sendingMails(context);
@@ -61,7 +59,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                 SizedBox(height: scaler.getHeight(2.5)),
                                 GestureDetector(
                                   onTap: () {
-                                    userDetail.checkForInvitation!
+                                    provider.userDetail.checkForInvitation!
                                         ? Container()
                                         : CommonWidgets.bottomSheet(
                                         context,
@@ -79,16 +77,16 @@ class ContactDescriptionScreen extends StatelessWidget {
                                       scaler,
                                       ImageConstants.phone_no_icon,
                                       "phone_number".tr(),
-                                      userDetail.phone ?? "",
+                                      provider.userDetail.phone ?? "",
                                       countryCode: true,
-                                      cCode: userDetail.countryCode),
+                                      cCode: provider.userDetail.countryCode),
                                 ),
                                 SizedBox(height: scaler.getHeight(1.5)),
                                 CommonWidgets.phoneNoAndAddressFun(
                                     scaler,
                                     ImageConstants.address_icon,
                                     "address".tr(),
-                                    userDetail.address ?? ""),
+                                    provider.userDetail.address ?? ""),
                                 SizedBox(height: scaler.getHeight(3)),
                                 // Text("organized_events".tr()).boldText(
                                 //     ColorConstants.colorBlack,
@@ -99,7 +97,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                             ),
                           ),
                           OrganizedEventsCard(showEventRespondBtn: false),
-                          userDetail.checkForInvitation!
+                          provider.userDetail.checkForInvitation!
                               ? provider.state == ViewState.Busy
                               ? Expanded(
                               child: Container(
@@ -115,10 +113,10 @@ class ContactDescriptionScreen extends StatelessWidget {
                                 "accept_invite".tr(),
                                 btn1: false, onTapBtn1: () {
                               provider.acceptOrRejectInvitation(context,
-                                  userDetail.cid!, false, "Reject");
+                                  provider.userDetail.cid!, false, "Reject");
                             }, onTapBtn2: () {
                               provider.acceptOrRejectInvitation(context,
-                                  userDetail.cid!, true, "Accept");
+                                  provider.userDetail.cid!, true, "Accept");
                             }),
                           )
                               : Container(),
