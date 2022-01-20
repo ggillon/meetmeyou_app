@@ -24,6 +24,8 @@ import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:uni_links/uni_links.dart';
 
 class HomePage extends StatefulWidget {
   AuthBase auth = locator<AuthBase>();
@@ -43,11 +45,76 @@ class _HomePageState extends State<HomePage>
   final answer4Controller = TextEditingController();
   final answer5Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  var refreshKeyTab1 = GlobalKey<RefreshIndicatorState>();
+  var refreshKeyTab2 = GlobalKey<RefreshIndicatorState>();
+  var refreshKeyTab3 = GlobalKey<RefreshIndicatorState>();
+  var refreshKeyTab4 = GlobalKey<RefreshIndicatorState>();
+  var refreshKeyTab5 = GlobalKey<RefreshIndicatorState>();
+  HomePageProvider provider = HomePageProvider();
+  DashboardProvider _dashboardProvider = DashboardProvider();
+
+  Future<Null> refreshListTab1() async {
+    refreshKeyTab1.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+
+    //network call and setState so that view will render the new values
+    await this.provider.getIndexChanging(context);
+    print("refresh ${this.provider.tabController!.index}");
+  }
+
+  Future<Null> refreshListTab2() async {
+    refreshKeyTab2.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+
+    await this.provider.getIndexChanging(context);
+    print("refresh ${this.provider.tabController!.index}");
+  }
+
+  Future<Null> refreshListTab3() async {
+    refreshKeyTab3.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+
+    await this.provider.getIndexChanging(context);
+    print("refresh ${this.provider.tabController!.index}");
+  }
+
+  Future<Null> refreshListTab4() async {
+    refreshKeyTab4.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+
+    await this.provider.getIndexChanging(context);
+    print("refresh ${this.provider.tabController!.index}");
+  }
+
+  Future<Null> refreshListTab5() async {
+    refreshKeyTab5.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+
+    await this.provider.getIndexChanging(context);
+    print("refresh ${this.provider.tabController!.index}");
+  }
+
+  String link = "";
+
+  Future<String> initUniLinks() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      final initialLink = await getInitialLink();
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+      return initialLink.toString();
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+    }
+    throw "";
+  }
 
   @override
   Widget build(BuildContext context) {
     final dashBoardProvider =
         Provider.of<DashboardProvider>(context, listen: false);
+    this._dashboardProvider = dashBoardProvider;
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
@@ -80,6 +147,10 @@ class _HomePageState extends State<HomePage>
           // ))
           body: BaseView<HomePageProvider>(
         onModelReady: (provider) {
+          this.provider = provider;
+          initUniLinks().then((value) => this.setState(() {
+            link = value;
+          }));
           provider.getUserDetail(context);
           widget.provider = provider;
           provider.tabController = TabController(length: 5, vsync: this);
@@ -102,8 +173,10 @@ class _HomePageState extends State<HomePage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("home".tr()).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(16), TextAlign.left),
+                    // Text("home".tr()).boldText(ColorConstants.colorBlack,
+                    //     scaler.getTextSize(16), TextAlign.left),
+                    Text(link).boldText(ColorConstants.colorBlack,
+                        scaler.getTextSize(8), TextAlign.left),
                     ImageView(path: ImageConstants.search_icon)
                   ],
                 ),
@@ -222,32 +295,67 @@ class _HomePageState extends State<HomePage>
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
+                            : RefreshIndicator(
+                                onRefresh: refreshListTab1,
+                                key: refreshKeyTab1,
+                                child: upcomingEventsList(
+                                    scaler,
+                                    provider.eventLists,
+                                    provider,
+                                    dashBoardProvider),
+                              ),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
+                            : RefreshIndicator(
+                                onRefresh: refreshListTab2,
+                                key: refreshKeyTab2,
+                                child: upcomingEventsList(
+                                    scaler,
+                                    provider.eventLists,
+                                    provider,
+                                    dashBoardProvider),
+                              ),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
+                            : RefreshIndicator(
+                                onRefresh: refreshListTab3,
+                                key: refreshKeyTab3,
+                                child: upcomingEventsList(
+                                    scaler,
+                                    provider.eventLists,
+                                    provider,
+                                    dashBoardProvider),
+                              ),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
+                            : RefreshIndicator(
+                                onRefresh: refreshListTab4,
+                                key: refreshKeyTab4,
+                                child: upcomingEventsList(
+                                    scaler,
+                                    provider.eventLists,
+                                    provider,
+                                    dashBoardProvider),
+                              ),
                     provider.state == ViewState.Busy
                         ? loading(scaler)
                         : provider.eventLists.length == 0
                             ? noEventFoundText(scaler)
-                            : upcomingEventsList(scaler, provider.eventLists,
-                                provider, dashBoardProvider),
+                            : RefreshIndicator(
+                                onRefresh: refreshListTab5,
+                                key: refreshKeyTab5,
+                                child: upcomingEventsList(
+                                    scaler,
+                                    provider.eventLists,
+                                    provider,
+                                    dashBoardProvider),
+                              ),
                   ],
                 ),
               ),
@@ -366,7 +474,19 @@ class _HomePageState extends State<HomePage>
                       width: double.infinity,
                     ),
             ),
-            Positioned(
+           provider.userDetail.cid == eventList[index].organiserID ? Positioned(
+               top: scaler.getHeight(1),
+               left: scaler.getHeight(1.5),
+               child: Container(
+                 width: scaler.getWidth(70),
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     dateCard(scaler, eventList[index]),
+                     shareCard(scaler, eventList[index])
+                   ],
+                 ),
+               )) :  Positioned(
                 top: scaler.getHeight(1),
                 left: scaler.getHeight(1.5),
                 child: dateCard(scaler, eventList[index]))
@@ -480,8 +600,28 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget eventRespondBtn(ScreenScaler scaler, Event event,
-      HomePageProvider provider, DashboardProvider dashboardProvider, int index) {
+  Widget shareCard(ScreenScaler scaler, Event event){
+    return GestureDetector(
+      onTap: (){
+        String shareLink = provider.mmyEngine!.getEventLink(event.eid);
+        Share.share("https://meetmeyou");
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(75)),
+          child: Container(
+            padding: scaler.getPaddingAll(6.0),
+              child: ImageView(path: ImageConstants.eventShare_icon)),
+      ),
+    );
+  }
+
+  Widget eventRespondBtn(
+      ScreenScaler scaler,
+      Event event,
+      HomePageProvider provider,
+      DashboardProvider dashboardProvider,
+      int index) {
     return GestureDetector(
       onTap: () {
         if (CommonEventFunction.getEventBtnStatus(
@@ -501,20 +641,20 @@ class _HomePageState extends State<HomePage>
             //         provider, event, dashboardProvider);
             //   });
             // } else {
-              if (event.form.values.isNotEmpty) {
-                List<String> questionsList = [];
-                for (var value in event.form.values) {
-                  questionsList.add(value);
-                }
-                Navigator.of(context).pop();
-                alertForQuestionnaireAnswers(context, scaler, event,
-                    questionsList, provider, dashboardProvider);
-              } else {
-                Navigator.of(context).pop();
-                dashboardProvider.updateEventNotificationCount();
-                provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+            if (event.form.values.isNotEmpty) {
+              List<String> questionsList = [];
+              for (var value in event.form.values) {
+                questionsList.add(value);
               }
-           // }
+              Navigator.of(context).pop();
+              alertForQuestionnaireAnswers(context, scaler, event,
+                  questionsList, provider, dashboardProvider);
+            } else {
+              Navigator.of(context).pop();
+              dashboardProvider.updateEventNotificationCount();
+              provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+            }
+            // }
           }, notGoing: () {
             Navigator.of(context).pop();
             dashboardProvider.updateEventNotificationCount();

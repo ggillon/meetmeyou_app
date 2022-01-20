@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +24,7 @@ import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/shimmer/multiDateAttendDateCardShimmer.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EventDetailScreen extends StatelessWidget {
   // final Event event;
@@ -57,10 +60,14 @@ class EventDetailScreen extends StatelessWidget {
           provider.calendarDetail.fromCalendarPage == true
               ? provider.getEvent(context, provider.eventDetail.eid!)
               : Container();
-        provider.eventDetail.event?.multipleDates == true ? provider.getMultipleDateOptionsFromEvent(
-              context, provider.eventDetail.eid!,
-              onBtnClick: false) : Container();
-          provider.eventDetail.event?.multipleDates == true ? provider.listOfDateSelected(context, provider.eventDetail.eid!) : Container();
+          provider.eventDetail.event?.multipleDates == true
+              ? provider.getMultipleDateOptionsFromEvent(
+                  context, provider.eventDetail.eid!,
+                  onBtnClick: false)
+              : Container();
+          provider.eventDetail.event?.multipleDates == true
+              ? provider.listOfDateSelected(context, provider.eventDetail.eid!)
+              : Container();
         },
         builder: (context, provider, _) {
           return provider.calendarDetail.fromCalendarPage == true &&
@@ -90,10 +97,10 @@ class EventDetailScreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  SizedBox(height: scaler.getHeight(3.5)),
+                    Platform.isIOS ? SizedBox(height: scaler.getHeight(1.8)) : SizedBox(height: scaler.getHeight(3.5)),
                   SafeArea(
                     child: Padding(
-                      padding: scaler.getPaddingLTRB(3, 1.0, 3, 1.5),
+                      padding: scaler.getPaddingLTRB(3, 0.0, 3, 1.5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -108,7 +115,13 @@ class EventDetailScreen extends StatelessWidget {
                                 provider.eventDetail.btnBGColor!,
                                 provider.eventDetail.textColor!, onTapFun: () {
                               if (provider.eventDetail.eventBtnStatus ==
-                                  "respond") {
+                                      "respond" ||
+                                  provider.eventDetail.eventBtnStatus ==
+                                      "going" ||
+                                  provider.eventDetail.eventBtnStatus ==
+                                      "not_going" ||
+                                  provider.eventDetail.eventBtnStatus ==
+                                      "hidden") {
                                 CommonWidgets.respondToEventBottomSheet(
                                     context, scaler, going: () {
                                   // if (provider
@@ -125,27 +138,27 @@ class EventDetailScreen extends StatelessWidget {
                                   //   });
                                   // } else
                                   //   {
-                                    if (provider
-                                        .eventDetail.event!.form.isNotEmpty) {
-                                      List<String> questionsList = [];
-                                      for (var value in provider
-                                          .eventDetail.event!.form.values) {
-                                        questionsList.add(value);
-                                      }
-                                      Navigator.of(context).pop();
-                                      alertForQuestionnaireAnswers(
-                                          _scaffoldkey.currentContext!,
-                                          scaler,
-                                          questionsList,
-                                          provider);
-                                    } else {
-                                      Navigator.of(context).pop();
-                                      provider.replyToEvent(
-                                          context,
-                                          provider.eventDetail.eid!,
-                                          EVENT_ATTENDING);
+                                  if (provider
+                                      .eventDetail.event!.form.isNotEmpty) {
+                                    List<String> questionsList = [];
+                                    for (var value in provider
+                                        .eventDetail.event!.form.values) {
+                                      questionsList.add(value);
                                     }
-                                 // }
+                                    Navigator.of(context).pop();
+                                    alertForQuestionnaireAnswers(
+                                        _scaffoldkey.currentContext!,
+                                        scaler,
+                                        questionsList,
+                                        provider);
+                                  } else {
+                                    Navigator.of(context).pop();
+                                    provider.replyToEvent(
+                                        context,
+                                        provider.eventDetail.eid!,
+                                        EVENT_ATTENDING);
+                                  }
+                                  // }
                                 }, notGoing: () {
                                   Navigator.of(context).pop();
                                   provider.replyToEvent(
@@ -190,117 +203,127 @@ class EventDetailScreen extends StatelessWidget {
                           SizedBox(height: scaler.getHeight(1)),
                           provider.eventAttendingLength == 0
                               ? Container()
-                              : GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    provider.eventDetail.attendingProfileKeys =
-                                        provider.eventAttendingKeysList;
-                                    Navigator.pushNamed(
+                              : Container(
+                                width: double.infinity,
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        provider.eventDetail.attendingProfileKeys =
+                                            provider.eventAttendingKeysList;
+                                        Navigator.pushNamed(
                                             context,
                                             RoutesConstants
                                                 .eventAttendingScreen)
-                                        .then((value) {
-                                      provider.eventAttendingLength = (provider
+                                            .then((value) {
+                                          provider.eventAttendingLength = (provider
                                               .eventDetail
                                               .attendingProfileKeys
                                               ?.length ??
-                                          0);
-                                      provider.eventAttendingKeysList = provider
-                                          .eventDetail.attendingProfileKeys!;
-                                      provider.eventAttendingPhotoUrlLists = [];
-                                      provider.getUsersProfileUrl(context);
-                                      provider.updateBackValue(true);
-                                    });
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: Row(
-                                      children: [
-                                        Stack(
-                                          alignment: Alignment.centerRight,
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            ImageStack(
-                                              imageList: provider
-                                                  .eventAttendingPhotoUrlLists,
-                                              totalCount: provider
-                                                  .eventAttendingPhotoUrlLists
-                                                  .length,
-                                              imageRadius: 25,
-                                              imageCount: provider
-                                                  .imageStackLength(provider
-                                                      .eventAttendingPhotoUrlLists
-                                                      .length),
-                                              imageBorderColor:
-                                                  ColorConstants.colorWhite,
-                                              backgroundColor:
-                                                  ColorConstants.primaryColor,
-                                              imageBorderWidth: 1,
-                                              extraCountTextStyle: TextStyle(
-                                                  fontSize: 7.7,
-                                                  color:
-                                                      ColorConstants.colorWhite,
-                                                  fontWeight: FontWeight.w500),
-                                              showTotalCount: false,
-                                            ),
-                                            Positioned(
-                                              right: -22,
-                                              child: provider
-                                                          .eventAttendingPhotoUrlLists
-                                                          .length <=
-                                                      6
-                                                  ? Container()
-                                                  : ClipRRect(
-                                                      borderRadius: scaler
-                                                          .getBorderRadiusCircular(
-                                                              15.0),
-                                                      child: Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        color: ColorConstants
-                                                            .primaryColor,
-                                                        height: scaler
-                                                            .getHeight(2.0),
-                                                        width:
-                                                            scaler.getWidth(6),
-                                                        child: Text((provider
-                                                                        .eventAttendingPhotoUrlLists
-                                                                        .length -
-                                                                    6)
-                                                                .toString())
-                                                            .mediumText(
-                                                                ColorConstants
-                                                                    .colorWhite,
-                                                                scaler
-                                                                    .getTextSize(
-                                                                        7.7),
-                                                                TextAlign
-                                                                    .center),
-                                                      ),
+                                              0);
+                                          provider.eventAttendingKeysList = provider
+                                              .eventDetail.attendingProfileKeys!;
+                                          provider.eventAttendingPhotoUrlLists = [];
+                                          provider.getUsersProfileUrl(context);
+                                          provider.updateBackValue(true);
+                                        });
+                                      },
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          ImageStack(
+                                            imageList: provider
+                                                .eventAttendingPhotoUrlLists,
+                                            totalCount: provider
+                                                .eventAttendingPhotoUrlLists
+                                                .length,
+                                            imageRadius: 25,
+                                            imageCount: provider
+                                                .imageStackLength(provider
+                                                    .eventAttendingPhotoUrlLists
+                                                    .length),
+                                            imageBorderColor:
+                                                ColorConstants.colorWhite,
+                                            backgroundColor:
+                                                ColorConstants.primaryColor,
+                                            imageBorderWidth: 1,
+                                            extraCountTextStyle: TextStyle(
+                                                fontSize: 7.7,
+                                                color:
+                                                    ColorConstants.colorWhite,
+                                                fontWeight: FontWeight.w500),
+                                            showTotalCount: false,
+                                          ),
+                                          Positioned(
+                                            right: -22,
+                                            child: provider
+                                                        .eventAttendingPhotoUrlLists
+                                                        .length <=
+                                                    6
+                                                ? Container()
+                                                : ClipRRect(
+                                                    borderRadius: scaler
+                                                        .getBorderRadiusCircular(
+                                                            15.0),
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      color: ColorConstants
+                                                          .primaryColor,
+                                                      height: scaler
+                                                          .getHeight(2.0),
+                                                      width:
+                                                          scaler.getWidth(6),
+                                                      child: Text((provider
+                                                                      .eventAttendingPhotoUrlLists
+                                                                      .length -
+                                                                  6)
+                                                              .toString())
+                                                          .mediumText(
+                                                              ColorConstants
+                                                                  .colorWhite,
+                                                              scaler
+                                                                  .getTextSize(
+                                                                      7.7),
+                                                              TextAlign
+                                                                  .center),
                                                     ),
-                                            )
-                                          ],
-                                        ),
-                                        provider.eventAttendingPhotoUrlLists
-                                                    .length <=
-                                                6
-                                            ? SizedBox(
-                                                width: scaler.getWidth(1))
-                                            : SizedBox(
-                                                width: scaler.getWidth(6)),
-                                        Text("going".tr()).regularText(
-                                            ColorConstants.colorGray,
-                                            scaler.getTextSize(8),
-                                            TextAlign.center),
-                                      ],
+                                                  ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
+                                    provider.eventAttendingPhotoUrlLists
+                                                .length <=
+                                            6
+                                        ? SizedBox(
+                                            width: scaler.getWidth(1))
+                                        : SizedBox(
+                                            width: scaler.getWidth(6)),
+                                    Text("going".tr()).regularText(
+                                        ColorConstants.colorGray,
+                                        scaler.getTextSize(8),
+                                        TextAlign.center),
+                                    provider.userDetail.cid == provider.eventDetail.organiserId ? Expanded(child: Container(
+                                      alignment: Alignment.centerRight,
+                                        child: GestureDetector(
+                                            onTap: (){
+                                              String shareLink = provider.mmyEngine!.getEventLink(provider.eventDetail.eid!);
+                                              Share.share(shareLink);
+                                            },
+                                            child: ImageView(path: ImageConstants.share_icon)))) : Container()
+                                  ],
                                 ),
+                              ),
                           SizedBox(height: scaler.getHeight(1)),
                           provider.eventDetail.event?.multipleDates == true &&
                                   provider.eventDetail.organiserId !=
                                       provider.auth.currentUser!.uid
-                              ? provider.statusMultiDate == true ? MultiDateAttendDateCardShimmer() : attendDateUi(context, scaler, provider)
+                              ? provider.statusMultiDate == true
+                                  ? MultiDateAttendDateCardShimmer()
+                                  : attendDateUi(context, scaler, provider)
                               : Container(),
                           SizedBox(height: scaler.getHeight(1)),
                           Text("event_description".tr()).boldText(
@@ -571,7 +594,7 @@ class EventDetailScreen extends StatelessWidget {
                         crossAxisSpacing: 2.0,
                         mainAxisSpacing: 3.0),
                     itemBuilder: (context, index) {
-                 //  var value = provider.dateOptionStatus(context, provider.eventDetail.event!.eid,  provider.multipleDate[index].did);
+                      //  var value = provider.dateOptionStatus(context, provider.eventDetail.event!.eid,  provider.multipleDate[index].did);
                       return attendDateCard(context, scaler, provider, index);
                     },
                   ),
@@ -594,36 +617,62 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget attendDateCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider, int index){
-    return  Row(
+  Widget attendDateCard(BuildContext context, ScreenScaler scaler,
+      EventDetailProvider provider, int index) {
+    return Row(
       children: [
         GestureDetector(
-          onTap: (){
-            if(provider.eidsOfMultiDateSelected.contains(provider.multipleDate[index].did)){
-              DialogHelper.showDialogWithTwoButtons(context, "Not-Attend Event", "Are you sure to not attend event on this date?", positiveButtonPress: (){
-                provider.answerMultiDateOption(context, provider.multipleDate[index].eid, provider.multipleDate[index].did, false).then((value) {
+          onTap: () {
+            if (provider.eidsOfMultiDateSelected
+                .contains(provider.multipleDate[index].did)) {
+              DialogHelper.showDialogWithTwoButtons(context, "Not-Attend Event",
+                  "Are you sure to not attend event on this date?",
+                  positiveButtonPress: () {
+                provider
+                    .answerMultiDateOption(
+                        context,
+                        provider.multipleDate[index].eid,
+                        provider.multipleDate[index].did,
+                        false)
+                    .then((value) {
                   Navigator.of(context).pop();
                   provider.getMultipleDateOptionsFromEvent(
                       context, provider.eventDetail.eid!,
                       onBtnClick: false);
-                  provider.listOfDateSelected(context, provider.eventDetail.eid!);
+                  provider.listOfDateSelected(
+                      context, provider.eventDetail.eid!);
                 });
               });
-            } else{
-            DialogHelper.showDialogWithTwoButtons(context, "Attend Event", "Are you sure to attend event on this date?", positiveButtonPress: (){
-              provider.answerMultiDateOption(context, provider.multipleDate[index].eid, provider.multipleDate[index].did, true).then((value) {
-                Navigator.of(context).pop();
-                provider.getMultipleDateOptionsFromEvent(
-                    context, provider.eventDetail.eid!,
-                    onBtnClick: false);
-                provider.listOfDateSelected(context, provider.eventDetail.eid!);
+            } else {
+              DialogHelper.showDialogWithTwoButtons(context, "Attend Event",
+                  "Are you sure to attend event on this date?",
+                  positiveButtonPress: () {
+                provider
+                    .answerMultiDateOption(
+                        context,
+                        provider.multipleDate[index].eid,
+                        provider.multipleDate[index].did,
+                        true)
+                    .then((value) {
+                  Navigator.of(context).pop();
+                  provider.getMultipleDateOptionsFromEvent(
+                      context, provider.eventDetail.eid!,
+                      onBtnClick: false);
+                  provider.listOfDateSelected(
+                      context, provider.eventDetail.eid!);
+                });
               });
-            });}
+            }
           },
           child: Card(
             elevation: 4.0,
             shape: RoundedRectangleBorder(
-                side: BorderSide(color: provider.eidsOfMultiDateSelected.contains(provider.multipleDate[index].did) ? ColorConstants.primaryColor : ColorConstants.colorWhite, width: 1),
+              side: BorderSide(
+                  color: provider.eidsOfMultiDateSelected
+                          .contains(provider.multipleDate[index].did)
+                      ? ColorConstants.primaryColor
+                      : ColorConstants.colorWhite,
+                  width: 1),
               borderRadius: scaler.getBorderRadiusCircular(8.0),
             ),
             child: Container(
@@ -633,17 +682,12 @@ class EventDetailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(DateTimeHelper.getMonthByName(
-                      provider.multipleDate[index].start))
-                      .regularText(
-                      ColorConstants.primaryColor,
-                      scaler.getTextSize(11),
-                      TextAlign.left),
-                  Text(provider.multipleDate[index].start.day
-                      .toString())
-                      .boldText(
-                      ColorConstants.primaryColor,
-                      scaler.getTextSize(14),
-                      TextAlign.left),
+                          provider.multipleDate[index].start))
+                      .regularText(ColorConstants.primaryColor,
+                          scaler.getTextSize(11), TextAlign.left),
+                  Text(provider.multipleDate[index].start.day.toString())
+                      .boldText(ColorConstants.primaryColor,
+                          scaler.getTextSize(14), TextAlign.left),
                 ],
               ),
             ),
@@ -653,7 +697,6 @@ class EventDetailScreen extends StatelessWidget {
       ],
     );
   }
-
 
   Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler) {
     return GestureDetector(
@@ -806,102 +849,102 @@ class EventDetailScreen extends StatelessWidget {
     }
   }
 
-  // alertForMultiDateAnswers(BuildContext context, ScreenScaler scaler,
-  //     List<DateOption> multiDate, EventDetailProvider provider) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return StatefulBuilder(builder: (context, StateSetter setInnerState) {
-  //           return Container(
-  //               width: double.infinity,
-  //               child: AlertDialog(
-  //                 contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-  //                 insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
-  //                 title:
-  //                     CommonWidgets.answerMultiDateAlertTitle(context, scaler),
-  //                 content: Container(
-  //                   //  color: Colors.red,
-  //                   height: scaler.getHeight(25.0),
-  //                   width: scaler.getWidth(100.0),
-  //                   child: GridView.builder(
-  //                     shrinkWrap: true,
-  //                     itemCount: provider.multipleDate.length,
-  //                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //                         crossAxisCount: 3,
-  //                         crossAxisSpacing: 2.0,
-  //                         mainAxisSpacing: 3.0),
-  //                     itemBuilder: (context, index) {
-  //                       return GestureDetector(
-  //                         onTap: () {
-  //                           setInnerState(() {
-  //                             provider.selectedMultiDateIndex = index;
-  //                             provider.attendDateBtnColor = true;
-  //                             provider.selectedAttendDateDid =
-  //                                 multiDate[index].did;
-  //                             provider.selectedAttendDateEid =
-  //                                 multiDate[index].eid;
-  //                             //   provider.dateOptionStatus(context, provider.eventDetail.event!.eid, multiDate[index].did);
-  //                           });
-  //                         },
-  //                         child: CommonWidgets.gridViewOfMultiDateAlertDialog(
-  //                             scaler, multiDate, index,
-  //                             selectedIndex: provider.selectedMultiDateIndex),
-  //                       );
-  //                     },
-  //                   ),
-  //                 ),
-  //                 actions: [
-  //                   provider.answerMultiDate == true
-  //                       ? Center(child: CircularProgressIndicator())
-  //                       : CommonWidgets.commonBtn(
-  //                           scaler,
-  //                           context,
-  //                           "submit".tr(),
-  //                           provider.attendDateBtnColor == true
-  //                               ? ColorConstants.primaryColor
-  //                               : ColorConstants.colorNewGray,
-  //                           provider.attendDateBtnColor == true
-  //                               ? ColorConstants.colorWhite
-  //                               : ColorConstants.colorGray,
-  //                           onTapFun: provider.attendDateBtnColor == true ||
-  //                                   provider.selectedAttendDateDid != null
-  //                               ? () {
-  //                                   setInnerState(() {
-  //                                     provider
-  //                                         .answerMultiDateOption(
-  //                                             context,
-  //                                             provider.selectedAttendDateEid
-  //                                                 .toString(),
-  //                                             provider.selectedAttendDateDid
-  //                                                 .toString(), true)
-  //                                         .then((value) {
-  //                                       if (provider.eventDetail.event!.form
-  //                                           .isNotEmpty) {
-  //                                         List<String> questionsList = [];
-  //                                         for (var value in provider
-  //                                             .eventDetail.event!.form.values) {
-  //                                           questionsList.add(value);
-  //                                         }
-  //                                         Navigator.of(context).pop();
-  //                                         alertForQuestionnaireAnswers(
-  //                                             _scaffoldkey.currentContext!,
-  //                                             scaler,
-  //                                             questionsList,
-  //                                             provider);
-  //                                       } else {
-  //                                         Navigator.of(context).pop();
-  //                                         provider.replyToEvent(
-  //                                             _scaffoldkey.currentContext!,
-  //                                             provider.eventDetail.eid!,
-  //                                             EVENT_ATTENDING);
-  //                                       }
-  //                                     });
-  //                                   });
-  //                                 }
-  //                               : () {})
-  //                 ],
-  //               ));
-  //         });
-  //       });
-  // }
+// alertForMultiDateAnswers(BuildContext context, ScreenScaler scaler,
+//     List<DateOption> multiDate, EventDetailProvider provider) {
+//   showDialog(
+//       context: context,
+//       builder: (context) {
+//         return StatefulBuilder(builder: (context, StateSetter setInnerState) {
+//           return Container(
+//               width: double.infinity,
+//               child: AlertDialog(
+//                 contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+//                 insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
+//                 title:
+//                     CommonWidgets.answerMultiDateAlertTitle(context, scaler),
+//                 content: Container(
+//                   //  color: Colors.red,
+//                   height: scaler.getHeight(25.0),
+//                   width: scaler.getWidth(100.0),
+//                   child: GridView.builder(
+//                     shrinkWrap: true,
+//                     itemCount: provider.multipleDate.length,
+//                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                         crossAxisCount: 3,
+//                         crossAxisSpacing: 2.0,
+//                         mainAxisSpacing: 3.0),
+//                     itemBuilder: (context, index) {
+//                       return GestureDetector(
+//                         onTap: () {
+//                           setInnerState(() {
+//                             provider.selectedMultiDateIndex = index;
+//                             provider.attendDateBtnColor = true;
+//                             provider.selectedAttendDateDid =
+//                                 multiDate[index].did;
+//                             provider.selectedAttendDateEid =
+//                                 multiDate[index].eid;
+//                             //   provider.dateOptionStatus(context, provider.eventDetail.event!.eid, multiDate[index].did);
+//                           });
+//                         },
+//                         child: CommonWidgets.gridViewOfMultiDateAlertDialog(
+//                             scaler, multiDate, index,
+//                             selectedIndex: provider.selectedMultiDateIndex),
+//                       );
+//                     },
+//                   ),
+//                 ),
+//                 actions: [
+//                   provider.answerMultiDate == true
+//                       ? Center(child: CircularProgressIndicator())
+//                       : CommonWidgets.commonBtn(
+//                           scaler,
+//                           context,
+//                           "submit".tr(),
+//                           provider.attendDateBtnColor == true
+//                               ? ColorConstants.primaryColor
+//                               : ColorConstants.colorNewGray,
+//                           provider.attendDateBtnColor == true
+//                               ? ColorConstants.colorWhite
+//                               : ColorConstants.colorGray,
+//                           onTapFun: provider.attendDateBtnColor == true ||
+//                                   provider.selectedAttendDateDid != null
+//                               ? () {
+//                                   setInnerState(() {
+//                                     provider
+//                                         .answerMultiDateOption(
+//                                             context,
+//                                             provider.selectedAttendDateEid
+//                                                 .toString(),
+//                                             provider.selectedAttendDateDid
+//                                                 .toString(), true)
+//                                         .then((value) {
+//                                       if (provider.eventDetail.event!.form
+//                                           .isNotEmpty) {
+//                                         List<String> questionsList = [];
+//                                         for (var value in provider
+//                                             .eventDetail.event!.form.values) {
+//                                           questionsList.add(value);
+//                                         }
+//                                         Navigator.of(context).pop();
+//                                         alertForQuestionnaireAnswers(
+//                                             _scaffoldkey.currentContext!,
+//                                             scaler,
+//                                             questionsList,
+//                                             provider);
+//                                       } else {
+//                                         Navigator.of(context).pop();
+//                                         provider.replyToEvent(
+//                                             _scaffoldkey.currentContext!,
+//                                             provider.eventDetail.eid!,
+//                                             EVENT_ATTENDING);
+//                                       }
+//                                     });
+//                                   });
+//                                 }
+//                               : () {})
+//                 ],
+//               ));
+//         });
+//       });
+// }
 }

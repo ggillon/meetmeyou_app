@@ -36,6 +36,9 @@ class OrganizeEventCardProvider extends BaseProvider{
     if (value != null) {
       setState(ViewState.Idle);
       eventLists = value;
+      eventLists.sort((a,b) {
+        return a.start.compareTo(b.start);
+      });
       eventDetail.eventListLength = eventLists.length;
       getMultipleDate = List<bool>.filled(eventLists.length, false);
     }

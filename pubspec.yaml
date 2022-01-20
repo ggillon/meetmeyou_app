@@ -73,7 +73,8 @@ dependencies:
     git:
       url: https://github.com/deepakrana0011/vertical_calender.git
       ref: main
-
+  share_plus: ^3.0.4
+  uni_links: ^0.5.1
 
 dev_dependencies:
   flutter_test:
