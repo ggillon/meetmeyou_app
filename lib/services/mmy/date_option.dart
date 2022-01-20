@@ -60,7 +60,11 @@ Future<Event> selectFinalDate(User currentUser, String eid, String did) async {
 Future<void> answerDateOption(User currentUser, String eid, String did, bool attend) async {
   final db = FirestoreDB(uid: currentUser.uid);
   DateOption date = await db.getDateOption(eid, did);
-  date.invitedContacts[currentUser.uid] = attend ? EVENT_ATTENDING : EVENT_NOT_ATTENDING;
+  if(attend) {
+    date.invitedContacts[currentUser.uid] = EVENT_ATTENDING;
+  } else {
+    date.invitedContacts[currentUser.uid] = EVENT_NOT_ATTENDING;
+  }
   db.setDateOption(eid, date);
 }
 
