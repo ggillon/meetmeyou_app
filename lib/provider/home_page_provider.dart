@@ -62,18 +62,25 @@ class HomePageProvider extends BaseProvider {
 
   List<Event> eventLists = [];
 
-  Future getUserEvents(BuildContext context, {List<String>? filters}) async {
-    setState(ViewState.Busy);
+  bool refresh = false;
+
+  updateRefresh(bool val){
+    refresh = val;
+    notifyListeners();
+  }
+
+  Future getUserEvents(BuildContext context, {List<String>? filters, bool refresh = false}) async {
+   refresh == true ? updateRefresh(true) : setState(ViewState.Busy);
     //mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value =
         await mmyEngine!.getUserEvents(filters: filters).catchError((e) {
-      setState(ViewState.Idle);
+          refresh == true ? updateRefresh(false) : setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
 
     if (value != null) {
-      setState(ViewState.Idle);
+      refresh == true ? updateRefresh(false) : setState(ViewState.Idle);
       eventLists = value;
       eventLists.sort((a,b) {
         return a.start.compareTo(b.start);
@@ -150,26 +157,26 @@ class HomePageProvider extends BaseProvider {
   //   }
   // }
 
-  getIndexChanging(BuildContext context) {
+  getIndexChanging(BuildContext context, {bool refresh = false}) {
     switch (tabController!.index) {
       case 0:
-        getUserEvents(context);
+        getUserEvents(context, refresh: refresh);
         break;
 
       case 1:
-        getUserEvents(context, filters: ["Attending"]);
+        getUserEvents(context, filters: ["Attending"], refresh: refresh);
         break;
 
       case 2:
-        getUserEvents(context, filters: ["Not Attending"]);
+        getUserEvents(context, filters: ["Not Attending"], refresh: refresh);
         break;
 
       case 3:
-        getUserEvents(context, filters: ["Invited"]);
+        getUserEvents(context, filters: ["Invited"], refresh: refresh);
         break;
 
       case 4:
-        getUserEvents(context, filters: ["Not Interested"]);
+        getUserEvents(context, filters: ["Not Interested"], refresh: refresh);
         break;
     }
     notifyListeners();
@@ -304,6 +311,24 @@ class HomePageProvider extends BaseProvider {
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
   }
+
+
+ // Future<void>inviteURL(String eid);
+bool inviteUrlCheck = false;
+
+  updateInviteUrl(bool value){
+    inviteUrlCheck = value;
+    notifyListeners();
+  }
+
+Future inviteUrl(BuildContext context, String eid) async{
+    updateInviteUrl(true);
+
+    await mmyEngine!.inviteURL(eid).catchError((e){
+      updateInviteUrl(false);
+    });
+    updateInviteUrl(false);
+}
 
   // bool attendDateBtnColor = false;
   // String? selectedAttendDateDid;

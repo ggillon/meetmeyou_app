@@ -310,7 +310,7 @@ class EventDetailScreen extends StatelessWidget {
                                       alignment: Alignment.centerRight,
                                         child: GestureDetector(
                                             onTap: (){
-                                              String shareLink = provider.mmyEngine!.getEventLink(provider.eventDetail.eid!);
+                                              String shareLink = provider.mmyEngine!.getEventText(provider.eventDetail.eid!);
                                               Share.share(shareLink);
                                             },
                                             child: ImageView(path: ImageConstants.share_icon)))) : Container()

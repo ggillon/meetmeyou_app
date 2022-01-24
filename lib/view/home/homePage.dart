@@ -55,43 +55,38 @@ class _HomePageState extends State<HomePage>
 
   Future<Null> refreshListTab1() async {
     refreshKeyTab1.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
 
     //network call and setState so that view will render the new values
-    await this.provider.getIndexChanging(context);
-    print("refresh ${this.provider.tabController!.index}");
+    await this.provider.getIndexChanging(context, refresh: true);
   }
 
   Future<Null> refreshListTab2() async {
     refreshKeyTab2.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
 
-    await this.provider.getIndexChanging(context);
-    print("refresh ${this.provider.tabController!.index}");
+    await this.provider.getIndexChanging(context, refresh: true);
   }
 
   Future<Null> refreshListTab3() async {
     refreshKeyTab3.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
 
-    await this.provider.getIndexChanging(context);
-    print("refresh ${this.provider.tabController!.index}");
+    await this.provider.getIndexChanging(context, refresh: true);
   }
 
   Future<Null> refreshListTab4() async {
     refreshKeyTab4.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
 
-    await this.provider.getIndexChanging(context);
-    print("refresh ${this.provider.tabController!.index}");
+    await this.provider.getIndexChanging(context, refresh: true);
   }
 
   Future<Null> refreshListTab5() async {
     refreshKeyTab5.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
 
-    await this.provider.getIndexChanging(context);
-    print("refresh ${this.provider.tabController!.index}");
+    await this.provider.getIndexChanging(context, refresh: true);
   }
 
   String link = "";
@@ -150,6 +145,7 @@ class _HomePageState extends State<HomePage>
           this.provider = provider;
           initUniLinks().then((value) => this.setState(() {
             link = value;
+           // provider.inviteUrl(context, eid);
           }));
           provider.getUserDetail(context);
           widget.provider = provider;
@@ -173,10 +169,10 @@ class _HomePageState extends State<HomePage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Text("home".tr()).boldText(ColorConstants.colorBlack,
-                    //     scaler.getTextSize(16), TextAlign.left),
-                    Text(link).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(8), TextAlign.left),
+                    Text("home".tr()).boldText(ColorConstants.colorBlack,
+                        scaler.getTextSize(16), TextAlign.left),
+                    // Text(link).boldText(ColorConstants.colorBlack,
+                    //     scaler.getTextSize(8), TextAlign.left),
                     ImageView(path: ImageConstants.search_icon)
                   ],
                 ),
@@ -603,8 +599,8 @@ class _HomePageState extends State<HomePage>
   Widget shareCard(ScreenScaler scaler, Event event){
     return GestureDetector(
       onTap: (){
-        String shareLink = provider.mmyEngine!.getEventLink(event.eid);
-        Share.share("https://meetmeyou");
+        String shareLink = provider.mmyEngine!.getEventText(event.eid);
+        Share.share(shareLink);
       },
       child: Card(
         shape: RoundedRectangleBorder(
