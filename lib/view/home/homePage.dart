@@ -89,22 +89,6 @@ class _HomePageState extends State<HomePage>
     await this.provider.getIndexChanging(context, refresh: true);
   }
 
-  String link = "";
-
-  Future<String> initUniLinks() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      final initialLink = await getInitialLink();
-      // Parse the link and warn the user, if it is not correct,
-      // but keep in mind it could be `null`.
-      return initialLink.toString();
-    } on PlatformException {
-      // Handle exception by warning the user their action did not succeed
-      // return?
-    }
-    throw "";
-  }
-
   @override
   Widget build(BuildContext context) {
     final dashBoardProvider =
@@ -143,10 +127,7 @@ class _HomePageState extends State<HomePage>
           body: BaseView<HomePageProvider>(
         onModelReady: (provider) {
           this.provider = provider;
-          initUniLinks().then((value) => this.setState(() {
-            link = value;
-           // provider.inviteUrl(context, eid);
-          }));
+       //   provider.dynamicLinksApi.handleDynamicLink(context);
           provider.getUserDetail(context);
           widget.provider = provider;
           provider.tabController = TabController(length: 5, vsync: this);
@@ -171,8 +152,6 @@ class _HomePageState extends State<HomePage>
                   children: [
                     Text("home".tr()).boldText(ColorConstants.colorBlack,
                         scaler.getTextSize(16), TextAlign.left),
-                    // Text(link).boldText(ColorConstants.colorBlack,
-                    //     scaler.getTextSize(8), TextAlign.left),
                     ImageView(path: ImageConstants.search_icon)
                   ],
                 ),
@@ -598,9 +577,12 @@ class _HomePageState extends State<HomePage>
 
   Widget shareCard(ScreenScaler scaler, Event event){
     return GestureDetector(
-      onTap: (){
-        String shareLink = provider.mmyEngine!.getEventText(event.eid);
-        Share.share(shareLink);
+      onTap: () async{
+        String eventLink = provider.mmyEngine!.getEventLink(event.eid);
+        await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
+          String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
+          Share.share(shareLink);
+        });
       },
       child: Card(
         shape: RoundedRectangleBorder(
