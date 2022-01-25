@@ -35,6 +35,7 @@ class _DashboardPageState extends State<DashboardPage> {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<DashboardProvider>(
       onModelReady: (provider) {
+        provider.dynamicLinksApi.handleDynamicLink(context);
         provider.onItemTapped(0);
         provider.unRespondedInvites(context);
         provider.unRespondedEvents(context);

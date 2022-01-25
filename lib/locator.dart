@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
@@ -47,6 +48,7 @@ void setupLocator() {
   locator.registerLazySingleton<EventDetail>(() => EventDetail());
   locator.registerLazySingleton<CalendarDetail>(() => CalendarDetail());
   locator.registerLazySingleton<MultipleDateOption>(() => MultipleDateOption());
+  locator.registerLazySingleton<DynamicLinksApi>(() => DynamicLinksApi());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -27,6 +28,7 @@ class HomePageProvider extends BaseProvider {
   int selectedIndex = 0;
   Color textColor = ColorConstants.colorWhite;
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
+  DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
 
   bool _value = false;
 
@@ -311,24 +313,6 @@ class HomePageProvider extends BaseProvider {
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
   }
-
-
- // Future<void>inviteURL(String eid);
-bool inviteUrlCheck = false;
-
-  updateInviteUrl(bool value){
-    inviteUrlCheck = value;
-    notifyListeners();
-  }
-
-Future inviteUrl(BuildContext context, String eid) async{
-    updateInviteUrl(true);
-
-    await mmyEngine!.inviteURL(eid).catchError((e){
-      updateInviteUrl(false);
-    });
-    updateInviteUrl(false);
-}
 
   // bool attendDateBtnColor = false;
   // String? selectedAttendDateDid;

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
@@ -13,6 +14,7 @@ class DashboardProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   GroupDetail groupDetail = locator<GroupDetail>();
   EventDetail eventDetail = locator<EventDetail>();
+  DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
   int _selectedIndex = 0;
 
   var unRespondedInvite = 0;
