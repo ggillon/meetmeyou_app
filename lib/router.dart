@@ -80,7 +80,7 @@ class Router {
 
       case RoutesConstants.dashboardPage:
         return MaterialPageRoute(
-            builder: (_) => DashboardPage(), settings: settings);
+            builder: (_) => DashboardPage(isFromLogin: settings.arguments as bool), settings: settings);
 
       case RoutesConstants.myAccountScreen:
         return MaterialPageRoute(

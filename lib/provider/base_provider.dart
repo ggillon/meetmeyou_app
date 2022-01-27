@@ -19,3 +19,4 @@ class BaseProvider extends ChangeNotifier {
   }
 
 }
+

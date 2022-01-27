@@ -1,5 +1,6 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
@@ -10,8 +11,12 @@ import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
+import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
+import 'package:provider/provider.dart';
 
 class DynamicLinksApi extends BaseProvider {
   FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
@@ -26,7 +31,7 @@ class DynamicLinksApi extends BaseProvider {
     try {
       final DynamicLinkParameters parameters = DynamicLinkParameters(
         // The Dynamic Link URI domain. You can view created URIs on your Firebase console
-        uriPrefix: 'https://meetmeyou.page.link/',
+        uriPrefix: 'https://meetmeyou.page.link',
         // The deep Link passed to your application which you can use to affect change
         link: Uri.parse(shareLink),
         // Android application details needed for opening correct app on device/Play Store
@@ -36,14 +41,14 @@ class DynamicLinksApi extends BaseProvider {
           minimumVersion: 1,
         ),
         // iOS application details needed for opening correct app on device/App Store
-        // iosParameters: const IOSParameters(
-        //   bundleId: iosBundleId,
-        //   minimumVersion: '2',
-        // ),
+        iosParameters: IOSParameters(
+          bundleId: "com.meetmeyou.meetmeyou",
+          minimumVersion: '1',
+          appStoreId: "1580553300"
+        ),
       );
 
-      final ShortDynamicLink shortDynamicLink =
-          await FirebaseDynamicLinks.instance.buildShortLink(parameters);
+      final ShortDynamicLink shortDynamicLink = await dynamicLinks.buildShortLink(parameters);
       final Uri shortUri = shortDynamicLink.shortUrl;
       //  final Uri LongUri = await dynamicLinks.buildLink(parameters);
 
@@ -57,20 +62,22 @@ class DynamicLinksApi extends BaseProvider {
     }
   }
 
-  handleDynamicLink(BuildContext context) async {
+  Future handleDynamicLink(BuildContext context) async {
     await dynamicLinks.getInitialLink();
 
     // this is for background/foreground state
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      linkEid = dynamicLinkData.link.toString().split("=");
-      print(linkEid);
-      calendarDetail.fromCalendarPage = true;
-      eventDetail.eid = linkEid[1].toString();
-      //  inviteUrl(context, linkEid[1].toString());
-      Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
+    dynamicLinks.onLink.listen((dynamicLinkData) {
+        linkEid = dynamicLinkData.link.toString().split("=");
+        // print(linkEid);
+        calendarDetail.fromCalendarPage = true;
+        eventDetail.eid = linkEid[1].toString();
+        inviteUrl(context, linkEid[1].toString());
+      Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+        unRespondedEventsApi(context);
+      });
     }).onError((error) {
       // Handle errors
-      return DialogHelper.showMessage(context, "No Link found!");
+      return DialogHelper.showMessage(context, error.message);
     });
 
     // this is for terminated state
@@ -80,8 +87,13 @@ class DynamicLinksApi extends BaseProvider {
         linkEid = data.link.toString().split("=");
         calendarDetail.fromCalendarPage = true;
         eventDetail.eid = linkEid[1].toString();
-        //  inviteUrl(context, linkEid[1].toString());
-        Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
+        inviteUrl(context, linkEid[1].toString());
+        Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+          unRespondedEventsApi(context);
+        });
+      }
+      else{
+        return DialogHelper.showMessage(context, "No Link found!");
       }
     } catch (e) {
       return DialogHelper.showMessage(context, "No Link found!");
@@ -92,12 +104,32 @@ class DynamicLinksApi extends BaseProvider {
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
     await mmyEngine!.inviteURL(eid).catchError((e) {
       setState(ViewState.Idle);
     });
 
     setState(ViewState.Idle);
   }
+
+  bool val = false;
+
+  updateValue(bool value) {
+    val = value;
+    notifyListeners();
+  }
+
+  Future unRespondedEventsApi(BuildContext context) async {
+    updateValue(true);
+    eventDetail.unRespondedEvent1 =
+    await mmyEngine!.unrespondedEvents().catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateValue(false);
+  }
+
 
 // // These functions are used when user comes from link.
 // Event? event;

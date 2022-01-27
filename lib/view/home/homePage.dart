@@ -1,4 +1,5 @@
 import 'package:easy_localization/src/public_ext.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
@@ -125,9 +126,8 @@ class _HomePageState extends State<HomePage>
           //   ),
           // ))
           body: BaseView<HomePageProvider>(
-        onModelReady: (provider) {
+        onModelReady: (provider) async {
           this.provider = provider;
-       //   provider.dynamicLinksApi.handleDynamicLink(context);
           provider.getUserDetail(context);
           widget.provider = provider;
           provider.tabController = TabController(length: 5, vsync: this);
@@ -449,7 +449,9 @@ class _HomePageState extends State<HomePage>
                       width: double.infinity,
                     ),
             ),
-           provider.userDetail.cid == eventList[index].organiserID ? Positioned(
+           provider.userDetail.cid == eventList[index].organiserID && CommonEventFunction.getEventBtnStatus(
+               eventList[index], provider.userDetail.cid.toString()) ==
+               "edit" ? Positioned(
                top: scaler.getHeight(1),
                left: scaler.getHeight(1.5),
                child: Container(
