@@ -111,9 +111,9 @@ class EventDetailScreen extends StatelessWidget {
                             CommonWidgets.commonBtn(
                                 scaler,
                                 context,
-                                provider.eventDetail.eventBtnStatus!.tr(),
-                                provider.eventDetail.btnBGColor!,
-                                provider.eventDetail.textColor!, onTapFun: () {
+                                provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
+                                provider.eventDetail.btnBGColor ?? ColorConstants.primaryColor,
+                                provider.eventDetail.textColor ?? ColorConstants.colorWhite, onTapFun: () {
                               if (provider.eventDetail.eventBtnStatus ==
                                       "respond" ||
                                   provider.eventDetail.eventBtnStatus ==
@@ -306,7 +306,8 @@ class EventDetailScreen extends StatelessWidget {
                                         ColorConstants.colorGray,
                                         scaler.getTextSize(8),
                                         TextAlign.center),
-                                    provider.userDetail.cid == provider.eventDetail.organiserId ? Expanded(child: Container(
+                                    provider.userDetail.cid == provider.eventDetail.organiserId && provider.eventDetail.eventBtnStatus ==
+                                        "edit" ? Expanded(child: Container(
                                       alignment: Alignment.centerRight,
                                         child: GestureDetector(
                                             onTap: (){

@@ -15,7 +15,8 @@ import 'package:meetmeyou_app/view/settings/settingsPage.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+   DashboardPage({Key? key, required this.isFromLogin}) : super(key: key);
+   bool isFromLogin;
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -35,7 +36,9 @@ class _DashboardPageState extends State<DashboardPage> {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<DashboardProvider>(
       onModelReady: (provider) {
-        provider.dynamicLinksApi.handleDynamicLink(context);
+        if(widget.isFromLogin == null){
+          provider.dynamicLinksApi.handleDynamicLink(context);
+        }
         provider.onItemTapped(0);
         provider.unRespondedInvites(context);
         provider.unRespondedEvents(context);

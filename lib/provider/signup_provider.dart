@@ -98,6 +98,6 @@ class SignUpProvider extends BaseProvider {
   void moveToNextScreen(BuildContext context) {
     SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
     Navigator.of(context).pushNamedAndRemoveUntil(
-        RoutesConstants.dashboardPage, (route) => false);
+        RoutesConstants.dashboardPage, (route) => false, arguments: true);
   }
 }
