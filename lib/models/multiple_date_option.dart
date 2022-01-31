@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MultipleDateOption{
   List<DateTime> startDate = [];
- // List<DateTime> endDate = [];
+  List<DateTime> endDate = [];
   List<TimeOfDay> startTime = [];
   List<TimeOfDay> endTime = [];
 

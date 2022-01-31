@@ -31,15 +31,16 @@ class CreateEventProvider extends BaseProvider {
   File? image;
 
   //String? imageUrl;
-  DateTime startDate = DateTime.now();
+  DateTime startDate = DateTime.now().add(Duration(days: 7));
   TimeOfDay startTime = TimeOfDay.now();
-  DateTime endDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(Duration(days: 7));
   TimeOfDay endTime = TimeOfDay.now().addHour(3);
   bool isSwitched = false;
   bool fromInviteScreen = false;
   bool addMultipleDate = false;
   bool removeMultiDate = false;
   int? selectedIndex;
+  bool addEndDate = false;
 
   bool _isLoading = false;
 
@@ -123,12 +124,12 @@ class CreateEventProvider extends BaseProvider {
     showDatePicker(
             context: context,
             initialDate: checkOrEndStartDate
-                ? DateTime.now()
-                : dateCheck
-                    ? endDate
-                    : DateTime(startDate.year, startDate.month, startDate.day),
+                ? startDate : endDate,
+                // : dateCheck
+                //     ? endDate
+                //     : DateTime(startDate.year, startDate.month, startDate.day),
             firstDate: checkOrEndStartDate
-                ? DateTime.now()
+                ? DateTime.now().add(Duration(days: 7))
                 : dateCheck
                     ? endDate
                     : DateTime(startDate.year, startDate.month, startDate.day),
@@ -145,7 +146,7 @@ class CreateEventProvider extends BaseProvider {
           notifyListeners();
           return;
         }
-        startTimeFun();
+        startTimeFun(context);
       } else {
         endDate = pickedDate;
         endTimeFun(context);
@@ -165,7 +166,7 @@ class CreateEventProvider extends BaseProvider {
     }
     if (checkOrEndStartTime == true) {
       startTime = pickedTime;
-      startTimeFun();
+      startTimeFun(context);
       //dateTimeFormat(startDate, startTime);
     } else {
       endTime = pickedTime;
@@ -175,23 +176,39 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-  startTimeFun() {
+  startTimeFun(BuildContext context) {
     // start time
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
-    if (startTime.hour >= 21) {
-      if (startDate
-              .toString()
-              .substring(0, 11)
-              .compareTo(endDate.toString().substring(0, 11)) ==
-          0) {
-        endDate = startDate.add(Duration(days: 1));
-        dateCheck = true;
+    // if (startTime.hour >= 21) {
+    //   if (startDate
+    //           .toString()
+    //           .substring(0, 11)
+    //           .compareTo(endDate.toString().substring(0, 11)) ==
+    //       0) {
+    //     endDate = startDate.add(Duration(days: 1));
+    //     dateCheck = true;
+    //   }
+    // } else {
+    //   // endDate = startDate;
+    //   // dateCheck = false;
+    // }
+    TimeOfDay eveningTime = TimeOfDay(hour: 19, minute: 0);
+
+    if(eveningTime.period == DayPeriod.pm){
+      if(startTimeHour > eveningTime.hour){
+        startTime = eveningTime;
+        DialogHelper.showMessage(
+            context, "Sorry! event can't be created after 7:00 PM.");
+      } else if(startTimeHour == eveningTime.hour){
+        if(startTime.minute > eveningTime.minute){
+          startTime = eveningTime;
+          DialogHelper.showMessage(
+              context, "Sorry! event can't be created after 7:00 PM.");
+        }
       }
-    } else {
-      // endDate = startDate;
-      // dateCheck = false;
     }
+
     if (startDate
             .toString()
             .substring(0, 11)
@@ -259,8 +276,7 @@ class CreateEventProvider extends BaseProvider {
             startDateOptions: addMultipleDate == true
                 ? multipleDateOption.startDateTime
                 : null,
-            endDateOptions:
-                addMultipleDate == true ? multipleDateOption.endDateTime : null)
+            endDateOptions: addMultipleDate == true ? multipleDateOption.endDateTime : null)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);

@@ -8,20 +8,20 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
 class MultipleDateTimeProvider extends BaseProvider {
   MMYEngine? mmyEngine;
-  DateTime startDate = DateTime.now();
- // DateTime endDate = DateTime.now();
+  DateTime startDate = DateTime.now().add(Duration(days: 7));
+  DateTime endDate = DateTime.now().add(Duration(days: 7));
   TimeOfDay startTime = TimeOfDay.now();
   TimeOfDay endTime = TimeOfDay.now().addHour(3);
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
-
+  bool addEndDate = false;
   // late DateTime startDate;
 
   //Method for showing the date picker
   void pickDateDialog(BuildContext context, bool checkDate) {
     showDatePicker(
             context: context,
-            initialDate: startDate,
-            firstDate:  DateTime.now(),
+            initialDate: checkDate == true ? startDate : endDate,
+            firstDate:  checkDate == true ? DateTime.now().add(Duration(days: 7)) : DateTime(startDate.year, startDate.month, startDate.day),
             lastDate: DateTime(2100))
         .then((pickedDate) {
       if (pickedDate == null) {
@@ -30,19 +30,19 @@ class MultipleDateTimeProvider extends BaseProvider {
       //for rebuilding the ui
       if (checkDate == true) {
         startDate = pickedDate;
-        // if (startDate.isAfter(endDate)) {
-        //   endDate = startDate;
-        //   if(startTime.hour >= 21){
-        //     endDate = endDate.add(Duration(days: 1));
-        //   }
-        //   DialogHelper.showMessage(
-        //       context, "Start date cannot greater than End date.");
-        //   notifyListeners();
-        //   return;
-        // }
+        if (startDate.isAfter(endDate)) {
+          endDate = startDate;
+          // if(startTime.hour >= 21){
+          //   endDate = endDate.add(Duration(days: 1));
+          // }
+          // DialogHelper.showMessage(
+          //     context, "Start date cannot greater than End date.");
+          notifyListeners();
+          return;
+        }
         startTimeFun();
       } else {
-     //   endDate = pickedDate;
+        endDate = pickedDate;
         endTimeFun(context);
       }
       notifyListeners();
@@ -83,11 +83,11 @@ class MultipleDateTimeProvider extends BaseProvider {
     //   endDate = endDate;
     // }
 
-    // if (startDate
-    //     .toString()
-    //     .substring(0, 11)
-    //     .compareTo(endDate.toString().substring(0, 11)) ==
-    //     0) {
+    if (startDate
+        .toString()
+        .substring(0, 11)
+        .compareTo(endDate.toString().substring(0, 11)) ==
+        0) {
       if (startTimeHour > endTimeHour) {
         endTime = startTime.addHour(3);
       } else if (startTimeHour == endTimeHour) {
@@ -101,7 +101,7 @@ class MultipleDateTimeProvider extends BaseProvider {
         if (startTime.minute > endTime.minute) {
           endTime = startTime.addHour(3);
         }
-  //    }
+      }
     }
   }
 
@@ -110,11 +110,11 @@ class MultipleDateTimeProvider extends BaseProvider {
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
 
-    // if (startDate
-    //         .toString()
-    //         .substring(0, 11)
-    //         .compareTo(endDate.toString().substring(0, 11)) ==
-    //     0) {
+    if (startDate
+            .toString()
+            .substring(0, 11)
+            .compareTo(endDate.toString().substring(0, 11)) ==
+        0) {
       if (endTimeHour < startTimeHour + 3) {
         endTime = startTime.addHour(3);
         DialogHelper.showMessage(
@@ -126,6 +126,6 @@ class MultipleDateTimeProvider extends BaseProvider {
               context, "End time should 3 hours greater than Start time.");
         }
       }
-    //}
+    }
   }
 }
