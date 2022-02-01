@@ -32,9 +32,9 @@ class CreateEventProvider extends BaseProvider {
 
   //String? imageUrl;
   DateTime startDate = DateTime.now().add(Duration(days: 7));
-  TimeOfDay startTime = TimeOfDay.now();
+  TimeOfDay startTime = TimeOfDay(hour: 19, minute: 0);
   DateTime endDate = DateTime.now().add(Duration(days: 7));
-  TimeOfDay endTime = TimeOfDay.now().addHour(3);
+  TimeOfDay endTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
   bool isSwitched = false;
   bool fromInviteScreen = false;
   bool addMultipleDate = false;
@@ -129,10 +129,10 @@ class CreateEventProvider extends BaseProvider {
                 //     ? endDate
                 //     : DateTime(startDate.year, startDate.month, startDate.day),
             firstDate: checkOrEndStartDate
-                ? DateTime.now().add(Duration(days: 7))
-                : dateCheck
-                    ? endDate
-                    : DateTime(startDate.year, startDate.month, startDate.day),
+                ? DateTime.now().add(Duration(days: 7)) : startDate,
+                // : dateCheck
+                //     ? endDate
+                //     : DateTime(startDate.year, startDate.month, startDate.day),
             lastDate: DateTime(2100))
         .then((pickedDate) {
       if (pickedDate == null) {
@@ -143,6 +143,7 @@ class CreateEventProvider extends BaseProvider {
         startDate = pickedDate;
         if (startDate.isAfter(endDate)) {
           endDate = startDate;
+          startTimeFun(context);
           notifyListeners();
           return;
         }
@@ -178,36 +179,38 @@ class CreateEventProvider extends BaseProvider {
 
   startTimeFun(BuildContext context) {
     // start time
-    int startTimeHour = startTime.hour;
-    int endTimeHour = endTime.hour;
-    // if (startTime.hour >= 21) {
-    //   if (startDate
-    //           .toString()
-    //           .substring(0, 11)
-    //           .compareTo(endDate.toString().substring(0, 11)) ==
-    //       0) {
-    //     endDate = startDate.add(Duration(days: 1));
-    //     dateCheck = true;
-    //   }
-    // } else {
-    //   // endDate = startDate;
-    //   // dateCheck = false;
-    // }
-    TimeOfDay eveningTime = TimeOfDay(hour: 19, minute: 0);
-
-    if(eveningTime.period == DayPeriod.pm){
-      if(startTimeHour > eveningTime.hour){
-        startTime = eveningTime;
-        DialogHelper.showMessage(
-            context, "Sorry! event can't be created after 7:00 PM.");
-      } else if(startTimeHour == eveningTime.hour){
-        if(startTime.minute > eveningTime.minute){
-          startTime = eveningTime;
-          DialogHelper.showMessage(
-              context, "Sorry! event can't be created after 7:00 PM.");
-        }
+    int startTimeHour =  startTime.hour;
+    int endTimeHour =  endTime.hour;
+    if (startTime.hour >= 21) {
+      if (startDate
+              .toString()
+              .substring(0, 11)
+              .compareTo(endDate.toString().substring(0, 11)) ==
+          0) {
+        endDate = startDate.add(Duration(days: 1));
+        endTime = startTime.addHour(3);
+       // dateCheck = true;
+      } else{
+         if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
+           endTime = startTime.addHour(3);
+         }
       }
     }
+   // TimeOfDay eveningTime = TimeOfDay(hour: 19, minute: 0);
+
+    // if(eveningTime.period == DayPeriod.pm){
+    //   if(startTimeHour > eveningTime.hour){
+    //     startTime = eveningTime;
+    //     DialogHelper.showMessage(
+    //         context, "Sorry! event can't be created after 7:00 PM.");
+    //   } else if(startTimeHour == eveningTime.hour){
+    //     if(startTime.minute > eveningTime.minute){
+    //       startTime = eveningTime;
+    //       DialogHelper.showMessage(
+    //           context, "Sorry! event can't be created after 7:00 PM.");
+    //     }
+    //   }
+    // }
 
     if (startDate
             .toString()
@@ -233,8 +236,28 @@ class CreateEventProvider extends BaseProvider {
 
   endTimeFun(BuildContext context) {
     // for end time
-    int startTimeHour = startTime.hour;
-    int endTimeHour = endTime.hour;
+    int startTimeHour =  startTime.hour;
+    int endTimeHour =  endTime.hour;
+    if (startTime.hour >= 21) {
+      if (startDate
+          .toString()
+          .substring(0, 11)
+          .compareTo(endDate.toString().substring(0, 11)) ==
+          0) {
+        endDate = startDate.add(Duration(days: 1));
+        endTime = startTime.addHour(3);
+        DialogHelper.showMessage(
+            context, "End time should 3 hours greater than Start time.");
+       // dateCheck = true;
+      } else{
+        if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
+          endTime = startTime.addHour(3);
+          DialogHelper.showMessage(
+              context, "End time should 3 hours greater than Start time.");
+        }
+      }
+    }
+
     if (startDate
             .toString()
             .substring(0, 11)
@@ -374,7 +397,7 @@ class CreateEventProvider extends BaseProvider {
   clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
-  //  multipleDateOption.endDate.clear();
+    multipleDateOption.endDate.clear();
     multipleDateOption.startTime.clear();
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
@@ -434,7 +457,7 @@ class CreateEventProvider extends BaseProvider {
 addMultiDateTimeValue(List<DateOption> multipleDate){
   for (int i = 0; i < multipleDate.length; i++) {
     multipleDateOption.startDate.add(multipleDate[i].start);
-//    multipleDateOption.endDate.add(multipleDate[i].end);
+    multipleDateOption.endDate.add(multipleDate[i].end);
     multipleDateOption.startTime
         .add(TimeOfDay.fromDateTime(multipleDate[i].start));
     multipleDateOption.endTime

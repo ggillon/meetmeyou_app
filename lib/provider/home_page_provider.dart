@@ -307,12 +307,37 @@ class HomePageProvider extends BaseProvider {
   clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
-  //  multipleDateOption.endDate.clear();
+    multipleDateOption.endDate.clear();
     multipleDateOption.startTime.clear();
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
   }
+
+  // for checking whether any multi date date is selected or not.
+  // bool statusMultiDate = false;
+  //
+  // updateStatusMultiDate(bool value) {
+  //   statusMultiDate = value;
+  //   notifyListeners();
+  // }
+  //
+  // List<String> didsOfMultiDateSelected = [];
+  //
+  // Future listOfDateSelected(BuildContext context, String eid) async {
+  //   updateStatusMultiDate(true);
+  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   var value = await mmyEngine!.listDateSelected(eid).catchError((e) {
+  //     updateStatusMultiDate(false);
+  //     DialogHelper.showMessage(context, e.message);
+  //   });
+  //
+  //   if (value != null) {
+  //     didsOfMultiDateSelected = value;
+  //     updateStatusMultiDate(false);
+  //   }
+  // }
 
   // bool attendDateBtnColor = false;
   // String? selectedAttendDateDid;

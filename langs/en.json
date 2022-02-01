@@ -176,5 +176,6 @@
   "select_final_date" : "Select final date",
   "select_that_date" : "Select that date",
   "which_days_could_you_attend" : "Which days could you attend ?",
-  "add_end_date_time" : "add end date and time"
+  "add_end_date_time" : "add end date and time",
+  "multi_date_select_which_work" : "Multiple Dates, select which work"
    }

@@ -601,10 +601,11 @@ class EventDetailScreen extends StatelessWidget {
                   ),
                 ),
               )
-            : Container(
+            :
+        Container(
                 margin: scaler.getMargin(0.0, 7.0),
                 width: scaler.getWidth(100),
-                height: scaler.getHeight(8.0),
+                height: scaler.getHeight(10.0),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     physics: AlwaysScrollableScrollPhysics(),
@@ -624,75 +625,118 @@ class EventDetailScreen extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            if (provider.eidsOfMultiDateSelected
+            if (provider.didsOfMultiDateSelected
                 .contains(provider.multipleDate[index].did)) {
-              DialogHelper.showDialogWithTwoButtons(context, "Not-Attend Event",
-                  "Are you sure to not attend event on this date?",
-                  positiveButtonPress: () {
-                provider
-                    .answerMultiDateOption(
-                        context,
-                        provider.multipleDate[index].eid,
-                        provider.multipleDate[index].did,
-                        false)
-                    .then((value) {
-                  Navigator.of(context).pop();
-                  provider.getMultipleDateOptionsFromEvent(
-                      context, provider.eventDetail.eid!,
-                      onBtnClick: false);
-                  provider.listOfDateSelected(
-                      context, provider.eventDetail.eid!);
+              // DialogHelper.showDialogWithTwoButtons(context, "Not-Attend Event",
+              //     "Are you sure to not attend event on this date?",
+              //     positiveButtonPress: () {
+              //
+              // });
+              provider
+                  .answerMultiDateOption(
+                  context,
+                  provider.multipleDate[index].eid,
+                  provider.multipleDate[index].did,
+                  false)
+                  .then((value) {
+              //  Navigator.of(context).pop();
+                provider.getMultipleDateOptionsFromEvent(
+                    context, provider.eventDetail.eid!,
+                    onBtnClick: false);
+                provider.listOfDateSelected(
+                    context, provider.eventDetail.eid!).then((value) {
+                  if(provider.didsOfMultiDateSelected.length == 0){
+                    provider.eventDetail.eventBtnStatus = "Not Going";
+                    provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+                    provider.eventDetail.textColor = ColorConstants.primaryColor;
+                  }
                 });
               });
             } else {
-              DialogHelper.showDialogWithTwoButtons(context, "Attend Event",
-                  "Are you sure to attend event on this date?",
-                  positiveButtonPress: () {
-                provider
-                    .answerMultiDateOption(
-                        context,
-                        provider.multipleDate[index].eid,
-                        provider.multipleDate[index].did,
-                        true)
-                    .then((value) {
-                  Navigator.of(context).pop();
-                  provider.getMultipleDateOptionsFromEvent(
-                      context, provider.eventDetail.eid!,
-                      onBtnClick: false);
-                  provider.listOfDateSelected(
-                      context, provider.eventDetail.eid!);
+
+              // DialogHelper.showDialogWithTwoButtons(context, "Attend Event",
+              //     "Are you sure to attend event on this date?",
+              //     positiveButtonPress: () {
+              //
+              // });
+              provider
+                  .answerMultiDateOption(
+                  context,
+                  provider.multipleDate[index].eid,
+                  provider.multipleDate[index].did,
+                  true)
+                  .then((value) {
+             //   Navigator.of(context).pop();
+                provider.getMultipleDateOptionsFromEvent(
+                    context, provider.eventDetail.eid!,
+                    onBtnClick: false);
+                provider.listOfDateSelected(
+                    context, provider.eventDetail.eid!).then((value) {
+                      if(provider.didsOfMultiDateSelected.length > 0){
+                        provider.eventDetail.eventBtnStatus = "Going";
+                        provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+                        provider.eventDetail.textColor = ColorConstants.primaryColor;
+                      }
                 });
               });
             }
           },
-          child: Card(
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                  color: provider.eidsOfMultiDateSelected
-                          .contains(provider.multipleDate[index].did)
-                      ? ColorConstants.primaryColor
-                      : ColorConstants.colorWhite,
-                  width: 1),
-              borderRadius: scaler.getBorderRadiusCircular(8.0),
-            ),
-            child: Container(
-              height: scaler.getHeight(7.5),
-              padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(DateTimeHelper.getMonthByName(
-                          provider.multipleDate[index].start))
-                      .regularText(ColorConstants.primaryColor,
-                          scaler.getTextSize(11), TextAlign.left),
-                  Text(provider.multipleDate[index].start.day.toString())
-                      .boldText(ColorConstants.primaryColor,
-                          scaler.getTextSize(14), TextAlign.left),
-                ],
-              ),
+          child: Container(
+            margin: scaler.getMarginLTRB(0.5, 0.5, 1.0, 0.5),
+            padding: scaler.getPaddingLTRB(1.5, 0.5, 1.5, 0.5),
+            width: scaler.getWidth(16.5),
+            height: scaler.getHeight(18),
+            decoration: BoxDecoration(
+                color: ColorConstants.colorLightGray,
+                borderRadius: scaler.getBorderRadiusCircular(12.0),
+                boxShadow: [
+                  BoxShadow(color: provider.didsOfMultiDateSelected.contains(provider.multipleDate[index].did)
+                            ? ColorConstants.primaryColor : ColorConstants.colorWhitishGray, spreadRadius: 1)
+                ]),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("${DateTimeHelper.getMonthByName(provider.multipleDate[index].start)} "
+                   " ${provider.multipleDate[index].start.year}")
+                   .semiBoldText(Colors.deepOrangeAccent, scaler.getTextSize(8.5), TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                SizedBox(height: scaler.getHeight(0.2)),
+                Text(provider.multipleDate[index].start.day.toString())
+                    .boldText(ColorConstants.colorBlack, scaler.getTextSize(14.8), TextAlign.center),
+                  SizedBox(height: scaler.getHeight(0.2)),
+                Text("${DateTimeHelper.convertEventDateToTimeFormat(provider.multipleDate[index].start)}")
+                      .regularText(ColorConstants.colorGray, 10, TextAlign.center,
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
             ),
           ),
+          // Card(
+          //   elevation: 4.0,
+          //   shape: RoundedRectangleBorder(
+          //     side: BorderSide(
+          //         color: provider.didsOfMultiDateSelected
+          //                 .contains(provider.multipleDate[index].did)
+          //             ? ColorConstants.primaryColor
+          //             : ColorConstants.colorWhite,
+          //         width: 1),
+          //     borderRadius: scaler.getBorderRadiusCircular(8.0),
+          //   ),
+          //   child: Container(
+          //     height: scaler.getHeight(7.5),
+          //     padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         Text(DateTimeHelper.getMonthByName(
+          //                 provider.multipleDate[index].start))
+          //             .regularText(ColorConstants.primaryColor,
+          //                 scaler.getTextSize(11), TextAlign.left),
+          //         Text(provider.multipleDate[index].start.day.toString())
+          //             .boldText(ColorConstants.primaryColor,
+          //                 scaler.getTextSize(14), TextAlign.left),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ),
         SizedBox(width: scaler.getWidth(2.0))
       ],

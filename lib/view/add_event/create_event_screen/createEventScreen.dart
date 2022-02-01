@@ -623,33 +623,24 @@ class CreateEventScreen extends StatelessWidget {
                                             DialogHelper.showMessage(context,
                                                 "Start date cannot high than End date.");
                                             return;
-                                          } else if (provider.startDate
-                                                  .toString()
-                                                  .substring(0, 11)
-                                                  .compareTo(provider.endDate
-                                                      .toString()
-                                                      .substring(0, 11)) ==
-                                              0) {
-                                            if (provider.startTime.isCompareTo(
-                                                    provider.endTime) ==
-                                                1) {
+                                          } else if(provider.addMultipleDate == true){
+                                            if(provider.multipleDateOption.startDate.length < 2){
                                               DialogHelper.showMessage(context,
-                                                  "Select correct time.");
-                                            } else {
+                                                  "Please add at least two Multiple Date.");
+                                            } else{
                                               provider.createEvent(
                                                   context,
                                                   eventNameController.text,
                                                   addressController.text,
-                                                  eventDescriptionController
-                                                      .text,
+                                                  eventDescriptionController.text,
                                                   DateTimeHelper.dateTimeFormat(
                                                       provider.startDate,
                                                       provider.startTime),
                                                   DateTimeHelper.dateTimeFormat(
                                                       provider.endDate,
                                                       provider.endTime),
-                                                  photoURL: provider.eventDetail
-                                                      .eventPhotoUrl,
+                                                  photoURL: provider
+                                                      .eventDetail.eventPhotoUrl,
                                                   photoFile: provider.image);
                                             }
                                           } else {
@@ -1072,14 +1063,14 @@ class CreateEventScreen extends StatelessWidget {
         Text("${provider.multipleDateOption.startDate.length} ${"options".tr()}")
             .mediumText(ColorConstants.colorBlackDown, scaler.getTextSize(9.5),
                 TextAlign.center),
-        Expanded(
-            child: Container(
-                alignment: Alignment.centerRight,
-                child: ImageView(
-                  path: ImageConstants.small_arrow_icon,
-                  color: ColorConstants.colorGray,
-                  height: scaler.getHeight(1.5),
-                )))
+        // Expanded(
+        //     child: Container(
+        //         alignment: Alignment.centerRight,
+        //         child: ImageView(
+        //           path: ImageConstants.small_arrow_icon,
+        //           color: ColorConstants.colorGray,
+        //           height: scaler.getHeight(1.5),
+        //         )))
       ],
     );
   }

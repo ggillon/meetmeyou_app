@@ -21,7 +21,17 @@ class MultipleDateTmeScreen extends StatelessWidget {
       backgroundColor: ColorConstants.colorWhite,
       body: BaseView<MultipleDateTimeProvider>(
         onModelReady: (provider) {
-          //   provider.startDate = provider.date;
+             provider.startTime = provider.multipleDateOption.multiStartTime;
+             provider.endTime = provider.multipleDateOption.multiEndTime;
+             if (provider.startTime.hour >= 21) {
+               if (provider.startDate
+                   .toString()
+                   .substring(0, 11)
+                   .compareTo(provider.endDate.toString().substring(0, 11)) ==
+                   0){
+                 provider.endDate = provider.endDate.add(Duration(days: 1));
+                 provider.endTime = provider.startTime.addHour(3);
+               }}
         },
         builder: (context, provider, _) {
           return SafeArea(
@@ -102,6 +112,8 @@ class MultipleDateTmeScreen extends StatelessWidget {
                               "add_date_to_event".tr(),
                               ColorConstants.primaryColor,
                               ColorConstants.colorWhite, onTapFun: () {
+                                provider.multipleDateOption.multiStartTime = provider.startTime;
+                                provider.multipleDateOption.multiEndTime = provider.endTime;
                             if(provider.multipleDateOption.startDate.any((element) { return element.toString().substring(0,11) == provider.startDate.toString().substring(0,11);}) &&
                                 provider.multipleDateOption.endDate.any((element) { return element.toString().substring(0,11) == provider.endDate.toString().substring(0,11);}) &&
                                 provider.multipleDateOption.startTime.contains(provider.startTime) &&

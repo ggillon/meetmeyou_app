@@ -612,7 +612,35 @@ class _HomePageState extends State<HomePage>
           answer3Controller.clear();
           answer4Controller.clear();
           answer5Controller.clear();
-          CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, multipleDate: event.multipleDates, multiDate: (){
+            Navigator.of(context).pop();
+            provider.setEventValuesForEdit(event);
+            provider.eventDetail.eventBtnStatus =
+                CommonEventFunction.getEventBtnStatus(
+                    event, provider.userDetail.cid.toString());
+            provider.eventDetail.textColor =
+                CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.userDetail.cid.toString());
+            provider.eventDetail.btnBGColor =
+                CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.userDetail.cid.toString(),
+                    textColor: false);
+            provider.eventDetail.eventMapData =
+                event.invitedContacts;
+            provider.eventDetail.eid = event.eid;
+            provider.eventDetail.organiserId =
+                event.organiserID;
+            provider.eventDetail.organiserName =
+                event.organiserName;
+            provider.calendarDetail.fromCalendarPage = false;
+            Navigator.pushNamed(
+                context, RoutesConstants.eventDetailScreen)
+                .then((value) {
+              provider.getIndexChanging(context);
+              provider.unRespondedEvents(context, dashboardProvider);
+              provider.unRespondedEventsApi(context);
+            });
+          }, going: () {
             // if (event.multipleDates == true) {
             //   provider
             //       .getMultipleDateOptionsFromEvent(context, event.eid, index)

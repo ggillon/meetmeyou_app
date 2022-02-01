@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/extensions/allExtensions.dart';
 
 class MultipleDateOption{
   List<DateTime> startDate = [];
@@ -9,4 +10,7 @@ class MultipleDateOption{
   List<DateTime> startDateTime = [];
   List<DateTime> endDateTime = [];
 
+// for multi date option
+  TimeOfDay multiStartTime = TimeOfDay(hour: 19, minute: 0);
+  TimeOfDay multiEndTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
 }

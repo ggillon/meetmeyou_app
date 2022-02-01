@@ -395,7 +395,7 @@ class CommonWidgets {
   }
 
   static respondToEventBottomSheet(BuildContext context, ScreenScaler scaler,
-      {VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide}) {
+      {bool? multipleDate, VoidCallback? multiDate, VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide}) {
     return showModalBottomSheet(
         useRootNavigator: true,
         shape: RoundedRectangleBorder(
@@ -419,8 +419,8 @@ class CommonWidgets {
                   children: [
                     SizedBox(height: scaler.getHeight(2)),
                     GestureDetector(
-                      onTap: going,
-                      child: Text("going_to_event".tr()).regularText(
+                      onTap: multipleDate == true ? multiDate : going,
+                      child: Text(multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr()).regularText(
                           ColorConstants.primaryColor,
                           scaler.getTextSize(11),
                           TextAlign.center),

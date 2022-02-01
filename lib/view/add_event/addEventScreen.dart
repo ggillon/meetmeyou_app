@@ -49,11 +49,13 @@ class AddEventScreen extends StatelessWidget {
         eventDetail.contactCIDs = [];
         // clear multi date and time lists
         multipleDateOption.startDate.clear();
-     //   multipleDateOption.endDate.clear();
+        multipleDateOption.endDate.clear();
         multipleDateOption.startTime.clear();
         multipleDateOption.endTime.clear();
         multipleDateOption.startDateTime.clear();
         multipleDateOption.endDateTime.clear();
+        multipleDateOption.multiStartTime = TimeOfDay(hour: 19, minute: 0);
+        multipleDateOption.multiEndTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
         Navigator.of(context).pushNamed(RoutesConstants.createEventScreen).then((value) {
           dashboardProvider.onItemTapped(0);
         });

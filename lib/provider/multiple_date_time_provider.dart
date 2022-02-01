@@ -10,8 +10,8 @@ class MultipleDateTimeProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   DateTime startDate = DateTime.now().add(Duration(days: 7));
   DateTime endDate = DateTime.now().add(Duration(days: 7));
-  TimeOfDay startTime = TimeOfDay.now();
-  TimeOfDay endTime = TimeOfDay.now().addHour(3);
+  TimeOfDay startTime = TimeOfDay(hour: 19, minute: 0);
+  TimeOfDay endTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
   bool addEndDate = false;
   // late DateTime startDate;
@@ -37,6 +37,7 @@ class MultipleDateTimeProvider extends BaseProvider {
           // }
           // DialogHelper.showMessage(
           //     context, "Start date cannot greater than End date.");
+          startTimeFun();
           notifyListeners();
           return;
         }
@@ -74,14 +75,24 @@ class MultipleDateTimeProvider extends BaseProvider {
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
 
-    // if (startTimeHour >= 21) {
-    //   endDate = endDate.add(Duration(days: 1));
-    //   if ((endDate.day.toInt() - startDate.day.toInt()) > 1) {
-    //     endDate = endDate.subtract(Duration(days: 1));
-    //   }
-    // } else {
-    //   endDate = endDate;
-    // }
+    if (startTimeHour >= 21) {
+      if (startDate
+          .toString()
+          .substring(0, 11)
+          .compareTo(endDate.toString().substring(0, 11)) ==
+          0){
+        endDate = endDate.add(Duration(days: 1));
+        endTime = startTime.addHour(3);
+      }else{
+        if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
+          endTime = startTime.addHour(3);
+        }
+
+      }
+      // if ((endDate.day.toInt() - startDate.day.toInt()) > 1) {
+      //   endDate = endDate.subtract(Duration(days: 1));
+      // }
+    }
 
     if (startDate
         .toString()
@@ -109,6 +120,25 @@ class MultipleDateTimeProvider extends BaseProvider {
     // for end time
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
+
+    if (startTime.hour >= 21) {
+      if (startDate
+          .toString()
+          .substring(0, 11)
+          .compareTo(endDate.toString().substring(0, 11)) ==
+          0) {
+        endDate = startDate.add(Duration(days: 1));
+        endTime = startTime.addHour(3);
+        DialogHelper.showMessage(
+            context, "End time should 3 hours greater than Start time.");
+      } else{
+        if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
+          endTime = startTime.addHour(3);
+          DialogHelper.showMessage(
+              context, "End time should 3 hours greater than Start time.");
+        }
+      }
+    }
 
     if (startDate
             .toString()
