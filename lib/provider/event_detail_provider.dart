@@ -268,6 +268,8 @@ class EventDetailProvider extends BaseProvider {
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
+    multipleDateOption.invitedContacts.clear();
+    multipleDateOption.eventAttendingPhotoUrlLists.clear();
   }
 
   bool attendDateBtnColor = false;

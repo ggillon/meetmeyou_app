@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:image_stack/image_stack.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
@@ -75,8 +76,12 @@ class CreateEventScreen extends StatelessWidget {
               // for multiple date options
               if (provider.eventDetail.event!.multipleDates == true) {
                 provider.getMultipleDateOptionsFromEvent(
-                    context, provider.eventDetail.eid.toString());
+                    context, provider.eventDetail.eid.toString()).then((value) {
+                //  provider.eventAttendingUsersKeysList();
+                });
               }
+
+            //  provider.getUsersProfileUrl(context);
             }
           },
           builder: (context, provider, _) {
@@ -1346,7 +1351,7 @@ class CreateEventScreen extends StatelessWidget {
   String? selectedFinalDateDid;
 
   selectFinalDateAlert(
-      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) async{
     return showDialog(
         context: context,
         builder: (context) {
@@ -1354,8 +1359,8 @@ class CreateEventScreen extends StatelessWidget {
             return Container(
                 width: double.infinity,
                 child: AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                  insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
+                  contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                  insetPadding: EdgeInsets.fromLTRB(15.0, 24.0, 15.0, 24.0),
                   title: Column(
                     children: [
                       GestureDetector(
@@ -1381,15 +1386,15 @@ class CreateEventScreen extends StatelessWidget {
                   ),
                   content: Container(
                       //  color: Colors.red,
-                      height: scaler.getHeight(25.0),
+                      height: scaler.getHeight(22.0),
                       width: scaler.getWidth(100.0),
                       child: GridView.builder(
                         shrinkWrap: true,
                         itemCount: provider.multipleDateOption.startDate.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
-                            crossAxisSpacing: 2.0,
-                            mainAxisSpacing: 3.0),
+                            crossAxisSpacing: 5.0,
+                            mainAxisSpacing: 5.0),
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                               onTap: () {
@@ -1402,9 +1407,30 @@ class CreateEventScreen extends StatelessWidget {
                                 });
                               },
                               child:
-                                  CommonWidgets.gridViewOfMultiDateAlertDialog(
-                                      scaler, provider.multipleDate, index,
-                                      selectedIndex: provider.selectedIndex));
+                                 Column(
+                                   children: [
+                                     CommonWidgets.gridViewOfMultiDateAlertDialog(
+                                         scaler, provider.multipleDate, index,
+                                         selectedIndex: provider.selectedIndex),
+                                     ImageStack(
+                                       imageList: provider.multipleDateOption.eventAttendingPhotoUrlLists[index],
+                                       totalCount: 3,
+                                       imageRadius: 15,
+                                       imageCount: 3,
+                                       imageBorderColor:
+                                       ColorConstants.colorWhite,
+                                       backgroundColor:
+                                       ColorConstants.primaryColor,
+                                       imageBorderWidth: 1,
+                                       extraCountTextStyle: TextStyle(
+                                           fontSize: 7.7,
+                                           color:
+                                           ColorConstants.colorWhite,
+                                           fontWeight: FontWeight.w500),
+                                       showTotalCount: false,
+                                     ),
+                                   ],
+                                 ));
                         },
                       )),
                   actions: [

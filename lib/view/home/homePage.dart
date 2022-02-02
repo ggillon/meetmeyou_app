@@ -383,8 +383,7 @@ class _HomePageState extends State<HomePage>
                       CommonEventFunction.getEventBtnColorStatus(
                           eventList[index], provider.userDetail.cid.toString(),
                           textColor: false);
-                  provider.eventDetail.eventMapData =
-                      eventList[index].invitedContacts;
+                  provider.eventDetail.eventMapData = eventList[index].invitedContacts;
                   provider.eventDetail.eid = eventList[index].eid;
                   provider.eventDetail.organiserId =
                       eventList[index].organiserID;

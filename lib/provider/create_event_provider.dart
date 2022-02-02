@@ -449,20 +449,49 @@ class CreateEventProvider extends BaseProvider {
     if (value != null) {
       multipleDate = value;
       multiDateList == true ?  addMultipleDate = true : addMultipleDate = false;
-      multiDateList == true ? addMultiDateTimeValue(multipleDate): clearMultiDateOption();
+      multiDateList == true ? await addMultiDateTimeValue(context, multipleDate): clearMultiDateOption();
       updateGetMultipleDate(false);
     }
   }
 
-addMultiDateTimeValue(List<DateOption> multipleDate){
+addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async {
   for (int i = 0; i < multipleDate.length; i++) {
+   // multipleDateOption.eventAttendingPhotoUrlLists.clear();
+   // multipleDateOption.eventAttendingKeysList.clear();
     multipleDateOption.startDate.add(multipleDate[i].start);
     multipleDateOption.endDate.add(multipleDate[i].end);
     multipleDateOption.startTime
         .add(TimeOfDay.fromDateTime(multipleDate[i].start));
     multipleDateOption.endTime
         .add(TimeOfDay.fromDateTime(multipleDate[i].end));
+    multipleDateOption.invitedContacts.add(multipleDate[i].invitedContacts);
+    List<String> eventAttendingKeysList = [];
+    List<String> attendingImages = [];
+
+    List<String> keysList = [];
+
+      for (var key in multipleDate[i].invitedContacts.keys) {
+        keysList.add(key);
+      }
+
+      List<String> valuesList = [];
+
+      for (var value in multipleDate[i].invitedContacts.values) {
+        valuesList.add(value);
+      }
+
+      for (int i = 0; i < keysList.length; i++) {
+        if (valuesList[i] == "Attending") {
+          eventAttendingKeysList.add(keysList[i]);
+          await getUsersProfileUrl(context, keysList[i]);
+        }
+        attendingImages.addAll(eventAttendingPhotoUrlLists);
+        eventAttendingPhotoUrlLists.clear();
+      }
+      multipleDateOption.eventAttendingPhotoUrlLists.add(attendingImages);
+
   }
+  print(multipleDateOption.eventAttendingPhotoUrlLists);
 }
 
   bool finalDate = false;
@@ -492,71 +521,55 @@ addMultiDateTimeValue(List<DateOption> multipleDate){
   }
   }
 
-// getEventBtnStatus(Event event) {
-//   List<String> keysList = [];
-//   for (var key in event.invitedContacts.keys) {
-//     keysList.add(key);
-//   }
-//   List<String> valuesList = [];
-//   for (var value in event.invitedContacts.values) {
-//     valuesList.add(value);
-//   }
-//   for (int i = 0; i < keysList.length; i++) {
-//     if (keysList[i] == userDetail.cid) {
-//       if (valuesList[i] == "Invited") {
-//         return "respond";
-//       } else if (valuesList[i] == "Organiser") {
-//         return "edit";
-//       } else if (valuesList[i] == "Attending") {
-//         return "going";
-//       } else if (valuesList[i] == "Not Attending") {
-//         return "not_going";
-//       } else if (valuesList[i] == "Not Interested") {
-//         return "hidden";
-//       } else if (valuesList[i] == "Canceled") {
-//         return "cancelled";
-//       }
-//     }
-//   }
-// }
-//
-// getEventBtnColorStatus(Event event, {bool textColor = true}) {
-//   List<String> keysList = [];
-//   for (var key in event.invitedContacts.keys) {
-//     keysList.add(key);
-//   }
-//   List<String> valuesList = [];
-//   for (var value in event.invitedContacts.values) {
-//     valuesList.add(value);
-//   }
-//   for (int i = 0; i < keysList.length; i++) {
-//     if (keysList[i] == userDetail.cid) {
-//       if (valuesList[i] == "Invited") {
-//         return textColor
-//             ? ColorConstants.colorWhite
-//             : ColorConstants.primaryColor;
-//       } else if (valuesList[i] == "Organiser") {
-//         return textColor
-//             ? ColorConstants.colorWhite
-//             : ColorConstants.primaryColor;
-//       } else if (valuesList[i] == "Attending") {
-//         return textColor
-//             ? ColorConstants.primaryColor
-//             : ColorConstants.primaryColor.withOpacity(0.2);
-//       } else if (valuesList[i] == "Not Attending") {
-//         return textColor
-//             ? ColorConstants.primaryColor
-//             : ColorConstants.primaryColor.withOpacity(0.2);
-//       } else if (valuesList[i] == "Not Interested") {
-//         return textColor
-//             ? ColorConstants.primaryColor
-//             : ColorConstants.primaryColor.withOpacity(0.2);
-//       } else if (valuesList[i] == "Canceled") {
-//         return textColor
-//             ? ColorConstants.primaryColor
-//             : ColorConstants.primaryColor.withOpacity(0.2);
-//       }
-//     }
-//   }
-// }
+  // list of users which are attending event.
+
+ //  List<String> eventAttendingKeysList = [];
+ // // String? organiserKey;
+   List<String> eventAttendingPhotoUrlLists = [];
+ //
+ //  eventAttendingUsersKeysList(BuildContext context, int i) async{
+ //    //for(int i = 0 ; i < multipleDateOption.invitedContacts.length ; i++){
+ //    eventAttendingKeysList.clear();
+ //    eventAttendingPhotoUrlLists.clear();
+ //      List<String> keysList = [];
+ //
+ //      for (var key in multipleDateOption.invitedContacts[i].keys) {
+ //        keysList.add(key);
+ //      }
+ //
+ //      List<String> valuesList = [];
+ //
+ //      for (var value in multipleDateOption.invitedContacts[i].values) {
+ //        valuesList.add(value);
+ //      }
+ //
+ //      for (int i = 0; i < keysList.length; i++) {
+ //        if (valuesList[i] == "Attending") {
+ //          eventAttendingKeysList.add(keysList[i]);
+ //          await getUsersProfileUrl(context, keysList[i]);
+ //        }
+ //      }
+ //   // }
+ //     print(eventAttendingKeysList);
+ //     print(eventAttendingPhotoUrlLists);
+ //
+ //  }
+
+  Future getUsersProfileUrl(BuildContext context, String key) async {
+    setState(ViewState.Busy);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+ //   for (var key in eventAttendingKeysList) {
+     var value = await mmyEngine!
+          .getUserProfile(user: false, uid: key)
+          .catchError((e) {
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
+      });
+      eventAttendingPhotoUrlLists.add(value.photoURL);
+  //  }
+  //   print(eventAttendingPhotoUrlLists);
+    setState(ViewState.Idle);
+  }
+
 }

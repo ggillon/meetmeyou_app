@@ -54,6 +54,8 @@ class AddEventScreen extends StatelessWidget {
         multipleDateOption.endTime.clear();
         multipleDateOption.startDateTime.clear();
         multipleDateOption.endDateTime.clear();
+        multipleDateOption.invitedContacts.clear();
+        multipleDateOption.eventAttendingPhotoUrlLists.clear();
         multipleDateOption.multiStartTime = TimeOfDay(hour: 19, minute: 0);
         multipleDateOption.multiEndTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
         Navigator.of(context).pushNamed(RoutesConstants.createEventScreen).then((value) {

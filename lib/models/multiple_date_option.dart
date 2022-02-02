@@ -13,4 +13,8 @@ class MultipleDateOption{
 // for multi date option
   TimeOfDay multiStartTime = TimeOfDay(hour: 19, minute: 0);
   TimeOfDay multiEndTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
+
+  List<Map> invitedContacts = [];
+  List<List<String>> eventAttendingPhotoUrlLists = [];
+ // List<String> eventAttendingKeysList = [];
 }

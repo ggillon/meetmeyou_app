@@ -606,9 +606,8 @@ class CommonWidgets {
 
   static gridViewOfMultiDateAlertDialog(ScreenScaler scaler, List<DateOption> multiDate, int index, {int? selectedIndex}){
     return  Container(
-      margin: scaler.getMarginLTRB(0.5, 0.5, 0.5, 0.5),
-      padding:
-      scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
+      margin: scaler.getMarginLTRB(1.0, 0.5, 1.0, 0.5),
+      padding: scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
       decoration: BoxDecoration(
           color: ColorConstants.colorLightGray,
           borderRadius:
@@ -619,8 +618,7 @@ class CommonWidgets {
                 spreadRadius: 1)
           ]),
       child: Column(
-        mainAxisAlignment:
-        MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
@@ -633,26 +631,26 @@ class CommonWidgets {
               .toString())
               .boldText(ColorConstants.colorBlack, 24.0,
               TextAlign.center),
-          SizedBox(height: scaler.getHeight(0.2)),
-          Text(DateTimeHelper.getWeekDay(multiDate[index].start))
-              .mediumText(ColorConstants.colorBlack, 10,
-              TextAlign.center),
-          SizedBox(height: scaler.getHeight(0.1)),
-          Container(
-            width: scaler.getWidth(20),
-            child: Text((multiDate[index].start
-                .toString()
-                .substring(0, 11)) ==
-                (multiDate[index].end
-                    .toString()
-                    .substring(0, 11))
-                ? "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))}"
-                : "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))} (${DateTimeHelper.dateConversion(multiDate[index].end, date: false)})")
-                .regularText(ColorConstants.colorGray,
-                8.5, TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis),
-          )
+          // SizedBox(height: scaler.getHeight(0.2)),
+          // Text(DateTimeHelper.getWeekDay(multiDate[index].start))
+          //     .mediumText(ColorConstants.colorBlack, 10,
+          //     TextAlign.center),
+          // SizedBox(height: scaler.getHeight(0.1)),
+          // Container(
+          //   width: scaler.getWidth(20),
+          //   child: Text((multiDate[index].start
+          //       .toString()
+          //       .substring(0, 11)) ==
+          //       (multiDate[index].end
+          //           .toString()
+          //           .substring(0, 11))
+          //       ? "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))}"
+          //       : "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))} (${DateTimeHelper.dateConversion(multiDate[index].end, date: false)})")
+          //       .regularText(ColorConstants.colorGray,
+          //       8.5, TextAlign.center,
+          //       maxLines: 2,
+          //       overflow: TextOverflow.ellipsis),
+          // )
         ],
       ),
     );
