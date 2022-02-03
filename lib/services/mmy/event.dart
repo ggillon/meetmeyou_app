@@ -44,7 +44,7 @@ Future<Event> createEvent(User currentUser, Event event) async {
   return event;
 }
 
-Future<Event> updateEvent(User currentUser, String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, String? formText, Map? form}) async {
+Future<Event> updateEvent(User currentUser, String? eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, String? formText, Map? form,}) async {
 
   Event? event;
 
