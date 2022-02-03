@@ -402,6 +402,9 @@ class CreateEventProvider extends BaseProvider {
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
+    multipleDateOption.invitedContacts.clear();
+    multipleDateOption.eventAttendingPhotoUrlLists.clear();
+    multipleDateOption.eventAttendingKeysList.clear();
   }
 
   bool addQuestion = false;
@@ -456,8 +459,6 @@ class CreateEventProvider extends BaseProvider {
 
 addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async {
   for (int i = 0; i < multipleDate.length; i++) {
-   // multipleDateOption.eventAttendingPhotoUrlLists.clear();
-   // multipleDateOption.eventAttendingKeysList.clear();
     multipleDateOption.startDate.add(multipleDate[i].start);
     multipleDateOption.endDate.add(multipleDate[i].end);
     multipleDateOption.startTime
@@ -465,33 +466,7 @@ addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async
     multipleDateOption.endTime
         .add(TimeOfDay.fromDateTime(multipleDate[i].end));
     multipleDateOption.invitedContacts.add(multipleDate[i].invitedContacts);
-    List<String> eventAttendingKeysList = [];
-    List<String> attendingImages = [];
-
-    List<String> keysList = [];
-
-      for (var key in multipleDate[i].invitedContacts.keys) {
-        keysList.add(key);
-      }
-
-      List<String> valuesList = [];
-
-      for (var value in multipleDate[i].invitedContacts.values) {
-        valuesList.add(value);
-      }
-
-      for (int i = 0; i < keysList.length; i++) {
-        if (valuesList[i] == "Attending") {
-          eventAttendingKeysList.add(keysList[i]);
-          await getUsersProfileUrl(context, keysList[i]);
-        }
-        attendingImages.addAll(eventAttendingPhotoUrlLists);
-        eventAttendingPhotoUrlLists.clear();
-      }
-      multipleDateOption.eventAttendingPhotoUrlLists.add(attendingImages);
-
   }
-  print(multipleDateOption.eventAttendingPhotoUrlLists);
 }
 
   bool finalDate = false;
@@ -521,45 +496,57 @@ addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async
   }
   }
 
-  // list of users which are attending event.
-
- //  List<String> eventAttendingKeysList = [];
- // // String? organiserKey;
    List<String> eventAttendingPhotoUrlLists = [];
- //
- //  eventAttendingUsersKeysList(BuildContext context, int i) async{
- //    //for(int i = 0 ; i < multipleDateOption.invitedContacts.length ; i++){
- //    eventAttendingKeysList.clear();
- //    eventAttendingPhotoUrlLists.clear();
- //      List<String> keysList = [];
- //
- //      for (var key in multipleDateOption.invitedContacts[i].keys) {
- //        keysList.add(key);
- //      }
- //
- //      List<String> valuesList = [];
- //
- //      for (var value in multipleDateOption.invitedContacts[i].values) {
- //        valuesList.add(value);
- //      }
- //
- //      for (int i = 0; i < keysList.length; i++) {
- //        if (valuesList[i] == "Attending") {
- //          eventAttendingKeysList.add(keysList[i]);
- //          await getUsersProfileUrl(context, keysList[i]);
- //        }
- //      }
- //   // }
- //     print(eventAttendingKeysList);
- //     print(eventAttendingPhotoUrlLists);
- //
- //  }
+
+  bool imageAndKeys = false;
+
+  updateImageAndKeys(bool val){
+    imageAndKeys = val;
+    notifyListeners();
+  }
+
+  imageUrlAndAttendingKeysList(BuildContext context) async{
+    updateImageAndKeys(true);
+    multipleDateOption.eventAttendingPhotoUrlLists.clear();
+    multipleDateOption.eventAttendingKeysList.clear();
+    for(int i = 0; i < multipleDateOption.invitedContacts.length ; i++){
+      List<String> eventAttendingKeysList = [];
+      List<String> attendingImages = [];
+
+      List<String> keysList = [];
+
+      for (var key in multipleDate[i].invitedContacts.keys) {
+        keysList.add(key);
+      }
+
+      List<String> valuesList = [];
+
+      for (var value in multipleDate[i].invitedContacts.values) {
+        valuesList.add(value);
+      }
+
+      for (int i = 0; i < keysList.length; i++) {
+        if (valuesList[i] == "Attending") {
+          eventAttendingKeysList.add(keysList[i]);
+          await getUsersProfileUrl(context, keysList[i]);
+        }
+        attendingImages.addAll(eventAttendingPhotoUrlLists);
+        eventAttendingPhotoUrlLists.clear();
+      }
+      multipleDateOption.eventAttendingPhotoUrlLists.add(attendingImages);
+      multipleDateOption.eventAttendingKeysList.add(eventAttendingKeysList);
+
+    }
+    // print(multipleDateOption.eventAttendingPhotoUrlLists);
+    // print(multipleDateOption.eventAttendingKeysList);
+    updateImageAndKeys(false);
+  }
+
 
   Future getUsersProfileUrl(BuildContext context, String key) async {
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
- //   for (var key in eventAttendingKeysList) {
      var value = await mmyEngine!
           .getUserProfile(user: false, uid: key)
           .catchError((e) {
@@ -567,8 +554,7 @@ addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async
         DialogHelper.showMessage(context, e.message);
       });
       eventAttendingPhotoUrlLists.add(value.photoURL);
-  //  }
-  //   print(eventAttendingPhotoUrlLists);
+
     setState(ViewState.Idle);
   }
 

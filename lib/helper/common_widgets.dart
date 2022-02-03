@@ -607,7 +607,7 @@ class CommonWidgets {
   static gridViewOfMultiDateAlertDialog(ScreenScaler scaler, List<DateOption> multiDate, int index, {int? selectedIndex}){
     return  Container(
       margin: scaler.getMarginLTRB(1.0, 0.5, 1.0, 0.5),
-      padding: scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
+      padding: scaler.getPaddingLTRB(1.5, 0.8, 1.5, 0.5),
       decoration: BoxDecoration(
           color: ColorConstants.colorLightGray,
           borderRadius:

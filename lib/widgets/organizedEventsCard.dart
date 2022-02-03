@@ -235,7 +235,46 @@ class OrganizedEventsCard extends StatelessWidget {
           answer3Controller.clear();
           answer4Controller.clear();
           answer5Controller.clear();
-          CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, multipleDate: event.multipleDates, multiDate: (){
+            Navigator.of(context).pop();
+            provider.homePageProvider
+                .setEventValuesForEdit(
+                provider.eventLists[index]);
+            provider.eventDetail.eventBtnStatus =
+                CommonEventFunction.getEventBtnStatus(
+                    provider.eventLists[index],
+                    provider.userDetail.cid.toString());
+            provider.eventDetail.textColor =
+                CommonEventFunction
+                    .getEventBtnColorStatus(
+                    provider.eventLists[index],
+                    provider.userDetail.cid
+                        .toString());
+            provider.eventDetail.btnBGColor =
+                CommonEventFunction
+                    .getEventBtnColorStatus(
+                    provider.eventLists[index],
+                    provider.userDetail.cid
+                        .toString(),
+                    textColor: false);
+            provider.eventDetail.eventMapData = provider
+                .eventLists[index].invitedContacts;
+            provider.eventDetail.eid =
+                provider.eventLists[index].eid;
+            provider.eventDetail.organiserId =
+                provider.eventLists[index].organiserID;
+            provider.eventDetail.organiserName =
+                provider
+                    .eventLists[index].organiserName;
+            provider.calendarDetail.fromCalendarPage =
+            false;
+            Navigator.pushNamed(context,
+                RoutesConstants.eventDetailScreen)
+                .then((value) {
+              provider.getUserEvents(context);
+              provider.unRespondedEventsApi(context);
+            });
+          },going: () {
             provider.homePageProvider.getUserDetail(context);
             // if (event.multipleDates == true) {
             //   provider

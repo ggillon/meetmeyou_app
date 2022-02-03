@@ -314,6 +314,7 @@ class HomePageProvider extends BaseProvider {
     multipleDateOption.endDateTime.clear();
     multipleDateOption.invitedContacts.clear();
     multipleDateOption.eventAttendingPhotoUrlLists.clear();
+    multipleDateOption.eventAttendingKeysList.clear();
   }
 
   // for checking whether any multi date date is selected or not.

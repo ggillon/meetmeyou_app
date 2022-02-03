@@ -16,5 +16,5 @@ class MultipleDateOption{
 
   List<Map> invitedContacts = [];
   List<List<String>> eventAttendingPhotoUrlLists = [];
- // List<String> eventAttendingKeysList = [];
+  List<List<String>> eventAttendingKeysList = [];
 }

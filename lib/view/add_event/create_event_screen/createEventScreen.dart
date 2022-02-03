@@ -316,7 +316,14 @@ class CreateEventScreen extends StatelessWidget {
                             (provider.eventDetail.event?.multipleDates ==
                                         true &&
                                     provider.eventDetail.editEvent == true)
-                                ? GestureDetector(
+                                ? provider.imageAndKeys == true ? Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: scaler.getWidth(6.0)),
+                                    height: scaler.getHeight(1.5),
+                                    width: scaler.getWidth(10),
+                                    child: CircularProgressIndicator())) : GestureDetector(
+                              behavior: HitTestBehavior.translucent,
                                     onTap: () {
                                       hideKeyboard(context);
                                       provider.multipleDateOption.startDate
@@ -1352,6 +1359,7 @@ class CreateEventScreen extends StatelessWidget {
 
   selectFinalDateAlert(
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) async{
+    await provider.imageUrlAndAttendingKeysList(context);
     return showDialog(
         context: context,
         builder: (context) {
@@ -1412,22 +1420,42 @@ class CreateEventScreen extends StatelessWidget {
                                      CommonWidgets.gridViewOfMultiDateAlertDialog(
                                          scaler, provider.multipleDate, index,
                                          selectedIndex: provider.selectedIndex),
-                                     ImageStack(
-                                       imageList: provider.multipleDateOption.eventAttendingPhotoUrlLists[index],
-                                       totalCount: 3,
-                                       imageRadius: 15,
-                                       imageCount: 3,
-                                       imageBorderColor:
-                                       ColorConstants.colorWhite,
-                                       backgroundColor:
-                                       ColorConstants.primaryColor,
-                                       imageBorderWidth: 1,
-                                       extraCountTextStyle: TextStyle(
-                                           fontSize: 7.7,
-                                           color:
-                                           ColorConstants.colorWhite,
-                                           fontWeight: FontWeight.w500),
-                                       showTotalCount: false,
+                                     GestureDetector(
+                                       behavior: HitTestBehavior.translucent,
+                                       onTap: (){
+                                         provider.eventDetail.attendingProfileKeys = provider.multipleDateOption.eventAttendingKeysList[index];
+                                         Navigator.pushNamed(
+                                             context,
+                                             RoutesConstants
+                                                 .eventAttendingScreen);
+                                         },
+                                       child: provider.multipleDateOption.eventAttendingPhotoUrlLists[index].length == 0 ? Container() : Row(
+                                         children: [
+                                           SizedBox(width: scaler.getWidth(2.5)),
+                                           ImageStack(
+                                             imageList: provider.multipleDateOption.eventAttendingPhotoUrlLists[index],
+                                             totalCount: 3,
+                                             imageRadius: 15,
+                                             imageCount: 3,
+                                             imageBorderColor:
+                                             ColorConstants.colorWhite,
+                                             backgroundColor:
+                                             ColorConstants.primaryColor,
+                                             imageBorderWidth: 1,
+                                             extraCountTextStyle: TextStyle(
+                                                 fontSize: 7.7,
+                                                 color:
+                                                 ColorConstants.colorWhite,
+                                                 fontWeight: FontWeight.w500),
+                                             showTotalCount: false,
+                                           ),
+                                           SizedBox(width: scaler.getWidth(1.5)),
+                                           Text("available".tr()).regularText(
+                                               ColorConstants.colorGray,
+                                               scaler.getTextSize(8),
+                                               TextAlign.center),
+                                         ],
+                                       ),
                                      ),
                                    ],
                                  ));

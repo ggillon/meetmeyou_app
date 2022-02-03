@@ -66,8 +66,19 @@ class EventDetailScreen extends StatelessWidget {
                   onBtnClick: false)
               : Container();
           provider.eventDetail.event?.multipleDates == true
-              ? provider.listOfDateSelected(context, provider.eventDetail.eid!)
+              ? provider.listOfDateSelected(context, provider.eventDetail.eid!).then((value) {
+              // if(provider.didsOfMultiDateSelected.length == 0){
+              //   provider.eventDetail.eventBtnStatus = "Not Going";
+              //   provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+              //   provider.eventDetail.textColor = ColorConstants.primaryColor;
+              // } else if(provider.didsOfMultiDateSelected.length > 0){
+              //   provider.eventDetail.eventBtnStatus = "Going";
+              //   provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+              //   provider.eventDetail.textColor = ColorConstants.primaryColor;
+              // }
+          })
               : Container();
+
         },
         builder: (context, provider, _) {
           return provider.calendarDetail.fromCalendarPage == true &&
@@ -645,11 +656,11 @@ class EventDetailScreen extends StatelessWidget {
                     onBtnClick: false);
                 provider.listOfDateSelected(
                     context, provider.eventDetail.eid!).then((value) {
-                  if(provider.didsOfMultiDateSelected.length == 0){
-                    provider.eventDetail.eventBtnStatus = "Not Going";
-                    provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
-                    provider.eventDetail.textColor = ColorConstants.primaryColor;
-                  }
+                  // if(provider.didsOfMultiDateSelected.length == 0){
+                  //   provider.eventDetail.eventBtnStatus = "Not Going";
+                  //   provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+                  //   provider.eventDetail.textColor = ColorConstants.primaryColor;
+                  // }
                 });
               });
             } else {
@@ -672,11 +683,11 @@ class EventDetailScreen extends StatelessWidget {
                     onBtnClick: false);
                 provider.listOfDateSelected(
                     context, provider.eventDetail.eid!).then((value) {
-                      if(provider.didsOfMultiDateSelected.length > 0){
-                        provider.eventDetail.eventBtnStatus = "Going";
-                        provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
-                        provider.eventDetail.textColor = ColorConstants.primaryColor;
-                      }
+                      // if(provider.didsOfMultiDateSelected.length > 0){
+                      //   provider.eventDetail.eventBtnStatus = "Going";
+                      //   provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+                      //   provider.eventDetail.textColor = ColorConstants.primaryColor;
+                      // }
                 });
               });
             }
