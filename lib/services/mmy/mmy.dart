@@ -81,7 +81,7 @@ abstract class MMYEngine {
   /// Create an event
   Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
   /// Update an event
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,});
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateOption>? multipleDates});
   /// Get status of user
   Future<String> eventUserStatus(String eid);
   /// Cancel an event
@@ -117,7 +117,7 @@ abstract class MMYEngine {
   /// Get all dates options from an event (in date start order)
   Future<List<DateOption>> getDateOptionsFromEvent(String eid);
   /// Answer a date attendance for an event
-  Future<void> answerDateOption(String eid, String did, bool attend);
+  Future<Event> answerDateOption(String eid, String did, bool attend);
   /// Get status of dateOption for an event date
   Future<bool> dateOptionStatus(String eid, String did);
   /// Get list of dates selected
@@ -402,10 +402,12 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,}) async {
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
     if (photoFile!=null)
       photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
-    return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+    if(multipleDates != null)
+      dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
+    return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
   }
 
   @override
@@ -478,8 +480,9 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<void> answerDateOption(String eid, String did, bool attend) async {
-    return dateLib.answerDateOption(_currentUser, eid, did, attend);
+  Future<Event> answerDateOption(String eid, String did, bool attend) async {
+    await dateLib.answerDateOption(_currentUser, eid, did, attend);
+    return await dateLib.updateEventStatus(_currentUser, eid,);
   }
 
   @override
