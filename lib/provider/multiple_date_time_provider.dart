@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -13,6 +15,7 @@ class MultipleDateTimeProvider extends BaseProvider {
   TimeOfDay startTime = TimeOfDay(hour: 19, minute: 0);
   TimeOfDay endTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
+  EventDetail eventDetail = locator<EventDetail>();
   bool addEndDate = false;
   // late DateTime startDate;
 
@@ -158,4 +161,26 @@ class MultipleDateTimeProvider extends BaseProvider {
       }
     }
   }
+
+ // Future<String> addDateToEvent(String eid, {required DateTime start, required DateTime end});
+
+  bool addDate = false;
+
+  updateDate(bool val){
+    addDate = val;
+    notifyListeners();
+  }
+ Future addDateToEvent(BuildContext context, String eid, DateTime start, DateTime end) async{
+  updateDate(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine?.addDateToEvent(eid, start: start, end: end).catchError((e) {
+      updateDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+  updateDate(false);
+ }
+
 }

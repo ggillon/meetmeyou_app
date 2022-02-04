@@ -21,17 +21,18 @@ class MultipleDateTmeScreen extends StatelessWidget {
       backgroundColor: ColorConstants.colorWhite,
       body: BaseView<MultipleDateTimeProvider>(
         onModelReady: (provider) {
-             provider.startTime = provider.multipleDateOption.multiStartTime;
-             provider.endTime = provider.multipleDateOption.multiEndTime;
-             if (provider.startTime.hour >= 21) {
-               if (provider.startDate
-                   .toString()
-                   .substring(0, 11)
-                   .compareTo(provider.endDate.toString().substring(0, 11)) ==
-                   0){
-                 provider.endDate = provider.endDate.add(Duration(days: 1));
-                 provider.endTime = provider.startTime.addHour(3);
-               }}
+          provider.startTime = provider.multipleDateOption.multiStartTime;
+          provider.endTime = provider.multipleDateOption.multiEndTime;
+          if (provider.startTime.hour >= 21) {
+            if (provider.startDate
+                    .toString()
+                    .substring(0, 11)
+                    .compareTo(provider.endDate.toString().substring(0, 11)) ==
+                0) {
+              provider.endDate = provider.endDate.add(Duration(days: 1));
+              provider.endTime = provider.startTime.addHour(3);
+            }
+          }
         },
         builder: (context, provider, _) {
           return SafeArea(
@@ -57,91 +58,131 @@ class MultipleDateTmeScreen extends StatelessWidget {
                   SizedBox(height: scaler.getHeight(0.5)),
                   chooseStartTime(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.5)),
-            provider.addEndDate == true
-                ? Container()
-                : GestureDetector(
-              onTap: () {
-                provider.addEndDate = true;
-                provider.setState(ViewState.Busy);
-              },
-              child: Align(
-                  alignment:
-                  Alignment.bottomLeft,
-                  child: Row(
-                    children: [
-                      Icon(Icons.add,
-                          color: ColorConstants
-                              .primaryColor,
-                          size: 16),
-                      Text("add_end_date_time"
-                          .tr())
-                          .mediumText(
-                          ColorConstants
-                              .primaryColor,
-                          scaler
-                              .getTextSize(
-                              10),
-                          TextAlign
-                              .center)
-                    ],
-                  )),
-            ),
                   provider.addEndDate == true
-                      ?  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("choose_end_date".tr()).boldText(
-                        ColorConstants.colorBlack,
-                        scaler.getTextSize(9.5),
-                        TextAlign.center),
-                    SizedBox(height: scaler.getHeight(0.5)),
-                    chooseEndDate(context, scaler, provider),
-                    SizedBox(height: scaler.getHeight(1.5)),
-                    Text("end_time".tr()).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(9.5), TextAlign.center),
-                    SizedBox(height: scaler.getHeight(0.5)),
-                    chooseEndTime(context, scaler, provider),
-                  ],
-                ) : Container(),
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.bottomCenter,
-                          child: CommonWidgets.commonBtn(
-                              scaler,
-                              context,
-                              "add_date_to_event".tr(),
-                              ColorConstants.primaryColor,
-                              ColorConstants.colorWhite, onTapFun: () {
-                                provider.multipleDateOption.multiStartTime = provider.startTime;
-                                provider.multipleDateOption.multiEndTime = provider.endTime;
-                            if(provider.multipleDateOption.startDate.any((element) { return element.toString().substring(0,11) == provider.startDate.toString().substring(0,11);}) &&
-                                provider.multipleDateOption.endDate.any((element) { return element.toString().substring(0,11) == provider.endDate.toString().substring(0,11);}) &&
-                                provider.multipleDateOption.startTime.contains(provider.startTime) &&
-                                provider.multipleDateOption.endTime.contains(provider.endTime)){
-                           // if(provider.multipleDateOption.startDate.any((element) { return element.toString().substring(0,11) == provider.startDate.toString().substring(0,11);})){
+                      ? Container()
+                      : GestureDetector(
+                          onTap: () {
+                            provider.addEndDate = true;
+                            provider.setState(ViewState.Busy);
+                          },
+                          child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add,
+                                      color: ColorConstants.primaryColor,
+                                      size: 16),
+                                  Text("add_end_date_time".tr()).mediumText(
+                                      ColorConstants.primaryColor,
+                                      scaler.getTextSize(10),
+                                      TextAlign.center)
+                                ],
+                              )),
+                        ),
+                  provider.addEndDate == true
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("choose_end_date".tr()).boldText(
+                                ColorConstants.colorBlack,
+                                scaler.getTextSize(9.5),
+                                TextAlign.center),
+                            SizedBox(height: scaler.getHeight(0.5)),
+                            chooseEndDate(context, scaler, provider),
+                            SizedBox(height: scaler.getHeight(1.5)),
+                            Text("end_time".tr()).boldText(
+                                ColorConstants.colorBlack,
+                                scaler.getTextSize(9.5),
+                                TextAlign.center),
+                            SizedBox(height: scaler.getHeight(0.5)),
+                            chooseEndTime(context, scaler, provider),
+                          ],
+                        )
+                      : Container(),
+                  provider.addDate == true
+                      ? Expanded(
+                          child: Center(child: Container(
+                            alignment: Alignment.bottomCenter,
+                              child: CircularProgressIndicator())),
+                        )
+                      : Expanded(
+                          child: Container(
+                              alignment: Alignment.bottomCenter,
+                              child: CommonWidgets.commonBtn(
+                                  scaler,
+                                  context,
+                                  "add_date_to_event".tr(),
+                                  ColorConstants.primaryColor,
+                                  ColorConstants.colorWhite, onTapFun: () {
+                                provider.multipleDateOption.multiStartTime =
+                                    provider.startTime;
+                                provider.multipleDateOption.multiEndTime =
+                                    provider.endTime;
+                                if (provider.multipleDateOption.startDate
+                                        .any((element) {
+                                      return element
+                                              .toString()
+                                              .substring(0, 11) ==
+                                          provider.startDate
+                                              .toString()
+                                              .substring(0, 11);
+                                    }) &&
+                                    provider.multipleDateOption.endDate
+                                        .any((element) {
+                                      return element
+                                              .toString()
+                                              .substring(0, 11) ==
+                                          provider.endDate
+                                              .toString()
+                                              .substring(0, 11);
+                                    }) &&
+                                    provider.multipleDateOption.startTime
+                                        .contains(provider.startTime) &&
+                                    provider.multipleDateOption.endTime
+                                        .contains(provider.endTime)) {
+                                  // if(provider.multipleDateOption.startDate.any((element) { return element.toString().substring(0,11) == provider.startDate.toString().substring(0,11);})){
                                   DialogHelper.showMessage(context,
                                       "Previous added date and time can't added again.");
-                            }
-                            else{
-                              provider.multipleDateOption.startDate
-                                  .add(provider.startDate);
-                              provider.multipleDateOption.endDate
-                                  .add(provider.endDate);
-                              provider.multipleDateOption.startTime
-                                  .add(provider.startTime);
-                              provider.multipleDateOption.endTime
-                                  .add(provider.endTime);
-                              provider.multipleDateOption.startDateTime.add(
-                                  DateTimeHelper.dateTimeFormat(
-                                      provider.startDate, provider.startTime));
-                              provider.multipleDateOption.endDateTime.add(
-                                  DateTimeHelper.dateTimeFormat(
-                                      provider.startDate, provider.endTime));
-                              provider.setState(ViewState.Busy);
-                              Navigator.of(context).pop();
-                            }
-
-                          }))),
+                                } else {
+                                  if (provider.eventDetail.editEvent == true) {
+                                    DateTime start =
+                                        DateTimeHelper.dateTimeFormat(
+                                            provider.startDate,
+                                            provider.startTime);
+                                    DateTime end =
+                                        DateTimeHelper.dateTimeFormat(
+                                            provider.endDate, provider.endTime);
+                                    provider
+                                        .addDateToEvent(
+                                            context,
+                                            provider.eventDetail.eid.toString(),
+                                            start,
+                                            end)
+                                        .then((value) {
+                                      Navigator.of(context).pop();
+                                    });
+                                  } else {
+                                    provider.multipleDateOption.startDate
+                                        .add(provider.startDate);
+                                    provider.multipleDateOption.endDate
+                                        .add(provider.endDate);
+                                    provider.multipleDateOption.startTime
+                                        .add(provider.startTime);
+                                    provider.multipleDateOption.endTime
+                                        .add(provider.endTime);
+                                    provider.multipleDateOption.startDateTime
+                                        .add(DateTimeHelper.dateTimeFormat(
+                                            provider.startDate,
+                                            provider.startTime));
+                                    provider.multipleDateOption.endDateTime.add(
+                                        DateTimeHelper.dateTimeFormat(
+                                            provider.startDate,
+                                            provider.endTime));
+                                    provider.setState(ViewState.Busy);
+                                    Navigator.of(context).pop();
+                                  }
+                                }
+                              }))),
                   SizedBox(height: scaler.getHeight(0.5)),
                 ],
               ),

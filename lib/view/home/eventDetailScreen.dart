@@ -11,6 +11,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -190,6 +191,7 @@ class EventDetailScreen extends StatelessWidget {
                                 Navigator.pushNamed(context,
                                         RoutesConstants.createEventScreen)
                                     .then((value) {
+                                  provider.eventDetail.eventBtnStatus = value as String? ?? "edit";
                                   provider.updateBackValue(true);
                                 });
                               } else if (provider.eventDetail.eventBtnStatus ==
@@ -656,11 +658,11 @@ class EventDetailScreen extends StatelessWidget {
                     onBtnClick: false);
                 provider.listOfDateSelected(
                     context, provider.eventDetail.eid!).then((value) {
-                  // if(provider.didsOfMultiDateSelected.length == 0){
-                  //   provider.eventDetail.eventBtnStatus = "Not Going";
-                  //   provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
-                  //   provider.eventDetail.textColor = ColorConstants.primaryColor;
-                  // }
+                  if(provider.didsOfMultiDateSelected.length == 0){
+                    provider.eventDetail.eventBtnStatus = "not_going";
+                    provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+                    provider.eventDetail.textColor = ColorConstants.primaryColor;
+                  }
                 });
               });
             } else {
@@ -683,11 +685,11 @@ class EventDetailScreen extends StatelessWidget {
                     onBtnClick: false);
                 provider.listOfDateSelected(
                     context, provider.eventDetail.eid!).then((value) {
-                      // if(provider.didsOfMultiDateSelected.length > 0){
-                      //   provider.eventDetail.eventBtnStatus = "Going";
-                      //   provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
-                      //   provider.eventDetail.textColor = ColorConstants.primaryColor;
-                      // }
+                      if(provider.didsOfMultiDateSelected.length > 0){
+                        provider.eventDetail.eventBtnStatus = "going";
+                        provider.eventDetail.btnBGColor = ColorConstants.primaryColor.withOpacity(0.1);
+                        provider.eventDetail.textColor = ColorConstants.primaryColor;
+                      }
                 });
               });
             }

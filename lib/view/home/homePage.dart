@@ -614,8 +614,7 @@ class _HomePageState extends State<HomePage>
           CommonWidgets.respondToEventBottomSheet(context, scaler, multipleDate: event.multipleDates, multiDate: (){
             Navigator.of(context).pop();
             provider.setEventValuesForEdit(event);
-            provider.eventDetail.eventBtnStatus =
-                CommonEventFunction.getEventBtnStatus(
+            provider.eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(
                     event, provider.userDetail.cid.toString());
             provider.eventDetail.textColor =
                 CommonEventFunction.getEventBtnColorStatus(

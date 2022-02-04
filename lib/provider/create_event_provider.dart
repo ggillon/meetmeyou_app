@@ -123,16 +123,16 @@ class CreateEventProvider extends BaseProvider {
   void pickDateDialog(BuildContext context, bool checkOrEndStartDate) {
     showDatePicker(
             context: context,
-            initialDate: checkOrEndStartDate
-                ? startDate : endDate,
-                // : dateCheck
-                //     ? endDate
-                //     : DateTime(startDate.year, startDate.month, startDate.day),
+            initialDate: checkOrEndStartDate ? startDate : endDate,
+            // : dateCheck
+            //     ? endDate
+            //     : DateTime(startDate.year, startDate.month, startDate.day),
             firstDate: checkOrEndStartDate
-                ? DateTime.now().add(Duration(days: 7)) : startDate,
-                // : dateCheck
-                //     ? endDate
-                //     : DateTime(startDate.year, startDate.month, startDate.day),
+                ? DateTime.now().add(Duration(days: 7))
+                : startDate,
+            // : dateCheck
+            //     ? endDate
+            //     : DateTime(startDate.year, startDate.month, startDate.day),
             lastDate: DateTime(2100))
         .then((pickedDate) {
       if (pickedDate == null) {
@@ -179,8 +179,8 @@ class CreateEventProvider extends BaseProvider {
 
   startTimeFun(BuildContext context) {
     // start time
-    int startTimeHour =  startTime.hour;
-    int endTimeHour =  endTime.hour;
+    int startTimeHour = startTime.hour;
+    int endTimeHour = endTime.hour;
     if (startTime.hour >= 21) {
       if (startDate
               .toString()
@@ -189,14 +189,14 @@ class CreateEventProvider extends BaseProvider {
           0) {
         endDate = startDate.add(Duration(days: 1));
         endTime = startTime.addHour(3);
-       // dateCheck = true;
-      } else{
-         if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
-           endTime = startTime.addHour(3);
-         }
+        // dateCheck = true;
+      } else {
+        if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
+          endTime = startTime.addHour(3);
+        }
       }
     }
-   // TimeOfDay eveningTime = TimeOfDay(hour: 19, minute: 0);
+    // TimeOfDay eveningTime = TimeOfDay(hour: 19, minute: 0);
 
     // if(eveningTime.period == DayPeriod.pm){
     //   if(startTimeHour > eveningTime.hour){
@@ -236,20 +236,20 @@ class CreateEventProvider extends BaseProvider {
 
   endTimeFun(BuildContext context) {
     // for end time
-    int startTimeHour =  startTime.hour;
-    int endTimeHour =  endTime.hour;
+    int startTimeHour = startTime.hour;
+    int endTimeHour = endTime.hour;
     if (startTime.hour >= 21) {
       if (startDate
-          .toString()
-          .substring(0, 11)
-          .compareTo(endDate.toString().substring(0, 11)) ==
+              .toString()
+              .substring(0, 11)
+              .compareTo(endDate.toString().substring(0, 11)) ==
           0) {
         endDate = startDate.add(Duration(days: 1));
         endTime = startTime.addHour(3);
         DialogHelper.showMessage(
             context, "End time should 3 hours greater than Start time.");
-       // dateCheck = true;
-      } else{
+        // dateCheck = true;
+      } else {
         if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
           endTime = startTime.addHour(3);
           DialogHelper.showMessage(
@@ -299,7 +299,8 @@ class CreateEventProvider extends BaseProvider {
             startDateOptions: addMultipleDate == true
                 ? multipleDateOption.startDateTime
                 : null,
-            endDateOptions: addMultipleDate == true ? multipleDateOption.endDateTime : null)
+            endDateOptions:
+                addMultipleDate == true ? multipleDateOption.endDateTime : null)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
@@ -390,7 +391,7 @@ class CreateEventProvider extends BaseProvider {
       eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
           value, userDetail.cid.toString());
       clearMultiDateOption();
-      Navigator.of(context).pop();
+      Navigator.of(context).pop("cancelled");
     }
   }
 
@@ -439,8 +440,8 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getMultipleDateOptionsFromEvent(
-      BuildContext context, String eid, {bool multiDateList = true}) async {
+  Future getMultipleDateOptionsFromEvent(BuildContext context, String eid,
+      {bool multiDateList = true}) async {
     updateGetMultipleDate(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
@@ -451,23 +452,24 @@ class CreateEventProvider extends BaseProvider {
 
     if (value != null) {
       multipleDate = value;
-      multiDateList == true ?  addMultipleDate = true : addMultipleDate = false;
-      multiDateList == true ? await addMultiDateTimeValue(context, multipleDate): clearMultiDateOption();
+      multiDateList == true ? addMultipleDate = true : addMultipleDate = false;
+      multiDateList == true ? await addMultiDateTimeValue(context, multipleDate) : clearMultiDateOption();
       updateGetMultipleDate(false);
     }
   }
 
-addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async {
-  for (int i = 0; i < multipleDate.length; i++) {
-    multipleDateOption.startDate.add(multipleDate[i].start);
-    multipleDateOption.endDate.add(multipleDate[i].end);
-    multipleDateOption.startTime
-        .add(TimeOfDay.fromDateTime(multipleDate[i].start));
-    multipleDateOption.endTime
-        .add(TimeOfDay.fromDateTime(multipleDate[i].end));
-    multipleDateOption.invitedContacts.add(multipleDate[i].invitedContacts);
+  addMultiDateTimeValue(
+      BuildContext context, List<DateOption> multipleDate) async {
+    for (int i = 0; i < multipleDate.length; i++) {
+      multipleDateOption.startDate.add(multipleDate[i].start);
+      multipleDateOption.endDate.add(multipleDate[i].end);
+      multipleDateOption.startTime
+          .add(TimeOfDay.fromDateTime(multipleDate[i].start));
+      multipleDateOption.endTime
+          .add(TimeOfDay.fromDateTime(multipleDate[i].end));
+      multipleDateOption.invitedContacts.add(multipleDate[i].invitedContacts);
+    }
   }
-}
 
   bool finalDate = false;
 
@@ -476,40 +478,43 @@ addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async
     notifyListeners();
   }
 
-  Future selectFinalDate(BuildContext context, String did) async{
+  Future selectFinalDate(BuildContext context, String did) async {
     updateFinalDate(true);
     Navigator.of(context).pop();
-  var value =  await mmyEngine!.selectFinalDate(eventDetail.eid.toString(), did).catchError((e) {
+    var value = await mmyEngine!
+        .selectFinalDate(eventDetail.eid.toString(), did)
+        .catchError((e) {
       updateFinalDate(false);
       DialogHelper.showMessage(context, e.message);
     });
 
-  if(value != null){
-    eventDetail.event = value;
-    addMultipleDate = false;
-    startDate = value.start;
-    endDate = value.end;
-    startTime = TimeOfDay.fromDateTime(value.start);
-    endTime = TimeOfDay.fromDateTime(value.end);
-    updateFinalDate(false);
-    getMultipleDateOptionsFromEvent(context, eventDetail.eid.toString(), multiDateList: false);
-  }
+    if (value != null) {
+      eventDetail.event = value;
+      addMultipleDate = false;
+      startDate = value.start;
+      endDate = value.end;
+      startTime = TimeOfDay.fromDateTime(value.start);
+      endTime = TimeOfDay.fromDateTime(value.end);
+      updateFinalDate(false);
+      getMultipleDateOptionsFromEvent(context, eventDetail.eid.toString(),
+          multiDateList: false);
+    }
   }
 
-   List<String> eventAttendingPhotoUrlLists = [];
+  List<String> eventAttendingPhotoUrlLists = [];
 
   bool imageAndKeys = false;
 
-  updateImageAndKeys(bool val){
+  updateImageAndKeys(bool val) {
     imageAndKeys = val;
     notifyListeners();
   }
 
-  imageUrlAndAttendingKeysList(BuildContext context) async{
+  imageUrlAndAttendingKeysList(BuildContext context) async {
     updateImageAndKeys(true);
     multipleDateOption.eventAttendingPhotoUrlLists.clear();
     multipleDateOption.eventAttendingKeysList.clear();
-    for(int i = 0; i < multipleDateOption.invitedContacts.length ; i++){
+    for (int i = 0; i < multipleDateOption.invitedContacts.length; i++) {
       List<String> eventAttendingKeysList = [];
       List<String> attendingImages = [];
 
@@ -535,27 +540,44 @@ addMultiDateTimeValue(BuildContext context, List<DateOption> multipleDate) async
       }
       multipleDateOption.eventAttendingPhotoUrlLists.add(attendingImages);
       multipleDateOption.eventAttendingKeysList.add(eventAttendingKeysList);
-
     }
     // print(multipleDateOption.eventAttendingPhotoUrlLists);
     // print(multipleDateOption.eventAttendingKeysList);
     updateImageAndKeys(false);
   }
 
-
   Future getUsersProfileUrl(BuildContext context, String key) async {
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-     var value = await mmyEngine!
-          .getUserProfile(user: false, uid: key)
-          .catchError((e) {
-        setState(ViewState.Idle);
-        DialogHelper.showMessage(context, e.message);
-      });
-      eventAttendingPhotoUrlLists.add(value.photoURL);
+    var value =
+        await mmyEngine!.getUserProfile(user: false, uid: key).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+    eventAttendingPhotoUrlLists.add(value.photoURL);
 
     setState(ViewState.Idle);
   }
 
+  //Future<void> removeDateFromEvent(String eid, String did);
+
+  bool removeMDate = false;
+
+  updateDate(bool val) {
+    removeMDate = val;
+    notifyListeners();
+  }
+
+  Future removeDateFromEvent(
+      BuildContext context, String eid, String did) async {
+    updateDate(true);
+
+    await mmyEngine?.removeDateFromEvent(eid, did).catchError((e) {
+      updateDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateDate(false);
+  }
 }

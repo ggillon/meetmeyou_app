@@ -924,8 +924,14 @@ class CreateEventScreen extends StatelessWidget {
       onTap: () {
         hideKeyboard(context);
         provider.removeMultiDate = false;
+
         Navigator.pushNamed(context, RoutesConstants.multipleDateTimeScreen)
             .then((value) {
+          if(provider.eventDetail.editEvent == true){
+            provider.clearMultiDateOption();
+            provider.getMultipleDateOptionsFromEvent(
+                context, provider.eventDetail.eid.toString());
+          }
               provider.multipleDateOption.startDate.sort((a,b) {
                 return a.compareTo(b);
               });
@@ -976,21 +982,38 @@ class CreateEventScreen extends StatelessWidget {
                               right: 0.0,
                               child: GestureDetector(
                                 onTap: () {
-                                  provider.multipleDateOption.startDate.removeAt(index);
-                                  provider.multipleDateOption.endDate.removeAt(index);
-                                  provider.multipleDateOption.startTime
-                                      .removeAt(index);
-                                  provider.multipleDateOption.endTime
-                                      .removeAt(index);
-                                  provider.multipleDateOption.startDateTime
-                                      .removeAt(index);
-                                  provider.multipleDateOption.endDateTime
-                                      .removeAt(index);
-                                  if (provider
-                                      .multipleDateOption.startDate.isEmpty) {
-                                    provider.addMultipleDate = false;
+                                  if(provider.eventDetail.editEvent == true){
+                                    if(provider.multipleDateOption.startDate.length <=  2){
+                                      DialogHelper.showMessage(context,
+                                          "Multiple Date can't less than 2.");
+                                    } else{
+                                      provider.removeDateFromEvent(context, provider.eventDetail.eid.toString(), provider.multipleDate[index].did).then((value) {
+                                        provider.clearMultiDateOption();
+                                        provider.getMultipleDateOptionsFromEvent(
+                                            context, provider.eventDetail.eid.toString());
+                                        provider.multipleDateOption.startDate.sort((a,b) {
+                                          return a.compareTo(b);
+                                        });
+                                        provider.updateMultipleDateUiStatus(true);
+                                      });
+                                    }
+                                  } else{
+                                    provider.multipleDateOption.startDate.removeAt(index);
+                                    provider.multipleDateOption.endDate.removeAt(index);
+                                    provider.multipleDateOption.startTime
+                                        .removeAt(index);
+                                    provider.multipleDateOption.endTime
+                                        .removeAt(index);
+                                    provider.multipleDateOption.startDateTime
+                                        .removeAt(index);
+                                    provider.multipleDateOption.endDateTime
+                                        .removeAt(index);
+                                    if (provider
+                                        .multipleDateOption.startDate.isEmpty) {
+                                      provider.addMultipleDate = false;
+                                    }
+                                    provider.updateMultipleDateUiStatus(true);
                                   }
-                                  provider.updateMultipleDateUiStatus(true);
                                 },
                                 child: Align(
                                   alignment: Alignment.topRight,
@@ -1008,12 +1031,14 @@ class CreateEventScreen extends StatelessWidget {
                     //  : multiDateCardDesign(scaler, provider, index);
                 }),
           ),
-          provider.eventDetail.editEvent == true
-              ? Container()
-              : SizedBox(width: scaler.getWidth(1.2)),
-          provider.eventDetail.editEvent == true
-              ? Container()
-              : Container(
+          // provider.eventDetail.editEvent == true
+          //     ? Container()
+          //     :
+           SizedBox(width: scaler.getWidth(1.2)),
+          // provider.eventDetail.editEvent == true
+          //     ? Container()
+          //     :
+          Container(
                   margin: scaler.getMarginLTRB(0.0, 0.5, 0.5, 0.5),
                   child: addDateCard(context, scaler, provider))
         ],
@@ -1359,6 +1384,7 @@ class CreateEventScreen extends StatelessWidget {
 
   selectFinalDateAlert(
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) async{
+    provider.eventDetail.eventBtnStatus = "";
     await provider.imageUrlAndAttendingKeysList(context);
     return showDialog(
         context: context,
@@ -1474,7 +1500,7 @@ class CreateEventScreen extends StatelessWidget {
                             : ColorConstants.colorGray,
                         onTapFun: finalDateBtnColor == true ||
                                 selectedFinalDateDid != null
-                            ? () {
+                            ? ()  {
                                 provider.selectFinalDate(
                                     context, selectedFinalDateDid!);
                               }
