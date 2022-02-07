@@ -3,6 +3,7 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -36,9 +37,9 @@ class _DashboardPageState extends State<DashboardPage> {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<DashboardProvider>(
       onModelReady: (provider) {
-        if(widget.isFromLogin == null){
+      //  if(widget.isFromLogin == null){
           provider.dynamicLinksApi.handleDynamicLink(context);
-        }
+      //  }
         provider.onItemTapped(0);
         provider.unRespondedInvites(context);
         provider.unRespondedEvents(context);

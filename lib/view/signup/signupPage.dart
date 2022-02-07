@@ -303,6 +303,9 @@ class SignUpPage extends StatelessWidget {
                       ),
                       Container(
                         child: TextFormField(
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           controller: phoneNumberController,
                           style: ViewDecoration.textFieldStyle(
                               scaler.getTextSize(9.5),
@@ -321,7 +324,7 @@ class SignUpPage extends StatelessWidget {
                                   scaler.getTextSize(9.5),
                                   ColorConstants.colorBlack),
                               initialSelection: "US",
-                              favorite: ['+91', 'IND'],
+                              favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
                               showFlag: true,
                               showFlagDialog: true,
                               showCountryOnly: false,
@@ -337,10 +340,12 @@ class SignUpPage extends StatelessWidget {
                           validator: (value) {
                             if (value!.trim().isEmpty) {
                               return null;
-                            } else if (!Validations.validateMobile(
-                                value.trim())) {
-                              return "invalid_phone_number".tr();
-                            } else {
+                            }
+                            // else if (!Validations.validateMobile(
+                            //     value.trim())) {
+                            //   return "invalid_phone_number".tr();
+                            // }
+                            else {
                               return null;
                             }
                           },

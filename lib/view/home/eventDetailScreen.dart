@@ -48,6 +48,8 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
+          provider.calendarDetail.fromDeepLink == false
+              ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromCalendarPage == true
               ? Container()
               : provider.eventGoingLength();
@@ -79,7 +81,6 @@ class EventDetailScreen extends StatelessWidget {
               // }
           })
               : Container();
-
         },
         builder: (context, provider, _) {
           return provider.calendarDetail.fromCalendarPage == true &&
@@ -123,9 +124,9 @@ class EventDetailScreen extends StatelessWidget {
                             CommonWidgets.commonBtn(
                                 scaler,
                                 context,
-                                provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
-                                provider.eventDetail.btnBGColor ?? ColorConstants.primaryColor,
-                                provider.eventDetail.textColor ?? ColorConstants.colorWhite, onTapFun: () {
+                                 provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
+                                 provider.eventDetail.btnBGColor ?? ColorConstants.primaryColor,
+                                 provider.eventDetail.textColor ?? ColorConstants.colorWhite, onTapFun: () {
                               if (provider.eventDetail.eventBtnStatus ==
                                       "respond" ||
                                   provider.eventDetail.eventBtnStatus ==

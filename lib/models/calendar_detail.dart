@@ -5,6 +5,7 @@ class CalendarDetail{
   bool? calendarDisplay;
   List<CalendarEvent>? calendarEventList = [];
   bool? fromCalendarPage = true;
+  bool fromDeepLink = false;
 
   CalendarDetail({this.calendarSync, this.calendarDisplay, this.calendarEventList, this.fromCalendarPage});
 }

@@ -60,7 +60,10 @@ dependencies:
   sign_in_with_apple: ^3.2.0
   carousel_slider: ^4.0.0
   shimmer: ^2.0.0
-  country_code_picker: ^2.0.2
+  country_code_picker:
+    git:
+      url: https://github.com/deepakrana0011/country_code_picker.git
+      ref: main
   url_launcher: ^6.0.15
   contacts_service: ^0.6.3
   mailer: ^5.0.2

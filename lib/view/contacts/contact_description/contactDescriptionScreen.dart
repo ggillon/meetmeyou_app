@@ -61,17 +61,25 @@ class ContactDescriptionScreen extends StatelessWidget {
                                   onTap: () {
                                     provider.userDetail.checkForInvitation!
                                         ? Container()
-                                        : CommonWidgets.bottomSheet(
-                                        context,
-                                        scaler,
-                                        bottomDesign(context, scaler,
-                                            callClick: () {
-                                              provider.makePhoneCall(context);
-                                            }, smsClick: () {
-                                              provider.sendingSMS(context);
-                                            }, whatsAppClick: () {
-                                              provider.openingWhatsApp(context);
-                                            }));
+                                        // : CommonWidgets.bottomSheet(
+                                        // context,
+                                        // scaler,
+                                        // bottomDesign(context, scaler,
+                                        //     callClick: () {
+                                        //       provider.makePhoneCall(context);
+                                        //     }, smsClick: () {
+                                        //       provider.sendingSMS(context);
+                                        //     }, whatsAppClick: () {
+                                        //       provider.openingWhatsApp(context);
+                                        //     }));
+                                    : bottomDesign(context, scaler,
+                                        callClick: () {
+                                          provider.makePhoneCall(context);
+                                        }, smsClick: () {
+                                          provider.sendingSMS(context);
+                                        }, whatsAppClick: () {
+                                          provider.openingWhatsApp(context);
+                                        });
                                   },
                                   child: CommonWidgets.phoneNoAndAddressFun(
                                       scaler,
@@ -130,51 +138,119 @@ class ContactDescriptionScreen extends StatelessWidget {
             }));
   }
 
-  Widget bottomDesign(BuildContext context, ScreenScaler scaler,
+   bottomDesign(BuildContext context, ScreenScaler scaler,
       {required VoidCallback callClick,
       required VoidCallback smsClick,
       required VoidCallback whatsAppClick}) {
-    return Column(
-      children: [
-        Card(
-          color: ColorConstants.colorWhite.withOpacity(0.7),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Column(
-            children: [
-              SizedBox(height: scaler.getHeight(1.5)),
-              GestureDetector(
-                onTap: callClick,
-                child: Text("call".tr()).regularText(
-                    ColorConstants.primaryColor,
-                    scaler.getTextSize(11),
-                    TextAlign.center),
-              ),
-              SizedBox(height: scaler.getHeight(0.9)),
-              Divider(),
-              SizedBox(height: scaler.getHeight(0.9)),
-              GestureDetector(
-                onTap: smsClick,
-                child: Text("sms".tr()).regularText(ColorConstants.primaryColor,
-                    scaler.getTextSize(11), TextAlign.center),
-              ),
-              SizedBox(height: scaler.getHeight(0.9)),
-              Divider(),
-              SizedBox(height: scaler.getHeight(0.9)),
-              GestureDetector(
-                onTap: whatsAppClick,
-                child: Text("whats_app".tr()).regularText(
-                    ColorConstants.primaryColor,
-                    scaler.getTextSize(11),
-                    TextAlign.center),
-              ),
-              SizedBox(height: scaler.getHeight(1.5)),
-            ],
-          ),
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
         ),
-        CommonWidgets.cancelBtn(scaler, context, 5.0),
-        SizedBox(height: scaler.getHeight(1)),
-      ],
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: scaler.getHeight(0.5)),
+                Container(
+                  decoration: BoxDecoration(
+                      color: ColorConstants.colorMediumGray,
+                      borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                  height: scaler.getHeight(0.4),
+                  width: scaler.getWidth(12),
+                ),
+                Column(
+                  children: [
+                    SizedBox(height: scaler.getHeight(2)),
+                    GestureDetector(
+                      onTap: callClick,
+                      child: Text("call".tr()).regularText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(11),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    Divider(),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    GestureDetector(
+                      onTap: smsClick,
+                      child: Text("sms".tr()).regularText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(11),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    Divider(),
+                    SizedBox(height: scaler.getHeight(0.9)),
+                    GestureDetector(
+                      onTap: whatsAppClick,
+                      child: Text("whats_app".tr()).regularText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(11),
+                          TextAlign.center),
+                    ),
+                    SizedBox(height: scaler.getHeight(2)),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Center(
+                    child: Text("cancel".tr()).semiBoldText(
+                        ColorConstants.colorRed,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                ),
+                 SizedBox(height: scaler.getHeight(0.5)),
+              ],
+            ),
+          );
+        });
+    // return Column(
+    //   children: [
+    //     Card(
+    //       color: ColorConstants.colorWhite.withOpacity(0.7),
+    //       shape:
+    //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+    //       child: Column(
+    //         children: [
+    //           SizedBox(height: scaler.getHeight(1.5)),
+    //           GestureDetector(
+    //             onTap: callClick,
+    //             child: Text("call".tr()).regularText(
+    //                 ColorConstants.primaryColor,
+    //                 scaler.getTextSize(11),
+    //                 TextAlign.center),
+    //           ),
+    //           SizedBox(height: scaler.getHeight(0.9)),
+    //           Divider(),
+    //           SizedBox(height: scaler.getHeight(0.9)),
+    //           GestureDetector(
+    //             onTap: smsClick,
+    //             child: Text("sms".tr()).regularText(ColorConstants.primaryColor,
+    //                 scaler.getTextSize(11), TextAlign.center),
+    //           ),
+    //           SizedBox(height: scaler.getHeight(0.9)),
+    //           Divider(),
+    //           SizedBox(height: scaler.getHeight(0.9)),
+    //           GestureDetector(
+    //             onTap: whatsAppClick,
+    //             child: Text("whats_app".tr()).regularText(
+    //                 ColorConstants.primaryColor,
+    //                 scaler.getTextSize(11),
+    //                 TextAlign.center),
+    //           ),
+    //           SizedBox(height: scaler.getHeight(1.5)),
+    //         ],
+    //       ),
+    //     ),
+    //     CommonWidgets.cancelBtn(scaler, context, 5.0),
+    //     SizedBox(height: scaler.getHeight(1)),
+    //   ],
+    // );
   }
 }

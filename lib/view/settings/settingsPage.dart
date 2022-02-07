@@ -112,8 +112,7 @@ class SettingsPage extends StatelessWidget {
                           auth.signOut();
                           provider.userDetail.profileUrl = null;
                           SharedPref.clearSharePref();
-                          // await FirebaseFirestore.instance.terminate();
-                          // await FirebaseFirestore.instance.clearPersistence();
+                          provider.calendarDetail.fromDeepLink == false;
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               RoutesConstants.loginOptions, (route) => false);
                         }),

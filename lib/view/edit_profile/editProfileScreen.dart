@@ -294,6 +294,9 @@ class EditProfileScreen extends StatelessWidget {
                                 ),
                                 Container(
                                   child: TextFormField(
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
                                     controller: phoneNumberController,
                                     style: ViewDecoration.textFieldStyle(
                                         scaler.getTextSize(9.5),
@@ -317,7 +320,7 @@ class EditProfileScreen extends StatelessWidget {
                                             provider.countryCode == ""
                                                 ? "US"
                                                 : provider.countryCode,
-                                        favorite: ['+91', 'IND'],
+                                        favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
                                         showFlag: false,
                                         showFlagDialog: true,
                                         showCountryOnly: false,
@@ -333,10 +336,12 @@ class EditProfileScreen extends StatelessWidget {
                                     validator: (value) {
                                       if (value!.trim().isEmpty) {
                                         return "phone_no_cannot_empty".tr();
-                                      } else if (!Validations.validateMobile(
-                                          value.trim())) {
-                                        return "invalid_phone_number".tr();
-                                      } else {
+                                      }
+                                      // else if (!Validations.validateMobile(
+                                      //     value.trim())) {
+                                      //   return "invalid_phone_number".tr();
+                                      // }
+                                      else {
                                         return null;
                                       }
                                     },

@@ -228,29 +228,29 @@ class CommonWidgets {
     }
   }
 
-  static bottomSheet(
-      BuildContext context, ScreenScaler scaler, Widget bottomDesign) {
-    return showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(15),
-        ),
-        backgroundColor: Colors.transparent,
-        barrierColor: Color.fromARGB(1, 245, 245, 245),
-        context: context,
-        builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CustomShape(
-                child: bottomDesign,
-                bgColor: Colors.transparent,
-                radius: scaler.getBorderRadiusCircular(15.0),
-                width: MediaQuery.of(context).size.width,
-              )
-            ],
-          );
-        });
-  }
+  // static bottomSheet(
+  //     BuildContext context, ScreenScaler scaler, Widget bottomDesign) {
+  //   return showModalBottomSheet(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: scaler.getBorderRadiusCircular(15),
+  //       ),
+  //       backgroundColor: Colors.transparent,
+  //       barrierColor: Color.fromARGB(1, 245, 245, 245),
+  //       context: context,
+  //       builder: (context) {
+  //         return Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+  //             CustomShape(
+  //               child: bottomDesign,
+  //               bgColor: Colors.transparent,
+  //               radius: scaler.getBorderRadiusCircular(15.0),
+  //               width: MediaQuery.of(context).size.width,
+  //             )
+  //           ],
+  //         );
+  //       });
+  // }
 
   static Widget cancelBtn(
       ScreenScaler scaler, BuildContext context, double size,
@@ -459,7 +459,7 @@ class CommonWidgets {
                         TextAlign.center),
                   ),
                 ),
-               // SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.5)),
               ],
             ),
           );

@@ -17,7 +17,7 @@ class DefaultPhotoPage extends StatelessWidget {
     EVENT_PHOTO_WORK,
     EVENT_PHOTO_CHILL,
     EVENT_PHOTO_BBQ,
-    EVENT_PHOTO_POOL
+  //  EVENT_PHOTO_POOL
   ];
 
   @override

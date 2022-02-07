@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -183,6 +184,22 @@ class EventDetailProvider extends BaseProvider {
       getOrganiserProfileUrl(context, eventDetail.organiserId!);
       getUsersProfileUrl(context);
       setEventValuesForEdit(event!);
+
+        eventDetail.event = event!;
+        eventDetail.event?.multipleDates == true
+            ? getMultipleDateOptionsFromEvent(
+            context, eventDetail.eid!,
+            onBtnClick: false)
+            : Container();
+        eventDetail.event?.multipleDates == true
+            ? listOfDateSelected(context, eventDetail.eid!).then((value) {
+        })
+            : Container();
+        if(calendarDetail.fromDeepLink == true){
+          eventDetail.eventBtnStatus = "respond";
+          eventDetail.btnBGColor = ColorConstants.primaryColor;
+          eventDetail.textColor = ColorConstants.colorWhite;
+        }
     } else {
       updateEventValue(false);
       DialogHelper.showMessage(context, "ERROR! something wrong.");
@@ -334,5 +351,25 @@ class EventDetailProvider extends BaseProvider {
       didsOfMultiDateSelected = value;
       updateStatusMultiDate(false);
     }
+  }
+
+
+  bool deepLink = false;
+
+  updateDeepLink(bool val){
+    deepLink = val;
+    notifyListeners();
+  }
+
+  Future inviteUrl(BuildContext context, var eid) async {
+    updateDeepLink(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.inviteURL(eid).catchError((e) {
+      updateDeepLink(false);
+    });
+
+    updateDeepLink(false);
   }
 }

@@ -57,11 +57,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Calendars</string>
+	<string>MeetMeYou syncs with your calendar to reflect event changes</string>
 	<key>NSCameraUsageDescription</key>
 	<string>MeetMeYou Need This Permission for use camera</string>
 	<key>NSContactsUsageDescription</key>
-	<string>contacts</string>
+	<string>Please enable contacts access permission in system settings</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Used to capture audio for image picker plugin</string>
 	<key>NSPhotoLibraryUsageDescription</key>
