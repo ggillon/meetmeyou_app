@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage>
                   children: [
                     Text("home".tr()).boldText(ColorConstants.colorBlack,
                         scaler.getTextSize(16), TextAlign.left),
-                    ImageView(path: ImageConstants.search_icon)
+                   // ImageView(path: ImageConstants.search_icon)
                   ],
                 ),
               ),

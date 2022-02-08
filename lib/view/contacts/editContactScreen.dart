@@ -305,7 +305,7 @@ class EditContactScreen extends StatelessWidget {
                       ),
                     ),
                     OrganizedEventsCard(
-                      showEventRespondBtn: false,
+                      showEventRespondBtn: false, showEventScreen: false
                     ),
                     SizedBox(height: scaler.getHeight(1)),
                     Padding(

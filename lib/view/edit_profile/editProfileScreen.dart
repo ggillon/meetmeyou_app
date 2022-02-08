@@ -320,7 +320,7 @@ class EditProfileScreen extends StatelessWidget {
                                             provider.countryCode == ""
                                                 ? "US"
                                                 : provider.countryCode,
-                                        favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
+                                      //  favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
                                         showFlag: false,
                                         showFlagDialog: true,
                                         showCountryOnly: false,
@@ -410,7 +410,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                           ),
                           OrganizedEventsCard(
-                            showEventRespondBtn: false,
+                            showEventRespondBtn: false, showEventScreen: false
                           ),
                           provider.eventDetail.eventListLength!.toInt() > 0
                               ? SizedBox(height: scaler.getHeight(1))

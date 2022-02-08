@@ -21,6 +21,7 @@ import 'package:meetmeyou_app/widgets/shimmer/organizedEventCardShimmer.dart';
 
 class OrganizedEventsCard extends StatelessWidget {
   final bool showEventRespondBtn;
+  final bool showEventScreen;
   final answer1Controller = TextEditingController();
   final answer2Controller = TextEditingController();
   final answer3Controller = TextEditingController();
@@ -28,7 +29,7 @@ class OrganizedEventsCard extends StatelessWidget {
   final answer5Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  OrganizedEventsCard({Key? key, required this.showEventRespondBtn})
+  OrganizedEventsCard({Key? key, required this.showEventRespondBtn, required this.showEventScreen})
       : super(key: key);
 
   @override
@@ -58,7 +59,7 @@ class OrganizedEventsCard extends StatelessWidget {
                         itemBuilder: (BuildContext context, int index,
                             int pageViewIndex) {
                           return GestureDetector(
-                            onTap: showEventRespondBtn == true
+                            onTap: showEventScreen == true
                                 ? () {
                                     provider.homePageProvider
                                         .setEventValuesForEdit(
@@ -66,19 +67,17 @@ class OrganizedEventsCard extends StatelessWidget {
                                     provider.eventDetail.eventBtnStatus =
                                         CommonEventFunction.getEventBtnStatus(
                                             provider.eventLists[index],
-                                            provider.userDetail.cid.toString());
+                                            provider.auth.currentUser!.uid.toString());
                                     provider.eventDetail.textColor =
                                         CommonEventFunction
                                             .getEventBtnColorStatus(
                                                 provider.eventLists[index],
-                                                provider.userDetail.cid
-                                                    .toString());
+                                            provider.auth.currentUser!.uid.toString());
                                     provider.eventDetail.btnBGColor =
                                         CommonEventFunction
                                             .getEventBtnColorStatus(
                                                 provider.eventLists[index],
-                                                provider.userDetail.cid
-                                                    .toString(),
+                                            provider.auth.currentUser!.uid.toString(),
                                                 textColor: false);
                                     provider.eventDetail.eventMapData = provider
                                         .eventLists[index].invitedContacts;
@@ -183,10 +182,10 @@ class OrganizedEventsCard extends StatelessWidget {
                   ],
                 ),
               ),
-              showEventRespondBtn
+              showEventRespondBtn && showEventScreen
                   ? SizedBox(width: scaler.getWidth(1))
                   : SizedBox(width: scaler.getWidth(0)),
-              showEventRespondBtn
+              showEventRespondBtn && showEventScreen
                   ? eventRespondBtn(context, scaler, eventList, provider, index)
                   : Container()
             ],
@@ -227,9 +226,7 @@ class OrganizedEventsCard extends StatelessWidget {
       OrganizeEventCardProvider provider, int index) {
     return GestureDetector(
       onTap: () {
-        if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
-            "respond") {
+        if (CommonEventFunction.getEventBtnStatus(event, provider.auth.currentUser!.uid.toString()) == "respond") {
           answer1Controller.clear();
           answer2Controller.clear();
           answer3Controller.clear();
@@ -243,19 +240,17 @@ class OrganizedEventsCard extends StatelessWidget {
             provider.eventDetail.eventBtnStatus =
                 CommonEventFunction.getEventBtnStatus(
                     provider.eventLists[index],
-                    provider.userDetail.cid.toString());
+                    provider.auth.currentUser!.uid.toString());
             provider.eventDetail.textColor =
                 CommonEventFunction
                     .getEventBtnColorStatus(
                     provider.eventLists[index],
-                    provider.userDetail.cid
-                        .toString());
+                    provider.auth.currentUser!.uid.toString());
             provider.eventDetail.btnBGColor =
                 CommonEventFunction
                     .getEventBtnColorStatus(
                     provider.eventLists[index],
-                    provider.userDetail.cid
-                        .toString(),
+                    provider.auth.currentUser!.uid.toString(),
                     textColor: false);
             provider.eventDetail.eventMapData = provider
                 .eventLists[index].invitedContacts;
@@ -305,7 +300,7 @@ class OrganizedEventsCard extends StatelessWidget {
             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+                event, provider.auth.currentUser!.uid.toString()) ==
             "edit") {
           provider.homePageProvider.setEventValuesForEdit(event);
           provider.homePageProvider.clearMultiDateOption();
@@ -314,9 +309,9 @@ class OrganizedEventsCard extends StatelessWidget {
             provider.getUserEvents(context);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+                event, provider.auth.currentUser!.uid.toString()) ==
             "cancelled") {
-          if (provider.userDetail.cid == event.organiserID) {
+          if (provider.auth.currentUser!.uid.toString() == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
               Navigator.of(context).pop();
               provider.deleteEvent(context, event.eid);

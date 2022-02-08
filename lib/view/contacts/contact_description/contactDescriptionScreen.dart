@@ -104,7 +104,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          OrganizedEventsCard(showEventRespondBtn: false),
+                          OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: true),
                           provider.userDetail.checkForInvitation!
                               ? provider.state == ViewState.Busy
                               ? Expanded(

@@ -324,7 +324,7 @@ class SignUpPage extends StatelessWidget {
                                   scaler.getTextSize(9.5),
                                   ColorConstants.colorBlack),
                               initialSelection: "US",
-                              favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
+                            //  favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
                               showFlag: true,
                               showFlagDialog: true,
                               showCountryOnly: false,

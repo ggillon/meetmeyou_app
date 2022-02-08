@@ -59,7 +59,7 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                OrganizedEventsCard(showEventRespondBtn: false),
+                OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: false),
               ],
             ),
           ),
