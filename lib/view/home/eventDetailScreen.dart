@@ -4,6 +4,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_stack/image_stack.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
@@ -22,6 +23,7 @@ import 'package:meetmeyou_app/provider/event_detail_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
+import 'package:meetmeyou_app/widgets/custom_stack.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/shimmer/multiDateAttendDateCardShimmer.dart';
 import 'package:provider/provider.dart';
@@ -99,14 +101,14 @@ class EventDetailScreen extends StatelessWidget {
                 )
               : SingleChildScrollView(
                   child: Column(children: [
-                  Stack(
+                    Stack2(
                     clipBehavior: Clip.none,
                     alignment: Alignment.bottomCenter,
                     children: [
                       imageView(context, scaler, provider),
                       Positioned(
                         bottom: -48,
-                        child: titleDateLocationCard(scaler, provider),
+                        child: titleDateLocationCard(context, scaler, provider),
                       )
                     ],
                   ),
@@ -426,7 +428,7 @@ class EventDetailScreen extends StatelessWidget {
 
   bool showText = true;
 
-  Widget titleDateLocationCard(
+  Widget titleDateLocationCard(BuildContext context,
       ScreenScaler scaler, EventDetailProvider provider) {
     return Padding(
       padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
@@ -438,7 +440,7 @@ class EventDetailScreen extends StatelessWidget {
           child: Padding(
             padding: scaler.getPaddingLTRB(2.5, 1.0, 2.0, 1.0),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+            //  mainAxisSize: MainAxisSize.min,
               children: [
                 dateCard(scaler, provider),
                 SizedBox(width: scaler.getWidth(1.8)),
@@ -485,18 +487,32 @@ class EventDetailScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: scaler.getHeight(0.3)),
-                    Row(
-                      children: [
-                        ImageView(path: ImageConstants.map),
-                        SizedBox(width: scaler.getWidth(1)),
-                        Container(
-                          width: scaler.getWidth(50),
-                          child: Text(provider.eventDetail.eventLocation ?? "")
-                              .regularText(ColorConstants.colorGray,
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: ()  async {
+                        try{
+                          List<Location> locations = await locationFromAddress(provider.eventDetail.eventLocation?? "");
+                          print(locations);
+                          provider.openMap(context, locations[0].latitude, locations[0].longitude);
+                        } on PlatformException catch(err){
+                          DialogHelper.showMessage(context, "could_not_open_map".tr());
+                        } catch(e){
+                          DialogHelper.showMessage(context, "could_not_open_map".tr());
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          ImageView(path: ImageConstants.map),
+                          SizedBox(width: scaler.getWidth(1)),
+                          Container(
+                              width: scaler.getWidth(50),
+                              child: Text(provider.eventDetail.eventLocation ?? "")
+                                  .regularText(ColorConstants.colorGray,
                                   scaler.getTextSize(9.5), TextAlign.left,
                                   maxLines: 1, overflow: TextOverflow.ellipsis),
-                        )
-                      ],
+                            ),
+                        ],
+                      ),
                     )
                   ],
                 ),

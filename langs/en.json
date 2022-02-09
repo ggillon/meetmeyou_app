@@ -178,5 +178,6 @@
   "which_days_could_you_attend" : "Which days could you attend ?",
   "add_end_date_time" : "add end date and time",
   "multi_date_select_which_work" : "Multiple Dates, select which work",
-  "available" : "available"
+  "available" : "available",
+  "could_not_open_map" : "Sorry, Could not open the map."
    }

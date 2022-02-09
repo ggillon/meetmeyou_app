@@ -18,8 +18,9 @@ import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 import 'package:provider/provider.dart';
 
 class ContactDescriptionScreen extends StatelessWidget {
-  ContactDescriptionScreen({Key? key}) : super(key: key);
+  ContactDescriptionScreen({Key? key, required this.showEventScreen}) : super(key: key);
 
+  bool showEventScreen;
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
@@ -104,7 +105,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: true),
+                          OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: showEventScreen),
                           provider.userDetail.checkForInvitation!
                               ? provider.state == ViewState.Busy
                               ? Expanded(

@@ -221,7 +221,7 @@ class ContactsScreen extends StatelessWidget {
                 provider.setContactsValue(iList[index], true, iList[index].cid);
                 Navigator.pushNamed(
                   context,
-                  RoutesConstants.contactDescription,
+                  RoutesConstants.contactDescription, arguments: true
                 ).then((value) {
                   provider.getConfirmedContactsAndInvitationsList(context);
                   provider.unRespondedInvites(context, dashboardProvider);
@@ -285,7 +285,7 @@ class ContactsScreen extends StatelessWidget {
               provider.setContactsValue(cList[index], false, "");
               Navigator.pushNamed(
                 context,
-                RoutesConstants.contactDescription,
+                RoutesConstants.contactDescription, arguments: true
               ).then((value) {
                 provider.getConfirmedContactsAndInvitationsList(context);
               });

@@ -114,7 +114,7 @@ class Router {
 
       case RoutesConstants.contactDescription:
         return MaterialPageRoute(
-            builder: (_) => ContactDescriptionScreen(),
+            builder: (_) => ContactDescriptionScreen(showEventScreen: settings.arguments as bool),
             settings: settings);
 
       case RoutesConstants.editContactScreen:

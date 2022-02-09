@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
@@ -16,6 +17,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/models/event.dart' as eventModel;
 import 'package:meetmeyou_app/services/storage/templates.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventDetailProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -371,5 +373,14 @@ class EventDetailProvider extends BaseProvider {
     });
 
     updateDeepLink(false);
+  }
+
+   Future<void> openMap(BuildContext context, double latitude, double longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      DialogHelper.showMessage(context, "could_not_open_map".tr());
+    }
   }
 }

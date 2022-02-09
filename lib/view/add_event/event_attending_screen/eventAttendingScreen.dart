@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
@@ -116,22 +117,41 @@ class EventAttendingScreen extends StatelessWidget {
 
   Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
       List<Contact> cList, int index, EventAttendingProvider provider) {
-    return CommonWidgets.userContactCard(
-        scaler, cList[index].email, cList[index].displayName,
-        profileImg: cList[index].photoURL,
-        search: true,
-        searchStatus: provider.eventDetail.eventBtnStatus == "edit"
-            ? "Event Edit"
-            : cList[index].status == "Confirmed contact"
-                ? ""
-                : cList[index].email == provider.userDetail.email
-                    ? ""
-                    : cList[index].status,
-        addIconTapAction: () {
-      provider.inviteProfile(context, cList[index]);
-    }, deleteIconTapAction: () {
-      deleteIconAlertDialog(context, scaler, cList, index, provider);
-    });
+    return GestureDetector(
+
+        onTap: cList[index].status ==
+                    'Listed profile' ||
+            cList[index].status ==
+                    'Invited contact'
+            ? () {}
+            : () {
+          provider.setContactsValue(cList[index], false, "");
+                Navigator.pushNamed(
+                    context, RoutesConstants.contactDescription, arguments: false
+                ).then((value) {
+                  // provider.eventAttendingLists.clear();
+                  // provider.eventDetail.attendingProfileKeys = provider.eventAttendingKeysList;
+                  // provider.getContactsFromProfile(context);
+                });
+              },
+
+      child: CommonWidgets.userContactCard(
+          scaler, cList[index].email, cList[index].displayName,
+          profileImg: cList[index].photoURL,
+          search: true,
+          searchStatus: provider.eventDetail.eventBtnStatus == "edit"
+              ? "Event Edit"
+              : cList[index].status == "Confirmed contact"
+                  ? ""
+                  : cList[index].email == provider.userDetail.email
+                      ? ""
+                      : cList[index].status,
+          addIconTapAction: () {
+        provider.inviteProfile(context, cList[index]);
+      }, deleteIconTapAction: () {
+        deleteIconAlertDialog(context, scaler, cList, index, provider);
+      }),
+    );
   }
 
   deleteIconAlertDialog(BuildContext context, ScreenScaler scaler,
