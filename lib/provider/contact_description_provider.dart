@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -68,5 +69,23 @@ class ContactDescriptionProvider extends BaseProvider {
 
     setState(ViewState.Idle);
     Navigator.of(context).pop();
+  }
+
+  launchMap(BuildContext context, lat, lng) async {
+    if (Platform.isAndroid) {
+      var url = "https://www.google.com/maps/search/?api=1&query=${lat},${lng}";
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
+    } else {
+      var urlAppleMaps = 'https://maps.apple.com/?q=$lat,$lng';
+      if (await canLaunch(urlAppleMaps)) {
+        await launch(urlAppleMaps);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
+    }
   }
 }

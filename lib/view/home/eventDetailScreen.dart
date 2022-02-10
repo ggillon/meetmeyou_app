@@ -338,9 +338,11 @@ class EventDetailScreen extends StatelessWidget {
                           provider.eventDetail.event?.multipleDates == true &&
                                   provider.eventDetail.organiserId !=
                                       provider.auth.currentUser!.uid
-                              ? provider.statusMultiDate == true
-                                  ? MultiDateAttendDateCardShimmer()
-                                  : attendDateUi(context, scaler, provider)
+                              ?
+                          // provider.statusMultiDate == true
+                          //         ? MultiDateAttendDateCardShimmer()
+                          //         :
+                          attendDateUi(context, scaler, provider)
                               : Container(),
                           SizedBox(height: scaler.getHeight(1)),
                           Text("event_description".tr()).boldText(
@@ -489,11 +491,11 @@ class EventDetailScreen extends StatelessWidget {
                     SizedBox(height: scaler.getHeight(0.3)),
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: ()  async {
+                      onTap: provider.eventDetail.eventLocation == "" || provider.eventDetail.eventLocation == null ?  (){} : () async {
                         try{
                           List<Location> locations = await locationFromAddress(provider.eventDetail.eventLocation?? "");
                           print(locations);
-                          provider.openMap(context, locations[0].latitude, locations[0].longitude);
+                          provider.launchMap(context, locations[0].latitude, locations[0].longitude);
                         } on PlatformException catch(err){
                           DialogHelper.showMessage(context, "could_not_open_map".tr());
                         } catch(e){

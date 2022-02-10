@@ -31,6 +31,9 @@ class GroupDescriptionScreen extends StatelessWidget {
             RoutesConstants.createEditGroupScreen,
           ).then((value) {
             this.provider.getGroupDetail();
+            if(value == true){
+              Navigator.of(context).pop();
+            }
           //  provider.groupDetail.membersLength = provider.groupDetail.groupConfirmContactList?.length.toString();
           });
         }),

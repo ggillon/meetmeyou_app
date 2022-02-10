@@ -1,6 +1,8 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
@@ -91,11 +93,25 @@ class ContactDescriptionScreen extends StatelessWidget {
                                       cCode: provider.userDetail.countryCode),
                                 ),
                                 SizedBox(height: scaler.getHeight(1.5)),
-                                CommonWidgets.phoneNoAndAddressFun(
-                                    scaler,
-                                    ImageConstants.address_icon,
-                                    "address".tr(),
-                                    provider.userDetail.address ?? ""),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: provider.userDetail.address == "" || provider.userDetail.address == null ?  (){} : ()  async {
+                                    try{
+                                      List<Location> locations = await locationFromAddress(provider.userDetail.address?? "");
+                                      print(locations);
+                                      provider.launchMap(context, locations[0].latitude, locations[0].longitude);
+                                    } on PlatformException catch(err){
+                                      DialogHelper.showMessage(context, "could_not_open_map".tr());
+                                    } catch(e){
+                                      DialogHelper.showMessage(context, "could_not_open_map".tr());
+                                    }
+                                  },
+                                  child: CommonWidgets.phoneNoAndAddressFun(
+                                      scaler,
+                                      ImageConstants.address_icon,
+                                      "address".tr(),
+                                      provider.userDetail.address ?? ""),
+                                ),
                                 SizedBox(height: scaler.getHeight(3)),
                                 // Text("organized_events".tr()).boldText(
                                 //     ColorConstants.colorBlack,

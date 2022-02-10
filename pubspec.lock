@@ -130,9 +130,11 @@ packages:
   country_code_picker:
     dependency: "direct main"
     description:
-      name: country_code_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: main
+      resolved-ref: d514b26a1d48d1cfe373e953230a67974be4ceb1
+      url: "https://github.com/deepakrana0011/country_code_picker.git"
+    source: git
     version: "2.0.2"
   cross_file:
     dependency: transitive
@@ -420,6 +422,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  geocoding:
+    dependency: "direct main"
+    description:
+      name: geocoding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
+  geocoding_platform_interface:
+    dependency: transitive
+    description:
+      name: geocoding_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   get_it:
     dependency: "direct main"
     description:

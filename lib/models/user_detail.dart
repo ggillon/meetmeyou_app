@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:meetmeyou_app/models/contact.dart';
+import 'package:contacts_service/contacts_service.dart' as phoneContact;
 
 class UserDetail {
   String? firstName;
@@ -25,6 +24,8 @@ class UserDetail {
   String? groupName;
   List<Contact>? groupConfirmContactList = [];
   String? groupCid;*/
+
+  Iterable<phoneContact.Contact> phoneContacts = [];
 
   UserDetail(
       {this.firstName,

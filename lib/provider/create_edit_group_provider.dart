@@ -123,4 +123,25 @@ class CreateEditGroupProvider extends BaseProvider {
     }
   }
 
+  //Future<void> deleteContact(String cid);
+  bool groupDelete = false;
+
+  updateGroup(bool val){
+    groupDelete = val;
+    notifyListeners();
+  }
+
+  Future deleteGroup(BuildContext context) async{
+    Navigator.of(context).pop();
+    updateGroup(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    mmyEngine!.deleteContact(groupDetail.groupCid.toString()).catchError((e) {
+      updateGroup(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    Navigator.of(context).pop(true);
+    updateGroup(false);
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -375,12 +377,31 @@ class EventDetailProvider extends BaseProvider {
     updateDeepLink(false);
   }
 
-   Future<void> openMap(BuildContext context, double latitude, double longitude) async {
-    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    if (await canLaunch(googleUrl)) {
-      await launch(googleUrl);
+  //  Future<void> openMap(BuildContext context, double latitude, double longitude) async {
+  //   String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+  //   if (await canLaunch(googleUrl)) {
+  //     await launch(googleUrl);
+  //   } else {
+  //     DialogHelper.showMessage(context, "could_not_open_map".tr());
+  //   }
+  // }
+
+  launchMap(BuildContext context, lat, lng) async {
+    if (Platform.isAndroid) {
+      var url = "https://www.google.com/maps/search/?api=1&query=${lat},${lng}";
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
     } else {
-      DialogHelper.showMessage(context, "could_not_open_map".tr());
+      var urlAppleMaps = 'https://maps.apple.com/?q=$lat,$lng';
+      //  url = "comgooglemaps://?saddr=&daddr=$lat,$lng&directionsmode=driving";
+      if (await canLaunch(urlAppleMaps)) {
+        await launch(urlAppleMaps);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
     }
   }
 }

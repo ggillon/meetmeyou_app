@@ -8,7 +8,6 @@ import 'package:meetmeyou_app/services/mmy/profile.dart';
 import 'package:contacts_service/contacts_service.dart' as Phone;
 import 'package:permission_handler/permission_handler.dart';
 
-
 const CONTACT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 const GROUP_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 

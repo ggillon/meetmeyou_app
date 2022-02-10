@@ -125,5 +125,11 @@
     <!-- Permission options for the `calendar` group -->
         <key>NSCalendarsUsageDescription</key>
         <string>MeetMeYou syncs with your calendar to reflect event changes</string>
+
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>googlechromes</string>
+            <string>comgooglemaps</string>
+        </array>
  </dict>
 </plist>

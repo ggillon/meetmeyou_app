@@ -35,10 +35,9 @@ class CreateEditGroupScreen extends StatelessWidget {
           groupNameController.text = provider.groupDetail.createGroup ?? false
               ? ""
               : provider.groupDetail.groupName ?? "";
-          descriptionController.text =
-              provider.groupDetail.createGroup ?? false
-                  ? ""
-                  : provider.groupDetail.about ?? "";
+          descriptionController.text = provider.groupDetail.createGroup ?? false
+              ? ""
+              : provider.groupDetail.about ?? "";
         }, builder: (context, provider, _) {
           return SafeArea(
             child: LayoutBuilder(builder: (context, constraint) {
@@ -247,46 +246,53 @@ class CreateEditGroupScreen extends StatelessWidget {
                             SizedBox(height: scaler.getHeight(2)),
                             provider.groupDetail.createGroup ?? false
                                 ? Container()
-                                : Expanded(
-                                    child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      child: DialogHelper.btnWidget(
-                                          scaler,
-                                          context,
-                                          "delete_group".tr(),
-                                          ColorConstants.colorRed,
-                                          funOnTap: () {
-                                        DialogHelper.showDialogWithTwoButtons(
-                                            context,
-                                            "Delete Group",
-                                            "Are you sure you want to delete this group?");
-                                      }),
-                                    ),
-                                  ),
+                                : provider.groupDelete == true
+                                    ? Center(
+                                        child: CircularProgressIndicator())
+                                    : Expanded(
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: DialogHelper.btnWidget(
+                                              scaler,
+                                              context,
+                                              "delete_group".tr(),
+                                              ColorConstants.colorRed,
+                                              funOnTap: ()  {
+                                            DialogHelper.showDialogWithTwoButtons(
+                                                context,
+                                                "Delete Group",
+                                                "Are you sure you want to delete this group?", positiveButtonPress: (){
+                                               provider.deleteGroup(context);
+                                            });
+                                          }),
+                                        ),
+                                      ),
                             SizedBox(height: scaler.getHeight(1)),
                             provider.groupDetail.createGroup ?? false
                                 ? provider.state == ViewState.Busy
                                     ? Expanded(
-                                      child: Container(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              CircularProgressIndicator(),
-                                              SizedBox(
-                                                  height: scaler.getHeight(1)),
-                                            ],
-                                          )),
-                                    )
+                                        child: Container(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                CircularProgressIndicator(),
+                                                SizedBox(
+                                                    height:
+                                                        scaler.getHeight(1)),
+                                              ],
+                                            )),
+                                      )
                                     : Expanded(
-                                      child: CommonWidgets.expandedRowButton(
-                                          context,
-                                          scaler,
-                                          "discard".tr(),
-                                          "save_changes".tr(), onTapBtn2: () {
+                                        child: CommonWidgets.expandedRowButton(
+                                            context,
+                                            scaler,
+                                            "discard".tr(),
+                                            "save_changes".tr(), onTapBtn2: () {
                                           hideKeyboard(context);
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
                                             provider.groupDetail.createGroup!
                                                 ? provider.update
                                                     ? provider.updateGroupContact(
@@ -297,25 +303,30 @@ class CreateEditGroupScreen extends StatelessWidget {
                                                         groupName:
                                                             groupNameController
                                                                 .text,
-                                                        about: descriptionController
-                                                            .text)
+                                                        about:
+                                                            descriptionController
+                                                                .text)
                                                     : provider.createNewGroupContact(
                                                         context,
-                                                        groupNameController.text,
+                                                        groupNameController
+                                                            .text,
                                                         // groupImg: provider.groupDetail.groupPhotoUrl,
-                                                        about: descriptionController
-                                                            .text)
+                                                        about:
+                                                            descriptionController
+                                                                .text)
                                                 : provider.updateGroupContact(
                                                     context,
-                                                    provider.groupDetail.groupCid ??
+                                                    provider.groupDetail
+                                                            .groupCid ??
                                                         "",
                                                     groupName:
-                                                        groupNameController.text,
+                                                        groupNameController
+                                                            .text,
                                                     about: descriptionController
                                                         .text);
                                           }
                                         }),
-                                    )
+                                      )
                                 : provider.state == ViewState.Busy
                                     ? Container(
                                         alignment: Alignment.bottomCenter,
