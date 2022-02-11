@@ -50,7 +50,15 @@ class CalendarProvider extends BaseProvider {
       CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
     });
     if (value != null) {
-      deviceCalendarEvent = value;
+      // if(calendarDetail.calendarDisplay == false){
+      //   for(int i = 0 ; i < value.length ; i++){
+      //     if(value[i].meetMeYou == true){
+      //       deviceCalendarEvent.add(value[i]);
+      //     }
+      //   }
+      // } else{
+        deviceCalendarEvent = value;
+    //  }
       deviceCalendarEvent.sort((a, b) {
         return a.start.compareTo(b.start);
       });

@@ -582,7 +582,7 @@ class _HomePageState extends State<HomePage>
         String eventLink = provider.mmyEngine!.getEventLink(event.eid);
         await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
           String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
-          Share.share(shareLink);
+          Share.share("Please find link to the event I’m organising: ${shareLink}");
         });
       },
       child: Card(

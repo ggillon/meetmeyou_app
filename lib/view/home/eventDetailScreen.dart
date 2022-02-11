@@ -326,9 +326,14 @@ class EventDetailScreen extends StatelessWidget {
                                         "edit" ? Expanded(child: Container(
                                       alignment: Alignment.centerRight,
                                         child: GestureDetector(
-                                            onTap: (){
-                                              String shareLink = provider.mmyEngine!.getEventText(provider.eventDetail.eid!);
-                                              Share.share(shareLink);
+                                            onTap: () async {
+                                              // String shareLink = provider.mmyEngine!.getEventText(provider.eventDetail.eid!);
+                                              // Share.share(shareLink);
+                                              String eventLink = provider.mmyEngine!.getEventLink(provider.eventDetail.eid!);
+                                              await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
+                                                String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
+                                                Share.share("Please find link to the event I’m organising: ${shareLink}");
+                                              });
                                             },
                                             child: ImageView(path: ImageConstants.share_icon)))) : Container()
                                   ],

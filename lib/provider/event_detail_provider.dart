@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -31,6 +32,7 @@ class EventDetailProvider extends BaseProvider {
   List<String> eventAttendingKeysList = [];
   String? organiserKey;
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
+  DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
 
   bool backValue = false;
 
