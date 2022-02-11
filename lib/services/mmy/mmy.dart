@@ -75,6 +75,8 @@ abstract class MMYEngine {
 
   /// Get all Events where user is invited or organiser
   Future<List<Event>> getUserEvents({List<String>? filters});
+  /// Get all Events where user is organiser
+  Future<List<Event>> getOrganisedEvents();
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
@@ -293,7 +295,14 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Contact>> getPhoneContacts() async {
-    return contactLib.getPhoneContacts(_currentUser);
+    List<Contact> searchList = [];
+    List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
+    for(Contact contact in phoneContacts) {
+      searchList.addAll(await searchProfiles(contact.displayName));
+      searchList.addAll(await searchProfiles(contact.email));
+      searchList.addAll(await searchProfiles(contact.phoneNumber));
+    }
+    return searchList;
   }
 
   @override
@@ -306,6 +315,11 @@ class MMY implements MMYEngine {
   @override
   Future<List<Event>> getUserEvents({List<String>? filters}) {
     return eventLib.getUserEvents(_currentUser, filters: filters);
+  }
+
+  @override
+  Future<List<Event>> getOrganisedEvents() {
+    return eventLib.getUserEvents(_currentUser, filters: [EVENT_ORGANISER]);
   }
 
   @override

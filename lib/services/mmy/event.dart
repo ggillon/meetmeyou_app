@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 String eidGenerator() {
   final charList = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
