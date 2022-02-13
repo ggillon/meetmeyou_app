@@ -285,10 +285,12 @@ class MMY implements MMYEngine {
     List<String> contactListID = await getContactIDs(confirmedContacts: true);
     List<String> invitedListID = await getContactIDs(invitedContacts: true);
     for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
-      Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
-      if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
-      if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
-      searchList.add(contact);
+      if(profile.uid != _currentUser.uid) {
+        Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
+        if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
+        if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
+        searchList.add(contact);
+      }
     }
     return searchList;
   }
@@ -298,9 +300,11 @@ class MMY implements MMYEngine {
     List<Contact> searchList = [];
     List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
     for(Contact contact in phoneContacts) {
-      searchList.addAll(await searchProfiles(contact.displayName));
-      searchList.addAll(await searchProfiles(contact.email));
-      searchList.addAll(await searchProfiles(contact.phoneNumber));
+      if(contact.uid != _currentUser.uid) {
+        searchList.addAll(await searchProfiles(contact.displayName));
+        searchList.addAll(await searchProfiles(contact.email));
+        searchList.addAll(await searchProfiles(contact.phoneNumber));
+      }
     }
     return searchList;
   }
@@ -442,7 +446,8 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<CalendarEvent>> getCalendarEvents() async {
-    return calendarLib.getCalendarEvents(_currentUser.uid);
+    Profile profile = await getUserProfile();
+    return calendarLib.getCalendarEvents(_currentUser.uid, display: profile.parameters['calendar_display']);
   }
 
   @override

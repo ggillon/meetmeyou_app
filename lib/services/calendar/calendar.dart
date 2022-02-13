@@ -49,11 +49,11 @@ void updateEvent(Event event) async {
   
 }
 
-Future<List<CalendarEvent>> getCalendarEvents(String uid) async {
+Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) async {
   List<CalendarEvent> returnList = [];
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
   final calendarsResult = await plugin.retrieveCalendars();
-  if(calendarsResult.isSuccess && calendarsResult.data != null) {
+  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
     final calendars = calendarsResult.data!.toList();
     for(device.Calendar cal in calendars) {
       device.RetrieveEventsParams retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
