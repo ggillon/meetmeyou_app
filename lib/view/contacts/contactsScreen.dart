@@ -49,12 +49,13 @@ class ContactsScreen extends StatelessWidget {
                           scaler.getTextSize(16),
                           TextAlign.left),
                       GestureDetector(
+                        behavior: HitTestBehavior.translucent,
                           onTap: () {
                             bottomSheet(context, scaler, provider);
                           },
                           child: Padding(
-                            padding: scaler.getPaddingLTRB(0.0, 0.0, 1.0, 0.0),
-                            child: ImageView(path: ImageConstants.more_icon),
+                            padding: scaler.getPaddingLTRB(0.0, 0.0, 1.5, 0.0),
+                            child: ImageView(path: ImageConstants.small_add_icon, height: scaler.getHeight(3.0), width: scaler.getWidth(10.0)),
                           )),
                     ],
                   ),
@@ -380,7 +381,7 @@ class ContactsScreen extends StatelessWidget {
                         TextAlign.center),
                   ),
                 ),
-              //  SizedBox(height: scaler.getHeight(1)),
+                SizedBox(height: scaler.getHeight(1)),
               ],
             ),
           );

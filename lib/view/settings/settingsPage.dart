@@ -61,7 +61,7 @@ class SettingsPage extends StatelessWidget {
                             scaler,
                             context,
                             ImageConstants.person_icon,
-                            "invite_friends".tr(),
+                            "search_contact_book".tr(),
                             true, onTapCard: () {
                           Navigator.pushNamed(
                               context, RoutesConstants.inviteFriendsScreen);
@@ -75,7 +75,7 @@ class SettingsPage extends StatelessWidget {
                             true, onTapCard: () {
                           Navigator.pushNamed(
                               context, RoutesConstants.rejectedInvitesScreen);
-                        }),
+                        }, isIcon: false),
                         SizedBox(height: scaler.getHeight(1)),
                         CommonWidgets.settingsPageCard(
                             scaler,

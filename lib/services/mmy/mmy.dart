@@ -76,6 +76,8 @@ abstract class MMYEngine {
 
   /// Get all Events where user is invited or organiser
   Future<List<Event>> getUserEvents({List<String>? filters});
+  /// Get all Events where user is organiser
+  Future<List<Event>> getOrganisedEvents();
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
@@ -284,17 +286,28 @@ class MMY implements MMYEngine {
     List<String> contactListID = await getContactIDs(confirmedContacts: true);
     List<String> invitedListID = await getContactIDs(invitedContacts: true);
     for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
-      Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
-      if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
-      if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
-      searchList.add(contact);
+      if(profile.uid != _currentUser.uid) {
+        Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
+        if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
+        if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
+        searchList.add(contact);
+      }
     }
     return searchList;
   }
 
   @override
   Future<List<Contact>> getPhoneContacts() async {
-    return contactLib.getPhoneContacts(_currentUser);
+    List<Contact> searchList = [];
+    List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
+    for(Contact contact in phoneContacts) {
+      if(contact.uid != _currentUser.uid) {
+        searchList.addAll(await searchProfiles(contact.displayName));
+        searchList.addAll(await searchProfiles(contact.email));
+        searchList.addAll(await searchProfiles(contact.phoneNumber));
+      }
+    }
+    return searchList;
   }
 
   @override
@@ -307,6 +320,11 @@ class MMY implements MMYEngine {
   @override
   Future<List<Event>> getUserEvents({List<String>? filters}) {
     return eventLib.getUserEvents(_currentUser, filters: filters);
+  }
+
+  @override
+  Future<List<Event>> getOrganisedEvents() {
+    return eventLib.getUserEvents(_currentUser, filters: [EVENT_ORGANISER]);
   }
 
   @override
@@ -428,8 +446,11 @@ class MMY implements MMYEngine {
   }
 
   @override
+  // Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
+  //   return calendarLib.getCalendarEvents(context, _currentUser.uid);
   Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
-    return calendarLib.getCalendarEvents(context, _currentUser.uid);
+    Profile profile = await getUserProfile();
+    return calendarLib.getCalendarEvents(context, _currentUser.uid, display: profile.parameters['calendar_display']);
   }
 
   @override

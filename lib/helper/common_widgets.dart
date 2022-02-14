@@ -104,14 +104,14 @@ class CommonWidgets {
       bool search = false,
       VoidCallback? addIconTapAction,
       VoidCallback? deleteIconTapAction,
-      bool invitation = false}) {
+      bool invitation = false, bool currentUser = false}) {
     return Column(children: [
       Card(
         color: invitation
             ? ColorConstants.primaryColor
-            : ColorConstants.colorWhite,
+            :  currentUser == true ? ColorConstants.colorNewGray.withOpacity(0.3) : ColorConstants.colorWhite,
         elevation: 3.0,
-        shadowColor: ColorConstants.colorWhite,
+        shadowColor: currentUser == true ? ColorConstants.colorNewGray.withOpacity(0.1) : ColorConstants.colorWhite,
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(12)),
         child: Padding(
@@ -123,7 +123,7 @@ class CommonWidgets {
               SizedBox(width: scaler.getWidth(2.5)),
               profileCardNameAndEmailDesign(scaler, contactName, email,
                   search: true, searchStatus: searchStatus),
-              iconStatusCheck(scaler,
+              currentUser == true ? Container() : iconStatusCheck(scaler,
                   searchStatus: search ? searchStatus : "",
                   addIconTap: search ? addIconTapAction : () {},
                   deleteIconTap: search ? deleteIconTapAction ?? () {} : () {})
@@ -299,7 +299,7 @@ class CommonWidgets {
 
   static Widget settingsPageCard(
       ScreenScaler scaler, BuildContext context, icon, String txt, bool val,
-      {VoidCallback? onTapCard}) {
+      {VoidCallback? onTapCard, bool isIcon = true}) {
     return GestureDetector(
       onTap: onTapCard,
       child: Card(
@@ -312,11 +312,11 @@ class CommonWidgets {
             padding: scaler.getPaddingAll(9.0),
             child: Row(
               children: [
-                ImageView(
+              isIcon == true ? ImageView(
                     path: icon,
                     height: 30,
                     width: 30,
-                    color: ColorConstants.colorBlack),
+                    color: ColorConstants.colorBlack) : Icon(Icons.person_outline, size: 30),
                 SizedBox(width: scaler.getWidth(2.5)),
                 Text(txt).mediumText(ColorConstants.colorBlack,
                     scaler.getTextSize(9.5), TextAlign.left),

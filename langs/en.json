@@ -179,5 +179,6 @@
   "add_end_date_time" : "add end date and time",
   "multi_date_select_which_work" : "Multiple Dates, select which work",
   "available" : "available",
-  "could_not_open_map" : "Sorry, Could not open the map."
+  "could_not_open_map" : "Sorry, Could not open the map.",
+  "search_contact_book" : "Search contact book"
    }

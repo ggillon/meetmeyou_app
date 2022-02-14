@@ -50,6 +50,7 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
+          provider.getContact(context);
           provider.calendarDetail.fromDeepLink == false
               ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromCalendarPage == true
@@ -215,7 +216,7 @@ class EventDetailScreen extends StatelessWidget {
                               }
                             }),
                           SizedBox(height: scaler.getHeight(1)),
-                          organiserCard(scaler, provider),
+                        provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider),
                           SizedBox(height: scaler.getHeight(1)),
                           provider.eventAttendingLength == 0
                               ? Container()
@@ -228,7 +229,12 @@ class EventDetailScreen extends StatelessWidget {
                                       onTap: () {
                                         provider.eventDetail.attendingProfileKeys =
                                             provider.eventAttendingKeysList;
-                                        Navigator.pushNamed(
+                                      provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?  Navigator.pushNamed(
+                                          context,
+                                          RoutesConstants
+                                              .eventInviteFriendsScreen).then((value) {
+                                                Navigator.of(context).pop();
+                                      }) : Navigator.pushNamed(
                                             context,
                                             RoutesConstants
                                                 .eventAttendingScreen)
@@ -559,47 +565,55 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget organiserCard(ScreenScaler scaler, EventDetailProvider provider) {
-    return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(8)),
-      child: Padding(
-        padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
-        child: Row(
-          children: [
-            ClipRRect(
-                borderRadius: scaler.getBorderRadiusCircular(15.0),
-                child: provider.userDetail.profileUrl == null
-                    ? Container(
-                        color: ColorConstants.primaryColor,
-                        height: scaler.getHeight(2.8),
-                        width: scaler.getWidth(9),
-                      )
-                    : Container(
-                        height: scaler.getHeight(2.8),
-                        width: scaler.getWidth(9),
-                        child: ImageView(
-                            path: provider.userDetail.profileUrl,
-                            height: scaler.getHeight(2.8),
-                            width: scaler.getWidth(9),
-                            fit: BoxFit.cover),
-                      )),
-            SizedBox(width: scaler.getWidth(2)),
-            Expanded(
-                child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(provider.eventDetail.organiserName! +
-                      " " +
-                      "(${"organiser".tr()})")
-                  .semiBoldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.8), TextAlign.left,
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-            )),
-            SizedBox(width: scaler.getWidth(2)),
-            ImageView(
-              path: ImageConstants.event_arrow_icon,
-            )
-          ],
+  Widget organiserCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
+    return GestureDetector(
+      onTap: (){
+        provider.setContactsValue();
+        Navigator.pushNamed(
+            context, RoutesConstants.contactDescription, arguments: false
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(8)),
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+          child: Row(
+            children: [
+              ClipRRect(
+                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                  child: provider.userDetail.profileUrl == null
+                      ? Container(
+                          color: ColorConstants.primaryColor,
+                          height: scaler.getHeight(2.8),
+                          width: scaler.getWidth(9),
+                        )
+                      : Container(
+                          height: scaler.getHeight(2.8),
+                          width: scaler.getWidth(9),
+                          child: ImageView(
+                              path: provider.userDetail.profileUrl,
+                              height: scaler.getHeight(2.8),
+                              width: scaler.getWidth(9),
+                              fit: BoxFit.cover),
+                        )),
+              SizedBox(width: scaler.getWidth(2)),
+              Expanded(
+                  child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(provider.eventDetail.organiserName! +
+                        " " +
+                        "(${"organiser".tr()})")
+                    .semiBoldText(ColorConstants.colorBlack,
+                        scaler.getTextSize(9.8), TextAlign.left,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+              )),
+              SizedBox(width: scaler.getWidth(2)),
+              ImageView(
+                path: ImageConstants.event_arrow_icon,
+              )
+            ],
+          ),
         ),
       ),
     );

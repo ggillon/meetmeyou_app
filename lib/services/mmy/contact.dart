@@ -282,7 +282,7 @@ Future<void> linkProfiles(User currentUser, {required String uid,}) async {
 }
 
 Future<List<Contact>> getPhoneContacts(User currentUser) async {
-  print('importing');
+  //print('importing');
   List<Contact> phoneContactList = [];
   Iterable<Phone.Contact> phoneContacts;
 

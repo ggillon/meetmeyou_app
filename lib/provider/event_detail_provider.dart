@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
@@ -405,5 +406,43 @@ class EventDetailProvider extends BaseProvider {
         DialogHelper.showMessage(context, "could_not_open_map".tr());
       }
     }
+  }
+
+  // for organiser card
+  Contact? organiserContact;
+  bool contact = false;
+
+  updateGetContact(bool val){
+    contact = val;
+    notifyListeners();
+  }
+
+  Future getContact(BuildContext context) async{
+    updateGetContact(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  var value =  await mmyEngine!.getContact(eventDetail.organiserId.toString()).catchError((e){
+      updateGetContact(false);
+      DialogHelper.showMessage(context, "Organiser fetching error!");
+    });
+
+  if(value != null){
+    organiserContact = value;
+    updateGetContact(false);
+  } else{
+    DialogHelper.showMessage(context, "Organiser fetching error!");
+  }
+
+  }
+
+  setContactsValue() {
+    userDetail.firstName = organiserContact?.firstName;
+    userDetail.lastName = organiserContact?.lastName;
+    userDetail.email = organiserContact?.email;
+    userDetail.profileUrl = organiserContact?.photoURL;
+    userDetail.phone = organiserContact?.phoneNumber;
+    userDetail.countryCode = organiserContact?.countryCode;
+    userDetail.address = organiserContact?.addresses['Home'];
+    userDetail.checkForInvitation = false;
+   // userDetail.cid = cid;
   }
 }

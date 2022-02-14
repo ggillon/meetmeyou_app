@@ -98,15 +98,16 @@ class EventAttendingScreen extends StatelessWidget {
             shrinkWrap: true,
             itemCount: cList.length,
             itemBuilder: (context, index) {
+              bool currentUser = cList[index].uid == provider.userDetail.cid;
               if (searchBarController.text.isEmpty) {
                 return contactProfileCard(
-                    context, scaler, cList, index, provider);
+                    context, scaler, cList, index, provider, currentUser);
               } else if (cList[index]
                   .displayName
                   .toLowerCase()
                   .contains(searchBarController.text)) {
                 return contactProfileCard(
-                    context, scaler, cList, index, provider);
+                    context, scaler, cList, index, provider, currentUser);
               } else {
                 return Container();
               }
@@ -116,7 +117,7 @@ class EventAttendingScreen extends StatelessWidget {
   }
 
   Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
-      List<Contact> cList, int index, EventAttendingProvider provider) {
+      List<Contact> cList, int index, EventAttendingProvider provider, bool currentUser) {
     return GestureDetector(
 
         onTap: cList[index].status ==
@@ -143,14 +144,14 @@ class EventAttendingScreen extends StatelessWidget {
               ? "Event Edit"
               : cList[index].status == "Confirmed contact"
                   ? ""
-                  : cList[index].email == provider.userDetail.email
+                  : cList[index].email == provider.auth.currentUser?.email
                       ? ""
                       : cList[index].status,
           addIconTapAction: () {
         provider.inviteProfile(context, cList[index]);
       }, deleteIconTapAction: () {
         deleteIconAlertDialog(context, scaler, cList, index, provider);
-      }),
+      }, currentUser: currentUser),
     );
   }
 

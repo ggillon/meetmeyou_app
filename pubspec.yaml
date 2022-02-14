@@ -52,6 +52,7 @@ dependencies:
   flutter_native_splash: ^1.2.3
   shared_preferences: ^2.0.7
   pin_code_fields: ^7.3.0
+  intl_phone_field: ^2.1.0
   flutter_google_places: ^0.3.0
   another_flushbar: ^1.10.24
   image_picker: ^0.8.4
@@ -80,6 +81,7 @@ dependencies:
   uni_links: ^0.5.1
   firebase_dynamic_links: ^4.0.4
   geocoding: ^2.0.2
+  firebase_messaging: ^11.2.6
 
 dev_dependencies:
   flutter_test:
