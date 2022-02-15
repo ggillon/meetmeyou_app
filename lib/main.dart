@@ -20,6 +20,7 @@ void main() async {
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
   SharedPref.prefs = await SharedPreferences.getInstance();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white,
     statusBarColor: Colors.white,
