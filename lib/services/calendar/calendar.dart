@@ -54,7 +54,7 @@ void updateEvent(Event event) async {
   
 }
 
-Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {bool display=true}) async {
+Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {bool display = true}) async {
   List<CalendarEvent> returnList = [];
   var calendarsResult;
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
@@ -70,8 +70,8 @@ Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {
       }
     }
   }
-  if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && calendarsResult.data != null && display) {
-  final calendarsResult = await plugin.retrieveCalendars();
+  if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && (calendarsResult.data != null) && display) {
+ // final calendarsResult = await plugin.retrieveCalendars();
 //  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
     final calendars = calendarsResult.data!.toList();
     for(device.Calendar cal in calendars) {

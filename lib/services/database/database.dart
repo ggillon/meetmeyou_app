@@ -4,6 +4,8 @@
 
 
 import 'package:meetmeyou_app/models/date_option.dart';
+import 'package:meetmeyou_app/models/discussion.dart';
+import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
 
@@ -51,6 +53,16 @@ abstract class Database {
   Future<List<DateOption>> getAllDateOptions(String eid,);
   Future<void> setDateOption(String eid, DateOption date);
   Future<void> deleteDateOption(String eid, String did);
+
+  //Discussion & Message Functions
+  Future<Discussion> getDiscussion(String did);
+  Future<List<Discussion>> getUserDiscussions(String uid);
+  Future<void> setDiscussion(Discussion discussion);
+  Future<void> deleteDiscussion(String did);
+  Future<List<DiscussionMessage>> getDiscussionMessages(String did);
+  Future<void> setDiscussionMessage(DiscussionMessage message);
+  Future<void> deleteDiscussionMessage(String did, String mid);
+
 }
 
 class FirestoreDB implements Database {
@@ -137,8 +149,6 @@ class FirestoreDB implements Database {
   }
 
   Future<List<Event>> getUserEvents(String uid) async {
-
-
     return _service.getListDataWhereFieldIsPresent(
         path: APIPath.events(),
         field: 'invitedContacts.$uid',
@@ -208,6 +218,62 @@ class FirestoreDB implements Database {
     _service.deleteData(
       path: APIPath.eventDate(eid, did),
     );
+  }
+
+  @override
+  Future<void> deleteDiscussion(String did) async {
+    _service.deleteData(
+      path: APIPath.discussion(did),
+    );
+  }
+
+  @override
+  Future<void> deleteDiscussionMessage(String did, String mid) async {
+    _service.deleteData(
+      path: APIPath.discussionMessage(did, mid),
+    );
+  }
+
+  @override
+  Future<Discussion> getDiscussion(String did) {
+    return _service.getData(
+      path: APIPath.discussion(did),
+      builder: (data) {return Discussion.fromMap(data);},
+    );
+  }
+
+  @override
+  Future<List<DiscussionMessage>> getDiscussionMessages(String did) {
+    return _service.getListData(
+      path: APIPath.discussionMessages(did),
+      builder: (data) => DiscussionMessage.fromMap(data),
+    );
+  }
+
+  @override
+  Future<void> setDiscussion(Discussion discussion) async {
+    _service.setData(
+      path: APIPath.discussion(discussion.did,),
+      data: discussion.toMap(),
+    );
+  }
+
+  @override
+  Future<void> setDiscussionMessage(DiscussionMessage message) async {
+    _service.setData(
+      path: APIPath.discussionMessage(message.did, message.mid,),
+      data: message.toMap(),
+    );
+  }
+
+  @override
+  Future<List<Discussion>> getUserDiscussions(String uid) {
+    return _service.getListDataWhereFieldIsPresent(
+        path: APIPath.events(),
+        field: 'participants.$uid',
+        builder: (data) {
+          return Discussion.fromMap(data);
+        });
   }
 
 }

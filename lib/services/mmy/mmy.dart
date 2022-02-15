@@ -12,6 +12,8 @@ import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
+import '../../models/discussion.dart';
+import '../../models/discussion_message.dart';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
 import 'event.dart' as eventLib;
@@ -20,6 +22,7 @@ import 'package:meetmeyou_app/services/calendar/calendar.dart' as calendarLib;
 import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 import 'event_chat_message.dart' as messageLib;
 import 'date_option.dart' as dateLib;
+import 'discussion.dart' as discussionLib;
 
 
 abstract class MMYEngine {
@@ -149,6 +152,18 @@ abstract class MMYEngine {
   Future<List<EventChatMessage>> getEventChatMessages(String eid);
   /// Post a new mchat message to Event
   Future<EventChatMessage> postEventChatMessage(String eid, {required String text});
+
+  /// Discussion Functions
+  /// Retreive an discussion you're part of
+  Future<Discussion> getDiscussion(String did);
+  /// Access Discussion of Event (retreive or join it)
+  Future<Discussion> getEventDiscussion(String eid);
+  /// Post a message in a discussion
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, String? text, File? photoFile,});
+  /// Get List of discussion
+  Future<List<Discussion>> getUserDiscussions();
+  /// Start Discussion between contacts or a groups
+  Future<Discussion> startContactDiscussion(List<String> CIDs);
 
 }
 
@@ -301,11 +316,12 @@ class MMY implements MMYEngine {
     List<Contact> searchList = [];
     List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
     for(Contact contact in phoneContacts) {
-      if(contact.uid != _currentUser.uid) {
         searchList.addAll(await searchProfiles(contact.displayName));
         searchList.addAll(await searchProfiles(contact.email));
         searchList.addAll(await searchProfiles(contact.phoneNumber));
-      }
+    }
+    for(Contact contact in searchList) {
+      if (contact.cid == _currentUser.uid) searchList.remove(contact);
     }
     return searchList;
   }
@@ -529,6 +545,43 @@ class MMY implements MMYEngine {
   @override
   Future<List<DateOption>> getDateOptionsFromEvent(String eid) async {
     return dateLib.getDateOptionsFromEvent(_currentUser, eid);
+  }
+
+  @override
+  Future<Discussion> getDiscussion(String did) async {
+    return discussionLib.getDiscussion(_currentUser, did);
+  }
+
+  @override
+  Future<Discussion> getEventDiscussion(String eid) async {
+    Discussion discussion;
+    try{
+      discussion = await discussionLib.getDiscussion(_currentUser, eid);
+    } catch(e) { // For old events
+      discussion = await discussionLib.createDiscussion(_currentUser, (await eventLib.getEvent(_currentUser, eid)).title);
+    }
+    if(!discussion.participants.containsKey(_currentUser.uid)) {
+      discussionLib.inviteUserToDiscussion(_currentUser, _currentUser.uid, eid);
+    }
+    return discussion;
+  }
+
+  @override
+  Future<List<Discussion>> getUserDiscussions() {
+    // TODO: implement getUserDiscussions
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> postDiscussionMessage(String did, {String type = TEXT_MESSAGE, String? text, File? photoFile}) {
+    // TODO: implement postDiscussionMessage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Discussion> startContactDiscussion(List<String> CIDs) {
+    // TODO: implement startContactDiscussion
+    throw UnimplementedError();
   }
 
 }
