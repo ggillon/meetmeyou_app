@@ -58,7 +58,13 @@ Contact createLocalContact(User currentUser, {String? displayName, String? first
 
 // Get a particular contact
 Future<Contact> getContact(User currentUser, {required String cid}) async {
-  return await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
+  Contact contact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
+  if(contact.status == CONTACT_CONFIRMED) {
+    contact = (await getContactFromProfile(currentUser, uid: cid))!;
+    contact.status = CONTACT_CONFIRMED;
+    await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
+  }
+  return contact;
 }
 
 // Get a contact from a profile (for event invitation)

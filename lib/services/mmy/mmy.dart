@@ -212,8 +212,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> getContact(String cid) {
-    return contactLib.getContact(_currentUser, cid: cid);
+  Future<Contact> getContact(String cid) async {
+     return contactLib.getContact(_currentUser, cid: cid);
   }
 
   @override
