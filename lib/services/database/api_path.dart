@@ -33,4 +33,10 @@ class APIPath {
   static String invitedContact(String eid, String cid,) => '/events/$eid/invitedContacts/$cid/';
   static String invitedContacts(String eid) => '/events/$eid/invitedContacts/';
 
+  static String discussion(String did,) => '/discussions/$did/';
+  static String discussions() => '/discussions/';
+
+  static String discussionMessage(String did, String mid)  => '/discussions/$did/';
+  static String discussionMessages(String did,)  => '/discussions/$did/';
+
 }
