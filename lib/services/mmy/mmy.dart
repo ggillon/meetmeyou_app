@@ -213,8 +213,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> getContact(String cid) {
-    return contactLib.getContact(_currentUser, cid: cid);
+  Future<Contact> getContact(String cid) async {
+     return contactLib.getContact(_currentUser, cid: cid);
   }
 
   @override
@@ -320,8 +320,11 @@ class MMY implements MMYEngine {
         searchList.addAll(await searchProfiles(contact.email));
         searchList.addAll(await searchProfiles(contact.phoneNumber));
     }
+    List<String> UIDs = [];
     for(Contact contact in searchList) {
       if (contact.cid == _currentUser.uid) searchList.remove(contact);
+      if (UIDs.contains(contact.cid)) searchList.remove(contact);
+      UIDs.add(contact.cid);
     }
     return searchList;
   }
