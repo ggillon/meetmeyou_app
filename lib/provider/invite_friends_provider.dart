@@ -54,7 +54,7 @@ class InviteFriendsProvider extends BaseProvider {
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     var value = await mmyEngine!.getPhoneContacts().catchError((e) {
       setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
     });
     if (await Permission.contacts.request().isDenied) {
       setState(ViewState.Idle);
@@ -64,7 +64,7 @@ class InviteFriendsProvider extends BaseProvider {
       return CommonWidgets.errorDialog(
           context,
           'enable_contact_access_permission'.tr());
-    } else if (value.isNotEmpty) {
+    } else if (value != null) {
       setState(ViewState.Idle);
       value.sort((a, b) {
         return a.displayName
@@ -76,8 +76,8 @@ class InviteFriendsProvider extends BaseProvider {
       isChecked = List<bool>.filled(contactList.length, false);
     } else {
       setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
     }
-    notifyListeners();
   }
 
 

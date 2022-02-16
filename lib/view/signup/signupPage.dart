@@ -89,14 +89,15 @@ class SignUpPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8.0),
                           child: Stack(
                             children: [
-                              provider.image == null &&
-                                      signUpType != StringConstants.social
+                              provider.image == null
+                                  && signUpType != StringConstants.social
                                   ? Container(
                                       color: ColorConstants.primaryColor,
                                       width: scaler.getWidth(20),
                                       height: scaler.getWidth(20),
                                     )
-                                  : provider.userDetail.profileUrl != null
+                                  :
+                              provider.userDetail.profileUrl != null
                                       ? ImageView(
                                           path: provider.userDetail.profileUrl,
                                           width: scaler.getWidth(20),
@@ -155,7 +156,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
-                        enabled: signUpType != StringConstants.social,
+                       // enabled: signUpType != StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: firstNameController,
                         style: ViewDecoration.textFieldStyle(
@@ -188,7 +189,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
-                        enabled: signUpType != StringConstants.social,
+                       // enabled: signUpType != StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: lastNameController,
                         style: ViewDecoration.textFieldStyle(
