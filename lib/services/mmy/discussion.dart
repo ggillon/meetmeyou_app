@@ -91,12 +91,12 @@ Future<void> removeUserFromDiscussion(User currentUser, String did) async {
   final db = FirestoreDB(uid: currentUser.uid);
   Discussion discussion = await db.getDiscussion(did);
   discussion.participants.remove(currentUser.uid);
-  db.setDiscussion(discussion);
+  await db.setDiscussion(discussion);
 }
 
 Future<void> inviteUserToDiscussion(User currentUser, String uid, String did) async {
   final db = FirestoreDB(uid: currentUser.uid);
   Discussion discussion = await db.getDiscussion(did);
-  discussion.participants.remove(currentUser.uid);
-  db.setDiscussion(discussion);
+  discussion.participants.addAll({uid: MESSAGES_UNREAD});
+  await db.setDiscussion(discussion);
 }
