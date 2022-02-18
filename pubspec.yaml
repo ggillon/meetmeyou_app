@@ -65,6 +65,7 @@ dependencies:
   mailer: ^5.0.2
   device_calendar: ^4.0.1
   firebase_messaging: ^11.2.6
+  async: ^2.8.2
 
 dev_dependencies:
   flutter_test:

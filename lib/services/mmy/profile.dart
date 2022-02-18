@@ -146,9 +146,6 @@ Future<List<Profile>> searchProfiles(User currentUser, {required String searchTe
       }
     }
   }
-
-
-
   return results;
 }
 
