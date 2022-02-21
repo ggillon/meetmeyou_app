@@ -15,6 +15,7 @@ class DiscussionMessage {
         required this.contactPhotoURL,
         required this.text,
         required this.attachmentURL,
+        this.isReply = false,
         this.level = 0,
         this.replyMid = '',
         required this.createdTimeStamp,
@@ -30,6 +31,7 @@ class DiscussionMessage {
   String contactPhotoURL;
   String text;
   String attachmentURL;
+  bool isReply;
   int level;
   String replyMid;
   DateTime createdTimeStamp;
@@ -46,6 +48,7 @@ class DiscussionMessage {
       contactPhotoURL: data['concontactPhotoURL'],
       text: data['text'],
       attachmentURL: data['aattachmentURL'],
+      isReply: data['isReplay'],
       level: data['level'],
       replyMid: data['replyMid'],
       createdTimeStamp: DateTime.fromMillisecondsSinceEpoch(data['createdTimeStamp']),
@@ -64,6 +67,7 @@ class DiscussionMessage {
       contactPhotoURL: data['concontactPhotoURL'],
       text: data['text'],
       attachmentURL: data['aattachmentURL'],
+      isReply: data['isReplay'],
       level: data['level'],
       replyMid: data['replyMid'],
       createdTimeStamp: DateTime.fromMillisecondsSinceEpoch(data['createdTimeStamp']),
@@ -82,6 +86,7 @@ class DiscussionMessage {
       'contactPhotoURL': contactPhotoURL,
       'text': text,
       'atatchmentURL': attachmentURL,
+      'isReply': isReply,
       'level': level,
       'replyMid': replyMid,
       'createdTimeStamp': createdTimeStamp.millisecondsSinceEpoch,

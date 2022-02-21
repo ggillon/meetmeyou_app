@@ -1,4 +1,5 @@
 
+import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
@@ -23,6 +24,7 @@ import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 import 'event_chat_message.dart' as messageLib;
 import 'date_option.dart' as dateLib;
 import 'discussion.dart' as discussionLib;
+import 'search.dart' as searchLib;
 
 
 abstract class MMYEngine {
@@ -159,11 +161,21 @@ abstract class MMYEngine {
   /// Access Discussion of Event (retreive or join it)
   Future<Discussion> getEventDiscussion(String eid);
   /// Post a message in a discussion
-  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, String? text, File? photoFile,});
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, File? photoFile, String? replyMid});
   /// Get List of discussion
   Future<List<Discussion>> getUserDiscussions();
   /// Start Discussion between contacts or a groups
-  Future<Discussion> startContactDiscussion(List<String> CIDs);
+  Future<Discussion> startContactDiscussion(String cid);
+  /// Leave a discussion
+  Future<void> leaveDiscussion(String did);
+  /// Add user to discussion
+  Future<void> addContactToDiscussion(String did, {required String cid});
+  /// Remove user from discussion
+  Future<void> removeContactFromDiscussion(String did, {required String cid});
+  /// Change title of discussion
+  Future<Discussion> changeTitle(String did, String title);
+  /// Change title of discussion
+  Future<int> updatedDiscussions();
 
 }
 
@@ -313,20 +325,8 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Contact>> getPhoneContacts() async {
-    List<Contact> searchList = [];
     List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
-    for(Contact contact in phoneContacts) {
-        searchList.addAll(await searchProfiles(contact.displayName));
-        searchList.addAll(await searchProfiles(contact.email));
-        searchList.addAll(await searchProfiles(contact.phoneNumber));
-    }
-    List<String> UIDs = [];
-    for(Contact contact in searchList) {
-      if (contact.cid == _currentUser.uid) searchList.remove(contact);
-      if (UIDs.contains(contact.cid)) searchList.remove(contact);
-      UIDs.add(contact.cid);
-    }
-    return searchList;
+    return searchLib.matchContactsToDBProfiles(_currentUser, phoneContacts);
   }
 
   @override
@@ -570,21 +570,49 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<Discussion>> getUserDiscussions() {
-    // TODO: implement getUserDiscussions
-    throw UnimplementedError();
+  Future<List<Discussion>> getUserDiscussions() async {
+    return discussionLib.getUserDiscussions(_currentUser);
   }
 
   @override
-  Future<void> postDiscussionMessage(String did, {String type = TEXT_MESSAGE, String? text, File? photoFile}) {
-    // TODO: implement postDiscussionMessage
-    throw UnimplementedError();
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, File? photoFile, String? replyMid}) async {
+    String? URL;
+    if (photoFile != null) URL = await storageLib.messagePicture(photoFile, did: did);
+    discussionLib.postMessage(_currentUser, did, type, text, URL, replyMid);
   }
 
   @override
-  Future<Discussion> startContactDiscussion(List<String> CIDs) {
-    // TODO: implement startContactDiscussion
-    throw UnimplementedError();
+  Future<Discussion> startContactDiscussion(String cid) async {
+    return await discussionLib.startContactDiscussion(_currentUser, cid);
   }
+
+  @override
+  Future<void> leaveDiscussion(String did) async {
+    discussionLib.removeUserFromDiscussion(_currentUser, did, _currentUser.uid);
+  }
+
+  @override
+  Future<void> addContactToDiscussion(String did, {required String cid}) async {
+    await discussionLib.inviteUserToDiscussion(_currentUser, cid, did);
+  }
+
+  @override
+  Future<void> removeContactFromDiscussion(String did, {required String cid}) async {
+    discussionLib.removeUserFromDiscussion(_currentUser, did, cid);
+  }
+
+  @override
+  Future<Discussion> changeTitle(String did, String title) async {
+    return await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
+  }
+
+  @override
+  Future<int> updatedDiscussions() async {
+    int count=0;
+    List<Discussion> discussions = await getUserDiscussions();
+    for (Discussion discussion in discussions) if (discussion.unread) count++;
+    return count;
+  }
+
 
 }

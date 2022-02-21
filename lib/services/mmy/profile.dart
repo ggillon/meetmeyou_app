@@ -2,6 +2,7 @@ import 'package:meetmeyou_app/models/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 
+
 // Use to get the user profile, if non exist will create one from user in auth.
 Future<Profile> getUserProfile(User currentUser,
     {bool user = true, String? uid}) async {
@@ -33,8 +34,10 @@ Future<bool> isNewProfile(User currentUser) async {
   }
 }
 
+
 // Create Profile from user Auth data, store it in Firebase
 Future<Profile> createProfileFromUser(User user) async {
+
   String firstName = '';
   String lastName = '';
 
@@ -216,3 +219,7 @@ Profile createLocalProfile({
 
   return profile;
 }
+
+
+
+
