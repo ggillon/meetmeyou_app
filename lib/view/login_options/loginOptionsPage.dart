@@ -231,7 +231,7 @@ class LoginOptions extends StatelessWidget {
   }
 
   Future<void> signInWithApple(BuildContext context, LoginOptionProvider provider) async {
-    initiateSignInWithApple(context);
+  //  initiateSignInWithApple(context);
     var user = await provider.auth.signInWithApple().catchError((e) {
       provider.setState(ViewState.Idle);
       DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);

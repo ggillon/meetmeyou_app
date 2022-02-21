@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +12,7 @@ import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
@@ -68,6 +71,12 @@ class NewEventDiscussionScreen extends StatelessWidget {
         body: BaseView<NewEventDiscussionProvider>(
           onModelReady: (provider){
             this.provider = provider;
+            provider.getEventDiscussion(context, true);
+            // const milliSecTime = const Duration(milliseconds: 500);
+            //
+            // provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+            //   provider.getEventDiscussion(context, false);
+            // });
           },
           builder: (context, provider, _){
             return SafeArea(
@@ -75,24 +84,24 @@ class NewEventDiscussionScreen extends StatelessWidget {
                 padding: scaler.getPaddingLTRB(3.5, 1.0, 3.0, 0.5),
                 child: Column(
                   children: [
-                  //  SizedBox(height: scaler.getHeight(2)),
-                    // provider.state == ViewState.Busy
-                    //     ? Expanded(
-                    //   child: Column(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     children: [
-                    //       Center(child: CircularProgressIndicator()),
-                    //       SizedBox(height: scaler.getHeight(1)),
-                    //       Text("loading_discussion".tr()).mediumText(
-                    //           ColorConstants.primaryColor,
-                    //           scaler.getTextSize(10),
-                    //           TextAlign.left),
-                    //     ],
-                    //   ),
-                    // )
-                    //     : eventMessageList(scaler, provider),
-                    Expanded(
+                 //  SizedBox(height: scaler.getHeight(1)),
+                    provider.state == ViewState.Busy
+                        ? Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                          SizedBox(height: scaler.getHeight(1)),
+                          Text("loading_discussion".tr()).mediumText(
+                              ColorConstants.primaryColor,
+                              scaler.getTextSize(10),
+                              TextAlign.left),
+                        ],
+                      ),
+                    )
+                      //  : eventMessageList(scaler, provider),
+                   : Expanded(
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -109,7 +118,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("Justin Baron").boldText(Colors.limeAccent, scaler.getTextSize(10.0), TextAlign.left),
+                                      Text(provider.eventDiscussion!.adminDisplayName).boldText(Colors.limeAccent, scaler.getTextSize(10.0), TextAlign.left),
                                       Text(
                                           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
                                               " sed do eiusmod tempor incididunt ut labore et dolore magna aliqua").regularText(ColorConstants.colorWhite, scaler.getTextSize(10), TextAlign.left, isHeight: true),
@@ -122,71 +131,71 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                 provider.updateSwipe(true);
                               },
                             ),
-                            SwipeTo(
-                              child: ChatBubble(
-                                clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
-                                backGroundColor: ColorConstants.colorWhite,
-                                margin: EdgeInsets.only(top: 20),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width * 0.7,
-                                  ),
-                                  child:  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Danny Bill").boldText(ColorConstants.colorRed, scaler.getTextSize(10.0), TextAlign.left),
-                                      Text(
-                                          "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat").regularText(ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left, isHeight: true),
-                                    ],
-                                  ),
-
-                                ),
-                              ),
-                              onRightSwipe: () {
-                               provider.isRightSwipe = true;
-                               provider.updateSwipe(true);
-                              },
-                            ),
-                            SwipeTo(
-                              child: ChatBubble(
-                                elevation: 0.0,
-                                clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
-                                alignment: Alignment.topRight,
-                                margin: EdgeInsets.only(top: 20),
-                                backGroundColor: ColorConstants.primaryColor.withOpacity(0.2),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width * 0.7,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      sendReplySwipe(),
-                                      Text(
-                                          "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat").regularText(ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left, isHeight: true),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SwipeTo(
-                              child: ChatBubble(
-                                clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
-                                backGroundColor: ColorConstants.colorWhite,
-                                margin: EdgeInsets.only(top: 20),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width * 0.7,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      sendReplySwipe(),
-                                      Text(
-                                          "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat").regularText(ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left, isHeight: true),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // SwipeTo(
+                            //   child: ChatBubble(
+                            //     clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
+                            //     backGroundColor: ColorConstants.colorWhite,
+                            //     margin: EdgeInsets.only(top: 20),
+                            //     child: Container(
+                            //       constraints: BoxConstraints(
+                            //         maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            //       ),
+                            //       child:  Column(
+                            //         crossAxisAlignment: CrossAxisAlignment.start,
+                            //         children: [
+                            //           Text("Danny Bill").boldText(ColorConstants.colorRed, scaler.getTextSize(10.0), TextAlign.left),
+                            //           Text(
+                            //               "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat").regularText(ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left, isHeight: true),
+                            //         ],
+                            //       ),
+                            //
+                            //     ),
+                            //   ),
+                            //   onRightSwipe: () {
+                            //    provider.isRightSwipe = true;
+                            //    provider.updateSwipe(true);
+                            //   },
+                            // ),
+                            // SwipeTo(
+                            //   child: ChatBubble(
+                            //     elevation: 0.0,
+                            //     clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
+                            //     alignment: Alignment.topRight,
+                            //     margin: EdgeInsets.only(top: 20),
+                            //     backGroundColor: ColorConstants.primaryColor.withOpacity(0.2),
+                            //     child: Container(
+                            //       constraints: BoxConstraints(
+                            //         maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            //       ),
+                            //       child: Column(
+                            //         children: [
+                            //           sendReplySwipe(),
+                            //           Text(
+                            //               "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat").regularText(ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left, isHeight: true),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            // SwipeTo(
+                            //   child: ChatBubble(
+                            //     clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
+                            //     backGroundColor: ColorConstants.colorWhite,
+                            //     margin: EdgeInsets.only(top: 20),
+                            //     child: Container(
+                            //       constraints: BoxConstraints(
+                            //         maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            //       ),
+                            //       child: Column(
+                            //         children: [
+                            //           sendReplySwipe(),
+                            //           Text(
+                            //               "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat").regularText(ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left, isHeight: true),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -250,10 +259,9 @@ class NewEventDiscussionScreen extends StatelessWidget {
        decoration: ViewDecoration.inputDecorationWithCurve(
            "write_something".tr(), scaler, ColorConstants.primaryColor),
        onFieldSubmitted: (data) {
-         // messageController.text.isEmpty
-         //     ? Container()
-         //     : provider.postEventChatMessage(
-         //     context, messageController.text, messageController);
+         messageController.text.isEmpty
+             ? Container()
+             : provider.postDiscussionMessage(context, TEXT_MESSAGE, messageController.text, messageController);
        },
        textInputAction: TextInputAction.send,
        keyboardType: TextInputType.text,

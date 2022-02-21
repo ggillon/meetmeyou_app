@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
@@ -8,6 +9,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
+import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -15,10 +17,12 @@ import 'package:permission_handler/permission_handler.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
-  List<Discussion> eventChatList = [];
+  List<DiscussionMessage> eventChatList = [];
+  Discussion? eventDiscussion;
   EventDetail eventDetail = locator<EventDetail>();
   bool? isRightSwipe;
   File? image;
+  Timer? clockTimer;
 
   bool swipe = false;
 
@@ -26,6 +30,12 @@ class NewEventDiscussionProvider extends BaseProvider {
     swipe = val;
     notifyListeners();
   }
+
+  // @override
+  // void dispose() {
+  //   clockTimer!.cancel();
+  //   super.dispose();
+  // }
 
   Future<bool> permissionCheck() async {
     var status = await Permission.storage.status;
@@ -79,20 +89,27 @@ class NewEventDiscussionProvider extends BaseProvider {
     }
   }
 
-//  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, String? text, File? photoFile,});
+  bool value = true;
 
-  Future getEventDiscussion(BuildContext context, String eid) async {
-    setState(ViewState.Busy);
+  updateValue(bool val) {
+    value = val;
+    notifyListeners();
+  }
+
+  Future getEventDiscussion(BuildContext context, bool load) async {
+   load == true ? setState(ViewState.Busy) : updateValue(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine?.getEventDiscussion(eid).catchError((e) {
-      setState(ViewState.Idle);
+    var value =
+        await mmyEngine!.getEventDiscussion(eventDetail.eid!).catchError((e) {
+          load == true ? setState(ViewState.Idle) : updateValue(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });
 
     if (value != null) {
-      eventChatList = value as List<Discussion>;
-      setState(ViewState.Idle);
+      eventChatList = value.messages;
+      eventDiscussion = value;
+      load == true ? setState(ViewState.Idle) : updateValue(false);
     }
   }
 
@@ -103,20 +120,18 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future postDiscussionMessage(
-      BuildContext context, String eid, String type, String text,
+  Future postDiscussionMessage(BuildContext context, String type, String text, TextEditingController controller,
       {File? photoFile}) async {
     updatePostMessage(true);
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!
-        .postDiscussionMessage(eventDetail.eid!,
-            type: type, text: text, photoFile: photoFile)
+    await mmyEngine!.postDiscussionMessage(eventDetail.eid!, type: type, text: text, photoFile: photoFile)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });
 
+    controller.clear();
+    await getEventDiscussion(context, false);
     updatePostMessage(false);
   }
 }

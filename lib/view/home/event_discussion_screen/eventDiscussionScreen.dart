@@ -31,13 +31,13 @@ class EventDiscussionScreen extends StatelessWidget {
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<EventDiscussionProvider>(
           onModelReady: (provider) async {
-            // provider.getEventChatMessages(context);
-            // const milliSecTime = const Duration(milliseconds: 500);
-            //
-            // provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
-            //   //   provider.eventChatList.clear();
-            //   provider.getEventChatMessages(context, load: false, jump: false);
-            // });
+            provider.getEventChatMessages(context);
+            const milliSecTime = const Duration(milliseconds: 500);
+
+            provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+              //   provider.eventChatList.clear();
+              provider.getEventChatMessages(context, load: false, jump: false);
+            });
           },
           builder: (context, provider, _) {
             return SafeArea(

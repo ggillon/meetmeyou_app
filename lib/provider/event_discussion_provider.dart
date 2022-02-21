@@ -59,7 +59,7 @@ class EventDiscussionProvider extends BaseProvider {
          //  scrollController
          //      .jumpTo(scrollController.position.maxScrollExtent)
          //      :
-        //  Container();
+         //  Container();
          // _scrollListener();
          //  scrollController.offset <= scrollController.position.maxScrollExtent ? (isJump == true ? scrollController
          //      .jumpTo(scrollController.position.maxScrollExtent) : Container()) : isJump = false;
