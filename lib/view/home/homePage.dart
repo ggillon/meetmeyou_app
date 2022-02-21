@@ -152,6 +152,12 @@ class _HomePageState extends State<HomePage>
                   children: [
                     Text("home".tr()).boldText(ColorConstants.colorBlack,
                         scaler.getTextSize(16), TextAlign.left),
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: (){
+                        Navigator.pushNamed(context, RoutesConstants.chatsScreen);
+                      },
+                        child: Icon(Icons.message, color: ColorConstants.primaryColor, size: 28))
                    // ImageView(path: ImageConstants.search_icon)
                   ],
                 ),

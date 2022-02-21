@@ -797,7 +797,7 @@ class EventDetailScreen extends StatelessWidget {
   Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesConstants.eventDiscussionScreen);
+        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen);
       },
       child: Card(
         shape: RoundedRectangleBorder(

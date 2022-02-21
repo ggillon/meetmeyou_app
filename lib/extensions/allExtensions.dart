@@ -62,7 +62,7 @@ extension ExtendText on Text {
           fontSize: textSize,
           decoration:
               underline ? TextDecoration.underline : TextDecoration.none,
-          height: isHeight == true ? 1.5 : 1.0),
+          height: isHeight == true ? 1.2 : 1.0),
     );
   }
 

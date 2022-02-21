@@ -29,6 +29,7 @@ import 'package:meetmeyou_app/provider/login_provider.dart';
 import 'package:meetmeyou_app/provider/multiple_date_time_provider.dart';
 import 'package:meetmeyou_app/provider/my_account_provider.dart';
 import 'package:meetmeyou_app/provider/contact_description_provider.dart';
+import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
@@ -79,6 +80,7 @@ void setupLocator() {
   locator.registerFactory<EventDiscussionProvider>(() => EventDiscussionProvider());
   locator.registerFactory<OrganizeEventCardProvider>(() => OrganizeEventCardProvider());
   locator.registerFactory<MultipleDateTimeProvider>(() => MultipleDateTimeProvider());
+  locator.registerFactory<NewEventDiscussionProvider>(() => NewEventDiscussionProvider());
 
 
   /*

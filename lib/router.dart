@@ -19,8 +19,10 @@ import 'package:meetmeyou_app/view/contacts/group_description/GroupDescriptionSc
 import 'package:meetmeyou_app/view/contacts/search_profile/searchProfileScreen.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
+import 'package:meetmeyou_app/view/home/chats_screen/chats_screen.dart';
 import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionScreen.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
@@ -168,8 +170,14 @@ class Router {
       case RoutesConstants.eventDiscussionScreen:
         return MaterialPageRoute(builder: (_) => EventDiscussionScreen(), settings: settings);
 
+      case RoutesConstants.newEventDiscussionScreen:
+        return MaterialPageRoute(builder: (_) => NewEventDiscussionScreen(), settings: settings);
+
       case RoutesConstants.multipleDateTimeScreen:
         return MaterialPageRoute(builder: (_) => MultipleDateTmeScreen(), settings: settings);
+
+      case RoutesConstants.chatsScreen:
+        return MaterialPageRoute(builder: (_) => ChatsScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());
