@@ -10,12 +10,16 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/full_screen_loader.dart';
 import 'package:meetmeyou_app/widgets/login_option_widget.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginOptions extends StatelessWidget {
   const LoginOptions({Key? key}) : super(key: key);
@@ -135,7 +139,7 @@ class LoginOptions extends StatelessWidget {
                                   Platform.isIOS
                                       ? GestureDetector(
                                           onTap: () {
-                                            provider.signInWithApple(context);
+                                            signInWithApple(context, provider);
                                           },
                                           child: CustomShape(
                                             child: Center(
@@ -225,4 +229,45 @@ class LoginOptions extends StatelessWidget {
       );
     });
   }
+
+  Future<void> signInWithApple(BuildContext context, LoginOptionProvider provider) async {
+    initiateSignInWithApple(context);
+    var user = await provider.auth.signInWithApple().catchError((e) {
+      provider.setState(ViewState.Idle);
+      DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);
+    });
+    if (user != null) {
+      provider.setState(ViewState.Busy);
+      provider.mmyEngine = locator<MMYEngine>(param1: provider.auth.currentUser);
+      var value = await provider.mmyEngine!.isNew();
+      if (value) {
+        var userProfile = await provider.mmyEngine!.createUserProfile();
+        provider.userDetail.email = userProfile.email;
+        provider.userDetail.firstName = userProfile.firstName;
+        provider.userDetail.lastName = userProfile.lastName;
+        provider.userDetail.profileUrl = userProfile.photoURL;
+        provider.setState(ViewState.Idle);
+        Navigator.pushNamed(context, RoutesConstants.signUpPage,
+            arguments: StringConstants.social);
+      } else {
+        provider.setState(ViewState.Idle);
+        SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            RoutesConstants.dashboardPage, (route) => false, arguments: true);
+      }
+    }
+  }
+
+  void initiateSignInWithApple(BuildContext context) async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName,
+          ]);
+    }catch (error) {
+      print("error with apple sign in");
+    }
+  }
+
 }

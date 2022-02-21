@@ -81,15 +81,17 @@ class InviteFriendsProvider extends BaseProvider {
   }
 
 
-  Future onTapInviteBtn(BuildContext context) async {
+  Future onTapInviteBtn(BuildContext context, List<Contact> contact) async {
     updateValue(true);
-    await mmyEngine!.invitePhoneContacts(checkedContactList).catchError((e) {
+    await mmyEngine!.invitePhoneContacts(contact).catchError((e) {
       updateValue(false);
       DialogHelper.showMessage(context, e.message);
     });
+
+    contact[0].status = 'Invited contact';
     updateValue(false);
-    Navigator.of(context).pop();
-    DialogHelper.showMessage(context, "Invited Successfully");
+  //  Navigator.of(context).pop();
+    DialogHelper.showMessage(context, "Invitation send Successfully");
 
   }
 }

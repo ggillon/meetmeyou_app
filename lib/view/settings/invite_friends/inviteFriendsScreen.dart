@@ -44,8 +44,8 @@ class InviteFriendsScreen extends StatelessWidget {
                         scaler.getTextSize(16),
                         TextAlign.left),
                   ),
-                  SizedBox(height: scaler.getHeight(1)),
-                  searchBar(scaler, provider),
+                //  SizedBox(height: scaler.getHeight(1)),
+                //  searchBar(scaler, provider),
                   SizedBox(height: scaler.getHeight(1)),
                   provider.state == ViewState.Busy
                       ? Expanded(
@@ -71,17 +71,17 @@ class InviteFriendsScreen extends StatelessWidget {
                               ),
                             )
                           : inviteFriendList(scaler, provider),
-                  Container(
-                    child: DialogHelper.btnWidget(
-                        scaler,
-                        context,
-                        "invite".tr(),
-                        ColorConstants.primaryColor, funOnTap: () {
-                      if (provider.checkedContactList.length != 0) {
-                        provider.onTapInviteBtn(context);
-                      }
-                    }),
-                  )
+                  // Container(
+                  //   child: DialogHelper.btnWidget(
+                  //       scaler,
+                  //       context,
+                  //       "invite".tr(),
+                  //       ColorConstants.primaryColor, funOnTap: () {
+                  //     if (provider.checkedContactList.length != 0) {
+                  //       provider.onTapInviteBtn(context);
+                  //     }
+                  //   }),
+                  // )
                 ],
               ),
             ),
@@ -91,30 +91,30 @@ class InviteFriendsScreen extends StatelessWidget {
     );
   }
 
-  Widget searchBar(ScreenScaler scaler, InviteFriendsProvider provider) {
-    return Card(
-      color: ColorConstants.colorWhite,
-      elevation: 3.0,
-      shadowColor: ColorConstants.colorWhite,
-      shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(11)),
-      child: TextFormField(
-        controller: searchBarController,
-        style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
-        decoration: ViewDecoration.inputDecorationForSearchBox(
-            "search_field_name".tr(), scaler),
-        onFieldSubmitted: (data) {
-          // FocusScope.of(context).requestFocus(nodes[1]);
-        },
-        textInputAction: TextInputAction.search,
-        keyboardType: TextInputType.name,
-        onChanged: (value) {
-          provider.updateValue(true);
-        },
-      ),
-    );
-  }
+  // Widget searchBar(ScreenScaler scaler, InviteFriendsProvider provider) {
+  //   return Card(
+  //     color: ColorConstants.colorWhite,
+  //     elevation: 3.0,
+  //     shadowColor: ColorConstants.colorWhite,
+  //     shape: RoundedRectangleBorder(
+  //         borderRadius: scaler.getBorderRadiusCircular(11)),
+  //     child: TextFormField(
+  //       controller: searchBarController,
+  //       style: ViewDecoration.textFieldStyle(
+  //           scaler.getTextSize(12), ColorConstants.colorBlack),
+  //       decoration: ViewDecoration.inputDecorationForSearchBox(
+  //           "search_field_name".tr(), scaler),
+  //       onFieldSubmitted: (data) {
+  //         // FocusScope.of(context).requestFocus(nodes[1]);
+  //       },
+  //       textInputAction: TextInputAction.search,
+  //       keyboardType: TextInputType.name,
+  //       onChanged: (value) {
+  //         provider.updateValue(true);
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget inviteFriendList(ScreenScaler scaler, InviteFriendsProvider provider) {
     return Expanded(
@@ -135,12 +135,12 @@ class InviteFriendsScreen extends StatelessWidget {
                       .capitalize()
                       .substring(0, 1);
               if (searchBarController.text.isEmpty) {
-                return aToZHeader(
+                return aToZHeader(context,
                     provider, currentHeader, header, index, scaler);
               } else if (provider.contactList[index].displayName
                   .toLowerCase()
                   .contains(searchBarController.text)) {
-                return inviteFriendProfileCard(scaler, provider, index);
+                return inviteFriendProfileCard(context, scaler, provider, index);
               } else {
                 return Container();
               }
@@ -149,7 +149,7 @@ class InviteFriendsScreen extends StatelessWidget {
     );
   }
 
-  aToZHeader(InviteFriendsProvider provider, String cHeader, String header,
+  aToZHeader(BuildContext context, InviteFriendsProvider provider, String cHeader, String header,
       int index, scaler) {
     if (index == 0 ? true : (header != cHeader)) {
       return Column(
@@ -159,53 +159,64 @@ class InviteFriendsScreen extends StatelessWidget {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          inviteFriendProfileCard(scaler, provider, index),
+          inviteFriendProfileCard(context, scaler, provider, index),
         ],
       );
     } else {
-      return inviteFriendProfileCard(scaler, provider, index);
+      return inviteFriendProfileCard(context, scaler, provider, index);
     }
   }
 
-  Widget inviteFriendProfileCard(
+  Widget inviteFriendProfileCard(BuildContext context,
       ScreenScaler scaler, InviteFriendsProvider provider, int index) {
-    return Column(
-      children: [
-        Card(
-          elevation: 3.0,
-          shadowColor: ColorConstants.colorWhite,
-          shape: RoundedRectangleBorder(
-              borderRadius: scaler.getBorderRadiusCircular(12)),
-          child: Padding(
-            padding: scaler.getPaddingAll(10.0),
-            child: Row(
-              children: [
-                CommonWidgets.profileCardImageDesign(
-                    scaler, provider.contactList[index].photoURL),
-                SizedBox(width: scaler.getWidth(2.5)),
-                CommonWidgets.profileCardNameAndEmailDesign(
-                    scaler,
-                    provider.contactList[index].displayName,
-                    provider.contactList[index].email),
-                Checkbox(
-                  value: provider.isChecked[index],
-                  onChanged: (bool? value) {
-                    provider.setCheckBoxValue(value!, index);
-                    if (value) {
-                      provider.checkedContactList
-                          .add(provider.contactList[index]);
-                    } else {
-                      provider.checkedContactList
-                          .remove(provider.contactList[index]);
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: scaler.getHeight(0.5)),
-      ],
+    return CommonWidgets.userContactCard(
+        scaler,
+        provider.contactList[index].email,
+        provider.contactList[index].displayName,
+        profileImg: provider.contactList[index].photoURL,
+        searchStatus: provider.contactList[index].status,
+        search: true,
+        addIconTapAction: () {
+          provider.onTapInviteBtn(context, [provider.contactList[index]]);
+   }
     );
+    // return Column(
+    //   children: [
+    //     Card(
+    //       elevation: 3.0,
+    //       shadowColor: ColorConstants.colorWhite,
+    //       shape: RoundedRectangleBorder(
+    //           borderRadius: scaler.getBorderRadiusCircular(12)),
+    //       child: Padding(
+    //         padding: scaler.getPaddingAll(10.0),
+    //         child: Row(
+    //           children: [
+    //             CommonWidgets.profileCardImageDesign(
+    //                 scaler, provider.contactList[index].photoURL),
+    //             SizedBox(width: scaler.getWidth(2.5)),
+    //             CommonWidgets.profileCardNameAndEmailDesign(
+    //                 scaler,
+    //                 provider.contactList[index].displayName,
+    //                 provider.contactList[index].email),
+    //             Checkbox(
+    //               value: provider.isChecked[index],
+    //               onChanged: (bool? value) {
+    //                 provider.setCheckBoxValue(value!, index);
+    //                 if (value) {
+    //                   provider.checkedContactList
+    //                       .add(provider.contactList[index]);
+    //                 } else {
+    //                   provider.checkedContactList
+    //                       .remove(provider.contactList[index]);
+    //                 }
+    //               },
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //     SizedBox(height: scaler.getHeight(0.5)),
+    //   ],
+    // );
   }
 }

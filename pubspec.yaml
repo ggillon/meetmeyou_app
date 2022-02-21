@@ -84,7 +84,7 @@ dependencies:
   firebase_messaging: ^11.2.6
   flutter_chat_bubble: ^2.0.0
   swipe_to: ^0.0.1+8
-  async: ^2.8.2
+  async: ^2.8.1
 
 dev_dependencies:
   flutter_test:

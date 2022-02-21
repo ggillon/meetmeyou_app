@@ -83,44 +83,44 @@ class LoginOptionProvider extends BaseProvider {
     }
   }
 
-  Future<void> signInWithApple(BuildContext context) async {
-    initiateSignInWithApple(context);
-    var user = await auth.signInWithApple().catchError((e) {
-      setState(ViewState.Idle);
-      DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);
-    });
-    if (user != null) {
-      setState(ViewState.Busy);
-      mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-      var value = await mmyEngine!.isNew();
-      if (value) {
-        var userProfile = await mmyEngine!.createUserProfile();
-        userDetail.email = userProfile.email;
-        userDetail.firstName = userProfile.firstName;
-        userDetail.lastName = userProfile.lastName;
-        userDetail.profileUrl = userProfile.photoURL;
-        setState(ViewState.Idle);
-        Navigator.pushNamed(context, RoutesConstants.signUpPage,
-            arguments: StringConstants.social);
-      } else {
-        setState(ViewState.Idle);
-        SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            RoutesConstants.dashboardPage, (route) => false, arguments: true);
-      }
-    }
-  }
-
-  void initiateSignInWithApple(BuildContext context) async {
-    try {
-      final credential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-          ]);
-      }catch (error) {
-      print("error with apple sign in");
-    }
-  }
+  // Future<void> signInWithApple(BuildContext context) async {
+  //   initiateSignInWithApple(context);
+  //   var user = await auth.signInWithApple().catchError((e) {
+  //     setState(ViewState.Idle);
+  //     DialogHelper.showDialogWithOneButton(context, "error".tr(), e.message);
+  //   });
+  //   if (user != null) {
+  //     setState(ViewState.Busy);
+  //     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //     var value = await mmyEngine!.isNew();
+  //     if (value) {
+  //       var userProfile = await mmyEngine!.createUserProfile();
+  //       userDetail.email = userProfile.email;
+  //       userDetail.firstName = userProfile.firstName;
+  //       userDetail.lastName = userProfile.lastName;
+  //       userDetail.profileUrl = userProfile.photoURL;
+  //       setState(ViewState.Idle);
+  //       Navigator.pushNamed(context, RoutesConstants.signUpPage,
+  //           arguments: StringConstants.social);
+  //     } else {
+  //       setState(ViewState.Idle);
+  //       SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
+  //       Navigator.of(context).pushNamedAndRemoveUntil(
+  //           RoutesConstants.dashboardPage, (route) => false, arguments: true);
+  //     }
+  //   }
+  // }
+  //
+  // void initiateSignInWithApple(BuildContext context) async {
+  //   try {
+  //     final credential = await SignInWithApple.getAppleIDCredential(
+  //         scopes: [
+  //         AppleIDAuthorizationScopes.email,
+  //         AppleIDAuthorizationScopes.fullName,
+  //         ]);
+  //     }catch (error) {
+  //     print("error with apple sign in");
+  //   }
+  // }
 
 }
