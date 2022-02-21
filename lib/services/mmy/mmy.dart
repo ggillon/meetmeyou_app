@@ -552,9 +552,11 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> getEventDiscussion(String eid) async {
-    Discussion? discussion = await discussionLib.getDiscussion(_currentUser, eid);
-    if(discussion == null) {
-      discussion = await discussionLib.createDiscussion(_currentUser, (await eventLib.getEvent(_currentUser, eid)).title);
+    Discussion discussion;
+    try{
+      discussion = await discussionLib.getDiscussion(_currentUser, eid);
+    } catch(e) { // For old events
+      discussion = await discussionLib.createDiscussion(_currentUser, (await eventLib.getEvent(_currentUser, eid)).title, eid: eid);
     }
     if(!discussion.participants.containsKey(_currentUser.uid)) {
       discussionLib.inviteUserToDiscussion(_currentUser, _currentUser.uid, eid);
