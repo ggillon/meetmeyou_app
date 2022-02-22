@@ -18,13 +18,15 @@ import 'package:permission_handler/permission_handler.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
-  List<DiscussionMessage> eventChatList = [];
+  List<DiscussionMessage> eventDiscussionList = [];
   Discussion? eventDiscussion;
   EventDetail eventDetail = locator<EventDetail>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  ScrollController scrollController = ScrollController();
   bool? isRightSwipe;
   File? image;
   Timer? clockTimer;
+  bool isJump = true;
 
   bool swipe = false;
 
@@ -33,11 +35,11 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  // @override
-  // void dispose() {
-  //   clockTimer!.cancel();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    clockTimer!.cancel();
+    super.dispose();
+  }
 
   Future<bool> permissionCheck() async {
     var status = await Permission.storage.status;
@@ -98,7 +100,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getEventDiscussion(BuildContext context, bool load) async {
+  Future getEventDiscussion(BuildContext context, bool load, {bool jump = true}) async {
     load == true ? setState(ViewState.Busy) : updateValue(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
@@ -109,10 +111,25 @@ class NewEventDiscussionProvider extends BaseProvider {
     });
 
     if (value != null) {
-      eventChatList = value.messages;
+      eventDiscussionList = value.messages;
       eventDiscussion = value;
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        if (scrollController.hasClients) {
+          jump == true ?
+          scrollController.jumpTo(scrollController.position.maxScrollExtent)
+              : scrollListener();
+        }
+      });
       load == true ? setState(ViewState.Idle) : updateValue(false);
     }
+  }
+
+  scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent){
+      isJump = true;
+    }
+    isJump ? scrollController
+        .jumpTo(scrollController.position.maxScrollExtent) : Container();
   }
 
   bool postMessage = false;
@@ -123,18 +140,18 @@ class NewEventDiscussionProvider extends BaseProvider {
   }
 
   Future postDiscussionMessage(BuildContext context, String type, String text,
-      TextEditingController controller,
+      TextEditingController controller, bool fromContactOrGroup,
       {File? photoFile}) async {
     updatePostMessage(true);
 
-    await mmyEngine!.postDiscussionMessage(eventDetail.eid!, type: type, text: text, photoFile: photoFile)
+    await mmyEngine!.postDiscussionMessage(fromContactOrGroup == true ? discussion!.did : eventDetail.eid!, type: type, text: text, photoFile: photoFile)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });
 
     controller.clear();
-    await getEventDiscussion(context, false);
+    fromContactOrGroup == true ? await getDiscussion(context) : await getEventDiscussion(context, false);
     updatePostMessage(false);
   }
 
@@ -169,19 +186,45 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future startContactDiscussion(BuildContext context, String cid) async {
+  Future startContactDiscussion(BuildContext context) async {
     updateStartDiscussion(true);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!.startContactDiscussion(cid).catchError((e) {
+    var value = await mmyEngine!.startContactDiscussion(discussionDetail.userId.toString()).catchError((e) {
       updateStartDiscussion(false);
       DialogHelper.showMessage(context, e.message);
     });
 
+
     if (value != null) {
       discussion = value;
+      await getDiscussion(context);
       updateStartDiscussion(false);
+    }
+  }
+
+  // Retreive an discussion you're part of
+
+  bool retrieveDiscussion = false;
+
+  updateRetrieveDiscussion(bool val){
+    retrieveDiscussion = true;
+    notifyListeners();
+  }
+
+  Future getDiscussion(BuildContext context) async{
+    updateRetrieveDiscussion(true);
+
+    var value = await mmyEngine!.getDiscussion(discussion!.did).catchError((e) {
+      updateRetrieveDiscussion(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      eventDiscussionList = value.messages;
+      eventDiscussion = value;
+      updateRetrieveDiscussion(false);
     }
   }
 }
