@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
@@ -37,7 +38,6 @@ class NewEventDiscussionScreen extends StatelessWidget {
           backgroundColor: ColorConstants.colorWhite,
         appBar: AppBar(
           backgroundColor: ColorConstants.colorWhite,
-          automaticallyImplyLeading: false,
           centerTitle: false,
           title: Row(
             children: [
@@ -62,9 +62,15 @@ class NewEventDiscussionScreen extends StatelessWidget {
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: (){
-                Navigator.of(context).pop();
+
+                DialogHelper.showDialogWithTwoButtons(context, "leave_discussion".tr(), "sure_to_leave_discussion".tr(), positiveButtonLabel : "leave".tr() ,positiveButtonPress: (){
+                  Navigator.of(context).pop();
+                  provider.leaveDiscussion(context).then((value) {
+                    Navigator.of(context).pop();
+                  });
+                });
               },
-                child: Icon(Icons.arrow_forward_ios)),
+                child: Icon(Icons.logout)),
             SizedBox(width: scaler.getWidth(2.0)),
           ],
         ),

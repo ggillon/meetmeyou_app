@@ -181,5 +181,8 @@
   "available" : "available",
   "could_not_open_map" : "Sorry, Could not open the map.",
   "search_contact_book" : "Search contact book",
-  "chats" : "Chats"
+  "chats" : "Chats",
+  "leave_discussion" : "Leave Discussion",
+  "sure_to_leave_discussion" : "Are you sure to leave Discussion ?",
+  "leave" : "leave"
    }

@@ -97,12 +97,12 @@ class NewEventDiscussionProvider extends BaseProvider {
   }
 
   Future getEventDiscussion(BuildContext context, bool load) async {
-   load == true ? setState(ViewState.Busy) : updateValue(true);
+    load == true ? setState(ViewState.Busy) : updateValue(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value =
         await mmyEngine!.getEventDiscussion(eventDetail.eid!).catchError((e) {
-          load == true ? setState(ViewState.Idle) : updateValue(false);
+      load == true ? setState(ViewState.Idle) : updateValue(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });
 
@@ -120,11 +120,14 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future postDiscussionMessage(BuildContext context, String type, String text, TextEditingController controller,
+  Future postDiscussionMessage(BuildContext context, String type, String text,
+      TextEditingController controller,
       {File? photoFile}) async {
     updatePostMessage(true);
 
-    await mmyEngine!.postDiscussionMessage(eventDetail.eid!, type: type, text: text, photoFile: photoFile)
+    await mmyEngine!
+        .postDiscussionMessage(eventDetail.eid!,
+            type: type, text: text, photoFile: photoFile)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
@@ -133,5 +136,25 @@ class NewEventDiscussionProvider extends BaseProvider {
     controller.clear();
     await getEventDiscussion(context, false);
     updatePostMessage(false);
+  }
+
+// Leave a discussion
+
+  bool leave = false;
+
+  updateLeave(bool val) {
+    leave = val;
+    notifyListeners();
+  }
+
+  Future leaveDiscussion(BuildContext context) async {
+    updateLeave(true);
+
+    await mmyEngine!.leaveDiscussion(eventDetail.eid!).catchError((e) {
+      updateLeave(false);
+      DialogHelper.showMessage(context, "error_message".tr());
+    });
+
+    updateLeave(false);
   }
 }
