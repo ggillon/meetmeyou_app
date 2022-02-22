@@ -39,16 +39,18 @@ class DiscussionMessage {
   Map params;
 
   factory DiscussionMessage.fromMap(Map<String, dynamic> data) {
+    print('from map');
+    print(data);
     return DiscussionMessage(
       did: data['did'],
       mid: data['mid'],
       type: data['type'],
       contactUid: data['contactUid'],
-      contactDisplayName: data['ccontactDisplayName'],
-      contactPhotoURL: data['concontactPhotoURL'],
+      contactDisplayName: data['contactDisplayName'],
+      contactPhotoURL: data['contactPhotoURL'],
       text: data['text'],
-      attachmentURL: data['aattachmentURL'],
-      isReply: data['isReplay'],
+      attachmentURL: data['attachmentURL'],
+      isReply: data['isReply'],
       level: data['level'],
       replyMid: data['replyMid'],
       createdTimeStamp: DateTime.fromMillisecondsSinceEpoch(data['createdTimeStamp']),
@@ -63,11 +65,11 @@ class DiscussionMessage {
       mid: data['mid'],
       type: data['type'],
       contactUid: data['contactUid'],
-      contactDisplayName: data['ccontactDisplayName'],
-      contactPhotoURL: data['concontactPhotoURL'],
+      contactDisplayName: data['contactDisplayName'],
+      contactPhotoURL: data['contactPhotoURL'],
       text: data['text'],
-      attachmentURL: data['aattachmentURL'],
-      isReply: data['isReplay'],
+      attachmentURL: data['attachmentURL'],
+      isReply: data['isReply'],
       level: data['level'],
       replyMid: data['replyMid'],
       createdTimeStamp: DateTime.fromMillisecondsSinceEpoch(data['createdTimeStamp']),
@@ -85,12 +87,12 @@ class DiscussionMessage {
       'contactDisplayName': contactDisplayName,
       'contactPhotoURL': contactPhotoURL,
       'text': text,
-      'atatchmentURL': attachmentURL,
+      'attachmentURL': attachmentURL,
       'isReply': isReply,
       'level': level,
       'replyMid': replyMid,
       'createdTimeStamp': createdTimeStamp.millisecondsSinceEpoch,
-      'editTimeStamp': editedTimeStamp.millisecondsSinceEpoch,
+      'editedTimeStamp': editedTimeStamp.millisecondsSinceEpoch,
       'params': params,
       // messages - stored
     };
