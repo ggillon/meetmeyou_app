@@ -185,5 +185,6 @@
   "leave_discussion" : "Leave Discussion",
   "sure_to_leave_discussion" : "Are you sure to leave Discussion ?",
   "leave" : "leave",
-  "you" : "You"
+  "you" : "You",
+  "loading_chats" : "Loading Chats...."
    }

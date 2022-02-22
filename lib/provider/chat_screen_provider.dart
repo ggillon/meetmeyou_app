@@ -1,5 +1,5 @@
 import 'package:easy_localization/src/public_ext.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';

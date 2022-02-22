@@ -2,7 +2,10 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
+import 'package:meetmeyou_app/view/base_view.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);
@@ -32,7 +35,25 @@ class ChatsScreen extends StatelessWidget {
           )
         ],
       ),
-      body: usersList(context, scaler),
+      body: BaseView<ChatScreenProvider>(
+        onModelReady: (provider){
+          provider.getUserDiscussion(context);
+        },
+        builder: (context, provider, _){
+          return provider.state == ViewState.Busy ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(child: CircularProgressIndicator()),
+              SizedBox(height: scaler.getHeight(1)),
+              Text("loading_chats".tr()).mediumText(
+                  ColorConstants.primaryColor,
+                  scaler.getTextSize(10),
+                  TextAlign.left),
+            ],
+          ) : usersList(context, scaler);
+        },
+      )
     );
   }
 
