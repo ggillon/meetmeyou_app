@@ -62,11 +62,34 @@ class GroupDescriptionScreen extends StatelessWidget {
                     provider.membersLength == 0.toString() ||
                             provider.membersLength == null
                         ? Container()
-                        : Text("${provider.membersLength}" +
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            child: Text("${provider.membersLength}" +
                                 " " +
                                 "contacts_in_group".tr())
-                            .boldText(ColorConstants.colorBlack,
+                                .boldText(ColorConstants.colorBlack,
                                 scaler.getTextSize(10), TextAlign.left),
+                          ),
+                        ),
+                        SizedBox(width: scaler.getWidth(1.0)),
+                        GestureDetector(
+                          onTap: (){
+                            provider.discussionDetail.userId = provider.groupDetail.groupCid;
+                            provider.discussionDetail.title = provider.groupDetail.groupName;
+                            provider.discussionDetail.photoUrl = provider.groupDetail.groupPhotoUrl;
+                            Navigator.pushNamed(
+                                context, RoutesConstants.newEventDiscussionScreen, arguments: true);
+                          },
+                          child: Padding(
+                            padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+                            child: Icon(Icons.message,
+                                color: ColorConstants.primaryColor, size: 28)),
+                        )
+                      ],
+                    ),
                     SizedBox(height: scaler.getHeight(1.5)),
                     provider.state == ViewState.Busy
                         ? Expanded(

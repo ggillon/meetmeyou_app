@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
+import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
 import 'package:meetmeyou_app/provider/choose_event_provider.dart';
 import 'package:meetmeyou_app/provider/create_event_provider.dart';
 import 'package:meetmeyou_app/provider/event_attending_provider.dart';
@@ -50,6 +52,7 @@ void setupLocator() {
   locator.registerLazySingleton<CalendarDetail>(() => CalendarDetail());
   locator.registerLazySingleton<MultipleDateOption>(() => MultipleDateOption());
   locator.registerLazySingleton<DynamicLinksApi>(() => DynamicLinksApi());
+  locator.registerLazySingleton<DiscussionDetail>(() => DiscussionDetail());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -81,6 +84,7 @@ void setupLocator() {
   locator.registerFactory<OrganizeEventCardProvider>(() => OrganizeEventCardProvider());
   locator.registerFactory<MultipleDateTimeProvider>(() => MultipleDateTimeProvider());
   locator.registerFactory<NewEventDiscussionProvider>(() => NewEventDiscussionProvider());
+  locator.registerFactory<ChatScreenProvider>(() => ChatScreenProvider());
 
 
   /*

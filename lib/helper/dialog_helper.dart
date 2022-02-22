@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
@@ -31,7 +32,7 @@ class DialogHelper {
         return AlertDialog(
           title: Text(title, textAlign: TextAlign.center),
           content: Text(content, textAlign: TextAlign.center),
-          shape:  RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
           actions: <Widget>[
@@ -109,7 +110,7 @@ class DialogHelper {
 
   static PreferredSizeWidget appBarWithBack(
       ScreenScaler scaler, BuildContext context,
-      {showEdit = false, VoidCallback? editClick}) {
+      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick}) {
     return AppBar(
       elevation: 0,
       backgroundColor: ColorConstants.colorWhite,
@@ -133,21 +134,28 @@ class DialogHelper {
       ),
       actions: [
         showEdit
-            ? InkWell(
-                onTap: editClick!,
-                child: Padding(
-                  padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
-                  child: ImageView(
-                      width: scaler.getWidth(4.5),
-                      height: scaler.getWidth(4.5),
-                      path: ImageConstants.ic_edit),
-                ))
+            ? GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: message == true
+                    ? messageIconClick!
+                    : editClick!,
+            child: Padding(
+                        padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+                        child: message == true
+                            ? Icon(Icons.message,
+                            color: ColorConstants.primaryColor, size: 28)
+                            : ImageView(
+                            width: scaler.getWidth(4.5),
+                            height: scaler.getWidth(4.5),
+                            path: ImageConstants.ic_edit),
+                      ))
             : Container(),
       ],
     );
   }
 
- static Widget btnWidget(ScreenScaler scaler, BuildContext context, String txt, Color color,
+  static Widget btnWidget(
+      ScreenScaler scaler, BuildContext context, String txt, Color color,
       {Color? txtColor, VoidCallback? funOnTap}) {
     return GestureDetector(
       onTap: funOnTap,

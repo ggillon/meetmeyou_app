@@ -31,7 +31,7 @@ class Discussion {
   String adminDisplayName;
   String title;
   String photoURL;
-  Map participants;
+  Map<String, dynamic> participants;
   DateTime timeStamp;
   Map params;
   List<DiscussionMessage> messages;

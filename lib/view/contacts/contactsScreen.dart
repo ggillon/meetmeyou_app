@@ -284,6 +284,7 @@ class ContactsScreen extends StatelessWidget {
         ? GestureDetector(
             onTap: () {
               provider.setContactsValue(cList[index], false, "");
+              provider.discussionDetail.userId = cList[index].cid;
               Navigator.pushNamed(
                 context,
                 RoutesConstants.contactDescription, arguments: true

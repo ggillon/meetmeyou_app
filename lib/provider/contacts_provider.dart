@@ -4,6 +4,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
@@ -16,6 +17,7 @@ class ContactsProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   GroupDetail groupDetail = locator<GroupDetail>();
   EventDetail eventDetail = locator<EventDetail>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
   int _toggle = 0;
 
   int get toggle => _toggle;
@@ -163,29 +165,5 @@ class ContactsProvider extends BaseProvider {
       dashboardProvider.updateInvitesNotificationCount();
     }
     setState(ViewState.Idle);
-  }
-
-  // chat in contact and group.
-
-  Discussion? discussion;
-
-  bool startDiscussion = false;
-
-  updateStartDiscussion(bool val) {
-    startDiscussion = val;
-    notifyListeners();
-  }
-
-  Future startContactDiscussion(BuildContext context, String cid) async {
-    updateStartDiscussion(true);
-
-    var value = await mmyEngine!.startContactDiscussion(cid).catchError((e) {
-      updateStartDiscussion(false);
-      DialogHelper.showMessage(context, e.message);
-    });
-
-    if (value != null) {
-      updateStartDiscussion(false);
-    }
   }
 }

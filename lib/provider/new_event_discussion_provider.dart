@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -20,6 +21,7 @@ class NewEventDiscussionProvider extends BaseProvider {
   List<DiscussionMessage> eventChatList = [];
   Discussion? eventDiscussion;
   EventDetail eventDetail = locator<EventDetail>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
   bool? isRightSwipe;
   File? image;
   Timer? clockTimer;
@@ -125,9 +127,7 @@ class NewEventDiscussionProvider extends BaseProvider {
       {File? photoFile}) async {
     updatePostMessage(true);
 
-    await mmyEngine!
-        .postDiscussionMessage(eventDetail.eid!,
-            type: type, text: text, photoFile: photoFile)
+    await mmyEngine!.postDiscussionMessage(eventDetail.eid!, type: type, text: text, photoFile: photoFile)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
@@ -156,5 +156,32 @@ class NewEventDiscussionProvider extends BaseProvider {
     });
 
     updateLeave(false);
+  }
+
+  // chat in contact and group.
+// start discussion bw contact and group
+  Discussion? discussion;
+
+  bool startDiscussion = false;
+
+  updateStartDiscussion(bool val) {
+    startDiscussion = val;
+    notifyListeners();
+  }
+
+  Future startContactDiscussion(BuildContext context, String cid) async {
+    updateStartDiscussion(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.startContactDiscussion(cid).catchError((e) {
+      updateStartDiscussion(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      discussion = value;
+      updateStartDiscussion(false);
+    }
   }
 }

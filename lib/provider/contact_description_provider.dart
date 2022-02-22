@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -13,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactDescriptionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
 
   makePhoneCall(BuildContext context) async {
     var url = 'tel://${userDetail.phone}';

@@ -98,33 +98,6 @@ class _HomePageState extends State<HomePage>
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return SafeArea(
       child: Scaffold(
-          //     body: Container(
-          //         child: Center(
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       Text("Home Page").semiBoldText(ColorConstants.colorBlack,
-          //           scaler.getTextSize(10), TextAlign.center),
-          //       SizedBox(
-          //         height: scaler.getHeight(3),
-          //       ),
-          //       GestureDetector(
-          //         onTap: () {
-          //           auth.signOut();
-          //           UserDetail userDetail = locator<UserDetail>();
-          //           userDetail.profileUrl = null;
-          //           SharedPref.clearSharePref();
-          //           //SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, false);
-          //           Navigator.of(context).pushNamedAndRemoveUntil(
-          //               RoutesConstants.loginOptions, (route) => false);
-          //         },
-          //         child: Text("Sign Out").semiBoldText(ColorConstants.primaryColor,
-          //             scaler.getTextSize(14), TextAlign.center),
-          //       ),
-          //     ],
-          //   ),
-          // ))
           body: BaseView<HomePageProvider>(
         onModelReady: (provider) async {
           this.provider = provider;

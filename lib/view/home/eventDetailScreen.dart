@@ -200,7 +200,7 @@ class EventDetailScreen extends StatelessWidget {
                                 });
                               } else if (provider.eventDetail.eventBtnStatus ==
                                   "cancelled") {
-                                if (provider.userDetail.cid ==
+                                if (provider.auth.currentUser!.uid ==
                                     provider.eventDetail.organiserId!) {
                                   CommonWidgets.eventCancelBottomSheet(
                                       context, scaler, delete: () {
@@ -328,7 +328,7 @@ class EventDetailScreen extends StatelessWidget {
                                         ColorConstants.colorGray,
                                         scaler.getTextSize(8),
                                         TextAlign.center),
-                                    provider.userDetail.cid == provider.eventDetail.organiserId && provider.eventDetail.eventBtnStatus ==
+                                    provider.auth.currentUser!.uid == provider.eventDetail.organiserId && provider.eventDetail.eventBtnStatus ==
                                         "edit" ? Expanded(child: Container(
                                       alignment: Alignment.centerRight,
                                         child: GestureDetector(
@@ -797,7 +797,7 @@ class EventDetailScreen extends StatelessWidget {
   Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen);
+        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: false);
       },
       child: Card(
         shape: RoundedRectangleBorder(

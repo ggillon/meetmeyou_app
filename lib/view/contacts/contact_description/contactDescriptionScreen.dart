@@ -23,14 +23,23 @@ class ContactDescriptionScreen extends StatelessWidget {
   ContactDescriptionScreen({Key? key, required this.showEventScreen}) : super(key: key);
 
   bool showEventScreen;
+  ContactDescriptionProvider provider = ContactDescriptionProvider();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
 
     return Scaffold(
         backgroundColor: ColorConstants.colorWhite,
-        appBar: DialogHelper.appBarWithBack(scaler, context),
+        appBar:  provider.userDetail.checkForInvitation! ? DialogHelper.appBarWithBack(scaler, context) : DialogHelper.appBarWithBack(scaler, context, showEdit: true, message: true, messageIconClick: (){
+         provider.discussionDetail.title = "${provider.userDetail.firstName} ${provider.userDetail.lastName}";
+         provider.discussionDetail.photoUrl = provider.userDetail.profileUrl;
+          Navigator.pushNamed(
+              context, RoutesConstants.newEventDiscussionScreen, arguments: true);
+        }),
         body: BaseView<ContactDescriptionProvider>(
+          onModelReady: (provider){
+            this.provider = provider;
+          },
             builder: (builder, provider, _) {
               return LayoutBuilder(builder: (context, constraint) {
                 return SingleChildScrollView(

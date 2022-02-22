@@ -178,11 +178,11 @@ class EventDetailProvider extends BaseProvider {
       event = value;
       updateEventValue(false);
       eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(
-          event!, userDetail.cid.toString());
+          event!, auth.currentUser!.uid);
       eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
-          event!, userDetail.cid.toString());
+          event!, auth.currentUser!.uid);
       eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(
-          event!, userDetail.cid.toString(),
+          event!, auth.currentUser!.uid,
           textColor: false);
       eventDetail.eventMapData = event!.invitedContacts;
       eventDetail.organiserId = event!.organiserID;
