@@ -331,9 +331,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<void> invitePhoneContacts(List<Contact> contacts) async {
-    List<String> emails = [];
-    for(Contact contact in contacts) emails.add(contact.email);
-    sendInvitesEmail(emails);
+    for(Contact contact in contacts) inviteProfile(contact.cid);
   }
 
   @override
@@ -561,7 +559,7 @@ class MMY implements MMYEngine {
     try{
       discussion = await discussionLib.getDiscussion(_currentUser, eid);
     } catch(e) { // For old events
-      discussion = await discussionLib.createDiscussion(_currentUser, (await eventLib.getEvent(_currentUser, eid)).title);
+      discussion = await discussionLib.createDiscussion(_currentUser, (await eventLib.getEvent(_currentUser, eid)).title, eid: eid);
     }
     if(!discussion.participants.containsKey(_currentUser.uid)) {
       discussionLib.inviteUserToDiscussion(_currentUser, _currentUser.uid, eid);

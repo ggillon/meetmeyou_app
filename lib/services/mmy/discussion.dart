@@ -59,7 +59,7 @@ Future<Discussion> createDiscussion(User currentUser, String title, {String? eid
     participants.addAll(invited);
   }
 
-  return Discussion(
+  Discussion discussion = Discussion(
     did: eid ?? idGenerator(),
     type: (eid==null) ? EVENT_DISCUSSION : USER_DISCUSSION,
     title: title,
@@ -69,6 +69,8 @@ Future<Discussion> createDiscussion(User currentUser, String title, {String? eid
     participants: participants,
     timeStamp: DateTime.now(),
   );
+  await db.setDiscussion(discussion);
+  return discussion;
 }
 
 Future<Discussion> getDiscussion(User currentUser, String did) async {
@@ -101,7 +103,7 @@ Future<void> postMessage(User currentUser, String did, String type, String text,
   for(String uid in discussion.participants.keys) {
     discussion.participants[uid] = MESSAGES_UNREAD;
   }
-  discussion.participants[currentUser] = MESSAGES_READ;
+  discussion.participants[currentUser.uid] = MESSAGES_READ;
   await db.setDiscussion(discussion);
   await db.setDiscussionMessage(message);
 }
