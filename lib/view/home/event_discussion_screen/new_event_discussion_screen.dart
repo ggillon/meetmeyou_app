@@ -240,14 +240,9 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   onRightSwipe: () {
-                                                    provider.isRightSwipe =
-                                                        true;
+                                                    provider.isRightSwipe = true;
                                                     FocusScope.of(context).requestFocus(messageFocusNode);
-                                                    provider.replyMessage =
-                                                        provider
-                                                            .eventDiscussionList[
-                                                                index]
-                                                            .text;
+                                                    provider.replyMessage = provider.eventDiscussionList[index].text;
                                                    // provider.userName ="you".tr();
                                                     provider.updateSwipe(true);
                                                   },
@@ -334,14 +329,9 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   onRightSwipe: () {
-                                                    provider.isRightSwipe =
-                                                        true;
+                                                    provider.isRightSwipe = true;
                                                     FocusScope.of(context).requestFocus(messageFocusNode);
-                                                    provider.replyMessage =
-                                                        provider
-                                                            .eventDiscussionList[
-                                                                index]
-                                                            .text;
+                                                    provider.replyMessage = provider.eventDiscussionList[index].text;
                                                    // provider.userName = "you".tr();
                                                     provider.updateSwipe(true);
                                                   },
