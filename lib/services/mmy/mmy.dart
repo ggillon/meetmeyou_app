@@ -207,8 +207,8 @@ class MMY implements MMYEngine {
 
   @override
   Future<Profile> updateProfilePicture(File file) async {
-   String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
-   return profileLib.updateProfile(_currentUser, photoUrl: photoURL);
+    String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
+    return profileLib.updateProfile(_currentUser, photoUrl: photoURL);
   }
 
   @override
@@ -226,7 +226,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Contact> getContact(String cid) async {
-     return contactLib.getContact(_currentUser, cid: cid);
+    return contactLib.getContact(_currentUser, cid: cid);
   }
 
   @override
@@ -376,7 +376,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<String> eventUserStatus(String eid) async {
-     return (await eventLib.getEvent(_currentUser, eid)).invitedContacts[_currentUser.uid];
+    return (await eventLib.getEvent(_currentUser, eid)).invitedContacts[_currentUser.uid];
   }
 
   @override

@@ -269,7 +269,7 @@ class FirestoreDB implements Database {
   @override
   Future<List<Discussion>> getUserDiscussions(String uid) {
     return _service.getListDataWhereFieldIsPresent(
-        path: APIPath.events(),
+        path: APIPath.discussions(),
         field: 'participants.$uid',
         builder: (data) {
           return Discussion.fromMap(data);
