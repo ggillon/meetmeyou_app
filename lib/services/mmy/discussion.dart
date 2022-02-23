@@ -61,7 +61,7 @@ Future<Discussion> createDiscussion(User currentUser, String title, {String? eid
 
   Discussion discussion = Discussion(
     did: eid ?? idGenerator(),
-    type: (eid==null) ? EVENT_DISCUSSION : USER_DISCUSSION,
+    type: (eid!=null) ? EVENT_DISCUSSION : USER_DISCUSSION,
     title: title,
     adminUid: admin.uid,
     adminDisplayName: admin.displayName,
@@ -110,18 +110,19 @@ Future<void> postMessage(User currentUser, String did, String type, String text,
 
 Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   final db = FirestoreDB(uid: currentUser.uid);
-  List<Discussion> discussions = [];
-  for(Discussion discussion in await db.getUserDiscussions(currentUser.uid)) {
+  List<Discussion> discussions = await db.getUserDiscussions(currentUser.uid);
+  List<Discussion> results = [];
+  for(Discussion discussion in discussions) {
     if(discussion.participants[currentUser.uid] == MESSAGES_UNREAD) {
       discussion.unread = true;
-      discussions.add(discussion);
+      results.add(discussion);
     }
-    if(discussion.participants[currentUser.uid] == MESSAGES_READ) {
+    if(discussion.participants[currentUser.uid] != MESSAGES_UNREAD) {
       discussion.unread = false;
-      discussions.add(discussion);
+      results.add(discussion);
     }
   }
-  return discussions;
+  return results;
 }
 
 Future<void> removeUserFromDiscussion(User currentUser, String did, String uid) async {
@@ -150,7 +151,7 @@ Future<Discussion?> findDiscussion(User currentUser, List<String> UIDs) async {
   Discussion? result = null;
   List<Discussion> userDiscussions = await getUserDiscussions(currentUser);
   for(Discussion discussion in userDiscussions) {
-    if(discussion.adminUid == currentUser.uid) {
+    if(true) { // Adapt later
       bool test1 = true;
       bool test2 = true;
       for(String uid in UIDs) {

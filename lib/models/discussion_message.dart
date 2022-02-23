@@ -39,8 +39,6 @@ class DiscussionMessage {
   Map params;
 
   factory DiscussionMessage.fromMap(Map<String, dynamic> data) {
-    print('from map');
-    print(data);
     return DiscussionMessage(
       did: data['did'],
       mid: data['mid'],
