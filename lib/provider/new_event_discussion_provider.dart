@@ -27,6 +27,8 @@ class NewEventDiscussionProvider extends BaseProvider {
   File? image;
   Timer? clockTimer;
   bool isJump = true;
+  String replyMessage = "";
+  String userName = "";
 
   bool swipe = false;
 
@@ -141,16 +143,18 @@ class NewEventDiscussionProvider extends BaseProvider {
 
   Future postDiscussionMessage(BuildContext context, String type, String text,
       TextEditingController controller, bool fromContactOrGroup,
-      {File? photoFile}) async {
+      {File? photoFile, String? replyMid}) async {
     updatePostMessage(true);
 
-    await mmyEngine!.postDiscussionMessage(fromContactOrGroup == true ? discussion!.did : eventDetail.eid!, type: type, text: text, photoFile: photoFile)
+    await mmyEngine!.postDiscussionMessage(fromContactOrGroup == true ? discussion!.did : eventDetail.eid!, type: type, text: text, photoFile: photoFile, replyMid: replyMid)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });
 
     controller.clear();
+    isRightSwipe = false;
+    replyMessage = "";
     fromContactOrGroup == true ? await getDiscussion(context) : await getEventDiscussion(context, false);
     updatePostMessage(false);
   }

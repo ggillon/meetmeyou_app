@@ -1,15 +1,21 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/models/discussion_message.dart';
 
 class ReplyMessageWidget extends StatelessWidget {
-  // final Message message;
+  final String message;
+  final String userName;
+  final bool isUserName;
   final VoidCallback onCancelReply;
   final bool showCloseIcon;
 
   const ReplyMessageWidget({
-    // @required this.message,
+    required this.message,
+    required this.userName,
+    required this.isUserName,
     required this.onCancelReply,
     required this.showCloseIcon,
     Key? key,
@@ -40,7 +46,7 @@ class ReplyMessageWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child:  Text("You").boldText(ColorConstants.primaryColor, scaler.getTextSize(10.0), TextAlign.left)),
+                  Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.0), TextAlign.left)),
                   showCloseIcon == true ?
                   GestureDetector(
                     child: Icon(Icons.close, size: 16),
@@ -48,8 +54,7 @@ class ReplyMessageWidget extends StatelessWidget {
                   ) : Container()
                 ],
               ),
-              Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua")
+              Text(message)
                   .regularText(ColorConstants.colorGray,
                       scaler.getTextSize(10), TextAlign.left,
                       isHeight: true),

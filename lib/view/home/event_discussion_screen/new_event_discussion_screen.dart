@@ -28,6 +28,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
   bool fromContactOrGroup;
   NewEventDiscussionProvider provider = NewEventDiscussionProvider();
   TextEditingController messageController = TextEditingController();
+  var messageFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +37,16 @@ class NewEventDiscussionScreen extends StatelessWidget {
       onModelReady: (provider) {
         this.provider = provider;
         fromContactOrGroup == true
-            ? provider.startContactDiscussion(
-                context)
+            ? provider.startContactDiscussion(context)
             : provider.getEventDiscussion(context, true);
 
-       // print(provider.discussionDetail.userId.toString());
+        // print(provider.discussionDetail.userId.toString());
         const milliSecTime = const Duration(milliseconds: 500);
 
         provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
           fromContactOrGroup == true
-              ?  provider.getDiscussion(context) : provider.getEventDiscussion(context, false, jump: false);
+              ? provider.getDiscussion(context)
+              : provider.getEventDiscussion(context, false, jump: false);
         });
       },
       builder: (context, provider, _) {
@@ -132,13 +133,16 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             Expanded(
                               child: NotificationListener<ScrollNotification>(
                                 onNotification: (scrollNotification) {
-                                  if (provider.scrollController.position.userScrollDirection ==
+                                  if (provider.scrollController.position
+                                          .userScrollDirection ==
                                       ScrollDirection.reverse) {
                                     provider.isJump = false;
-                                  } else if (provider.scrollController.position.userScrollDirection ==
+                                  } else if (provider.scrollController.position
+                                          .userScrollDirection ==
                                       ScrollDirection.forward) {
                                     provider.isJump = false;
-                                  } else if (provider.scrollController.position.userScrollDirection ==
+                                  } else if (provider.scrollController.position
+                                          .userScrollDirection ==
                                       ScrollDirection.idle) {
                                     provider.isJump = false;
                                   }
@@ -146,127 +150,205 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                 },
                                 child: ListView.builder(
                                     controller: provider.scrollController,
-                                  //  physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount:
                                         provider.eventDiscussionList.length,
                                     itemBuilder: (context, index) {
+                                      provider.userName = provider.eventDiscussionList[index].contactUid == provider.auth.currentUser?.uid ? "you".tr() : provider.eventDiscussionList[index].contactDisplayName;
                                       return (provider
-                                                  .eventDiscussionList[index].contactUid) !=
+                                                  .eventDiscussionList[index]
+                                                  .contactUid) !=
                                               provider.auth.currentUser!.uid
                                           ? Column(
-                                            children: [
-                                              SwipeTo(
+                                              children: [
+                                                SwipeTo(
                                                   child: ChatBubble(
                                                     clipper: ChatBubbleClipper3(
                                                         type: BubbleType
                                                             .receiverBubble),
                                                     backGroundColor:
-                                                        ColorConstants.colorWhite,
-                                                    margin:
-                                                        EdgeInsets.only(top: 20),
+                                                        ColorConstants
+                                                            .colorWhite,
+                                                    margin: EdgeInsets.only(
+                                                        top: 20),
                                                     child: Container(
-                                                      constraints: BoxConstraints(
-                                                        maxWidth:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                0.7,
+                                                      constraints:
+                                                          BoxConstraints(
+                                                        maxWidth: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.7,
                                                       ),
-                                                      child: Column(
+                                                      child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
+                                                          ? Column(
+                                                        crossAxisAlignment : CrossAxisAlignment.start,
+                                                        children: [
+                                                          sendReplySwipe(provider.eventDiscussionList[index].replyMid),
+                                                          SizedBox(height: scaler.getHeight(0.1)),
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(width: scaler.getWidth(0.5)),
+                                                              Text(provider.eventDiscussionList[index].text).regularText(
+                                                                  ColorConstants
+                                                                      .colorBlack,
+                                                                  scaler
+                                                                      .getTextSize(
+                                                                      10),
+                                                                  TextAlign
+                                                                      .left,
+                                                                  isHeight:
+                                                                  true),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      )
+                                                          :
+                                                      Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Text(
-                                                              provider.eventDiscussionList[index].contactDisplayName)
+                                                          Text(provider
+                                                                  .eventDiscussionList[
+                                                                      index]
+                                                                  .contactDisplayName)
                                                               .boldText(
                                                                   ColorConstants
                                                                       .colorRed,
                                                                   scaler
                                                                       .getTextSize(
                                                                           10.0),
-                                                                  TextAlign.left),
+                                                                  TextAlign
+                                                                      .left),
                                                           Text(provider
-                                                              .eventDiscussionList[
-                                                          index]
-                                                              .text)
+                                                                  .eventDiscussionList[
+                                                                      index]
+                                                                  .text)
                                                               .regularText(
                                                                   ColorConstants
                                                                       .colorBlack,
                                                                   scaler
                                                                       .getTextSize(
                                                                           10),
-                                                                  TextAlign.left,
-                                                                  isHeight: true),
+                                                                  TextAlign
+                                                                      .left,
+                                                                  isHeight:
+                                                                      true),
                                                         ],
                                                       ),
                                                     ),
                                                   ),
                                                   onRightSwipe: () {
-                                                    provider.isRightSwipe = true;
+                                                    provider.isRightSwipe =
+                                                        true;
+                                                    FocusScope.of(context).requestFocus(messageFocusNode);
+                                                    provider.replyMessage =
+                                                        provider
+                                                            .eventDiscussionList[
+                                                                index]
+                                                            .text;
+                                                   // provider.userName ="you".tr();
                                                     provider.updateSwipe(true);
                                                   },
                                                 ),
-                                              SizedBox(height: scaler.getHeight(0.5)),
-                                            ],
-                                          )
+                                                SizedBox(
+                                                    height:
+                                                        scaler.getHeight(0.5)),
+                                              ],
+                                            )
                                           : Column(
-                                            children: [
-                                              SwipeTo(
+                                              children: [
+                                                SwipeTo(
                                                   child: ChatBubble(
+                                                    elevation : (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? 0.0 : 2,
                                                     clipper: ChatBubbleClipper3(
-                                                        type:
-                                                            BubbleType.sendBubble),
-                                                    alignment: Alignment.topRight,
-                                                    margin:
-                                                        EdgeInsets.only(top: 20),
+                                                        type: BubbleType
+                                                            .sendBubble),
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    margin: EdgeInsets.only(
+                                                        top: 20),
                                                     backGroundColor:
-                                                        ColorConstants.primaryColor,
+                                                    (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants
+                                                            .primaryColor,
                                                     child: Container(
-                                                      constraints: BoxConstraints(
-                                                        maxWidth:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                0.7,
+                                                      constraints:
+                                                          BoxConstraints(
+                                                        maxWidth: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.7,
                                                       ),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text("you".tr())
-                                                              .boldText(
-                                                                  Colors.limeAccent,
-                                                                  scaler
-                                                                      .getTextSize(
-                                                                          10.0),
-                                                                  TextAlign.left),
-                                                          Text(provider
-                                                                      .eventDiscussionList[
-                                                                          index]
-                                                                      .text)
-                                                              .regularText(
-                                                                  ColorConstants
-                                                                      .colorWhite,
-                                                                  scaler
-                                                                      .getTextSize(
-                                                                          10),
-                                                                  TextAlign.left,
-                                                                  isHeight: true),
-                                                        ],
-                                                      ),
+                                                      child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
+                                                          ? Column(
+                                                        crossAxisAlignment : CrossAxisAlignment.start,
+                                                              children: [
+                                                                sendReplySwipe(provider.eventDiscussionList[index].replyMid),
+                                                                SizedBox(height: scaler.getHeight(0.1)),
+                                                                Row(
+                                                                  children: [
+                                                                    SizedBox(width: scaler.getWidth(0.5)),
+                                                                    Text(provider.eventDiscussionList[index].text).regularText(
+                                                                        ColorConstants
+                                                                            .colorBlack,
+                                                                        scaler
+                                                                            .getTextSize(
+                                                                            10),
+                                                                        TextAlign
+                                                                            .left,
+                                                                        isHeight:
+                                                                        true),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text("you".tr()).boldText(
+                                                                    Colors
+                                                                        .limeAccent,
+                                                                    scaler.getTextSize(
+                                                                        10.0),
+                                                                    TextAlign
+                                                                        .left),
+                                                                Text(provider
+                                                                        .eventDiscussionList[
+                                                                            index]
+                                                                        .text)
+                                                                    .regularText(
+                                                                        ColorConstants
+                                                                            .colorWhite,
+                                                                        scaler.getTextSize(
+                                                                            10),
+                                                                        TextAlign
+                                                                            .left,
+                                                                        isHeight:
+                                                                            true),
+                                                              ],
+                                                            ),
                                                     ),
                                                   ),
                                                   onRightSwipe: () {
-                                                    provider.isRightSwipe = true;
+                                                    provider.isRightSwipe =
+                                                        true;
+                                                    FocusScope.of(context).requestFocus(messageFocusNode);
+                                                    provider.replyMessage =
+                                                        provider
+                                                            .eventDiscussionList[
+                                                                index]
+                                                            .text;
+                                                   // provider.userName = "you".tr();
                                                     provider.updateSwipe(true);
                                                   },
                                                 ),
-                                              SizedBox(height: scaler.getHeight(0.5)),
-                                            ],
-                                          );
+                                                SizedBox(height: scaler.getHeight(0.5)),
+                                              ],
+                                            );
                                     }),
                               ),
                             ),
@@ -279,7 +361,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       provider.isRightSwipe == true
-                                          ? replySwipe()
+                                          ? replySwipe(context, provider.replyMessage)
                                           : Container(),
                                       writeSomethingTextField(
                                           context, scaler, provider),
@@ -329,6 +411,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
     return TextFormField(
       textCapitalization: TextCapitalization.sentences,
       controller: messageController,
+      focusNode: messageFocusNode,
       style: ViewDecoration.textFieldStyle(
           scaler.getTextSize(10), ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationWithCurve(
@@ -337,7 +420,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
         messageController.text.isEmpty
             ? Container()
             : provider.postDiscussionMessage(context, TEXT_MESSAGE,
-                messageController.text, messageController, fromContactOrGroup);
+                messageController.text, messageController, fromContactOrGroup,
+                replyMid: provider.replyMessage);
       },
       textInputAction: TextInputAction.send,
       keyboardType: TextInputType.text,
@@ -347,20 +431,22 @@ class NewEventDiscussionScreen extends StatelessWidget {
   static final inputTopRadius = Radius.circular(12);
   static final inputBottomRadius = Radius.circular(24);
 
-  Widget sendReplySwipe() => Container(
+  Widget sendReplySwipe(String message) => Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.1),
           borderRadius: BorderRadius.all(inputTopRadius),
         ),
         child: ReplyMessageWidget(
-          // message: widget.replyMessage,
+          message: message,
+          userName: provider.userName,
+          isUserName: true,
           onCancelReply: () {},
           showCloseIcon: false,
         ),
       );
 
-  Widget replySwipe() => Container(
+  Widget replySwipe(BuildContext context, String replyMessage) => Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.1),
@@ -371,9 +457,12 @@ class NewEventDiscussionScreen extends StatelessWidget {
           // ),
         ),
         child: ReplyMessageWidget(
-          // message: widget.replyMessage,
+          message: replyMessage,
+          userName: provider.userName,
+          isUserName: false,
           onCancelReply: () {
             provider.isRightSwipe = false;
+            hideKeyboard(context);
             provider.updateSwipe(true);
           },
           showCloseIcon: true,
