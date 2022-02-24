@@ -1,7 +1,6 @@
 
 import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -25,6 +24,7 @@ import 'event_chat_message.dart' as messageLib;
 import 'date_option.dart' as dateLib;
 import 'discussion.dart' as discussionLib;
 import 'search.dart' as searchLib;
+import 'notification.dart' as notificationLib;
 
 
 abstract class MMYEngine {
@@ -32,7 +32,7 @@ abstract class MMYEngine {
   /// PROFILE ///
 
   /// Get the user profile or create new one
-  Future<Profile> getUserProfile({bool user = true, String? uid});
+  Future<Profile> getUserProfile();
   /// Update the user profile
   Future<Profile> updateProfile({String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters});
   /// Get the user profile or create new one, leveraging the Auth user info
@@ -143,7 +143,7 @@ abstract class MMYEngine {
 
   /// CALENDAR FUNCTIONS
   /// Get the CalendarEvents from mobile or web calendar
-  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context);
+  Future<List<CalendarEvent>> getCalendarEvents();
   /// Set the parameters for calender
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
@@ -186,8 +186,10 @@ class MMY implements MMYEngine {
   final User _currentUser;
 
   @override
-  Future<Profile> getUserProfile({bool user = true, String? uid}) {
-    return profileLib.getUserProfile(_currentUser, user: user, uid: uid);
+  Future<Profile> getUserProfile() async {
+    Profile profile = await profileLib.getUserProfile(_currentUser);
+    await notificationLib.setToken(_currentUser); // set token for notification
+    return profile;
   }
 
   @override
@@ -207,8 +209,8 @@ class MMY implements MMYEngine {
 
   @override
   Future<Profile> updateProfilePicture(File file) async {
-    String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
-    return profileLib.updateProfile(_currentUser, photoUrl: photoURL);
+   String photoURL = await storageLib.storeProfilePicture(file, uid: _currentUser.uid);
+   return profileLib.updateProfile(_currentUser, photoUrl: photoURL);
   }
 
   @override
@@ -226,7 +228,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Contact> getContact(String cid) async {
-    return contactLib.getContact(_currentUser, cid: cid);
+     return contactLib.getContact(_currentUser, cid: cid);
   }
 
   @override
@@ -376,11 +378,12 @@ class MMY implements MMYEngine {
 
   @override
   Future<String> eventUserStatus(String eid) async {
-    return (await eventLib.getEvent(_currentUser, eid)).invitedContacts[_currentUser.uid];
+     return (await eventLib.getEvent(_currentUser, eid)).invitedContacts[_currentUser.uid];
   }
 
   @override
   Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs}) async {
+    for(String cid in CIDs) notificationLib.notifyEventInvite(_currentUser, eid, cid);
     return await eventLib.updateInvitations(_currentUser, eid,
         eventLib.Invitations(CIDs: CIDs, inviteStatus: EVENT_INVITED));
   }
@@ -389,6 +392,7 @@ class MMY implements MMYEngine {
   Future<Event> inviteGroupsToEvent(String eid, {required List<String> CIDs}) async {
     for(String cid in CIDs) {
       (await contactLib.getContact(_currentUser, cid: cid)).group.forEach((key, value) async {
+        notificationLib.notifyEventInvite(_currentUser, eid, key);
         await eventLib.updateInvitations(_currentUser, eid,
             eventLib.Invitations(CIDs: [key], inviteStatus: EVENT_INVITED));
       });
@@ -463,11 +467,9 @@ class MMY implements MMYEngine {
   }
 
   @override
-  // Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
-  //   return calendarLib.getCalendarEvents(context, _currentUser.uid);
-  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
+  Future<List<CalendarEvent>> getCalendarEvents() async {
     Profile profile = await getUserProfile();
-    return calendarLib.getCalendarEvents(context, _currentUser.uid, display: profile.parameters['calendar_display'] == null ? true : profile.parameters['calendar_display']);
+    return calendarLib.getCalendarEvents(_currentUser.uid, display: profile.parameters['calendar_display']);
   }
 
   @override
@@ -478,7 +480,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Map<String, dynamic>> getCalendarParams() async {
-    Map<String, dynamic> params = Map<String, dynamic>();;
+    Map<String, dynamic> params = EMPTY_MAP;
     Profile profile = await profileLib.getUserProfile(_currentUser);
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;

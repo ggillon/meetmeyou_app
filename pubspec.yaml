@@ -67,6 +67,7 @@ dependencies:
   firebase_messaging: ^11.2.6
   async: ^2.8.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
