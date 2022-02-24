@@ -5,6 +5,7 @@ import 'package:device_info/device_info.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -14,6 +15,7 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
@@ -27,8 +29,13 @@ class NewEventDiscussionProvider extends BaseProvider {
   File? image;
   Timer? clockTimer;
   bool isJump = true;
+  // these variable used in reply message functionality.
   String replyMessage = "";
+  String replyMid = "";
   String userName = "";
+  String replyMessageText = "";
+  String replyMessageImageUrl = "";
+  String imageUrl = "";
 
   bool swipe = false;
 
@@ -80,6 +87,14 @@ class NewEventDiscussionProvider extends BaseProvider {
       final pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
       image = File(pickedFile!.path);
+      if(image != null || image != ""){
+        Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", replyMid: "")).then((value) {
+          image = null;
+          getEventDiscussion(context, false);
+        });
+      } else{
+        DialogHelper.showMessage(context, "no_image_selected".tr());
+      }
       notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(
@@ -87,6 +102,14 @@ class NewEventDiscussionProvider extends BaseProvider {
       //  image = File(pickedFile!.path);
       if (pickedFile != null) {
         image = File(pickedFile.path);
+        if(image != null || image != ""){
+          Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", replyMid: "")).then((value) {
+            image = null;
+            getEventDiscussion(context, false);
+          });
+        } else{
+          DialogHelper.showMessage(context, "no_image_selected".tr());
+        }
       } else {
         print('No image selected.');
         return;
@@ -155,6 +178,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     controller.clear();
     isRightSwipe = false;
     replyMessage = "";
+    imageUrl = "";
     fromContactOrGroup == true ? await getDiscussion(context) : await getEventDiscussion(context, false);
     updatePostMessage(false);
   }

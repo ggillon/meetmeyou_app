@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
-import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
-class ReplyMessageWidget extends StatelessWidget {
+class ReplyImageWidget extends StatelessWidget {
   final String message;
   final String userName;
   final bool isUserName;
@@ -14,7 +13,7 @@ class ReplyMessageWidget extends StatelessWidget {
   final VoidCallback onCancelReply;
   final bool showCloseIcon;
 
-  const ReplyMessageWidget({
+  const ReplyImageWidget({
     required this.message,
     required this.userName,
     required this.isUserName,
@@ -42,29 +41,34 @@ class ReplyMessageWidget extends StatelessWidget {
   }
 
   Widget buildReplyMessage(ScreenScaler scaler) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              Row(
-                children: [
-                Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.0), TextAlign.left)),
-                  showCloseIcon == true ?
-                  GestureDetector(
-                    child: Icon(Icons.close, size: 16),
-                    onTap: onCancelReply,
-                  ) : Container()
-                ],
-              ),
-              Text(message)
-                  .regularText(ColorConstants.colorGray,
-                      scaler.getTextSize(10), TextAlign.left,
-                      isHeight: true),
+              Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.0), TextAlign.left)),
+              showCloseIcon == true ?
+              GestureDetector(
+                child: Icon(Icons.close, size: 16),
+                onTap: onCancelReply,
+              ) : Container()
             ],
           ),
-          const SizedBox(height: 5),
-          //Text("message.message", style: TextStyle(color: Colors.black54)),
+          ClipRRect(
+            borderRadius: scaler.getBorderRadiusCircular(7.5),
+            child: Container(
+              height: scaler.getHeight(12.0),
+              width: scaler.getWidth(35.0),
+              color: ColorConstants.primaryColor,
+              child: ImageView(path: imageUrl, fit: BoxFit.cover, height: scaler.getHeight(10.0),
+                  width: scaler.getWidth(35.0)),
+            ),
+          )
         ],
-      );
+      ),
+      const SizedBox(height: 5),
+    ],
+  );
 }

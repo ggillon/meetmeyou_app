@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class ChatsScreen extends StatelessWidget {
         actions: [
           Row(
             children: [
-              Icon(Icons.chat, color: Colors.blue,),
+              Icon(Icons.message, color: Colors.blue,),
               SizedBox(width: scaler.getWidth(3.0)),
             ],
           )
@@ -51,15 +52,15 @@ class ChatsScreen extends StatelessWidget {
                   scaler.getTextSize(10),
                   TextAlign.left),
             ],
-          ) : usersList(context, scaler);
+          ) : usersList(context, scaler, provider);
         },
       )
     );
   }
 
-  Widget usersList(BuildContext context, ScreenScaler scaler){
+  Widget usersList(BuildContext context, ScreenScaler scaler, ChatScreenProvider provider){
     return ListView.builder(
-        itemCount: 20,
+        itemCount: provider.userDiscussions.length,
         itemBuilder: (context, index){
       return Column(
         children: <Widget>[
@@ -67,10 +68,23 @@ class ChatsScreen extends StatelessWidget {
             padding: scaler.getPaddingAll(8.0),
             child: Row(
               children: <Widget>[
-                Icon(
-                  Icons.account_circle,
-                  size: 74.0,
+                // Icon(
+                //   Icons.account_circle,
+                //   size: 74.0,
+                // ),
+                ClipRRect(
+                  borderRadius: scaler.getBorderRadiusCircular(100.0),
+                  child: Container(
+                    height: scaler.getHeight(5.0),
+                    width: scaler.getWidth(12.0),
+                    color: ColorConstants.primaryColor,
+                    child: ImageView(
+                      path: provider.userDiscussions[index].photoURL,  height: scaler.getHeight(5.0),
+                      width: scaler.getWidth(12.0), fit: BoxFit.cover
+                    ),
+                  ),
                 ),
+                SizedBox(width : scaler.getWidth(1.0)),
                 Expanded(
                   child: Padding(
                     padding: scaler.getPaddingAll(8.0),
@@ -81,8 +95,11 @@ class ChatsScreen extends StatelessWidget {
                           mainAxisAlignment:
                           MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              "Sam Kalra").boldText(ColorConstants.colorBlack, scaler.getTextSize(10.8), TextAlign.left),
+                           Expanded(
+                             child:  Text(
+                                 provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                           ),
+                            SizedBox(width : scaler.getWidth(1.0)),
                             Text(
                               "Yesterday").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
                           ],

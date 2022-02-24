@@ -10,6 +10,7 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
@@ -17,8 +18,10 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:meetmeyou_app/widgets/reply_image_widget.dart';
 import 'package:meetmeyou_app/widgets/reply_message_widget.dart';
 import 'package:swipe_to/swipe_to.dart';
 
@@ -29,6 +32,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
   NewEventDiscussionProvider provider = NewEventDiscussionProvider();
   TextEditingController messageController = TextEditingController();
   var messageFocusNode = FocusNode();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +75,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                   hideKeyboard(context);
                 },
                 child: Scaffold(
+                  key: _scaffoldKey,
                     resizeToAvoidBottomInset: true,
                     backgroundColor: ColorConstants.colorWhite,
                     appBar: AppBar(
@@ -184,7 +189,11 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                           ? Column(
                                                         crossAxisAlignment : CrossAxisAlignment.start,
                                                         children: [
-                                                          sendReplySwipe(provider.eventDiscussionList[index].replyMid),
+                                                          sendReplySwipe(provider.eventDiscussionList.any((element){
+                                                            provider.replyMessageImageUrl = element.attachmentURL;
+                                                            provider.replyMessageText = element.text;
+                                                            return element.mid == provider.eventDiscussionList[index].replyMid;
+                                                          }) ? provider.replyMessageText : ""),
                                                           SizedBox(height: scaler.getHeight(0.1)),
                                                           Row(
                                                             children: [
@@ -221,7 +230,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                                           10.0),
                                                                   TextAlign
                                                                       .left),
-                                                          Text(provider
+                                                          (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
                                                                   .eventDiscussionList[
                                                                       index]
                                                                   .text)
@@ -234,7 +243,21 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                                   TextAlign
                                                                       .left,
                                                                   isHeight:
-                                                                      true),
+                                                                      true) :
+                                                          InkWell(
+                                                            onTap: (){
+                                                              Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL, replyMid: ""));
+                                                            },
+                                                            child: ClipRRect(
+                                                              borderRadius: scaler.getBorderRadiusCircular(7.5),
+                                                              child: Container(
+                                                                color: ColorConstants.primaryColor,
+                                                                height: scaler.getHeight(30.0),
+                                                                width: scaler.getWidth(70.0),
+                                                                child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -243,6 +266,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                     provider.isRightSwipe = true;
                                                     FocusScope.of(context).requestFocus(messageFocusNode);
                                                     provider.replyMessage = provider.eventDiscussionList[index].text;
+                                                    provider.replyMid = provider.eventDiscussionList[index].mid;
+                                                    provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
                                                    // provider.userName ="you".tr();
                                                     provider.updateSwipe(true);
                                                   },
@@ -280,7 +305,11 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                           ? Column(
                                                         crossAxisAlignment : CrossAxisAlignment.start,
                                                               children: [
-                                                                sendReplySwipe(provider.eventDiscussionList[index].replyMid),
+                                                                sendReplySwipe(provider.eventDiscussionList.any((element){
+                                                                  provider.replyMessageText = element.text;
+                                                                  provider.replyMessageImageUrl = element.attachmentURL;
+                                                                  return element.mid == provider.eventDiscussionList[index].replyMid;
+                                                                }) ? provider.replyMessageText: ""),
                                                                 SizedBox(height: scaler.getHeight(0.1)),
                                                                 Row(
                                                                   children: [
@@ -311,10 +340,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                                         10.0),
                                                                     TextAlign
                                                                         .left),
-                                                                Text(provider
-                                                                        .eventDiscussionList[
-                                                                            index]
-                                                                        .text)
+                                                                (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
+                                                               Text(provider.eventDiscussionList[index].text)
                                                                     .regularText(
                                                                         ColorConstants
                                                                             .colorWhite,
@@ -323,7 +350,21 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                                         TextAlign
                                                                             .left,
                                                                         isHeight:
-                                                                            true),
+                                                                            true) :
+                                                                            InkWell(
+                                                                              onTap: (){
+                                                                                Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL, replyMid: ""));
+                                                                              },
+                                                                              child: ClipRRect(
+                                                                                borderRadius: scaler.getBorderRadiusCircular(7.5),
+                                                                                child: Container(
+                                                                                  color: ColorConstants.primaryColor,
+                                                                                  height: scaler.getHeight(30.0),
+                                                                                  width: scaler.getWidth(70.0),
+                                                                                  child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
+                                                                                ),
+                                                                              ),
+                                                                            ),
                                                               ],
                                                             ),
                                                     ),
@@ -332,6 +373,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                     provider.isRightSwipe = true;
                                                     FocusScope.of(context).requestFocus(messageFocusNode);
                                                     provider.replyMessage = provider.eventDiscussionList[index].text;
+                                                    provider.replyMid = provider.eventDiscussionList[index].mid;
+                                                    provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
                                                    // provider.userName = "you".tr();
                                                     provider.updateSwipe(true);
                                                   },
@@ -371,11 +414,11 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                 CustomDialog(
                                                   cameraClick: () {
                                                     provider.getImage(
-                                                        context, 1);
+                                                        _scaffoldKey.currentContext!, 1);
                                                   },
                                                   galleryClick: () {
                                                     provider.getImage(
-                                                        context, 2);
+                                                        _scaffoldKey.currentContext!, 2);
                                                   },
                                                   cancelClick: () {
                                                     Navigator.of(context).pop();
@@ -407,16 +450,21 @@ class NewEventDiscussionScreen extends StatelessWidget {
       decoration: ViewDecoration.inputDecorationWithCurve(
           "write_something".tr(), scaler, ColorConstants.primaryColor),
       onFieldSubmitted: (data) {
-        messageController.text.isEmpty
-            ? Container()
-            : provider.postDiscussionMessage(context, TEXT_MESSAGE,
-                messageController.text, messageController, fromContactOrGroup,
-                replyMid: provider.replyMessage);
+        if(data.trim() != ""){
+          messageController.text.isEmpty
+              ? Container()
+              : provider.postDiscussionMessage(context, TEXT_MESSAGE,
+              data.trim(), messageController, fromContactOrGroup,
+              replyMid: provider.replyMid);
+        } else{
+          messageController.clear();
+        }
       },
       textInputAction: TextInputAction.send,
       keyboardType: TextInputType.text,
     );
   }
+
 
   static final inputTopRadius = Radius.circular(12);
   static final inputBottomRadius = Radius.circular(24);
@@ -427,10 +475,18 @@ class NewEventDiscussionScreen extends StatelessWidget {
           color: Colors.grey.withOpacity(0.1),
           borderRadius: BorderRadius.all(inputTopRadius),
         ),
-        child: ReplyMessageWidget(
+        child: message == "" ? ReplyImageWidget(
           message: message,
           userName: provider.userName,
           isUserName: true,
+          imageUrl: provider.replyMessageImageUrl,
+          onCancelReply: () {},
+          showCloseIcon: false,
+        )  : ReplyMessageWidget(
+          message: message,
+          userName: provider.userName,
+          isUserName: true,
+          imageUrl: provider.imageUrl,
           onCancelReply: () {},
           showCloseIcon: false,
         ),
@@ -446,12 +502,26 @@ class NewEventDiscussionScreen extends StatelessWidget {
           //   topRight: inputTopRadius,
           // ),
         ),
-        child: ReplyMessageWidget(
+        child: provider.imageUrl != "" ? ReplyImageWidget(
           message: replyMessage,
           userName: provider.userName,
           isUserName: false,
+          imageUrl: provider.imageUrl,
           onCancelReply: () {
             provider.isRightSwipe = false;
+            provider.imageUrl = "";
+            hideKeyboard(context);
+            provider.updateSwipe(true);
+          },
+          showCloseIcon: true,
+        ) : ReplyMessageWidget(
+          message: replyMessage,
+          userName: provider.userName,
+          isUserName: false,
+          imageUrl: provider.imageUrl,
+          onCancelReply: () {
+            provider.isRightSwipe = false;
+            provider.imageUrl = "";
             hideKeyboard(context);
             provider.updateSwipe(true);
           },

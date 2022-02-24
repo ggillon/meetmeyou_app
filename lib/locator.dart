@@ -38,6 +38,7 @@ import 'package:meetmeyou_app/provider/search_profile_provider.dart';
 import 'package:meetmeyou_app/provider/settings_provider.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/provider/verify_provider.dart';
+import 'package:meetmeyou_app/provider/view_image_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
@@ -85,6 +86,7 @@ void setupLocator() {
   locator.registerFactory<MultipleDateTimeProvider>(() => MultipleDateTimeProvider());
   locator.registerFactory<NewEventDiscussionProvider>(() => NewEventDiscussionProvider());
   locator.registerFactory<ChatScreenProvider>(() => ChatScreenProvider());
+  locator.registerFactory<ViewImageProvider>(() => ViewImageProvider());
 
 
   /*

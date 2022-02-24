@@ -33,4 +33,5 @@ class RoutesConstants {
   static const newEventDiscussionScreen = "newEventDiscussionScreen";
   static const multipleDateTimeScreen = "multipleDateTimeScreen";
   static const chatsScreen = "chatsScreen";
+  static const viewImageScreen = "viewImageScreen";
 }
