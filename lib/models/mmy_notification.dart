@@ -9,6 +9,7 @@ class MMYNotification {
         required this.nid,
         required this.type,
         required this.uid,
+        required this.title,
         required this.text,
         required this.photoURL,
         required this.tokens,
@@ -18,6 +19,7 @@ class MMYNotification {
   String nid;
   String type;
   String uid;
+  String title;
   String text;
   String photoURL;
   List<String> tokens;
@@ -28,6 +30,7 @@ class MMYNotification {
       nid: data['nid'],
       uid: data['uid'],
       type: data['type'],
+      title: data['title'],
       text: data['text'],
       photoURL: data['photoURL'],
       tokens: data['tokens'],
@@ -40,6 +43,7 @@ class MMYNotification {
       nid: data['nid'],
       uid: data['uid'],
       type: data['type'],
+      title: data['title'],
       text: data['text'],
       photoURL: data['photoURL'],
       tokens: data['tokens'],
@@ -52,6 +56,7 @@ class MMYNotification {
       'nid': nid,
       'uid': uid,
       'type': type,
+      'title': title,
       'text': text,
       'photoURL': photoURL,
       'tokens': tokens,
