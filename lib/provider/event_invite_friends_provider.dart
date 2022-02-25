@@ -85,6 +85,7 @@ class EventInviteFriendsProvider extends BaseProvider {
       });
       confirmContactList = confirmValue;
       value = List<bool>.filled(confirmContactList.length, false);
+      addRemoveUser = List<bool>.filled(confirmContactList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -110,6 +111,7 @@ class EventInviteFriendsProvider extends BaseProvider {
 
       groupList = groupValue;
       value = List<bool>.filled(groupList.length, false);
+      addRemoveUser = List<bool>.filled(groupList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -317,39 +319,36 @@ class EventInviteFriendsProvider extends BaseProvider {
 
   // Add user to discussion
 
-  late List<bool> addUser = [];
+  late List<bool> addRemoveUser = [];
 
-  updateAddUser(bool val, int index){
-    addUser[index] = val;
+  updateAddRemoveUser(bool val, int index){
+    addRemoveUser[index] = val;
     notifyListeners();
   }
   Future addContactToDiscussion(BuildContext context, String did, int index , {required String cid}) async{
-    updateAddUser(true, index);
+    updateAddRemoveUser(true, index);
 
     await mmyEngine!.addContactToDiscussion(did, cid: cid).catchError((e){
-      updateAddUser(false, index);
+      updateAddRemoveUser(false, index);
       DialogHelper.showMessage(context, e.message);
     });
-
-    updateAddUser(false, index);
+    eventDetail.contactCIDs.add(cid);
+    updateAddRemoveUser(false, index);
   }
 
   // Remove user from discussion
 
-  late List<bool> removeUser = [];
-
-  updateRemoveUser(bool val, int index){
-    removeUser[index] = val;
-    notifyListeners();
-  }
   Future removeContactFromDiscussion(BuildContext context, String did, int index , {required String cid}) async{
-    updateRemoveUser(true, index);
+    updateAddRemoveUser(true, index);
 
     await mmyEngine!.removeContactFromDiscussion(did, cid: cid).catchError((e){
-      updateRemoveUser(false, index);
+      updateAddRemoveUser(false, index);
       DialogHelper.showMessage(context, e.message);
     });
 
-     updateRemoveUser(false, index);
+    var i = eventDetail.contactCIDs.indexWhere((element) => element == cid);
+    eventDetail.contactCIDs.removeAt(i);
+
+    updateAddRemoveUser(false, index);
   }
 }

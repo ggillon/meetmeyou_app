@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/provider/create_event_provider.dart';
+import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -467,7 +468,7 @@ class CreateEventScreen extends StatelessWidget {
                                       Navigator.pushNamed(
                                               context,
                                               RoutesConstants
-                                                  .eventInviteFriendsScreen, arguments: false)
+                                                  .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: ""))
                                           .then((value) {
                                         provider.fromInviteScreen = true;
                                         provider.updateLoadingStatus(true);

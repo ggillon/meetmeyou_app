@@ -36,6 +36,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
   TextEditingController messageController = TextEditingController();
   var messageFocusNode = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool jump = true;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +49,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
           const milliSecTime = const Duration(milliseconds: 500);
 
           provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+            jump = false;
             provider.getDiscussion(context, chatDid, jump: false);
           });
         } else{
@@ -59,6 +61,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
           const milliSecTime = const Duration(milliseconds: 500);
 
           provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+            jump = false;
             fromContactOrGroup == true
                 ? provider.getDiscussion(context, provider.discussion!.did, jump: false)
                 : provider.getEventDiscussion(context, false, jump: false);
@@ -132,6 +135,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             ? GestureDetector(
                         behavior: HitTestBehavior.translucent,
                             onTap: () {
+                          provider.eventDetail.contactCIDs = provider.eventDetail.attendingProfileKeys!;
                           Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid)));
                             },
                         child: Icon(Icons.people))
@@ -185,6 +189,13 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                     itemCount:
                                         provider.eventDiscussionList.length,
                                     itemBuilder: (context, index) {
+                                      WidgetsBinding.instance!.addPostFrameCallback((_) {
+                                        if (provider.scrollController.hasClients) {
+                                          jump == true ?
+                                          provider.scrollController.jumpTo(provider.scrollController.position.maxScrollExtent)
+                                              : provider.scrollListener();
+                                        }
+                                      });
                                       provider.userName = provider.eventDiscussionList[index].contactUid == provider.auth.currentUser?.uid ? "you".tr() : provider.eventDiscussionList[index].contactDisplayName;
                                       return (provider
                                                   .eventDiscussionList[index]

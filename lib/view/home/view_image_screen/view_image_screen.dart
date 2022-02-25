@@ -41,7 +41,7 @@ class ViewImageScreen extends StatelessWidget {
                     height: viewImageData.image == null || viewImageData.image == "" ? scaler.getHeight(80.0) : scaler.getHeight(72.0),
                     child: ImageView(
                       path:  viewImageData.image == null || viewImageData.image == "" ? viewImageData.imageUrl :  viewImageData.image!.path,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fitWidth,
                     ),
                   ),
               ),

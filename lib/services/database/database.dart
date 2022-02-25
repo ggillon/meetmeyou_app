@@ -304,7 +304,7 @@ class FirestoreDB implements Database {
   Future<void> setUserToken(String token) async {
     Profile? profile = await getProfile(uid);
     profile!.parameters['token'] = token;
-    await setProfile(profile!);
+    await setProfile(profile);
   }
 
 }

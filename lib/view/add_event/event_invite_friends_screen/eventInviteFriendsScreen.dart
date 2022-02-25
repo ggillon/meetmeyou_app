@@ -227,7 +227,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
               .displayName
               .toLowerCase()
               .contains(searchBarController.text)) {
-            return inviteContactProfileCard(
+            return widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(
                 context, scaler, cList, index, provider);
           } else {
             return Container();
@@ -245,11 +245,11 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          inviteContactProfileCard(context, scaler, cList, index, provider),
+        widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider),
         ],
       );
     } else {
-      return inviteContactProfileCard(context, scaler, cList, index, provider);
+      return widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider);
     }
   }
 
@@ -393,7 +393,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                   width: scaler.getWidth(8),
                   height: scaler.getHeight(3.5),
                   alignment: Alignment.center,
-                  child: provider.addUser[index] == true
+                  child: provider.addRemoveUser[index] == true
                       ? Container(
                       height: scaler.getHeight(2),
                       width: scaler.getWidth(4.5),
@@ -414,42 +414,44 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                     width: scaler.getWidth(8),
                     height: scaler.getHeight(3.5),
                     alignment: Alignment.center,
-                    child: provider.removeUser[index] == true
+                    child: provider.addRemoveUser[index] == true
                         ? Container(
                         height: scaler.getHeight(2),
                         width: scaler.getWidth(4.5),
                         child: CircularProgressIndicator())
                         : Checkbox(
-                      value: provider.eventDetail.editEvent == true
-                          ? provider.groupCheck(
-                          contactOrGroupList[index], index)
-                          : provider.groupCheckIsSelected(index),
+                      value: provider.groupCheck(
+                          contactOrGroupList[index], index),
+                      // provider.eventDetail.editEvent == true
+                      //     ? provider.groupCheck(
+                      //     contactOrGroupList[index], index)
+                      //     : provider.groupCheckIsSelected(index),
                       onChanged: (bool? value) {
-                        if (value!) {
-                          List<String> keysList = [];
-                          for (var key in provider
-                              .groupList[index].group.keys) {
-                            keysList.add(key);
-                          }
-
-                          provider.inviteGroupToEvent(
-                              context,
-                              keysList,
-                              index,
-                              provider.groupList[index]);
-                        } else {
-                          List<String> keysList = [];
-                          for (var key in provider
-                              .groupList[index].group.keys) {
-                            keysList.add(key);
-                          }
-
-                          provider.removeGroupFromEvent(
-                              context,
-                              keysList,
-                              index,
-                              provider.groupList[index]);
-                        }
+                        // if (value!) {
+                        //   List<String> keysList = [];
+                        //   for (var key in provider
+                        //       .groupList[index].group.keys) {
+                        //     keysList.add(key);
+                        //   }
+                        //
+                        //   provider.inviteGroupToEvent(
+                        //       context,
+                        //       keysList,
+                        //       index,
+                        //       provider.groupList[index]);
+                        // } else {
+                        //   List<String> keysList = [];
+                        //   for (var key in provider
+                        //       .groupList[index].group.keys) {
+                        //     keysList.add(key);
+                        //   }
+                        //
+                        //   provider.removeGroupFromEvent(
+                        //       context,
+                        //       keysList,
+                        //       index,
+                        //       provider.groupList[index]);
+                        // }
                       },
                     )),
               ],

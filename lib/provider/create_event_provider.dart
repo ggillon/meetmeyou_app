@@ -20,6 +20,7 @@ import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CreateEventProvider extends BaseProvider {
@@ -313,7 +314,7 @@ class CreateEventProvider extends BaseProvider {
 
       clearMultiDateOption();
       //   DialogHelper.showMessage(context, "Event created Successfully");
-      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: false)
+      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: ""))
           .then((value) {
         // fromInviteScreen = true;
         // updateLoadingStatus(true);

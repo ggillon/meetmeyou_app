@@ -56,7 +56,13 @@ class ChatsScreen extends StatelessWidget {
                   scaler.getTextSize(10),
                   TextAlign.left),
             ],
-          ) : usersList(context, scaler, provider);
+          ) : (provider.userDiscussions.length == 0 || provider.userDiscussions.isEmpty) ? Center(
+          child: Text("no_chats_found".tr())
+              .mediumText(
+          ColorConstants.primaryColor,
+          scaler.getTextSize(10),
+          TextAlign.left),
+          ): usersList(context, scaler, provider);
         },
       )
     );
@@ -69,7 +75,9 @@ class ChatsScreen extends StatelessWidget {
       return GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: (){
-          Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did));
+          Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did)).then((value) {
+            provider.getUserDiscussion(context);
+          });
         },
         child: SwipeTo(
           onLeftSwipe: (){

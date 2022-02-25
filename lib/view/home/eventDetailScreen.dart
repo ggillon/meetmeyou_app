@@ -20,6 +20,7 @@ import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
+import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
@@ -233,7 +234,7 @@ class EventDetailScreen extends StatelessWidget {
                                       provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?  Navigator.pushNamed(
                                           context,
                                           RoutesConstants
-                                              .eventInviteFriendsScreen, arguments: false).then((value) {
+                                              .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "")).then((value) {
                                                 Navigator.of(context).pop();
                                       }) : Navigator.pushNamed(
                                             context,
