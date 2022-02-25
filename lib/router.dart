@@ -156,7 +156,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => DefaultPhotoPage(), settings: settings);
 
       case RoutesConstants.eventInviteFriendsScreen:
-        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(), settings: settings);
+        final argument = settings.arguments as EventInviteFriendsScreen;
+        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(fromDiscussion: argument.fromDiscussion , discussionId: argument.discussionId ?? ""), settings: settings);
 
       case RoutesConstants.eventDetailScreen:
         return MaterialPageRoute(builder: (_) => EventDetailScreen(), settings: settings);

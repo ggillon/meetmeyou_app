@@ -317,6 +317,29 @@ class HomePageProvider extends BaseProvider {
     multipleDateOption.eventAttendingKeysList.clear();
   }
 
+  // for chat notification badge count
+  bool updatedDiscussion = false;
+
+  updateDiscussion(bool val){
+    updatedDiscussion = val;
+    notifyListeners();
+  }
+
+  int? chatNotificationCount;
+
+  Future updatedDiscussions(BuildContext context) async{
+    updateDiscussion(true);
+
+    var value = await mmyEngine!.updatedDiscussions().catchError((e){
+      updateDiscussion(false);
+      DialogHelper.showMessage(context, "error_message".tr());
+    });
+
+    if(value != null){
+      chatNotificationCount = value;
+      updateDiscussion(false);
+    }
+  }
   // for checking whether any multi date date is selected or not.
   // bool statusMultiDate = false;
   //

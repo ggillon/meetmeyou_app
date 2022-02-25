@@ -233,7 +233,7 @@ class EventDetailScreen extends StatelessWidget {
                                       provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?  Navigator.pushNamed(
                                           context,
                                           RoutesConstants
-                                              .eventInviteFriendsScreen).then((value) {
+                                              .eventInviteFriendsScreen, arguments: false).then((value) {
                                                 Navigator.of(context).pop();
                                       }) : Navigator.pushNamed(
                                             context,

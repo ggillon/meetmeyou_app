@@ -15,8 +15,9 @@ import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class EventInviteFriendsScreen extends StatefulWidget {
-  EventInviteFriendsScreen({Key? key}) : super(key: key);
-
+  EventInviteFriendsScreen({Key? key, required this.fromDiscussion, this.discussionId}) : super(key: key);
+  bool fromDiscussion;
+  String? discussionId;
   @override
   State<EventInviteFriendsScreen> createState() =>
       _EventInviteFriendsScreenState();
@@ -350,6 +351,107 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                   }
                                 },
                               )),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: scaler.getHeight(0.5)),
+      ],
+    );
+  }
+
+  Widget addRemoveUserToDiscussionCard(
+      BuildContext context,
+      ScreenScaler scaler,
+      List<Contact> contactOrGroupList,
+      int index,
+      EventInviteFriendsProvider provider) {
+    return Column(
+      children: [
+        Card(
+          elevation: 3.0,
+          shadowColor: ColorConstants.colorWhite,
+          shape: RoundedRectangleBorder(
+              borderRadius: scaler.getBorderRadiusCircular(12)),
+          child: Padding(
+            padding: scaler.getPaddingAll(10.0),
+            child: Row(
+              children: [
+                CommonWidgets.profileCardImageDesign(
+                    scaler, contactOrGroupList[index].photoURL),
+                SizedBox(width: scaler.getWidth(2.5)),
+                CommonWidgets.profileCardNameAndEmailDesign(
+                    scaler,
+                    contactOrGroupList[index].displayName,
+                    provider.toggle == 0
+                        ? contactOrGroupList[index].email
+                        : contactOrGroupList[index].group.length.toString() +
+                        " " +
+                        "members".tr()),
+                provider.toggle == 0
+                    ? Container(
+                  width: scaler.getWidth(8),
+                  height: scaler.getHeight(3.5),
+                  alignment: Alignment.center,
+                  child: provider.addUser[index] == true
+                      ? Container(
+                      height: scaler.getHeight(2),
+                      width: scaler.getWidth(4.5),
+                      child: CircularProgressIndicator())
+                      : Checkbox(
+                    value: provider.contactCheckIsSelected(
+                        provider.confirmContactList[index]),
+                    onChanged: (bool? value) {
+                      if (value!) {
+                       provider.addContactToDiscussion(context, widget.discussionId!, index, cid: provider.confirmContactList[index].cid);
+                      } else {
+                        provider.removeContactFromDiscussion(context, widget.discussionId!, index, cid: provider.confirmContactList[index].cid);
+                      }
+                    },
+                  ),
+                )
+                    : Container(
+                    width: scaler.getWidth(8),
+                    height: scaler.getHeight(3.5),
+                    alignment: Alignment.center,
+                    child: provider.removeUser[index] == true
+                        ? Container(
+                        height: scaler.getHeight(2),
+                        width: scaler.getWidth(4.5),
+                        child: CircularProgressIndicator())
+                        : Checkbox(
+                      value: provider.eventDetail.editEvent == true
+                          ? provider.groupCheck(
+                          contactOrGroupList[index], index)
+                          : provider.groupCheckIsSelected(index),
+                      onChanged: (bool? value) {
+                        if (value!) {
+                          List<String> keysList = [];
+                          for (var key in provider
+                              .groupList[index].group.keys) {
+                            keysList.add(key);
+                          }
+
+                          provider.inviteGroupToEvent(
+                              context,
+                              keysList,
+                              index,
+                              provider.groupList[index]);
+                        } else {
+                          List<String> keysList = [];
+                          for (var key in provider
+                              .groupList[index].group.keys) {
+                            keysList.add(key);
+                          }
+
+                          provider.removeGroupFromEvent(
+                              context,
+                              keysList,
+                              index,
+                              provider.groupList[index]);
+                        }
+                      },
+                    )),
               ],
             ),
           ),

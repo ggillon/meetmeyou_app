@@ -3,6 +3,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -14,6 +15,7 @@ class EventAttendingProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
 
   bool _value = false;
 

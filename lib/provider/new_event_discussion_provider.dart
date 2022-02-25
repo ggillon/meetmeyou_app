@@ -138,6 +138,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     if (value != null) {
       eventDiscussionList = value.messages;
       eventDiscussion = value;
+      setParticipantKeys(value);
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
           jump == true ?
@@ -255,6 +256,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     if (value != null) {
       eventDiscussionList = value.messages;
       eventDiscussion = value;
+      setParticipantKeys(value);
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
           jump == true ?
@@ -263,6 +265,17 @@ class NewEventDiscussionProvider extends BaseProvider {
         }
       });
       fromChatScreen == true ?  setState(ViewState.Idle) : updateRetrieveDiscussion(false);
+    }
+  }
+
+  // find out participants keys in chat
+
+  setParticipantKeys(Discussion chatDiscussion){
+    List<String> keysList = [];
+    for (var key in chatDiscussion.participants.keys) {
+      keysList.add(key);
+
+      eventDetail.attendingProfileKeys = keysList;
     }
   }
 }

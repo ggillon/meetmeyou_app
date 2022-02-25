@@ -106,6 +106,7 @@ class _HomePageState extends State<HomePage>
           provider.tabController = TabController(length: 5, vsync: this);
           provider.tabChangeEvent(context);
           provider.getIndexChanging(context);
+          provider.updatedDiscussions(context);
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             if ((provider.eventDetail.unRespondedEvent ?? 0) >
                 (provider.eventDetail.unRespondedEvent1 ?? 0)) {
@@ -128,9 +129,20 @@ class _HomePageState extends State<HomePage>
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: (){
-                        Navigator.pushNamed(context, RoutesConstants.chatsScreen);
+                        Navigator.pushNamed(context, RoutesConstants.chatsScreen).then((value) {
+                          provider.updatedDiscussions(context);
+                        });
                       },
-                        child: Icon(Icons.message, color: ColorConstants.primaryColor, size: 28))
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            Icon(Icons.message, color: ColorConstants.primaryColor, size: 28),
+                            CommonWidgets.notificationBadge(scaler,
+                                provider.chatNotificationCount ?? 0)
+                          ],
+                        ),
+                        )
                    // ImageView(path: ImageConstants.search_icon)
                   ],
                 ),

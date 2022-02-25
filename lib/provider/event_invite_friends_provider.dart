@@ -313,4 +313,43 @@ class EventInviteFriendsProvider extends BaseProvider {
     updateGroupValue(false);
     return value;
   }
+
+
+  // Add user to discussion
+
+  late List<bool> addUser = [];
+
+  updateAddUser(bool val, int index){
+    addUser[index] = val;
+    notifyListeners();
+  }
+  Future addContactToDiscussion(BuildContext context, String did, int index , {required String cid}) async{
+    updateAddUser(true, index);
+
+    await mmyEngine!.addContactToDiscussion(did, cid: cid).catchError((e){
+      updateAddUser(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    updateAddUser(false, index);
+  }
+
+  // Remove user from discussion
+
+  late List<bool> removeUser = [];
+
+  updateRemoveUser(bool val, int index){
+    removeUser[index] = val;
+    notifyListeners();
+  }
+  Future removeContactFromDiscussion(BuildContext context, String did, int index , {required String cid}) async{
+    updateRemoveUser(true, index);
+
+    await mmyEngine!.removeContactFromDiscussion(did, cid: cid).catchError((e){
+      updateRemoveUser(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+     updateRemoveUser(false, index);
+  }
 }

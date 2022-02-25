@@ -26,7 +26,6 @@ class ChatScreenProvider extends BaseProvider{
     }
   }
 
-
   // Leave a discussion
 
   bool leave = false;
@@ -44,7 +43,6 @@ class ChatScreenProvider extends BaseProvider{
       DialogHelper.showMessage(context, "error_message".tr());
     });
 
-    await getUserDiscussion(context);
     updateLeave(false);
   }
 

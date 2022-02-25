@@ -98,7 +98,7 @@ class EventAttendingScreen extends StatelessWidget {
             shrinkWrap: true,
             itemCount: cList.length,
             itemBuilder: (context, index) {
-              bool currentUser = cList[index].uid == provider.userDetail.cid;
+              bool currentUser = cList[index].uid == provider.auth.currentUser?.uid;
               if (searchBarController.text.isEmpty) {
                 return contactProfileCard(
                     context, scaler, cList, index, provider, currentUser);
@@ -120,12 +120,10 @@ class EventAttendingScreen extends StatelessWidget {
       List<Contact> cList, int index, EventAttendingProvider provider, bool currentUser) {
     return GestureDetector(
 
-        onTap: cList[index].status ==
-                    'Listed profile' ||
-            cList[index].status ==
-                    'Invited contact'
+        onTap: cList[index].status == 'Listed profile' || cList[index].status =='Invited contact' || cList[index].status == 'Rejected invitation'
             ? () {}
             : () {
+          provider.discussionDetail.userId = cList[index].cid;
           provider.setContactsValue(cList[index], false, "");
                 Navigator.pushNamed(
                     context, RoutesConstants.contactDescription, arguments: false

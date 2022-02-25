@@ -17,6 +17,7 @@ import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
+import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
@@ -110,19 +111,30 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: scaler.getWidth(2.0)),
-                         Container(
-                           width: scaler.getWidth(45),
-                           child:  Text(fromContactOrGroup == true
-                               ? provider.discussion!.title.toString()
-                               : provider.eventDiscussion!.title.toString())
-                               .mediumText(ColorConstants.colorBlack,
-                               scaler.getTextSize(11), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                         GestureDetector(
+                           behavior: HitTestBehavior.translucent,
+                           onTap: (){
+                             Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen);
+                           },
+                           child: Container(
+                             width: scaler.getWidth(45),
+                             child:  Text(fromContactOrGroup == true
+                                 ? provider.discussion!.title.toString()
+                                 : provider.eventDiscussion!.title.toString())
+                                 .mediumText(ColorConstants.colorBlack,
+                                 scaler.getTextSize(11), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                           ),
                          )
                         ],
                       ),
                       actions: [
                         (fromContactOrGroup == true || fromChatScreen == true)
-                            ? Container()
+                            ? GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                          Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid)));
+                            },
+                        child: Icon(Icons.people))
                             : GestureDetector(
                                 behavior: HitTestBehavior.translucent,
                                 onTap: () {

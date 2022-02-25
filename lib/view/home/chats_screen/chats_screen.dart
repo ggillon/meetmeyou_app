@@ -66,33 +66,33 @@ class ChatsScreen extends StatelessWidget {
     return ListView.builder(
         itemCount: provider.userDiscussions.length,
         itemBuilder: (context, index){
-      return SwipeTo(
-        onLeftSwipe: (){
-          DialogHelper.showDialogWithTwoButtons(
-              context,
-              "leave_discussion".tr(),
-              "sure_to_leave_discussion".tr(),
-              positiveButtonLabel: "leave".tr(),
-              positiveButtonPress: () {
-                Navigator.of(context).pop();
-                provider
-                    .leaveDiscussion(context, provider.userDiscussions[index].did);
-              });
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: (){
+          Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did));
         },
-        child: GestureDetector(
-          onTap: (){
-            Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did));
+        child: SwipeTo(
+          onLeftSwipe: (){
+            DialogHelper.showDialogWithTwoButtons(
+                context,
+                "leave_discussion".tr(),
+                "sure_to_leave_discussion".tr(),
+                positiveButtonLabel: "leave".tr(),
+                positiveButtonPress: () {
+                  Navigator.of(context).pop();
+                  provider
+                      .leaveDiscussion(context, provider.userDiscussions[index].did).then((value) {
+                    Navigator.of(context).pop();
+                  });
+                });
           },
           child: Column(
             children: <Widget>[
-              Padding(
+              Container(
                 padding: scaler.getPaddingAll(8.0),
+                color: provider.userDiscussions[index].unread == true ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants.colorWhite,
                 child: Row(
                   children: <Widget>[
-                    // Icon(
-                    //   Icons.account_circle,
-                    //   size: 74.0,
-                    // ),
                     ClipRRect(
                       borderRadius: scaler.getBorderRadiusCircular(100.0),
                       child: Container(
