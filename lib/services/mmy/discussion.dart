@@ -155,10 +155,14 @@ Future<Discussion?> findDiscussion(User currentUser, List<String> UIDs) async {
       bool test1 = true;
       bool test2 = true;
       for(String uid in UIDs) {
-        if(!discussion.participants.containsKey(uid)) test1 = false;
+        if(!discussion.participants.containsKey(uid)) {
+          test1 = false;
+        }
       }
       for(String uid in discussion.participants.keys) {
-        if(!UIDs.contains(uid)) test2 = false;
+        if(!UIDs.contains(uid)) {
+          test2 = false;
+        }
       }
       if(test1 && test2) return discussion;
     }

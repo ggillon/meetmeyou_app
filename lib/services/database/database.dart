@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
+import 'package:meetmeyou_app/models/mmy_notification.dart';
 
 import 'firestore_service.dart';
 import 'api_path.dart';
@@ -62,6 +63,11 @@ abstract class Database {
   Future<List<DiscussionMessage>> getDiscussionMessages(String did);
   Future<void> setDiscussionMessage(DiscussionMessage message);
   Future<void> deleteDiscussionMessage(String did, String mid);
+
+  // Notifications Functions
+  Future<void> setNotification(MMYNotification notification);
+  Future<void> setUserToken(String token);
+  Future<String> getUserToken(String uid);
 
 }
 
@@ -274,6 +280,31 @@ class FirestoreDB implements Database {
         builder: (data) {
           return Discussion.fromMap(data);
         });
+  }
+
+  @override
+  Future<void> setNotification(MMYNotification notification) async {
+    _service.setData(
+      path: APIPath.notification(notification.nid),
+      data: notification.toMap(),
+    );
+  }
+
+  @override
+  Future<String> getUserToken(String uid) async {
+    String token = '';
+    Profile? profile = await getProfile(uid);
+    if(profile!.parameters.containsKey('token')) {
+      token = profile.parameters['token'];
+    }
+    return token;
+  }
+
+  @override
+  Future<void> setUserToken(String token) async {
+    Profile? profile = await getProfile(uid);
+    profile!.parameters['token'] = token;
+    await setProfile(profile!);
   }
 
 }

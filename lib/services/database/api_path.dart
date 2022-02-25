@@ -39,4 +39,6 @@ class APIPath {
   static String discussionMessage(String did, String mid)  => '/discussions/$did/messages/$mid/';
   static String discussionMessages(String did)  => '/discussions/$did/messages/';
 
+  static String notification(String nid,) => '/notifications/$nid/';
+
 }
