@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contact_description_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class ContactDescriptionScreen extends StatelessWidget {
          provider.discussionDetail.title = "${provider.userDetail.firstName} ${provider.userDetail.lastName}";
          provider.discussionDetail.photoUrl = provider.userDetail.profileUrl;
           Navigator.pushNamed(
-              context, RoutesConstants.newEventDiscussionScreen, arguments: true);
+              context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
         }),
         body: BaseView<ContactDescriptionProvider>(
           onModelReady: (provider){

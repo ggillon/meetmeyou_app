@@ -22,6 +22,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/custom_stack.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -797,7 +798,7 @@ class EventDetailScreen extends StatelessWidget {
   Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: false);
+        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: false, chatDid: ""));
       },
       child: Card(
         shape: RoundedRectangleBorder(

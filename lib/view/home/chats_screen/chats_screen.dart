@@ -2,11 +2,15 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:swipe_to/swipe_to.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);
@@ -62,62 +66,80 @@ class ChatsScreen extends StatelessWidget {
     return ListView.builder(
         itemCount: provider.userDiscussions.length,
         itemBuilder: (context, index){
-      return Column(
-        children: <Widget>[
-          Padding(
-            padding: scaler.getPaddingAll(8.0),
-            child: Row(
-              children: <Widget>[
-                // Icon(
-                //   Icons.account_circle,
-                //   size: 74.0,
-                // ),
-                ClipRRect(
-                  borderRadius: scaler.getBorderRadiusCircular(100.0),
-                  child: Container(
-                    height: scaler.getHeight(5.0),
-                    width: scaler.getWidth(12.0),
-                    color: ColorConstants.primaryColor,
-                    child: ImageView(
-                      path: provider.userDiscussions[index].photoURL,  height: scaler.getHeight(5.0),
-                      width: scaler.getWidth(12.0), fit: BoxFit.cover
+      return SwipeTo(
+        onLeftSwipe: (){
+          DialogHelper.showDialogWithTwoButtons(
+              context,
+              "leave_discussion".tr(),
+              "sure_to_leave_discussion".tr(),
+              positiveButtonLabel: "leave".tr(),
+              positiveButtonPress: () {
+                Navigator.of(context).pop();
+                provider
+                    .leaveDiscussion(context, provider.userDiscussions[index].did);
+              });
+        },
+        child: GestureDetector(
+          onTap: (){
+            Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did));
+          },
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: scaler.getPaddingAll(8.0),
+                child: Row(
+                  children: <Widget>[
+                    // Icon(
+                    //   Icons.account_circle,
+                    //   size: 74.0,
+                    // ),
+                    ClipRRect(
+                      borderRadius: scaler.getBorderRadiusCircular(100.0),
+                      child: Container(
+                        height: scaler.getHeight(5.0),
+                        width: scaler.getWidth(12.0),
+                        color: ColorConstants.primaryColor,
+                        child: ImageView(
+                          path: provider.userDiscussions[index].photoURL,  height: scaler.getHeight(5.0),
+                          width: scaler.getWidth(12.0), fit: BoxFit.cover
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(width : scaler.getWidth(1.0)),
-                Expanded(
-                  child: Padding(
-                    padding: scaler.getPaddingAll(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                    SizedBox(width : scaler.getWidth(1.0)),
+                    Expanded(
+                      child: Padding(
+                        padding: scaler.getPaddingAll(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                           Expanded(
-                             child:  Text(
-                                 provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
-                           ),
-                            SizedBox(width : scaler.getWidth(1.0)),
-                            Text(
-                              "Yesterday").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                               Expanded(
+                                 child:  Text(
+                                     provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                               ),
+                                SizedBox(width : scaler.getWidth(1.0)),
+                                Text(
+                                  "Yesterday").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                              ],
+                            ),
+                            Padding(
+                              padding: scaler.getPaddingLTRB(0.0, 0.4, 0.0, 0.0),
+                              child: Text(
+                                "Hiiiiiii, i am using meetMeYou ").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                            )
                           ],
                         ),
-                        Padding(
-                          padding: scaler.getPaddingLTRB(0.0, 0.4, 0.0, 0.0),
-                          child: Text(
-                            "Hiiiiiii, i am using meetMeYou ").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
-                        )
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Divider(),
+            ],
           ),
-          Divider(),
-        ],
+        ),
       );
     });
   }

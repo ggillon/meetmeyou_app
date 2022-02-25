@@ -79,7 +79,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     }
   }
 
-  Future getImage(BuildContext context, int type) async {
+  Future getImage(BuildContext context, int type, bool fromContactOrGroup, bool fromChatScreen, String fromChatScreenDid) async {
     final picker = ImagePicker();
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
@@ -88,9 +88,9 @@ class NewEventDiscussionProvider extends BaseProvider {
           source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
       image = File(pickedFile!.path);
       if(image != null || image != ""){
-        Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", replyMid: "")).then((value) {
+        Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
           image = null;
-          getEventDiscussion(context, false);
+          value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
         });
       } else{
         DialogHelper.showMessage(context, "no_image_selected".tr());
@@ -103,9 +103,9 @@ class NewEventDiscussionProvider extends BaseProvider {
       if (pickedFile != null) {
         image = File(pickedFile.path);
         if(image != null || image != ""){
-          Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", replyMid: "")).then((value) {
+          Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
             image = null;
-            getEventDiscussion(context, false);
+           value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
           });
         } else{
           DialogHelper.showMessage(context, "no_image_selected".tr());
@@ -165,11 +165,11 @@ class NewEventDiscussionProvider extends BaseProvider {
   }
 
   Future postDiscussionMessage(BuildContext context, String type, String text,
-      TextEditingController controller, bool fromContactOrGroup,
+      TextEditingController controller, bool fromContactOrGroup, bool fromChatScreen, String fromChatScreenDid,
       {File? photoFile, String? replyMid}) async {
     updatePostMessage(true);
 
-    await mmyEngine!.postDiscussionMessage(fromContactOrGroup == true ? discussion!.did : eventDetail.eid!, type: type, text: text, photoFile: photoFile, replyMid: replyMid)
+    await mmyEngine!.postDiscussionMessage(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? discussion!.did : eventDetail.eid!), type: type, text: text, photoFile: photoFile, replyMid: replyMid)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
@@ -179,7 +179,8 @@ class NewEventDiscussionProvider extends BaseProvider {
     isRightSwipe = false;
     replyMessage = "";
     imageUrl = "";
-    fromContactOrGroup == true ? await getDiscussion(context) : await getEventDiscussion(context, false);
+    this.replyMid = "";
+    fromChatScreen == true ? await getDiscussion(context, fromChatScreenDid) : (fromContactOrGroup == true ? await getDiscussion(context, discussion!.did) : await getEventDiscussion(context, false));
     updatePostMessage(false);
   }
 
@@ -227,7 +228,7 @@ class NewEventDiscussionProvider extends BaseProvider {
 
     if (value != null) {
       discussion = value;
-      await getDiscussion(context);
+      await getDiscussion(context, discussion!.did);
       updateStartDiscussion(false);
     }
   }
@@ -241,18 +242,27 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getDiscussion(BuildContext context) async{
-    updateRetrieveDiscussion(true);
+  Future getDiscussion(BuildContext context, String did, {bool jump = true, bool fromChatScreen = false}) async{
+   fromChatScreen == true ?  setState(ViewState.Busy) : updateRetrieveDiscussion(true);
 
-    var value = await mmyEngine!.getDiscussion(discussion!.did).catchError((e) {
-      updateRetrieveDiscussion(false);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.getDiscussion(did).catchError((e) {
+      fromChatScreen == true ?  setState(ViewState.Idle) : updateRetrieveDiscussion(false);
       DialogHelper.showMessage(context, e.message);
     });
 
     if (value != null) {
       eventDiscussionList = value.messages;
       eventDiscussion = value;
-      updateRetrieveDiscussion(false);
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        if (scrollController.hasClients) {
+          jump == true ?
+          scrollController.jumpTo(scrollController.position.maxScrollExtent)
+              : scrollListener();
+        }
+      });
+      fromChatScreen == true ?  setState(ViewState.Idle) : updateRetrieveDiscussion(false);
     }
   }
 }

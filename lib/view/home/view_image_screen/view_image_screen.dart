@@ -62,8 +62,8 @@ class ViewImageScreen extends StatelessWidget {
                   ) :
                   InkWell(
                     onTap: (){
-                      provider.postDiscussionMessage(context, viewImageData.image!).then((value) {
-                        Navigator.of(context).pop();
+                      provider.postDiscussionMessage(context, viewImageData.image!, viewImageData.fromContactOrGroup!, viewImageData.groupContactChatDid!, viewImageData.fromChatScreen!, viewImageData.fromChatScreenDid!).then((value) {
+                        Navigator.of(context).pop(viewImageData.fromChatScreen!);
                       });
                     },
                     child: Container(
@@ -87,7 +87,10 @@ class ViewImageScreen extends StatelessWidget {
 class ViewImageData{
   File? image;
   String imageUrl;
-  String replyMid;
+  bool? fromContactOrGroup;
+  String? groupContactChatDid;
+  bool? fromChatScreen;
+  String? fromChatScreenDid;
 
-  ViewImageData({this.image, required this.imageUrl, required this.replyMid});
+  ViewImageData({this.image, required this.imageUrl, this.fromContactOrGroup, this.groupContactChatDid, this.fromChatScreen, this.fromChatScreenDid});
 }

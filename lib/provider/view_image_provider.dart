@@ -14,14 +14,14 @@ class ViewImageProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
 
-  Future postDiscussionMessage(BuildContext context, File photoFile, {bool? fromContactOrGroup,}) async {
+  Future postDiscussionMessage(BuildContext context, File photoFile, bool fromContactOrGroup, String contactGroupDid, bool fromChatScreen, String fromChatScreenDid) async {
 
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     await mmyEngine!.postDiscussionMessage(
-        eventDetail.eid!, type: PHOTO_MESSAGE, text: "", photoFile: photoFile)
+     fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: PHOTO_MESSAGE, text: "", photoFile: photoFile)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "error_message".tr());

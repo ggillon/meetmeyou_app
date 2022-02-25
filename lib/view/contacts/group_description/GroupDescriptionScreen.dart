@@ -13,6 +13,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/group_description_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 
 class GroupDescriptionScreen extends StatelessWidget {
   GroupDescriptionScreen({Key? key}) : super(key: key);
@@ -81,7 +82,7 @@ class GroupDescriptionScreen extends StatelessWidget {
                             provider.discussionDetail.title = provider.groupDetail.groupName;
                             provider.discussionDetail.photoUrl = provider.groupDetail.groupPhotoUrl;
                             Navigator.pushNamed(
-                                context, RoutesConstants.newEventDiscussionScreen, arguments: true);
+                                context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
                           },
                           child: Padding(
                             padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),

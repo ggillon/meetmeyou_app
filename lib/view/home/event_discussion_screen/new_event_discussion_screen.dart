@@ -26,9 +26,11 @@ import 'package:meetmeyou_app/widgets/reply_message_widget.dart';
 import 'package:swipe_to/swipe_to.dart';
 
 class NewEventDiscussionScreen extends StatelessWidget {
-  NewEventDiscussionScreen({Key? key, required this.fromContactOrGroup})
+  NewEventDiscussionScreen({Key? key, required this.fromContactOrGroup, required this.fromChatScreen, required this.chatDid})
       : super(key: key);
   bool fromContactOrGroup;
+  bool fromChatScreen;
+  String chatDid;
   NewEventDiscussionProvider provider = NewEventDiscussionProvider();
   TextEditingController messageController = TextEditingController();
   var messageFocusNode = FocusNode();
@@ -40,21 +42,30 @@ class NewEventDiscussionScreen extends StatelessWidget {
     return BaseView<NewEventDiscussionProvider>(
       onModelReady: (provider) {
         this.provider = provider;
-        fromContactOrGroup == true
-            ? provider.startContactDiscussion(context)
-            : provider.getEventDiscussion(context, true);
+        if(fromChatScreen == true){
+          provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen);
+          const milliSecTime = const Duration(milliseconds: 500);
 
-        // print(provider.discussionDetail.userId.toString());
-        const milliSecTime = const Duration(milliseconds: 500);
-
-        provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+          provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+            provider.getDiscussion(context, chatDid, jump: false);
+          });
+        } else{
           fromContactOrGroup == true
-              ? provider.getDiscussion(context)
-              : provider.getEventDiscussion(context, false, jump: false);
-        });
+              ? provider.startContactDiscussion(context)
+              : provider.getEventDiscussion(context, true);
+
+          // print(provider.discussionDetail.userId.toString());
+          const milliSecTime = const Duration(milliseconds: 500);
+
+          provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+            fromContactOrGroup == true
+                ? provider.getDiscussion(context, provider.discussion!.did, jump: false)
+                : provider.getEventDiscussion(context, false, jump: false);
+          });
+        }
       },
       builder: (context, provider, _) {
-        return (provider.state == ViewState.Busy ||
+        return  (provider.state == ViewState.Busy ||
                 provider.startDiscussion == true)
             ? Scaffold(
                 body: Column(
@@ -91,7 +102,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                               child: ImageView(
                                 path: fromContactOrGroup == true
                                     ? provider.discussionDetail.photoUrl
-                                    : provider.eventDetail.photoUrlEvent,
+                                    : provider.eventDiscussion!.photoURL,
                                 fit: BoxFit.cover,
                                 height: scaler.getHeight(4.0),
                                 width: scaler.getWidth(10),
@@ -99,15 +110,18 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: scaler.getWidth(2.0)),
-                          Text(fromContactOrGroup == true
-                                  ? provider.discussion!.title.toString()
-                                  : provider.eventDiscussion!.title.toString())
-                              .mediumText(ColorConstants.colorBlack,
-                                  scaler.getTextSize(11), TextAlign.center),
+                         Container(
+                           width: scaler.getWidth(45),
+                           child:  Text(fromContactOrGroup == true
+                               ? provider.discussion!.title.toString()
+                               : provider.eventDiscussion!.title.toString())
+                               .mediumText(ColorConstants.colorBlack,
+                               scaler.getTextSize(11), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                         )
                         ],
                       ),
                       actions: [
-                        fromContactOrGroup == true
+                        (fromContactOrGroup == true || fromChatScreen == true)
                             ? Container()
                             : GestureDetector(
                                 behavior: HitTestBehavior.translucent,
@@ -246,7 +260,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                                       true) :
                                                           InkWell(
                                                             onTap: (){
-                                                              Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL, replyMid: ""));
+                                                              Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
                                                             },
                                                             child: ClipRRect(
                                                               borderRadius: scaler.getBorderRadiusCircular(7.5),
@@ -353,7 +367,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                                             true) :
                                                                             InkWell(
                                                                               onTap: (){
-                                                                                Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL, replyMid: ""));
+                                                                                Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
                                                                               },
                                                                               child: ClipRRect(
                                                                                 borderRadius: scaler.getBorderRadiusCircular(7.5),
@@ -414,11 +428,11 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                 CustomDialog(
                                                   cameraClick: () {
                                                     provider.getImage(
-                                                        _scaffoldKey.currentContext!, 1);
+                                                        _scaffoldKey.currentContext!, 1, fromContactOrGroup, fromChatScreen, chatDid);
                                                   },
                                                   galleryClick: () {
                                                     provider.getImage(
-                                                        _scaffoldKey.currentContext!, 2);
+                                                        _scaffoldKey.currentContext!, 2, fromContactOrGroup, fromChatScreen, chatDid);
                                                   },
                                                   cancelClick: () {
                                                     Navigator.of(context).pop();
@@ -454,7 +468,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
           messageController.text.isEmpty
               ? Container()
               : provider.postDiscussionMessage(context, TEXT_MESSAGE,
-              data.trim(), messageController, fromContactOrGroup,
+              data.trim(), messageController, fromContactOrGroup, fromChatScreen, chatDid,
               replyMid: provider.replyMid);
         } else{
           messageController.clear();

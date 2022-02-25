@@ -25,4 +25,27 @@ class ChatScreenProvider extends BaseProvider{
       setState(ViewState.Idle);
     }
   }
+
+
+  // Leave a discussion
+
+  bool leave = false;
+
+  updateLeave(bool val) {
+    leave = val;
+    notifyListeners();
+  }
+
+  Future leaveDiscussion(BuildContext context, String did) async {
+    updateLeave(true);
+
+    await mmyEngine!.leaveDiscussion(did).catchError((e) {
+      updateLeave(false);
+      DialogHelper.showMessage(context, "error_message".tr());
+    });
+
+    await getUserDiscussion(context);
+    updateLeave(false);
+  }
+
 }

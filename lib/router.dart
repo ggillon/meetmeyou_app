@@ -174,7 +174,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => EventDiscussionScreen(), settings: settings);
 
       case RoutesConstants.newEventDiscussionScreen:
-        return MaterialPageRoute(builder: (_) => NewEventDiscussionScreen(fromContactOrGroup: settings.arguments as bool), settings: settings);
+        final argument = settings.arguments as NewEventDiscussionScreen;
+        return MaterialPageRoute(builder: (_) => NewEventDiscussionScreen(fromContactOrGroup: argument.fromContactOrGroup , fromChatScreen:  argument.fromChatScreen, chatDid: argument.chatDid,), settings: settings);
 
       case RoutesConstants.multipleDateTimeScreen:
         return MaterialPageRoute(builder: (_) => MultipleDateTmeScreen(), settings: settings);
