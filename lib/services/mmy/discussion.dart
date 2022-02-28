@@ -79,10 +79,14 @@ Future<Discussion> getDiscussion(User currentUser, String did) async {
   Discussion discussion = await db.getDiscussion(did);
   messages = await db.getDiscussionMessages(did);
   messages.sort((a,b) => (a.createdTimeStamp.microsecondsSinceEpoch - b.createdTimeStamp.microsecondsSinceEpoch));
-  discussion.messages = messages;
+  discussion.messages = db.getDiscussionMessagesStream(did);
   discussion.unread = false;
   discussion.participants[currentUser.uid] = MESSAGES_READ;
   await db.setDiscussion(discussion);
+  if (discussion.type != EVENT_DISCUSSION) {
+    discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
+    discussion.title = await getDiscussionTitle(currentUser, discussion);
+  }
   return discussion;
 }
 
@@ -108,6 +112,38 @@ Future<void> postMessage(User currentUser, String did, String type, String text,
   await db.setDiscussionMessage(message);
 }
 
+Future<String> getDiscussionTitle(User currentUser, Discussion discussion) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  String result = discussion.title;
+  if(discussion.params.containsKey('set_title')) { // Title has been set use it
+    if(discussion.params['set_title']) return discussion.title;
+  }
+  if(discussion.participants.length == 2) { // it's a 2 people conversation - show other person's photo
+    if(currentUser.uid != discussion.adminUid) return (await db.getProfile(discussion.adminUid))!.displayName; // when created it's the one used
+    for (String key in discussion.participants.keys) {
+      if (key != currentUser.uid) result = (await db.getProfile(key))!.displayName; // Use the other persons photo
+    }
+  }
+  return result;
+}
+
+Future<String> getDiscussionPhotoURL(User currentUser, Discussion discussion) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  String result = "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media"; // Group Generic Photo
+  if(discussion.params.containsKey('set_photo')) { // Photo has been set use it
+    if(discussion.params['set_photo']) return discussion.photoURL;
+  }
+  if(discussion.participants.length == 2) { // it's a 2 people conversation - show other person's photo
+    if(currentUser.uid != discussion.adminUid) return (await db.getProfile(discussion.adminUid))!.photoURL; // when created it's the one used
+    for (String key in discussion.participants.keys) {
+      if (key != currentUser.uid) result = (await db.getProfile(key))!.photoURL; // Use the other persons photo
+    }
+  }
+  return result;
+}
+
+
+
 Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   final db = FirestoreDB(uid: currentUser.uid);
   List<Discussion> discussions = await db.getUserDiscussions(currentUser.uid);
@@ -115,10 +151,18 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   for(Discussion discussion in discussions) {
     if(discussion.participants[currentUser.uid] == MESSAGES_UNREAD) {
       discussion.unread = true;
+      if (discussion.type != EVENT_DISCUSSION) {
+        discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
+        discussion.title = await getDiscussionTitle(currentUser, discussion);
+      }
       results.add(discussion);
     }
     if(discussion.participants[currentUser.uid] != MESSAGES_UNREAD) {
       discussion.unread = false;
+      if (discussion.type != EVENT_DISCUSSION) {
+        discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
+        discussion.title = await getDiscussionTitle(currentUser, discussion);
+      }
       results.add(discussion);
     }
   }
@@ -143,6 +187,16 @@ Future<Discussion> changeTitleOfDiscussion(User currentUser, String did, String 
   final db = FirestoreDB(uid: currentUser.uid);
   Discussion discussion = await db.getDiscussion(did);
   discussion.title = title;
+  discussion.params['set_title'] = true;
+  await db.setDiscussion(discussion);
+  return discussion;
+}
+
+Future<Discussion> changePictureOfDiscussion(User currentUser, String did, String photoURL) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  Discussion discussion = await db.getDiscussion(did);
+  discussion.photoURL = photoURL;
+  discussion.params['set_photo'] = true;
   await db.setDiscussion(discussion);
   return discussion;
 }
@@ -173,11 +227,11 @@ Future<Discussion?> findDiscussion(User currentUser, List<String> UIDs) async {
 Future<Discussion> startContactDiscussion(User currentUser, String cid) async {
   String title = (await profileLib.getUserProfile(currentUser)).displayName;
   Contact contact = await contactLib.getContact(currentUser, cid: cid);
-  title = title + ',' + contact.displayName;
+  title = title + ', ' + contact.displayName;
   if(contact.status == CONTACT_GROUP) {
     List<String> CIDs = [];
     for(String cid in contact.group.keys) CIDs.add(cid);
-
+    title = contact.displayName;
     Discussion? existingDiscussion = await findDiscussion(currentUser, (CIDs + [currentUser.uid]));
     if(existingDiscussion != null) return existingDiscussion;
 

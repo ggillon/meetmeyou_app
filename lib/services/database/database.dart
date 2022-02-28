@@ -61,6 +61,7 @@ abstract class Database {
   Future<void> setDiscussion(Discussion discussion);
   Future<void> deleteDiscussion(String did);
   Future<List<DiscussionMessage>> getDiscussionMessages(String did);
+  Stream<List<DiscussionMessage>> getDiscussionMessagesStream(String did);
   Future<void> setDiscussionMessage(DiscussionMessage message);
   Future<void> deleteDiscussionMessage(String did, String mid);
 
@@ -257,6 +258,13 @@ class FirestoreDB implements Database {
   }
 
   @override
+  Stream<List<DiscussionMessage>> getDiscussionMessagesStream(String did) {
+    return _service.collectionStream(
+        path: APIPath.discussionMessages(did),
+        builder: (data) => DiscussionMessage.fromMap(data));
+  }
+
+  @override
   Future<void> setDiscussion(Discussion discussion) async {
     _service.setData(
       path: APIPath.discussion(discussion.did,),
@@ -304,7 +312,7 @@ class FirestoreDB implements Database {
   Future<void> setUserToken(String token) async {
     Profile? profile = await getProfile(uid);
     profile!.parameters['token'] = token;
-    await setProfile(profile!);
+    await setProfile(profile);
   }
 
 }
