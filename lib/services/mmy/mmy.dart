@@ -450,10 +450,13 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
-    if (photoFile!=null)
+    if (photoFile!=null) {
       photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
+      await discussionLib.changePictureOfDiscussion(_currentUser, eid, photoURL);
+    }
     if(multipleDates != null)
       dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
+    if(title != null) await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
     return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
   }
 

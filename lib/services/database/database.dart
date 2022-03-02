@@ -61,6 +61,7 @@ abstract class Database {
   Future<void> setDiscussion(Discussion discussion);
   Future<void> deleteDiscussion(String did);
   Future<List<DiscussionMessage>> getDiscussionMessages(String did);
+  Stream<List<DiscussionMessage>> getDiscussionMessagesStream(String did);
   Future<void> setDiscussionMessage(DiscussionMessage message);
   Future<void> deleteDiscussionMessage(String did, String mid);
 
@@ -254,6 +255,13 @@ class FirestoreDB implements Database {
       path: APIPath.discussionMessages(did),
       builder: (data) => DiscussionMessage.fromMap(data),
     );
+  }
+
+  @override
+  Stream<List<DiscussionMessage>> getDiscussionMessagesStream(String did) {
+    return _service.collectionStream(
+        path: APIPath.discussionMessages(did),
+        builder: (data) => DiscussionMessage.fromMap(data));
   }
 
   @override

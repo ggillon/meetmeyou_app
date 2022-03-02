@@ -21,7 +21,7 @@ class Discussion {
         required this.participants,
         required this.timeStamp,
         this.params = EMPTY_MAP,
-        this.messages = const [],
+        this.messages,
         this.unread = false,
       });
 
@@ -34,7 +34,7 @@ class Discussion {
   Map<String, dynamic> participants;
   DateTime timeStamp;
   Map params;
-  List<DiscussionMessage> messages;
+  Stream<List<DiscussionMessage>>? messages;
   bool unread;
 
   factory Discussion.fromMap(Map<String, dynamic> data) {
