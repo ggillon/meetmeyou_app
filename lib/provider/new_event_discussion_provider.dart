@@ -20,7 +20,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
-  List<DiscussionMessage> eventDiscussionList = [];
+  Stream<List<DiscussionMessage>>? eventDiscussionList;
   Discussion? eventDiscussion;
   EventDetail eventDetail = locator<EventDetail>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
@@ -46,7 +46,7 @@ class NewEventDiscussionProvider extends BaseProvider {
 
   @override
   void dispose() {
-    clockTimer!.cancel();
+  //  clockTimer!.cancel();
     super.dispose();
   }
 
@@ -117,6 +117,7 @@ class NewEventDiscussionProvider extends BaseProvider {
       notifyListeners();
     }
   }
+
 
   bool value = true;
 
@@ -278,4 +279,15 @@ class NewEventDiscussionProvider extends BaseProvider {
       eventDetail.attendingProfileKeys = keysList;
     }
   }
+
+  StreamController<DiscussionMessage> discussionMessagesController = StreamController();
+
+  Stream<DiscussionMessage> getStream() {
+    return discussionMessagesController.stream;
+  }
+
+  void addMessages(DiscussionMessage messages) {
+    discussionMessagesController.sink.add(messages);
+  }
+
 }

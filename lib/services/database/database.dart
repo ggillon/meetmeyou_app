@@ -260,8 +260,7 @@ class FirestoreDB implements Database {
   @override
   Stream<List<DiscussionMessage>> getDiscussionMessagesStream(String did) {
     return _service.collectionStream(
-        path: APIPath.discussionMessages(did),
-        builder: (data) => DiscussionMessage.fromMap(data));
+        path: APIPath.discussionMessages(did), builder: (data) => DiscussionMessage.fromMap(data));
   }
 
   @override

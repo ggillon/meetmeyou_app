@@ -46,26 +46,25 @@ class NewEventDiscussionScreen extends StatelessWidget {
         this.provider = provider;
         if(fromChatScreen == true){
           provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen);
-          const milliSecTime = const Duration(milliseconds: 500);
+         // const milliSecTime = const Duration(milliseconds: 500);
 
-          provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
-            jump = false;
-            provider.getDiscussion(context, chatDid, jump: false);
-          });
+          // provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+          //   jump = false;
+          //   provider.getDiscussion(context, chatDid, jump: false);
+          // });
         } else{
           fromContactOrGroup == true
               ? provider.startContactDiscussion(context)
               : provider.getEventDiscussion(context, true);
 
-          // print(provider.discussionDetail.userId.toString());
-          const milliSecTime = const Duration(milliseconds: 500);
+          // const milliSecTime = const Duration(milliseconds: 500);
 
-          provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
-            jump = false;
-            fromContactOrGroup == true
-                ? provider.getDiscussion(context, provider.discussion!.did, jump: false)
-                : provider.getEventDiscussion(context, false, jump: false);
-          });
+          // provider.clockTimer = Timer.periodic(milliSecTime, (Timer t) {
+          //   jump = false;
+          //   fromContactOrGroup == true
+          //       ? provider.getDiscussion(context, provider.discussion!.did, jump: false)
+          //       : provider.getEventDiscussion(context, false, jump: false);
+          // });
         }
       },
       builder: (context, provider, _) {
@@ -165,263 +164,27 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         padding: scaler.getPaddingLTRB(3.5, 1.0, 3.0, 0.5),
                         child: Column(
                           children: [
-                            Expanded(
-                              child: NotificationListener<ScrollNotification>(
-                                onNotification: (scrollNotification) {
-                                  if (provider.scrollController.position
-                                          .userScrollDirection ==
-                                      ScrollDirection.reverse) {
-                                    provider.isJump = false;
-                                  } else if (provider.scrollController.position
-                                          .userScrollDirection ==
-                                      ScrollDirection.forward) {
-                                    provider.isJump = false;
-                                  } else if (provider.scrollController.position
-                                          .userScrollDirection ==
-                                      ScrollDirection.idle) {
-                                    provider.isJump = false;
-                                  }
-                                  return true;
-                                },
-                                child: ListView.builder(
-                                    controller: provider.scrollController,
-                                    shrinkWrap: true,
-                                    itemCount:
-                                        provider.eventDiscussionList.length,
-                                    itemBuilder: (context, index) {
-                                      WidgetsBinding.instance!.addPostFrameCallback((_) {
-                                        if (provider.scrollController.hasClients) {
-                                          jump == true ?
-                                          provider.scrollController.jumpTo(provider.scrollController.position.maxScrollExtent)
-                                              : provider.scrollListener();
-                                        }
-                                      });
-                                      provider.userName = provider.eventDiscussionList[index].contactUid == provider.auth.currentUser?.uid ? "you".tr() : provider.eventDiscussionList[index].contactDisplayName;
-                                      return (provider
-                                                  .eventDiscussionList[index]
-                                                  .contactUid) !=
-                                              provider.auth.currentUser!.uid
-                                          ? Column(
-                                              children: [
-                                                SwipeTo(
-                                                  child: ChatBubble(
-                                                    clipper: ChatBubbleClipper3(
-                                                        type: BubbleType
-                                                            .receiverBubble),
-                                                    backGroundColor:
-                                                        ColorConstants
-                                                            .colorWhite,
-                                                    margin: EdgeInsets.only(
-                                                        top: 20),
-                                                    child: Container(
-                                                      constraints:
-                                                          BoxConstraints(
-                                                        maxWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.7,
-                                                      ),
-                                                      child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
-                                                          ? Column(
-                                                        crossAxisAlignment : CrossAxisAlignment.start,
-                                                        children: [
-                                                          sendReplySwipe(provider.eventDiscussionList.any((element){
-                                                            provider.replyMessageImageUrl = element.attachmentURL;
-                                                            provider.replyMessageText = element.text;
-                                                            return element.mid == provider.eventDiscussionList[index].replyMid;
-                                                          }) ? provider.replyMessageText : ""),
-                                                          SizedBox(height: scaler.getHeight(0.1)),
-                                                          Row(
-                                                            children: [
-                                                              SizedBox(width: scaler.getWidth(0.5)),
-                                                              Text(provider.eventDiscussionList[index].text).regularText(
-                                                                  ColorConstants
-                                                                      .colorBlack,
-                                                                  scaler
-                                                                      .getTextSize(
-                                                                      10),
-                                                                  TextAlign
-                                                                      .left,
-                                                                  isHeight:
-                                                                  true),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      )
-                                                          :
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(provider
-                                                                  .eventDiscussionList[
-                                                                      index]
-                                                                  .contactDisplayName)
-                                                              .boldText(
-                                                                  ColorConstants
-                                                                      .colorRed,
-                                                                  scaler
-                                                                      .getTextSize(
-                                                                          10.0),
-                                                                  TextAlign
-                                                                      .left),
-                                                          (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
-                                                                  .eventDiscussionList[
-                                                                      index]
-                                                                  .text)
-                                                              .regularText(
-                                                                  ColorConstants
-                                                                      .colorBlack,
-                                                                  scaler
-                                                                      .getTextSize(
-                                                                          10),
-                                                                  TextAlign
-                                                                      .left,
-                                                                  isHeight:
-                                                                      true) :
-                                                          InkWell(
-                                                            onTap: (){
-                                                              Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
-                                                            },
-                                                            child: ClipRRect(
-                                                              borderRadius: scaler.getBorderRadiusCircular(7.5),
-                                                              child: Container(
-                                                                color: ColorConstants.primaryColor,
-                                                                height: scaler.getHeight(30.0),
-                                                                width: scaler.getWidth(70.0),
-                                                                child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  onRightSwipe: () {
-                                                    provider.isRightSwipe = true;
-                                                    FocusScope.of(context).requestFocus(messageFocusNode);
-                                                    provider.replyMessage = provider.eventDiscussionList[index].text;
-                                                    provider.replyMid = provider.eventDiscussionList[index].mid;
-                                                    provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
-                                                   // provider.userName ="you".tr();
-                                                    provider.updateSwipe(true);
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        scaler.getHeight(0.5)),
-                                              ],
-                                            )
-                                          : Column(
-                                              children: [
-                                                SwipeTo(
-                                                  child: ChatBubble(
-                                                    elevation : (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? 0.0 : 2,
-                                                    clipper: ChatBubbleClipper3(
-                                                        type: BubbleType
-                                                            .sendBubble),
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    margin: EdgeInsets.only(
-                                                        top: 20),
-                                                    backGroundColor:
-                                                    (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants
-                                                            .primaryColor,
-                                                    child: Container(
-                                                      constraints:
-                                                          BoxConstraints(
-                                                        maxWidth: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.7,
-                                                      ),
-                                                      child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
-                                                          ? Column(
-                                                        crossAxisAlignment : CrossAxisAlignment.start,
-                                                              children: [
-                                                                sendReplySwipe(provider.eventDiscussionList.any((element){
-                                                                  provider.replyMessageText = element.text;
-                                                                  provider.replyMessageImageUrl = element.attachmentURL;
-                                                                  return element.mid == provider.eventDiscussionList[index].replyMid;
-                                                                }) ? provider.replyMessageText: ""),
-                                                                SizedBox(height: scaler.getHeight(0.1)),
-                                                                Row(
-                                                                  children: [
-                                                                    SizedBox(width: scaler.getWidth(0.5)),
-                                                                    Text(provider.eventDiscussionList[index].text).regularText(
-                                                                        ColorConstants
-                                                                            .colorBlack,
-                                                                        scaler
-                                                                            .getTextSize(
-                                                                            10),
-                                                                        TextAlign
-                                                                            .left,
-                                                                        isHeight:
-                                                                        true),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text("you".tr()).boldText(
-                                                                    Colors
-                                                                        .limeAccent,
-                                                                    scaler.getTextSize(
-                                                                        10.0),
-                                                                    TextAlign
-                                                                        .left),
-                                                                (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
-                                                               Text(provider.eventDiscussionList[index].text)
-                                                                    .regularText(
-                                                                        ColorConstants
-                                                                            .colorWhite,
-                                                                        scaler.getTextSize(
-                                                                            10),
-                                                                        TextAlign
-                                                                            .left,
-                                                                        isHeight:
-                                                                            true) :
-                                                                            InkWell(
-                                                                              onTap: (){
-                                                                                Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
-                                                                              },
-                                                                              child: ClipRRect(
-                                                                                borderRadius: scaler.getBorderRadiusCircular(7.5),
-                                                                                child: Container(
-                                                                                  color: ColorConstants.primaryColor,
-                                                                                  height: scaler.getHeight(30.0),
-                                                                                  width: scaler.getWidth(70.0),
-                                                                                  child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                              ],
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  onRightSwipe: () {
-                                                    provider.isRightSwipe = true;
-                                                    FocusScope.of(context).requestFocus(messageFocusNode);
-                                                    provider.replyMessage = provider.eventDiscussionList[index].text;
-                                                    provider.replyMid = provider.eventDiscussionList[index].mid;
-                                                    provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
-                                                   // provider.userName = "you".tr();
-                                                    provider.updateSwipe(true);
-                                                  },
-                                                ),
-                                                SizedBox(height: scaler.getHeight(0.5)),
-                                              ],
-                                            );
-                                    }),
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: NotificationListener<ScrollNotification>(
+                            //     onNotification: (scrollNotification) {
+                            //       if (provider.scrollController.position
+                            //               .userScrollDirection ==
+                            //           ScrollDirection.reverse) {
+                            //         provider.isJump = false;
+                            //       } else if (provider.scrollController.position
+                            //               .userScrollDirection ==
+                            //           ScrollDirection.forward) {
+                            //         provider.isJump = false;
+                            //       } else if (provider.scrollController.position
+                            //               .userScrollDirection ==
+                            //           ScrollDirection.idle) {
+                            //         provider.isJump = false;
+                            //       }
+                            //       return true;
+                            //     },
+                            //     child: messageListView(scaler),
+                            //   ),
+                            // ),
                             Row(
                               crossAxisAlignment: provider.isRightSwipe == true
                                   ? CrossAxisAlignment.end
@@ -502,6 +265,246 @@ class NewEventDiscussionScreen extends StatelessWidget {
     );
   }
 
+
+  // Widget messageListView(ScreenScaler scaler) {
+  //   return ListView.builder(
+  //       controller: provider.scrollController,
+  //       shrinkWrap: true,
+  //       itemCount:
+  //       provider.eventDiscussionList.length,
+  //       itemBuilder: (context, index) {
+  //         WidgetsBinding.instance!.addPostFrameCallback((_) {
+  //           if (provider.scrollController.hasClients) {
+  //             jump == true ?
+  //             provider.scrollController.jumpTo(provider.scrollController.position.maxScrollExtent)
+  //                 : provider.scrollListener();
+  //           }
+  //         });
+  //         provider.userName = provider.eventDiscussionList[index].contactUid == provider.auth.currentUser?.uid ? "you".tr() : provider.eventDiscussionList[index].contactDisplayName;
+  //         return (provider
+  //             .eventDiscussionList[index]
+  //             .contactUid) !=
+  //             provider.auth.currentUser!.uid
+  //             ? Column(
+  //           children: [
+  //             SwipeTo(
+  //               child: ChatBubble(
+  //                 clipper: ChatBubbleClipper3(
+  //                     type: BubbleType
+  //                         .receiverBubble),
+  //                 backGroundColor:
+  //                 ColorConstants
+  //                     .colorWhite,
+  //                 margin: EdgeInsets.only(
+  //                     top: 20),
+  //                 child: Container(
+  //                   constraints:
+  //                   BoxConstraints(
+  //                     maxWidth: MediaQuery.of(
+  //                         context)
+  //                         .size
+  //                         .width *
+  //                         0.7,
+  //                   ),
+  //                   child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
+  //                       ? Column(
+  //                     crossAxisAlignment : CrossAxisAlignment.start,
+  //                     children: [
+  //                       sendReplySwipe(provider.eventDiscussionList.any((element){
+  //                         provider.replyMessageImageUrl = element.attachmentURL;
+  //                         provider.replyMessageText = element.text;
+  //                         return element.mid == provider.eventDiscussionList[index].replyMid;
+  //                       }) ? provider.replyMessageText : ""),
+  //                       SizedBox(height: scaler.getHeight(0.1)),
+  //                       Row(
+  //                         children: [
+  //                           SizedBox(width: scaler.getWidth(0.5)),
+  //                           Text(provider.eventDiscussionList[index].text).regularText(
+  //                               ColorConstants
+  //                                   .colorBlack,
+  //                               scaler
+  //                                   .getTextSize(
+  //                                   10),
+  //                               TextAlign
+  //                                   .left,
+  //                               isHeight:
+  //                               true),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   )
+  //                       :
+  //                   Column(
+  //                     crossAxisAlignment:
+  //                     CrossAxisAlignment
+  //                         .start,
+  //                     children: [
+  //                       Text(provider
+  //                           .eventDiscussionList[
+  //                       index]
+  //                           .contactDisplayName)
+  //                           .boldText(
+  //                           ColorConstants
+  //                               .colorRed,
+  //                           scaler
+  //                               .getTextSize(
+  //                               10.0),
+  //                           TextAlign
+  //                               .left),
+  //                       (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
+  //                           .eventDiscussionList[
+  //                       index]
+  //                           .text)
+  //                           .regularText(
+  //                           ColorConstants
+  //                               .colorBlack,
+  //                           scaler
+  //                               .getTextSize(
+  //                               10),
+  //                           TextAlign
+  //                               .left,
+  //                           isHeight:
+  //                           true) :
+  //                       InkWell(
+  //                         onTap: (){
+  //                           Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
+  //                         },
+  //                         child: ClipRRect(
+  //                           borderRadius: scaler.getBorderRadiusCircular(7.5),
+  //                           child: Container(
+  //                             color: ColorConstants.primaryColor,
+  //                             height: scaler.getHeight(30.0),
+  //                             width: scaler.getWidth(70.0),
+  //                             child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               onRightSwipe: () {
+  //                 provider.isRightSwipe = true;
+  //                 FocusScope.of(context).requestFocus(messageFocusNode);
+  //                 provider.replyMessage = provider.eventDiscussionList[index].text;
+  //                 provider.replyMid = provider.eventDiscussionList[index].mid;
+  //                 provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
+  //                 // provider.userName ="you".tr();
+  //                 provider.updateSwipe(true);
+  //               },
+  //             ),
+  //             SizedBox(
+  //                 height:
+  //                 scaler.getHeight(0.5)),
+  //           ],
+  //         )
+  //             : Column(
+  //           children: [
+  //             SwipeTo(
+  //               child: ChatBubble(
+  //                 elevation : (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? 0.0 : 2,
+  //                 clipper: ChatBubbleClipper3(
+  //                     type: BubbleType
+  //                         .sendBubble),
+  //                 alignment:
+  //                 Alignment.topRight,
+  //                 margin: EdgeInsets.only(
+  //                     top: 20),
+  //                 backGroundColor:
+  //                 (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants
+  //                     .primaryColor,
+  //                 child: Container(
+  //                   constraints:
+  //                   BoxConstraints(
+  //                     maxWidth: MediaQuery.of(
+  //                         context)
+  //                         .size
+  //                         .width *
+  //                         0.7,
+  //                   ),
+  //                   child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
+  //                       ? Column(
+  //                     crossAxisAlignment : CrossAxisAlignment.start,
+  //                     children: [
+  //                       sendReplySwipe(provider.eventDiscussionList.any((element){
+  //                         provider.replyMessageText = element.text;
+  //                         provider.replyMessageImageUrl = element.attachmentURL;
+  //                         return element.mid == provider.eventDiscussionList[index].replyMid;
+  //                       }) ? provider.replyMessageText: ""),
+  //                       SizedBox(height: scaler.getHeight(0.1)),
+  //                       Row(
+  //                         children: [
+  //                           SizedBox(width: scaler.getWidth(0.5)),
+  //                           Text(provider.eventDiscussionList[index].text).regularText(
+  //                               ColorConstants
+  //                                   .colorBlack,
+  //                               scaler
+  //                                   .getTextSize(
+  //                                   10),
+  //                               TextAlign
+  //                                   .left,
+  //                               isHeight:
+  //                               true),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   )
+  //                       : Column(
+  //                     crossAxisAlignment:
+  //                     CrossAxisAlignment
+  //                         .start,
+  //                     children: [
+  //                       Text("you".tr()).boldText(
+  //                           Colors
+  //                               .limeAccent,
+  //                           scaler.getTextSize(
+  //                               10.0),
+  //                           TextAlign
+  //                               .left),
+  //                       (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
+  //                       Text(provider.eventDiscussionList[index].text)
+  //                           .regularText(
+  //                           ColorConstants
+  //                               .colorWhite,
+  //                           scaler.getTextSize(
+  //                               10),
+  //                           TextAlign
+  //                               .left,
+  //                           isHeight:
+  //                           true) :
+  //                       InkWell(
+  //                         onTap: (){
+  //                           Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
+  //                         },
+  //                         child: ClipRRect(
+  //                           borderRadius: scaler.getBorderRadiusCircular(7.5),
+  //                           child: Container(
+  //                             color: ColorConstants.primaryColor,
+  //                             height: scaler.getHeight(30.0),
+  //                             width: scaler.getWidth(70.0),
+  //                             child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               onRightSwipe: () {
+  //                 provider.isRightSwipe = true;
+  //                 FocusScope.of(context).requestFocus(messageFocusNode);
+  //                 provider.replyMessage = provider.eventDiscussionList[index].text;
+  //                 provider.replyMid = provider.eventDiscussionList[index].mid;
+  //                 provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
+  //                 // provider.userName = "you".tr();
+  //                 provider.updateSwipe(true);
+  //               },
+  //             ),
+  //             SizedBox(height: scaler.getHeight(0.5)),
+  //           ],
+  //         );
+  //       });
+  // }
 
   static final inputTopRadius = Radius.circular(12);
   static final inputBottomRadius = Radius.circular(24);
