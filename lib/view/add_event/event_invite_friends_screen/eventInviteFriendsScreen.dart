@@ -410,50 +410,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                     },
                   ),
                 )
-                    : Container(
-                    width: scaler.getWidth(8),
-                    height: scaler.getHeight(3.5),
-                    alignment: Alignment.center,
-                    child: provider.addRemoveUser[index] == true
-                        ? Container(
-                        height: scaler.getHeight(2),
-                        width: scaler.getWidth(4.5),
-                        child: CircularProgressIndicator())
-                        : Checkbox(
-                      value: provider.groupCheck(
-                          contactOrGroupList[index], index),
-                      // provider.eventDetail.editEvent == true
-                      //     ? provider.groupCheck(
-                      //     contactOrGroupList[index], index)
-                      //     : provider.groupCheckIsSelected(index),
-                      onChanged: (bool? value) {
-                        // if (value!) {
-                        //   List<String> keysList = [];
-                        //   for (var key in provider
-                        //       .groupList[index].group.keys) {
-                        //     keysList.add(key);
-                        //   }
-                        //
-                        //   provider.inviteGroupToEvent(
-                        //       context,
-                        //       keysList,
-                        //       index,
-                        //       provider.groupList[index]);
-                        // } else {
-                        //   List<String> keysList = [];
-                        //   for (var key in provider
-                        //       .groupList[index].group.keys) {
-                        //     keysList.add(key);
-                        //   }
-                        //
-                        //   provider.removeGroupFromEvent(
-                        //       context,
-                        //       keysList,
-                        //       index,
-                        //       provider.groupList[index]);
-                        // }
-                      },
-                    )),
+                    : Container()
               ],
             ),
           ),

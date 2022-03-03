@@ -34,7 +34,7 @@ class ChatsScreen extends StatelessWidget {
         actions: [
           Row(
             children: [
-              Icon(Icons.message, color: Colors.blue,),
+              Icon(Icons.edit, color: Colors.blue,),
               SizedBox(width: scaler.getWidth(3.0)),
             ],
           )
@@ -125,18 +125,18 @@ class ChatsScreen extends StatelessWidget {
                               children: <Widget>[
                                Expanded(
                                  child:  Text(
-                                     provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                     provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.5), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                                ),
                                 SizedBox(width : scaler.getWidth(1.0)),
-                                Text(
-                                  "Yesterday").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                                // Text(
+                                //   "Yesterday").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
                               ],
                             ),
-                            Padding(
-                              padding: scaler.getPaddingLTRB(0.0, 0.4, 0.0, 0.0),
-                              child: Text(
-                                "Hiiiiiii, i am using meetMeYou ").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
-                            )
+                            // Padding(
+                            //   padding: scaler.getPaddingLTRB(0.0, 0.4, 0.0, 0.0),
+                            //   child: Text(
+                            //     "Hiiiiiii, i am using meetMeYou ").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                            // )
                           ],
                         ),
                       ),

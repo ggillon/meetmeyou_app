@@ -20,7 +20,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
-  Stream<List<DiscussionMessage>>? eventDiscussionList;
+  Stream<List<DiscussionMessage>>? eventDiscussionListStream;
+  List<DiscussionMessage> eventDiscussionList = [];
   Discussion? eventDiscussion;
   EventDetail eventDetail = locator<EventDetail>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
@@ -137,9 +138,6 @@ class NewEventDiscussionProvider extends BaseProvider {
     });
 
     if (value != null) {
-      eventDiscussionList = value.messages;
-      eventDiscussion = value;
-      setParticipantKeys(value);
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
           jump == true ?
@@ -147,6 +145,20 @@ class NewEventDiscussionProvider extends BaseProvider {
               : scrollListener();
         }
       });
+      eventDiscussionListStream = value.messages;
+      eventDiscussionListStream?.listen((value) {
+
+        eventDiscussionList.clear();
+        eventDiscussionList.addAll(value) ;
+        eventDiscussionList.sort((a,b) {
+          return a.createdTimeStamp.compareTo(b.createdTimeStamp);
+        });
+    //     print(eventDiscussionList);
+    //    eventDiscussionList.length == 0 ? Container() : addMessages(eventDiscussionList[eventDiscussionList.length - 1]);
+        notifyListeners();
+      });
+      eventDiscussion = value;
+      setParticipantKeys(value);
       load == true ? setState(ViewState.Idle) : updateValue(false);
     }
   }
@@ -255,9 +267,6 @@ class NewEventDiscussionProvider extends BaseProvider {
     });
 
     if (value != null) {
-      eventDiscussionList = value.messages;
-      eventDiscussion = value;
-      setParticipantKeys(value);
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
           jump == true ?
@@ -265,6 +274,18 @@ class NewEventDiscussionProvider extends BaseProvider {
               : scrollListener();
         }
       });
+      eventDiscussionListStream = value.messages;
+      eventDiscussionListStream?.listen((value) {
+
+        eventDiscussionList.clear();
+        eventDiscussionList.addAll(value) ;
+        eventDiscussionList.sort((a,b) {
+          return a.createdTimeStamp.compareTo(b.createdTimeStamp);
+        });
+       notifyListeners();
+      });
+      eventDiscussion = value;
+      setParticipantKeys(value);
       fromChatScreen == true ?  setState(ViewState.Idle) : updateRetrieveDiscussion(false);
     }
   }
@@ -280,14 +301,29 @@ class NewEventDiscussionProvider extends BaseProvider {
     }
   }
 
-  StreamController<DiscussionMessage> discussionMessagesController = StreamController();
+  StreamController<DiscussionMessage> discussionMessagesController = StreamController.broadcast();
 
-  Stream<DiscussionMessage> getStream() {
-    return discussionMessagesController.stream;
+  void addMessages(DiscussionMessage message) {
+    discussionMessagesController.sink.add(message);
   }
 
-  void addMessages(DiscussionMessage messages) {
-    discussionMessagesController.sink.add(messages);
+  bool getStreamMessage = false;
+
+  updateGetStreamMessages(bool val){
+    getStreamMessage = val;
+    notifyListeners();
   }
 
+  void getMessagesList() {
+    updateGetStreamMessages(true);
+    discussionMessagesController.stream.listen((data) {
+    //  eventDiscussionList.clear();
+      eventDiscussionList.add(data);
+      eventDiscussionList.sort((a,b) {
+        return a.createdTimeStamp.compareTo(b.createdTimeStamp);
+      });
+      print(eventDiscussionList);
+      updateGetStreamMessages(false);
+    }, onDone: () {}, onError: (error) {});
+  }
 }
