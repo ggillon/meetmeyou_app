@@ -40,6 +40,7 @@ abstract class Database {
   Future<Event> getEvent(String eid);
   Future<void> deleteEvent(String eid);
   Future<List<Event>> getUserEvents(String uid);
+  Future<List<Event>> queryEvents({required String field, required String query});
 
   // Event Message Functions
   Future<void> setMessage(String eid, EventChatMessage message);
@@ -162,6 +163,17 @@ class FirestoreDB implements Database {
         builder: (data) {
           return Event.fromMap(data);
         });
+  }
+
+  Future<List<Event>> queryEvents({required String field, required String query}) async {
+    return await _service.getListDataWhere(
+      path: APIPath.events(),
+      field: field,
+      value: query,
+      builder: (data) {
+        return Event.fromMap(data);
+      },
+    );
   }
 
   @override

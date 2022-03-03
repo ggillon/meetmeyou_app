@@ -1,8 +1,10 @@
 import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../models/search_result.dart';
 import 'contact.dart' as contactLib;
 
 import '../../models/contact.dart';
+import '../../models/event.dart';
 import '../../models/profile.dart';
 import '../database/database.dart';
 import 'contact.dart';
@@ -13,6 +15,43 @@ const FIELD_FIRST_NAME = 'firstName';
 const FIELD_LAST_NAME = 'lastName';
 const FIELD_EMAIL = 'email';
 const FIELD_PHONE_NUMBER = 'phoneNumber';
+
+const EVENT_FIELD_ALL = ['title', 'organiser', 'location', 'description',];
+
+
+Future<SearchResult> search(User currentUser, String searchText) async {
+  SearchResult result = SearchResult();
+  result.contacts = await searchProfiles(currentUser, searchText: searchText);
+  List<Event> eventList = await searchEvents(currentUser, searchText);
+  for(Event event in eventList) {
+    if (event.eventType == EVENT_TYPE_PUBLIC) {
+      result.events.add(event);
+    } else {
+      if (event.invitedContacts.containsKey(currentUser.uid)) {
+        result.events.add(event);
+      }
+    }
+  }
+  return result;
+}
+
+Future<List<Event>> searchEvents(User currentUser, String searchText) async {
+  List<Event> results = [];
+  if (searchText.length < 4) // empty search for basic 3 letter words
+    return results;
+  Database db = await FirestoreDB(uid: currentUser.uid);
+  final searchWords = searchText.split(" ");
+  final searchFields = EVENT_FIELD_ALL;
+  for (String field in searchFields) {
+    for (var value in searchWords) {
+      if (value.isNotEmpty) {
+        final queryList = await db.queryEvents(field: field, query: value);
+        results = results + queryList;
+      }
+    }
+  }
+  return results;
+}
 
 Future<List<Contact>> searchProfiles(User currentUser, {required String searchText, List<String> searchFields = FIELD_ALL, bool split=true }) async {
   List<Contact> results = [];
@@ -76,3 +115,4 @@ Future<List<Contact>> matchContactsToDBProfiles(User currentUser, List<Contact> 
   }
   return results;
 }
+

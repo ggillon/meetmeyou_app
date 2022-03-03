@@ -6,6 +6,7 @@ const EVENT_TYPE_PRIVATE_MD = 'Private Event MultiDates';
 const EVENT_TYPE_ANNOUNCEMENT = 'Announcement';
 const EVENT_TYPE_SAVE_THE_DATE = 'Save the date';
 const EVENT_TYPE_UPDATED = 'Updated event';
+const EVENT_TYPE_PUBLIC = 'Public event';
 
 // Reply type
 const EVENT_INVITED = 'Invited';
