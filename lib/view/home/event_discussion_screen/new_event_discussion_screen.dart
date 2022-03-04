@@ -173,6 +173,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             Expanded(
                               child: NotificationListener<ScrollNotification>(
                                 onNotification: (scrollNotification) {
+
                                   if (provider.scrollController.position
                                           .userScrollDirection ==
                                       ScrollDirection.reverse) {

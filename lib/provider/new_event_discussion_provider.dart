@@ -145,6 +145,8 @@ class NewEventDiscussionProvider extends BaseProvider {
               : scrollListener();
         }
       });
+      eventDiscussion = value;
+      setParticipantKeys(value);
       eventDiscussionListStream = value.messages;
       eventDiscussionListStream?.listen((value) {
 
@@ -153,12 +155,8 @@ class NewEventDiscussionProvider extends BaseProvider {
         eventDiscussionList.sort((a,b) {
           return a.createdTimeStamp.compareTo(b.createdTimeStamp);
         });
-    //     print(eventDiscussionList);
-    //    eventDiscussionList.length == 0 ? Container() : addMessages(eventDiscussionList[eventDiscussionList.length - 1]);
         notifyListeners();
       });
-      eventDiscussion = value;
-      setParticipantKeys(value);
       load == true ? setState(ViewState.Idle) : updateValue(false);
     }
   }
@@ -167,6 +165,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     if (scrollController.offset >= scrollController.position.maxScrollExtent){
       isJump = true;
     }
+
     isJump ? scrollController
         .jumpTo(scrollController.position.maxScrollExtent) : Container();
   }
@@ -274,6 +273,8 @@ class NewEventDiscussionProvider extends BaseProvider {
               : scrollListener();
         }
       });
+      eventDiscussion = value;
+      setParticipantKeys(value);
       eventDiscussionListStream = value.messages;
       eventDiscussionListStream?.listen((value) {
 
@@ -284,8 +285,6 @@ class NewEventDiscussionProvider extends BaseProvider {
         });
        notifyListeners();
       });
-      eventDiscussion = value;
-      setParticipantKeys(value);
       fromChatScreen == true ?  setState(ViewState.Idle) : updateRetrieveDiscussion(false);
     }
   }
