@@ -21,6 +21,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/widgets/custom_search_delegate.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
@@ -126,23 +127,39 @@ class _HomePageState extends State<HomePage>
                   children: [
                     Text("home".tr()).boldText(ColorConstants.colorBlack,
                         scaler.getTextSize(16), TextAlign.left),
-                    GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: (){
-                        Navigator.pushNamed(context, RoutesConstants.chatsScreen).then((value) {
-                          provider.updatedDiscussions(context);
-                        });
-                      },
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            Icon(Icons.message, color: ColorConstants.primaryColor, size: 28),
-                            CommonWidgets.notificationBadge(scaler,
-                                provider.chatNotificationCount ?? 0)
-                          ],
+                    Row(
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: (){
+                            showSearch(
+                              context: context,
+                              delegate: CustomSearchDelegate(),
+                            );
+                          },
+                          child:
+                              Icon(Icons.search_outlined, color: ColorConstants.primaryColor, size: 30),
                         ),
-                        )
+                        SizedBox(width: scaler.getWidth(2.0)),
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: (){
+                            Navigator.pushNamed(context, RoutesConstants.chatsScreen).then((value) {
+                              provider.updatedDiscussions(context);
+                            });
+                          },
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.topRight,
+                              children: [
+                                Icon(Icons.message, color: ColorConstants.primaryColor, size: 28),
+                                CommonWidgets.notificationBadge(scaler,
+                                    provider.chatNotificationCount ?? 0)
+                              ],
+                            ),
+                            ),
+                      ],
+                    )
                    // ImageView(path: ImageConstants.search_icon)
                   ],
                 ),
