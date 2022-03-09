@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
 import '../../models/discussion.dart';
 import '../../models/discussion_message.dart';
+import '../../models/search_result.dart';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
 import 'event.dart' as eventLib;
@@ -179,6 +180,9 @@ abstract class MMYEngine {
   Future<Discussion> changeTitle(String did, String title);
   /// Change title of discussion
   Future<int> updatedDiscussions();
+
+  /// Search
+  Future<SearchResult> search(String searchText);
 
 }
 
@@ -623,6 +627,11 @@ class MMY implements MMYEngine {
     List<Discussion> discussions = await getUserDiscussions();
     for (Discussion discussion in discussions) if (discussion.unread) count++;
     return count;
+  }
+
+  @override
+  Future<SearchResult> search(String searchText) async {
+    return searchLib.search(_currentUser, searchText);
   }
 
 
