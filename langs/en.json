@@ -189,5 +189,8 @@
   "loading_chats" : "Loading Chats....",
   "no_image_selected" : "No image selected.",
   "sending_image" : "Sending image.....",
-  "no_chats_found" : "Sorry, No chats found...."
+  "no_chats_found" : "Sorry, No chats found....",
+  "searching_data" : "Searching Data....",
+  "people" : "People",
+  "see_all" : "See All"
    }
