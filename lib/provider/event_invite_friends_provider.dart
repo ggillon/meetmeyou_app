@@ -113,6 +113,7 @@ class EventInviteFriendsProvider extends BaseProvider {
       groupList = groupValue;
       value = List<bool>.filled(groupList.length, false);
       addRemoveUser = List<bool>.filled(groupList.length, false);
+      addContactGroupToGroupDiscussion = List<bool>.filled(groupList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -121,14 +122,12 @@ class EventInviteFriendsProvider extends BaseProvider {
   // for event invite friends
 
   bool contactCheckIsSelected(Contact contact) {
-    var value =
-        eventDetail.contactCIDs.any((element) => element == contact.cid);
+    var value = eventDetail.contactCIDs.any((element) => element == contact.cid);
     return value;
   }
 
   bool groupCheckIsSelected(int index) {
-    var value = eventDetail.groupIndexList
-        .any((element) => element == index.toString());
+    var value = eventDetail.groupIndexList.any((element) => element == index.toString());
     return value;
   }
 
@@ -356,10 +355,40 @@ class EventInviteFriendsProvider extends BaseProvider {
 
   // create a group of users for discussion.
 
+  List<String> userKeysToInviteInGroup = [];
+
   late List<bool> addContactToGroupDiscussion = [];
 
    updateAddContactToGroupValue(bool val, int index) {
     addContactToGroupDiscussion[index] = val;
     notifyListeners();
+  }
+
+  late List<bool> addContactGroupToGroupDiscussion = [];
+
+  updateAddContactGroupToGroupValue(bool val, int index) {
+    addContactGroupToGroupDiscussion[index] = val;
+    notifyListeners();
+  }
+
+  bool startGroup = false;
+
+  updateStartGroup(bool val){
+    startGroup = val;
+    notifyListeners();
+  }
+
+  Future startGroupDiscussion(BuildContext context, List<String> CIDs) async{
+    updateStartGroup(true);
+
+  var value =   await mmyEngine?.startGroupDiscussion(CIDs).catchError((e){
+      updateStartGroup(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+  if(value != null){
+    updateStartGroup(false);
+  }
+
   }
 }

@@ -123,10 +123,11 @@ class NewEventDiscussionScreen extends StatelessWidget {
                          GestureDetector(
                            behavior: HitTestBehavior.translucent,
                            onTap: (){
-                            //  provider.calendarDetail.fromCalendarPage = true;
-                            //
-                            // fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop();
-                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  Navigator.of(context).pop() : Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen);
+                              provider.calendarDetail.fromCalendarPage = true;
+                              provider.eventDetail.eid = provider.eventDiscussion?.did;
+
+                           //  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop())
+                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop()) : Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen);
                            },
                            child: Column(
                              children: [
@@ -153,7 +154,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         ],
                       ),
                       actions: [
-                        ((fromContactOrGroup == true || fromChatScreen == true) && provider.eventDiscussion?.type != DISCUSSION_TYPE_EVENT)
+                        ((fromContactOrGroup == true || fromChatScreen == true) && ((provider.eventDiscussion?.participants.length ?? 0) > 2 && provider.eventDiscussion?.isOrganiser == true) && provider.eventDiscussion?.type != DISCUSSION_TYPE_EVENT) || provider.eventDiscussion?.type == DISCUSSION_TYPE_PRIVATE
                             ? GestureDetector(
                         behavior: HitTestBehavior.translucent,
                             onTap: () {

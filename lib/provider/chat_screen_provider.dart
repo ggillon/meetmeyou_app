@@ -21,6 +21,7 @@ class ChatScreenProvider extends BaseProvider{
     });
 
     if(value != null){
+      userDiscussions = [];
       userDiscussions = value;
       setState(ViewState.Idle);
     }
@@ -46,4 +47,12 @@ class ChatScreenProvider extends BaseProvider{
     updateLeave(false);
   }
 
+  bool _searchValue = false;
+
+  bool get searchValue => _searchValue;
+
+  void updateSearchValue(bool value) {
+    _searchValue = value;
+    notifyListeners();
+  }
 }

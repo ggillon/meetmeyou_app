@@ -166,15 +166,19 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                 ),
                   SizedBox(height: scaler.getHeight(1)),
                widget.fromChatDiscussion == true ?
-               Container(
+              provider.startGroup == true ? Center(
+                child: CircularProgressIndicator(),
+              ) : Container(
                  child: DialogHelper.btnWidget(
                      scaler,
                      context,
                      "invite_to_group_discussion".tr(),
                      ColorConstants.primaryColor, funOnTap: () {
-                   if (provider.eventDetail.contactCIDs.isNotEmpty ||
-                       provider.eventDetail.groupIndexList.isNotEmpty) {
-                     Navigator.of(context).pop();
+                   if (provider.eventDetail.contactCIDs.isNotEmpty) {
+                     provider.startGroupDiscussion(context, provider.eventDetail.contactCIDs).then((value) {
+                       provider.eventDetail.contactCIDs.clear();
+                        Navigator.of(context).pop();
+                     });
                    } else {
                      DialogHelper.showMessage(
                          context, "Please select contacts to Invite");
@@ -249,8 +253,8 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
               .displayName
               .toLowerCase()
               .contains(searchBarController.text)) {
-            return widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(
-                context, scaler, cList, index, provider);
+            return widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : (widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider));
+
           } else {
             return Container();
           }
@@ -267,11 +271,11 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider),
+          widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : (widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider)),
         ],
       );
     } else {
-      widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider);
+    return  widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : (widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider));
     }
   }
 
@@ -471,13 +475,73 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                         " " +
                         "members".tr()),
                 provider.toggle == 0
-                    ?Checkbox(
-                    value: provider.addContactToGroupDiscussion[index],
-                    onChanged: (bool? value) {
-                      provider.addContactToGroupDiscussion[index] = value!;
-                    },
-                  )
-                    : Container()
+                    ? Checkbox(
+                  value: provider.contactCheckIsSelected(contactOrGroupList[index]),
+                  onChanged: (bool? value) {
+                    if(value!){
+                      provider.eventDetail.contactCIDs.add(contactOrGroupList[index].cid);
+                      provider.updateAddContactToGroupValue(true, index);
+                   //   provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
+                      //    print(provider.userKeysToInviteInGroup);
+                    } else{
+
+                      var idIndex = provider.eventDetail.contactCIDs.indexWhere((element) => element == contactOrGroupList[index].cid);
+                      provider.eventDetail.contactCIDs.removeAt(idIndex);
+                      provider.updateAddContactToGroupValue(false, index);
+                      //   print(provider.userKeysToInviteInGroup);
+                    }
+                  },
+                )
+                    : Checkbox(
+                  value: provider.groupCheckIsSelected(index),
+                  onChanged: (bool? value) {
+                    if(value!){
+                      provider.eventDetail.contactCIDs.add(contactOrGroupList[index].cid);
+                      provider.eventDetail.groupIndexList.add(index.toString());
+                      provider.updateAddContactGroupToGroupValue(true, index);
+                     // provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
+                      //    print(provider.userKeysToInviteInGroup);
+                    } else{
+                      var idIndex = provider.eventDetail.contactCIDs.indexWhere((element) => element == contactOrGroupList[index].cid);
+                      provider.eventDetail.contactCIDs.removeAt(idIndex);
+
+                    //  var groupIdIndex = provider.eventDetail.groupIndexList.indexWhere((element) => element == index);
+                     // provider.eventDetail.groupIndexList.remove(index);
+                      provider.updateAddContactGroupToGroupValue(false, index);
+                      //   print(provider.userKeysToInviteInGroup);
+                    }
+                  },
+                )
+                //     ? Checkbox(
+                //     value: provider.addContactToGroupDiscussion[index],
+                //     onChanged: (bool? value) {
+                //       if(value!){
+                //         provider.updateAddContactToGroupValue(true, index);
+                //         provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
+                //     //    print(provider.userKeysToInviteInGroup);
+                //       } else{
+                //         provider.updateAddContactToGroupValue(false, index);
+                //         var idIndex = provider.userKeysToInviteInGroup.indexWhere((element) => element == contactOrGroupList[index].uid);
+                //         provider.userKeysToInviteInGroup.removeAt(idIndex);
+                //      //   print(provider.userKeysToInviteInGroup);
+                //       }
+                //     },
+                //   )
+                //     : Checkbox(
+                //   value: provider.addContactGroupToGroupDiscussion[index],
+                //   onChanged: (bool? value) {
+                //     if(value!){
+                //       provider.updateAddContactGroupToGroupValue(true, index);
+                //       provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
+                //       //    print(provider.userKeysToInviteInGroup);
+                //     } else{
+                //       provider.updateAddContactGroupToGroupValue(false, index);
+                //       var idIndex = provider.userKeysToInviteInGroup.indexWhere((element) => element == contactOrGroupList[index].uid);
+                //       provider.userKeysToInviteInGroup.removeAt(idIndex);
+                //       //   print(provider.userKeysToInviteInGroup);
+                //     }
+                //   },
+                // )
               ],
             ),
           ),
