@@ -41,6 +41,7 @@ Future<List<Event>> searchEvents(User currentUser, String searchText) async {
     return results;
   Database db = await FirestoreDB(uid: currentUser.uid);
   final searchWords = searchText.split(" ");
+  searchWords.add(searchText);
   final searchFields = EVENT_FIELD_ALL;
   for (String field in searchFields) {
     for (var value in searchWords) {

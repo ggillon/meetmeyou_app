@@ -171,6 +171,8 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   for(Discussion discussion in discussions) {
     if(discussion.participants[currentUser.uid] == MESSAGES_UNREAD) {
       discussion.unread = true;
+      if(discussion.type==DISCUSSION_TYPE_PRIVATE && discussion.participants.keys.length>2)
+        discussion.type = DISCUSSION_TYPE_GROUP;
       discussion.isOrganiser = (currentUser.uid == discussion.adminUid);
       if (discussion.type != EVENT_DISCUSSION) {
         discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
@@ -180,6 +182,8 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
     }
     if(discussion.participants[currentUser.uid] != MESSAGES_UNREAD) {
       discussion.unread = false;
+      if(discussion.type==DISCUSSION_TYPE_PRIVATE && discussion.participants.keys.length>2)
+        discussion.type = DISCUSSION_TYPE_GROUP;
       discussion.isOrganiser = (currentUser.uid == discussion.adminUid);
       if (discussion.type != EVENT_DISCUSSION) {
         discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
