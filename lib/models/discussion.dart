@@ -2,8 +2,12 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 
 import 'constants.dart';
 
-const EVENT_DISCUSSION = "Event discussion";
-const USER_DISCUSSION = "Chat discussion";
+const EVENT_DISCUSSION = "Event discussion"; // OLD
+const USER_DISCUSSION = "Chat discussion"; // OLD
+
+const DISCUSSION_TYPE_EVENT = "Event discussion";
+const DISCUSSION_TYPE_PRIVATE = "Chat discussion";
+const DISCUSSION_TYPE_GROUP = "Group chat discussion";
 
 const MESSAGES_READ = "Messages read";
 const MESSAGES_UNREAD = "Messages unread";
@@ -23,6 +27,7 @@ class Discussion {
         this.params = EMPTY_MAP,
         this.messages,
         this.unread = false,
+        this.isOrganiser = false,
       });
 
   String did;
@@ -36,6 +41,7 @@ class Discussion {
   Map params;
   Stream<List<DiscussionMessage>>? messages;
   bool unread;
+  bool isOrganiser;
 
   factory Discussion.fromMap(Map<String, dynamic> data) {
     return Discussion(
@@ -50,6 +56,7 @@ class Discussion {
       params: data['params'],
       // messages is stored
       // unread is a ui flag
+      // isOrganiser is a ui flag
     );
   }
 

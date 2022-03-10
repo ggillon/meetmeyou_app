@@ -170,6 +170,8 @@ abstract class MMYEngine {
   Future<List<Discussion>> getUserDiscussions();
   /// Start Discussion between contacts or a groups
   Future<Discussion> startContactDiscussion(String cid);
+  /// Start Discussion between contacts or a groups
+  Future<Discussion> startGroupDiscussion(List<String> CIDs);
   /// Leave a discussion
   Future<void> leaveDiscussion(String did);
   /// Add user to discussion
@@ -177,7 +179,7 @@ abstract class MMYEngine {
   /// Remove user from discussion
   Future<void> removeContactFromDiscussion(String did, {required String cid});
   /// Change title of discussion
-  Future<Discussion> changeTitle(String did, String title);
+  Future<Discussion> updateDiscussion(String did, {String? title, File? photo});
   /// Change title of discussion
   Future<int> updatedDiscussions();
 
@@ -617,8 +619,11 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Discussion> changeTitle(String did, String title) async {
-    return await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
+  Future<Discussion> updateDiscussion(String did, {String? title, File? photo}) async {
+    Discussion result = await getDiscussion(did);
+    if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
+    if(photo != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photo);
+    return result;
   }
 
   @override
@@ -632,6 +637,11 @@ class MMY implements MMYEngine {
   @override
   Future<SearchResult> search(String searchText) async {
     return searchLib.search(_currentUser, searchText);
+  }
+
+  @override
+  Future<Discussion> startGroupDiscussion(List<String> CIDs) {
+    return discussionLib.startGroupDiscussion(_currentUser, CIDs);
   }
 
 

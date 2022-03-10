@@ -1,9 +1,11 @@
 
 import 'dart:math';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
+import 'package:meetmeyou_app/services/storage/storage.dart';
 
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
@@ -55,13 +57,15 @@ Future<Discussion> createDiscussion(User currentUser, String title, {String? eid
   }
   Map<String, dynamic> participants = { admin.uid: MESSAGES_READ };
 
+  bool group = false;
   if(invited != null) {
     participants.addAll(invited);
+    group = invited.length>1;
   }
 
   Discussion discussion = Discussion(
     did: eid ?? idGenerator(),
-    type: (eid!=null) ? EVENT_DISCUSSION : USER_DISCUSSION,
+    type: (eid!=null) ? DISCUSSION_TYPE_EVENT : (group ? DISCUSSION_TYPE_GROUP : DISCUSSION_TYPE_PRIVATE),
     title: title,
     adminUid: admin.uid,
     adminDisplayName: admin.displayName,
@@ -81,6 +85,7 @@ Future<Discussion> getDiscussion(User currentUser, String did) async {
   messages.sort((a,b) => (a.createdTimeStamp.microsecondsSinceEpoch - b.createdTimeStamp.microsecondsSinceEpoch));
   discussion.messages = db.getDiscussionMessagesStream(did);
   discussion.unread = false;
+  discussion.isOrganiser = (currentUser.uid == discussion.adminUid);
   discussion.participants[currentUser.uid] = MESSAGES_READ;
   await db.setDiscussion(discussion);
   if (discussion.type != EVENT_DISCUSSION) {
@@ -127,6 +132,22 @@ Future<String> getDiscussionTitle(User currentUser, Discussion discussion) async
   return result;
 }
 
+Future<Discussion> setDiscussionTitle(User currentUser, String did, String title) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  Discussion discussion = await db.getDiscussion(did);
+  discussion.title = title;
+  await db.setDiscussion(discussion);
+  return discussion;
+}
+
+Future<Discussion> setDiscussionPhoto(User currentUser, String did, File photo) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  Discussion discussion = await db.getDiscussion(did);
+  discussion.photoURL = await messagePicture(photo, did: did);
+  await db.setDiscussion(discussion);
+  return discussion;
+}
+
 Future<String> getDiscussionPhotoURL(User currentUser, Discussion discussion) async {
   final db = FirestoreDB(uid: currentUser.uid);
   String result = "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media"; // Group Generic Photo
@@ -143,7 +164,6 @@ Future<String> getDiscussionPhotoURL(User currentUser, Discussion discussion) as
 }
 
 
-
 Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   final db = FirestoreDB(uid: currentUser.uid);
   List<Discussion> discussions = await db.getUserDiscussions(currentUser.uid);
@@ -151,6 +171,7 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   for(Discussion discussion in discussions) {
     if(discussion.participants[currentUser.uid] == MESSAGES_UNREAD) {
       discussion.unread = true;
+      discussion.isOrganiser = (currentUser.uid == discussion.adminUid);
       if (discussion.type != EVENT_DISCUSSION) {
         discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
         discussion.title = await getDiscussionTitle(currentUser, discussion);
@@ -159,6 +180,7 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
     }
     if(discussion.participants[currentUser.uid] != MESSAGES_UNREAD) {
       discussion.unread = false;
+      discussion.isOrganiser = (currentUser.uid == discussion.adminUid);
       if (discussion.type != EVENT_DISCUSSION) {
         discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
         discussion.title = await getDiscussionTitle(currentUser, discussion);
@@ -173,6 +195,9 @@ Future<void> removeUserFromDiscussion(User currentUser, String did, String uid) 
   final db = FirestoreDB(uid: currentUser.uid);
   Discussion discussion = await db.getDiscussion(did);
   discussion.participants.remove(uid);
+  if(discussion.participants.length == 2) {
+    discussion.type = DISCUSSION_TYPE_PRIVATE;
+  }
   await db.setDiscussion(discussion);
 }
 
@@ -242,4 +267,21 @@ Future<Discussion> startContactDiscussion(User currentUser, String cid) async {
     if(existingDiscussion != null) return existingDiscussion;
     return await createDiscussion(currentUser, title, invited: Invitations(CIDs: [cid]));
   }
+}
+
+Future<Discussion> startGroupDiscussion(User currentUser, List<String> CIDs) async {
+  String title = (await profileLib.getUserProfile(currentUser)).displayName;
+  for(String cid in CIDs) {
+    Contact contact = await contactLib.getContact(currentUser, cid: cid);
+    title = title + ', ' + contact.displayName;
+    if (contact.status == CONTACT_GROUP) {
+      CIDs.remove(contact.cid);
+      for(String key in contact.group.keys) CIDs.add(key);
+    }
+  }
+  Discussion? existingDiscussion = await findDiscussion(
+      currentUser, (CIDs + [currentUser.uid]));
+  if (existingDiscussion != null) return existingDiscussion;
+  return await createDiscussion(
+      currentUser, title, invited: Invitations(CIDs: CIDs));
 }
