@@ -195,5 +195,7 @@
   "see_all" : "See All",
   "manage_invitations" : "Manage invitations",
   "new_discussion" : "New Discussion",
-  "invite_to_group_discussion" : "Invite to group discussion"
+  "invite_to_group_discussion" : "Invite to group discussion",
+  "private_discussion" : "Private discussion",
+  "click_to_go_to_event" : "click to go to event"
    }

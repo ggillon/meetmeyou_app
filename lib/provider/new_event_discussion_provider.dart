@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
@@ -25,6 +26,7 @@ class NewEventDiscussionProvider extends BaseProvider {
   Discussion? eventDiscussion;
   EventDetail eventDetail = locator<EventDetail>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  CalendarDetail calendarDetail = locator<CalendarDetail>();
   ScrollController scrollController = ScrollController();
   bool? isRightSwipe;
   File? image;
@@ -206,10 +208,12 @@ class NewEventDiscussionProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future leaveDiscussion(BuildContext context) async {
+  Future leaveDiscussion(BuildContext context, bool fromChatScreen, String chatID) async {
     updateLeave(true);
 
-    await mmyEngine!.leaveDiscussion(eventDetail.eid!).catchError((e) {
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.leaveDiscussion(fromChatScreen == true ? chatID : eventDetail.eid!).catchError((e) {
       updateLeave(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });

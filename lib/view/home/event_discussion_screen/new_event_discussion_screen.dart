@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
@@ -122,21 +123,37 @@ class NewEventDiscussionScreen extends StatelessWidget {
                          GestureDetector(
                            behavior: HitTestBehavior.translucent,
                            onTap: (){
-                             Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen);
+                            //  provider.calendarDetail.fromCalendarPage = true;
+                            //
+                            // fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop();
+                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  Navigator.of(context).pop() : Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen);
                            },
-                           child: Container(
-                             width: scaler.getWidth(45),
-                             child:  Text(fromContactOrGroup == true
-                                 ? provider.discussion!.title.toString()
-                                 : provider.eventDiscussion!.title.toString())
-                                 .mediumText(ColorConstants.colorBlack,
-                                 scaler.getTextSize(11), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                           child: Column(
+                             children: [
+                               Container(
+                                 width: scaler.getWidth(45),
+                                 child:  Text(fromContactOrGroup == true
+                                     ? provider.discussion!.title.toString()
+                                     : provider.eventDiscussion!.title.toString())
+                                     .mediumText(ColorConstants.colorBlack,
+                                     scaler.getTextSize(11), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                               ),
+                               SizedBox(height: scaler.getHeight(0.2)),
+                               Container(
+                                 width: scaler.getWidth(45),
+                                 child:  Text(provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT
+                                     ? "click_to_go_to_event".tr()
+                                     : provider.eventDiscussion!.type.toString())
+                                     .regularText(ColorConstants.colorGray,
+                                     scaler.getTextSize(9), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                               ),
+                             ],
                            ),
                          )
                         ],
                       ),
                       actions: [
-                        (fromContactOrGroup == true || fromChatScreen == true)
+                        ((fromContactOrGroup == true || fromChatScreen == true) && provider.eventDiscussion?.type != DISCUSSION_TYPE_EVENT)
                             ? GestureDetector(
                         behavior: HitTestBehavior.translucent,
                             onTap: () {
@@ -155,7 +172,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                       positiveButtonPress: () {
                                     Navigator.of(context).pop();
                                     provider
-                                        .leaveDiscussion(context)
+                                        .leaveDiscussion(context, fromChatScreen, chatDid)
                                         .then((value) {
                                       Navigator.of(context).pop();
                                     });

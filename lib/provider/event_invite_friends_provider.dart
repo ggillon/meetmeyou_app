@@ -86,6 +86,7 @@ class EventInviteFriendsProvider extends BaseProvider {
       confirmContactList = confirmValue;
       value = List<bool>.filled(confirmContactList.length, false);
       addRemoveUser = List<bool>.filled(confirmContactList.length, false);
+      addContactToGroupDiscussion = List<bool>.filled(confirmContactList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -350,5 +351,15 @@ class EventInviteFriendsProvider extends BaseProvider {
     eventDetail.contactCIDs.removeAt(i);
 
     updateAddRemoveUser(false, index);
+  }
+
+
+  // create a group of users for discussion.
+
+  late List<bool> addContactToGroupDiscussion = [];
+
+   updateAddContactToGroupValue(bool val, int index) {
+    addContactToGroupDiscussion[index] = val;
+    notifyListeners();
   }
 }

@@ -249,7 +249,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
               .displayName
               .toLowerCase()
               .contains(searchBarController.text)) {
-            return (widget.fromDiscussion == true || widget.fromChatDiscussion == true)? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(
+            return widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(
                 context, scaler, cList, index, provider);
           } else {
             return Container();
@@ -267,11 +267,11 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-          (widget.fromDiscussion == true || widget.fromChatDiscussion == true) ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider),
+          widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider),
         ],
       );
     } else {
-      return (widget.fromDiscussion == true || widget.fromChatDiscussion == true) ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider);
+      widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider);
     }
   }
 
@@ -441,4 +441,50 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
       ],
     );
   }
+
+  Widget createGroupDiscussion(
+      BuildContext context,
+      ScreenScaler scaler,
+      List<Contact> contactOrGroupList,
+      int index,
+      EventInviteFriendsProvider provider) {
+    return Column(
+      children: [
+        Card(
+          elevation: 3.0,
+          shadowColor: ColorConstants.colorWhite,
+          shape: RoundedRectangleBorder(
+              borderRadius: scaler.getBorderRadiusCircular(12)),
+          child: Padding(
+            padding: scaler.getPaddingAll(10.0),
+            child: Row(
+              children: [
+                CommonWidgets.profileCardImageDesign(
+                    scaler, contactOrGroupList[index].photoURL),
+                SizedBox(width: scaler.getWidth(2.5)),
+                CommonWidgets.profileCardNameAndEmailDesign(
+                    scaler,
+                    contactOrGroupList[index].displayName,
+                    provider.toggle == 0
+                        ? contactOrGroupList[index].email
+                        : contactOrGroupList[index].group.length.toString() +
+                        " " +
+                        "members".tr()),
+                provider.toggle == 0
+                    ?Checkbox(
+                    value: provider.addContactToGroupDiscussion[index],
+                    onChanged: (bool? value) {
+                      provider.addContactToGroupDiscussion[index] = value!;
+                    },
+                  )
+                    : Container()
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: scaler.getHeight(0.5)),
+      ],
+    );
+  }
+
 }

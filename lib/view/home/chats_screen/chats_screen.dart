@@ -82,6 +82,7 @@ class ChatsScreen extends StatelessWidget {
         behavior: HitTestBehavior.translucent,
         onTap: (){
           Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did)).then((value) {
+            provider.userDiscussions.clear();
             provider.getUserDiscussion(context);
           });
         },
@@ -131,18 +132,18 @@ class ChatsScreen extends StatelessWidget {
                               children: <Widget>[
                                Expanded(
                                  child:  Text(
-                                     provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.5), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                     provider.userDiscussions[index].title == "Chat discussion" ? "private_discussion".tr() : provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.8), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                                ),
                                 SizedBox(width : scaler.getWidth(1.0)),
                                 // Text(
                                 //   "Yesterday").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
                               ],
                             ),
-                            // Padding(
-                            //   padding: scaler.getPaddingLTRB(0.0, 0.4, 0.0, 0.0),
-                            //   child: Text(
-                            //     "Hiiiiiii, i am using meetMeYou ").regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
-                            // )
+                            Padding(
+                              padding: scaler.getPaddingLTRB(0.0, 0.4, 0.0, 0.0),
+                              child: Text(
+                                provider.userDiscussions[index].type).regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                            )
                           ],
                         ),
                       ),
