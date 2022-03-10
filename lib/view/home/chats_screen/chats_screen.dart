@@ -7,6 +7,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
+import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -32,11 +33,16 @@ class ChatsScreen extends StatelessWidget {
         // )),
         title: Text("chats".tr()).mediumText(ColorConstants.colorBlack, scaler.getTextSize(10.5), TextAlign.center),
         actions: [
-          Row(
-            children: [
-              Icon(Icons.edit, color: Colors.blue,),
-              SizedBox(width: scaler.getWidth(3.0)),
-            ],
+          GestureDetector(
+            onTap: (){
+              Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: true));
+            },
+            child: Row(
+              children: [
+                Icon(Icons.edit, color: Colors.blue,),
+                SizedBox(width: scaler.getWidth(3.0)),
+              ],
+            ),
           )
         ],
       ),

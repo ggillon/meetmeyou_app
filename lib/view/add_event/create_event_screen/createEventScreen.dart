@@ -468,7 +468,7 @@ class CreateEventScreen extends StatelessWidget {
                                       Navigator.pushNamed(
                                               context,
                                               RoutesConstants
-                                                  .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: ""))
+                                                  .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
                                           .then((value) {
                                         provider.fromInviteScreen = true;
                                         provider.updateLoadingStatus(true);

@@ -208,7 +208,7 @@ class CommonWidgets {
       );
     } else if (searchStatus == "Event Edit") {
       return GestureDetector(
-        onTap: deleteIconTap,
+       // onTap: deleteIconTap,
         child: ImageView(path: ImageConstants.contact_arrow_icon)
         //ImageView(path: ImageConstants.event_remove_icon),
       );

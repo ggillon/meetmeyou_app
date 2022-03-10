@@ -192,5 +192,8 @@
   "no_chats_found" : "Sorry, No chats found....",
   "searching_data" : "Searching Data....",
   "people" : "People",
-  "see_all" : "See All"
+  "see_all" : "See All",
+  "manage_invitations" : "Manage invitations",
+  "new_discussion" : "New Discussion",
+  "invite_to_group_discussion" : "Invite to group discussion"
    }

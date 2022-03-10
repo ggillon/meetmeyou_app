@@ -124,7 +124,7 @@ class EventAttendingScreen extends StatelessWidget {
             ? () {}
             : () {
           provider.discussionDetail.userId = cList[index].cid;
-          provider.setContactsValue(cList[index], false, "");
+          provider.setContactsValue(cList[index], false);
                 Navigator.pushNamed(
                     context, RoutesConstants.contactDescription, arguments: false
                 ).then((value) {

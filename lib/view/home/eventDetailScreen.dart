@@ -52,7 +52,7 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
-          provider.getContact(context);
+         provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
           provider.calendarDetail.fromDeepLink == false
               ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromCalendarPage == true
@@ -218,7 +218,8 @@ class EventDetailScreen extends StatelessWidget {
                               }
                             }),
                           SizedBox(height: scaler.getHeight(1)),
-                        provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider),
+                     provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? manageInvitationCardCard(context, scaler, provider)
+                     : (provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider)),
                           SizedBox(height: scaler.getHeight(1)),
                           provider.eventAttendingLength == 0
                               ? Container()
@@ -231,25 +232,29 @@ class EventDetailScreen extends StatelessWidget {
                                       onTap: () {
                                         provider.eventDetail.attendingProfileKeys =
                                             provider.eventAttendingKeysList;
-                                      provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?  Navigator.pushNamed(
-                                          context,
-                                          RoutesConstants
-                                              .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "")).then((value) {
-                                                Navigator.of(context).pop();
-                                      }) : Navigator.pushNamed(
+                                      // provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?  Navigator.pushNamed(
+                                      //     context,
+                                      //     RoutesConstants
+                                      //         .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "")).then((value) {
+                                      //           Navigator.of(context).pop();
+                                      // }) :
+                                      Navigator.pushNamed(
                                             context,
                                             RoutesConstants
                                                 .eventAttendingScreen)
                                             .then((value) {
-                                          provider.eventAttendingLength = (provider
-                                              .eventDetail
-                                              .attendingProfileKeys
-                                              ?.length ??
-                                              0);
-                                          provider.eventAttendingKeysList = provider
-                                              .eventDetail.attendingProfileKeys!;
-                                          provider.eventAttendingPhotoUrlLists = [];
-                                          provider.getUsersProfileUrl(context);
+                                              provider.eventAttendingKeysList.clear();
+                                              provider.eventGoingLength();
+                                              provider.eventDetail.attendingProfileKeys = provider.eventAttendingKeysList;
+                                          // provider.eventAttendingLength = (provider
+                                          //     .eventDetail
+                                          //     .attendingProfileKeys
+                                          //     ?.length ??
+                                          //     0);
+                                          // provider.eventAttendingKeysList = provider
+                                          //     .eventDetail.attendingProfileKeys!;
+                                          // provider.eventAttendingPhotoUrlLists = [];
+                                          // provider.getUsersProfileUrl(context);
                                           provider.updateBackValue(true);
                                         });
                                       },
@@ -567,10 +572,12 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
+
   Widget organiserCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return GestureDetector(
       onTap: (){
         provider.setContactsValue();
+        provider.discussionDetail.userId = provider.eventDetail.organiserId;
         Navigator.pushNamed(
             context, RoutesConstants.contactDescription, arguments: false
         );
@@ -610,6 +617,45 @@ class EventDetailScreen extends StatelessWidget {
                         scaler.getTextSize(9.8), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
               )),
+              SizedBox(width: scaler.getWidth(2)),
+              ImageView(
+                path: ImageConstants.event_arrow_icon,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget manageInvitationCardCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
+    return GestureDetector(
+      onTap: (){
+        provider.setContactKeys(provider.eventDetail.event!);
+        Navigator.pushNamed(
+            context,
+            RoutesConstants
+                .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false,)).then((value) {
+          Navigator.of(context).pop();
+        });
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(8)),
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2.0, 1.1, 2.0, 1.1),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(width: scaler.getWidth(2)),
+              Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("manage_invitations".tr())
+                        .semiBoldText(ColorConstants.colorBlack,
+                        scaler.getTextSize(10.0), TextAlign.left,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                  )),
               SizedBox(width: scaler.getWidth(2)),
               ImageView(
                 path: ImageConstants.event_arrow_icon,

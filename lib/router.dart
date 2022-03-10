@@ -157,7 +157,7 @@ class Router {
 
       case RoutesConstants.eventInviteFriendsScreen:
         final argument = settings.arguments as EventInviteFriendsScreen;
-        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(fromDiscussion: argument.fromDiscussion , discussionId: argument.discussionId ?? ""), settings: settings);
+        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(fromDiscussion: argument.fromDiscussion , discussionId: argument.discussionId ?? "", fromChatDiscussion: argument.fromChatDiscussion,), settings: settings);
 
       case RoutesConstants.eventDetailScreen:
         return MaterialPageRoute(builder: (_) => EventDetailScreen(), settings: settings);

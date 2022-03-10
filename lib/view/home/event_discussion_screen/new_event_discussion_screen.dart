@@ -141,7 +141,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         behavior: HitTestBehavior.translucent,
                             onTap: () {
                           provider.eventDetail.contactCIDs = provider.eventDetail.attendingProfileKeys!;
-                          Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid)));
+                          Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid), fromChatDiscussion: false));
                             },
                         child: Icon(Icons.people))
                             : GestureDetector(
@@ -461,13 +461,13 @@ class NewEventDiscussionScreen extends StatelessWidget {
                       CrossAxisAlignment
                           .start,
                       children: [
-                        Text("you".tr()).boldText(
-                            Colors
-                                .limeAccent,
-                            scaler.getTextSize(
-                                10.0),
-                            TextAlign
-                                .left),
+                        // Text("you".tr()).boldText(
+                        //     Colors
+                        //         .limeAccent,
+                        //     scaler.getTextSize(
+                        //         10.0),
+                        //     TextAlign
+                        //         .left),
                         (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
                         Text(provider.eventDiscussionList[index].text)
                             .regularText(

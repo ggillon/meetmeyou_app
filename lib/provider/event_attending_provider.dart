@@ -88,7 +88,7 @@ class EventAttendingProvider extends BaseProvider {
     DialogHelper.showMessage(context, "Invitation send Successfully");
   }
 
-  setContactsValue(Contact contact, bool value, String cid) {
+  setContactsValue(Contact contact, bool value) {
     userDetail.firstName = contact.firstName;
     userDetail.lastName = contact.lastName;
     userDetail.email = contact.email;
@@ -97,6 +97,6 @@ class EventAttendingProvider extends BaseProvider {
     userDetail.countryCode = contact.countryCode;
     userDetail.address = contact.addresses['Home'];
     userDetail.checkForInvitation = value;
-    userDetail.cid = cid;
+ //   userDetail.cid = cid;
   }
 }

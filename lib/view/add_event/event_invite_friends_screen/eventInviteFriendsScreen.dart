@@ -15,8 +15,9 @@ import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
 class EventInviteFriendsScreen extends StatefulWidget {
-  EventInviteFriendsScreen({Key? key, required this.fromDiscussion, this.discussionId}) : super(key: key);
+  EventInviteFriendsScreen({Key? key, required this.fromDiscussion, this.discussionId, required this.fromChatDiscussion}) : super(key: key);
   bool fromDiscussion;
+  bool fromChatDiscussion;
   String? discussionId;
   @override
   State<EventInviteFriendsScreen> createState() =>
@@ -44,7 +45,13 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
+                widget.fromChatDiscussion == true ?
+                  Align(
+                    alignment: Alignment.centerLeft,
+                      child: Text("new_discussion".tr()).boldText(
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(16),
+                          TextAlign.left)) : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("invite_friends".tr()).boldText(
@@ -158,7 +165,22 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                   ),
                                 ),
                   SizedBox(height: scaler.getHeight(1)),
-                  Container(
+               widget.fromChatDiscussion == true ?
+               Container(
+                 child: DialogHelper.btnWidget(
+                     scaler,
+                     context,
+                     "invite_to_group_discussion".tr(),
+                     ColorConstants.primaryColor, funOnTap: () {
+                   if (provider.eventDetail.contactCIDs.isNotEmpty ||
+                       provider.eventDetail.groupIndexList.isNotEmpty) {
+                     Navigator.of(context).pop();
+                   } else {
+                     DialogHelper.showMessage(
+                         context, "Please select contacts to Invite");
+                   }
+                 }),
+               ) : Container(
                     child: DialogHelper.btnWidget(
                         scaler,
                         context,
@@ -227,7 +249,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
               .displayName
               .toLowerCase()
               .contains(searchBarController.text)) {
-            return widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(
+            return (widget.fromDiscussion == true || widget.fromChatDiscussion == true)? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(
                 context, scaler, cList, index, provider);
           } else {
             return Container();
@@ -245,11 +267,11 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(9.8), TextAlign.left),
           ),
-        widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider),
+          (widget.fromDiscussion == true || widget.fromChatDiscussion == true) ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider),
         ],
       );
     } else {
-      return widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider);
+      return (widget.fromDiscussion == true || widget.fromChatDiscussion == true) ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider);
     }
   }
 

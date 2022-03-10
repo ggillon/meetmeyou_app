@@ -11,6 +11,7 @@ import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
@@ -34,6 +35,7 @@ class EventDetailProvider extends BaseProvider {
   String? organiserKey;
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
 
   bool backValue = false;
 
@@ -223,6 +225,10 @@ class EventDetailProvider extends BaseProvider {
     eventDetail.eventLocation = event.location;
     eventDetail.eventDescription = event.description;
     eventDetail.event = event;
+    setContactKeys(event);
+  }
+
+  setContactKeys(eventModel.Event event){
     List<String> valuesList = [];
     for (var value in event.invitedContacts.values) {
       valuesList.add(value);
@@ -240,7 +246,6 @@ class EventDetailProvider extends BaseProvider {
 
     eventDetail.contactCIDs = contactsKeys;
   }
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Future answersToEventQuestionnaire(

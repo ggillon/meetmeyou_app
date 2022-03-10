@@ -314,7 +314,7 @@ class CreateEventProvider extends BaseProvider {
 
       clearMultiDateOption();
       //   DialogHelper.showMessage(context, "Event created Successfully");
-      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: ""))
+      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
           .then((value) {
         // fromInviteScreen = true;
         // updateLoadingStatus(true);
