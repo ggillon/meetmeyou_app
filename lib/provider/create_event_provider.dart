@@ -340,7 +340,7 @@ class CreateEventProvider extends BaseProvider {
             end: endDateTime)
         .catchError((e) {
       setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showMessage(context, e.toString());
     });
     if (value != null) {
       setState(ViewState.Idle);

@@ -200,5 +200,7 @@
   "group_discussion" : "Group discussion",
   "group_discussion_organiser" : "Group discussion - organiser",
   "click_to_go_to_event" : "click to go to event",
-  "update_photo" : "Update Photo"
+  "update_photo" : "Update Photo",
+  "events" : "Events",
+  "no_data_found" : "Sorry No data found"
    }
