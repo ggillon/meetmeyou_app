@@ -462,7 +462,11 @@ class MMY implements MMYEngine {
     }
     if(multipleDates != null)
       dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
-    if(title != null) await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
+    if(title != null) {
+      try { // Discussion might not exist
+        await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
+      } catch (e) {}
+    }
     return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
   }
 
