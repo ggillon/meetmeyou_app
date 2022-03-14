@@ -91,6 +91,7 @@ Future<Discussion> getDiscussion(User currentUser, String did) async {
   if (discussion.type != EVENT_DISCUSSION) {
     discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
     discussion.title = await getDiscussionTitle(currentUser, discussion);
+    if (discussion.participants.keys.length > 2) discussion.type = DISCUSSION_TYPE_GROUP;
   }
   return discussion;
 }
