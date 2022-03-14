@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
+import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
@@ -236,7 +237,7 @@ class CustomSearchDelegate extends SearchDelegate   {
           ],
         ),
         Padding(
-          padding: scaler.getPaddingLTRB(2.5, 0.5, 2.5, 0.7),
+          padding: scaler.getPaddingLTRB(3.0, 0.8, 3.0, 0.5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -244,26 +245,74 @@ class CustomSearchDelegate extends SearchDelegate   {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(eventList.title).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(10), TextAlign.left,
-                        maxLines: 1, overflow: TextOverflow.ellipsis),
-                    //  SizedBox(height: scaler.getHeight(0.1)),
-                    Text(eventList.description).regularText(
-                        ColorConstants.colorGray,
-                        scaler.getTextSize(8.5),
-                        TextAlign.left,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        isHeight: true),
+                    Container(
+                      width: scaler.getWidth(45),
+                      child: Text(eventList.title).boldText(
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(10),
+                          TextAlign.left,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                    SizedBox(height: scaler.getHeight(0.2)),
+                    Row(
+                      children: [
+                        ImageView(path: ImageConstants.clock_icon),
+                        SizedBox(width: scaler.getWidth(1)),
+                        Container(
+                          width: scaler.getWidth(38),
+                          child: Text(eventList.start.toString().substring(0, 11) ==
+                              eventList
+                                  .end
+                                  .toString()
+                                  .substring(0, 11)
+                              ? DateTimeHelper.getWeekDay(eventList.start) +
+                              " - " +
+                              DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList.start) +
+                              " to " +
+                              DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList.end)
+                              : DateTimeHelper.getWeekDay(eventList.start) +
+                              " - " +
+                              DateTimeHelper.convertEventDateToTimeFormat(
+                                  eventList.start) +
+                              " to " +
+                              DateTimeHelper.dateConversion(
+                                  eventList.end,
+                                  date: false) +
+                              "(${DateTimeHelper.convertEventDateToTimeFormat(eventList.end)})")
+                              .regularText(ColorConstants.colorGray,
+                              scaler.getTextSize(7.7), TextAlign.left,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: scaler.getHeight(0.2)),
+                    Row(
+                      children: [
+                        Icon(Icons.map, size: 17),
+                        SizedBox(width: scaler.getWidth(1)),
+                        Container(
+                          width: scaler.getWidth(38),
+                          child: Text(eventList.location).regularText(
+                              ColorConstants.colorGray,
+                              scaler.getTextSize(7.7),
+                              TextAlign.left,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
               SizedBox(width: scaler.getWidth(1)),
-             eventRespondBtn(context, scaler, eventList, provider, index)
+              eventRespondBtn(context, scaler, eventList, provider, index)
             ],
           ),
         )
-      ],
+            ],
     );
   }
 
