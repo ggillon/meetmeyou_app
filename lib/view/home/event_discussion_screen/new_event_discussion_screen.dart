@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
@@ -38,6 +39,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
   var messageFocusNode = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool jump = true;
+  final titleController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +107,43 @@ class NewEventDiscussionScreen extends StatelessWidget {
                       centerTitle: false,
                       title: Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: scaler.getBorderRadiusCircular(100),
-                            child: Container(
-                              height: scaler.getHeight(4.0),
-                              width: scaler.getWidth(10),
-                              child: ImageView(
-                                path: fromContactOrGroup == true
-                                    ? provider.discussionDetail.photoUrl
-                                    : provider.eventDiscussion!.photoURL,
-                                fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: (provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == true) ? () async {
+                              var value =
+                              await provider.permissionCheck();
+                              if (value) {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                          cameraClick: () {
+                                            provider.changeGroupImage(
+                                                _scaffoldKey.currentContext!, 1, fromChatScreen, chatDid);
+                                          },
+                                          galleryClick: () {
+                                            provider.changeGroupImage(
+                                                _scaffoldKey.currentContext!, 2, fromChatScreen, chatDid);
+                                          },
+                                          cancelClick: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ));
+                              }
+                            } : (){},
+                            child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(100),
+                              child: Container(
                                 height: scaler.getHeight(4.0),
                                 width: scaler.getWidth(10),
+                                child: ImageView(
+                                  path: fromContactOrGroup == true
+                                      ? provider.discussionDetail.photoUrl
+                                      : provider.eventDiscussion!.photoURL,
+                                  fit: BoxFit.cover,
+                                  height: scaler.getHeight(4.0),
+                                  width: scaler.getWidth(10),
+                                ),
                               ),
                             ),
                           ),
@@ -125,9 +153,12 @@ class NewEventDiscussionScreen extends StatelessWidget {
                            onTap: (){
                               provider.calendarDetail.fromCalendarPage = true;
                               provider.eventDetail.eid = provider.eventDiscussion?.did;
+                              titleController.text = fromContactOrGroup == true
+                                  ? provider.discussion!.title.toString()
+                                  : provider.eventDiscussion!.title.toString();
 
                            //  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop())
-                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop()) : Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen);
+                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop()) : ((provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == true) ? alertForChangeGroupTitle(context, scaler) : Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen));
                            },
                            child: Column(
                              children: [
@@ -144,7 +175,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                  width: scaler.getWidth(45),
                                  child:  Text(provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT
                                      ? "click_to_go_to_event".tr()
-                                     : provider.eventDiscussion!.type.toString())
+                                     : (provider.eventDiscussion!.type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : (provider.eventDiscussion!.isOrganiser == true ? "group_discussion_organiser".tr() : "group_discussion".tr())))
                                      .regularText(ColorConstants.colorGray,
                                      scaler.getTextSize(9), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                                ),
@@ -154,7 +185,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         ],
                       ),
                       actions: [
-                        ((fromContactOrGroup == true || fromChatScreen == true) && ((provider.eventDiscussion?.participants.length ?? 0) > 2 && provider.eventDiscussion?.isOrganiser == true) && provider.eventDiscussion?.type != DISCUSSION_TYPE_EVENT) || provider.eventDiscussion?.type == DISCUSSION_TYPE_PRIVATE
+                   //     ((fromContactOrGroup == true || fromChatScreen == true) && ((provider.eventDiscussion?.participants.length ?? 0) > 2 && provider.eventDiscussion?.isOrganiser == true) && provider.eventDiscussion?.type != DISCUSSION_TYPE_EVENT) || provider.eventDiscussion?.type == DISCUSSION_TYPE_PRIVATE
+                        (provider.eventDiscussion?.type == DISCUSSION_TYPE_PRIVATE || (provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == true))
                             ? GestureDetector(
                         behavior: HitTestBehavior.translucent,
                             onTap: () {
@@ -593,4 +625,55 @@ class NewEventDiscussionScreen extends StatelessWidget {
           showCloseIcon: true,
         ),
       );
+
+  alertForChangeGroupTitle(BuildContext context, ScreenScaler scaler){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 50.0),
+       //   insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
+          title: Text("Change Group Discussion title").semiBoldText(ColorConstants.colorBlack, 15, TextAlign.center),
+          content: Form(
+            key: _formKey,
+              child: groupTitleTextField(scaler)),
+          actions: [
+          provider.titleAndPhoto == true ? Center(child: CircularProgressIndicator()) : GestureDetector(
+              onTap: (){
+                if(fromChatScreen == true){
+                  provider.updateDiscussionTitle(context, chatDid, fromChatScreen, title: titleController.text);
+                } else{
+                  provider.updateDiscussionTitle(context, provider.discussion!.did, fromChatScreen, title: titleController.text);
+                }
+              },
+                child: CommonWidgets.commonBtn(scaler, context, "Update", ColorConstants.primaryColor, ColorConstants.colorWhite))
+          ],
+        );
+      }
+      );
+  }
+
+  Widget groupTitleTextField(ScreenScaler scaler){
+    return  TextFormField(
+      textCapitalization: TextCapitalization.sentences,
+      controller: titleController,
+      style: ViewDecoration.textFieldStyle(
+          scaler.getTextSize(9.5), ColorConstants.colorBlack),
+      decoration: ViewDecoration.inputDecorationWithCurve(
+          "Cody", scaler, ColorConstants.primaryColor),
+      onFieldSubmitted: (data) {
+        // FocusScope.of(context).requestFocus(nodes[1]);
+      },
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.name,
+      validator: (value) {
+        if (value!.trim().isEmpty) {
+          return "group_name_required".tr();
+        }
+        {
+          return null;
+        }
+      },
+    );
+  }
 }

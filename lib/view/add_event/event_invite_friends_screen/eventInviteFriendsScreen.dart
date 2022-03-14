@@ -482,13 +482,10 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                       provider.eventDetail.contactCIDs.add(contactOrGroupList[index].cid);
                       provider.updateAddContactToGroupValue(true, index);
                    //   provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
-                      //    print(provider.userKeysToInviteInGroup);
                     } else{
-
                       var idIndex = provider.eventDetail.contactCIDs.indexWhere((element) => element == contactOrGroupList[index].cid);
                       provider.eventDetail.contactCIDs.removeAt(idIndex);
                       provider.updateAddContactToGroupValue(false, index);
-                      //   print(provider.userKeysToInviteInGroup);
                     }
                   },
                 )
@@ -496,52 +493,26 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                   value: provider.groupCheckIsSelected(index),
                   onChanged: (bool? value) {
                     if(value!){
-                      provider.eventDetail.contactCIDs.add(contactOrGroupList[index].cid);
+                    //  List<String> keysList = [];
+                      for (var key in provider
+                          .groupList[index].group.keys) {
+                        provider.eventDetail.contactCIDs.add(key);
+                      }
+                   //   print(provider.eventDetail.contactCIDs);
+                     // provider.eventDetail.contactCIDs.add();
                       provider.eventDetail.groupIndexList.add(index.toString());
                       provider.updateAddContactGroupToGroupValue(true, index);
-                     // provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
-                      //    print(provider.userKeysToInviteInGroup);
                     } else{
-                      var idIndex = provider.eventDetail.contactCIDs.indexWhere((element) => element == contactOrGroupList[index].cid);
-                      provider.eventDetail.contactCIDs.removeAt(idIndex);
+                      for (var key in provider
+                          .groupList[index].group.keys) {
+                        provider.eventDetail.contactCIDs.remove(key);
+                      }
+                    //  print(provider.eventDetail.contactCIDs);
+                      provider.removeContactFromGroupCidList(index, contactOrGroupList[index]);
 
-                    //  var groupIdIndex = provider.eventDetail.groupIndexList.indexWhere((element) => element == index);
-                     // provider.eventDetail.groupIndexList.remove(index);
-                      provider.updateAddContactGroupToGroupValue(false, index);
-                      //   print(provider.userKeysToInviteInGroup);
                     }
                   },
                 )
-                //     ? Checkbox(
-                //     value: provider.addContactToGroupDiscussion[index],
-                //     onChanged: (bool? value) {
-                //       if(value!){
-                //         provider.updateAddContactToGroupValue(true, index);
-                //         provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
-                //     //    print(provider.userKeysToInviteInGroup);
-                //       } else{
-                //         provider.updateAddContactToGroupValue(false, index);
-                //         var idIndex = provider.userKeysToInviteInGroup.indexWhere((element) => element == contactOrGroupList[index].uid);
-                //         provider.userKeysToInviteInGroup.removeAt(idIndex);
-                //      //   print(provider.userKeysToInviteInGroup);
-                //       }
-                //     },
-                //   )
-                //     : Checkbox(
-                //   value: provider.addContactGroupToGroupDiscussion[index],
-                //   onChanged: (bool? value) {
-                //     if(value!){
-                //       provider.updateAddContactGroupToGroupValue(true, index);
-                //       provider.userKeysToInviteInGroup.add(contactOrGroupList[index].uid);
-                //       //    print(provider.userKeysToInviteInGroup);
-                //     } else{
-                //       provider.updateAddContactGroupToGroupValue(false, index);
-                //       var idIndex = provider.userKeysToInviteInGroup.indexWhere((element) => element == contactOrGroupList[index].uid);
-                //       provider.userKeysToInviteInGroup.removeAt(idIndex);
-                //       //   print(provider.userKeysToInviteInGroup);
-                //     }
-                //   },
-                // )
               ],
             ),
           ),

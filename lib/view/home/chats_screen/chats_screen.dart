@@ -19,6 +19,7 @@ class ChatsScreen extends StatelessWidget {
    ChatsScreen({Key? key}) : super(key: key);
 
   final searchBarController = TextEditingController();
+  ChatScreenProvider provider = ChatScreenProvider();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
@@ -38,7 +39,10 @@ class ChatsScreen extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: (){
-              Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: true));
+              Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: true)).then((value) {
+               provider.eventDetail.contactCIDs.clear();
+               provider.eventDetail.groupIndexList.clear();
+              });
             },
             child: Row(
               children: [
@@ -51,6 +55,7 @@ class ChatsScreen extends StatelessWidget {
       ),
       body: BaseView<ChatScreenProvider>(
         onModelReady: (provider){
+          this.provider = provider;
           provider.getUserDiscussion(context);
         },
         builder: (context, provider, _){
@@ -203,7 +208,7 @@ class ChatsScreen extends StatelessWidget {
                           Padding(
                             padding: scaler.getPaddingLTRB(0.0, 0.5, 0.0, 0.0),
                             child: Text(
-                                provider.userDiscussions[index].type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : provider.userDiscussions[index].type).regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                                provider.userDiscussions[index].type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : (provider.userDiscussions[index].type == DISCUSSION_TYPE_EVENT) ? DISCUSSION_TYPE_EVENT : "group_discussion".tr()).regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
                           )
                         ],
                       ),

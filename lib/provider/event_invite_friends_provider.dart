@@ -290,8 +290,7 @@ class EventInviteFriendsProvider extends BaseProvider {
   }
 
   removeContactFromGroupCidList(int ind, Contact groupContact) {
-    var index = eventDetail.groupIndexList
-        .indexWhere((element) => element == ind.toString());
+    var index = eventDetail.groupIndexList.indexWhere((element) => element == ind.toString());
     if (index == -1) {
       eventDetail.groupIndexList.remove(ind);
     } else {

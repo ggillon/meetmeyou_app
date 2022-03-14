@@ -197,5 +197,8 @@
   "new_discussion" : "New Discussion",
   "invite_to_group_discussion" : "Invite to group discussion",
   "private_discussion" : "Private discussion",
-  "click_to_go_to_event" : "click to go to event"
+  "group_discussion" : "Group discussion",
+  "group_discussion_organiser" : "Group discussion - organiser",
+  "click_to_go_to_event" : "click to go to event",
+  "update_photo" : "Update Photo"
    }

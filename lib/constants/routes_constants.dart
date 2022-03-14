@@ -34,4 +34,5 @@ class RoutesConstants {
   static const multipleDateTimeScreen = "multipleDateTimeScreen";
   static const chatsScreen = "chatsScreen";
   static const viewImageScreen = "viewImageScreen";
+  static const groupImageView = "groupImageView";
 }

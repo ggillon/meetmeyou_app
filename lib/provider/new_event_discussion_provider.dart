@@ -16,6 +16,7 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -304,29 +305,88 @@ class NewEventDiscussionProvider extends BaseProvider {
     }
   }
 
-  StreamController<DiscussionMessage> discussionMessagesController = StreamController.broadcast();
+  // StreamController<DiscussionMessage> discussionMessagesController = StreamController.broadcast();
+  //
+  // void addMessages(DiscussionMessage message) {
+  //   discussionMessagesController.sink.add(message);
+  // }
+  //
+  // bool getStreamMessage = false;
+  //
+  // updateGetStreamMessages(bool val){
+  //   getStreamMessage = val;
+  //   notifyListeners();
+  // }
+  //
+  // void getMessagesList() {
+  //   updateGetStreamMessages(true);
+  //   discussionMessagesController.stream.listen((data) {
+  //   //  eventDiscussionList.clear();
+  //     eventDiscussionList.add(data);
+  //     eventDiscussionList.sort((a,b) {
+  //       return a.createdTimeStamp.compareTo(b.createdTimeStamp);
+  //     });
+  //     print(eventDiscussionList);
+  //     updateGetStreamMessages(false);
+  //   }, onDone: () {}, onError: (error) {});
+  // }
 
-  void addMessages(DiscussionMessage message) {
-    discussionMessagesController.sink.add(message);
-  }
+  // Change title and to of discussion
 
-  bool getStreamMessage = false;
+ bool titleAndPhoto = false;
 
-  updateGetStreamMessages(bool val){
-    getStreamMessage = val;
+  updateTitleAndPhoto(bool val){
+    titleAndPhoto = val;
     notifyListeners();
   }
 
-  void getMessagesList() {
-    updateGetStreamMessages(true);
-    discussionMessagesController.stream.listen((data) {
-    //  eventDiscussionList.clear();
-      eventDiscussionList.add(data);
-      eventDiscussionList.sort((a,b) {
-        return a.createdTimeStamp.compareTo(b.createdTimeStamp);
+  File? groupImage;
+
+  Future changeGroupImage(BuildContext context, int type, bool fromChatScreen, String chatDid) async {
+    final picker = ImagePicker();
+    // type : 1 for camera in and 2 for gallery
+    Navigator.of(context).pop();
+    if (type == 1) {
+      final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
+      groupImage = File(pickedFile!.path);
+      Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
+        groupImage = null;
+        fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
       });
-      print(eventDiscussionList);
-      updateGetStreamMessages(false);
-    }, onDone: () {}, onError: (error) {});
+      notifyListeners();
+    } else {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 720);
+      if (pickedFile != null) {
+        groupImage = File(pickedFile.path);
+        Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
+          groupImage = null;
+          fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
+
+        });
+      } else {
+        print('No image selected.');
+        return;
+      }
+      notifyListeners();
+    }
   }
+
+  Future updateDiscussionTitle(BuildContext context, String did, bool fromChatScreen, {String? title, File? photo}) async{
+    Navigator.of(context).pop();
+    updateTitleAndPhoto(true);
+
+   var value =  await mmyEngine?.updateDiscussion(did, title: title, photo: photo).catchError((e) {
+     updateTitleAndPhoto(false);
+     DialogHelper.showMessage(context, e.message);
+   });
+
+   fromChatScreen == true ?  await getDiscussion(context, did, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
+
+   if(value != null){
+     updateTitleAndPhoto(false);
+   }
+
+  }
+
+
 }

@@ -24,6 +24,7 @@ import 'package:meetmeyou_app/provider/edit_Contact_Provider.dart';
 import 'package:meetmeyou_app/provider/create_edit_group_provider.dart';
 import 'package:meetmeyou_app/provider/edit_profile_provider.dart';
 import 'package:meetmeyou_app/provider/group_description_provider.dart';
+import 'package:meetmeyou_app/provider/group_image_view_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/provider/introduction_provider.dart';
 import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
@@ -89,6 +90,7 @@ void setupLocator() {
   locator.registerFactory<ChatScreenProvider>(() => ChatScreenProvider());
   locator.registerFactory<ViewImageProvider>(() => ViewImageProvider());
   locator.registerFactory<CustomSearchDelegateProvider>(() => CustomSearchDelegateProvider());
+  locator.registerFactory<GroupImageViewProvider>(() => GroupImageViewProvider());
 
 
   /*
