@@ -627,6 +627,7 @@ class MMY implements MMYEngine {
     Discussion result = await getDiscussion(did);
     if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
     if(photo != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photo);
+    print(result);
     return result;
   }
 

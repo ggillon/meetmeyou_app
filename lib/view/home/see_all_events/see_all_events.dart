@@ -5,180 +5,52 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
-import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/event.dart';
-import 'package:meetmeyou_app/models/search_result.dart';
 import 'package:meetmeyou_app/provider/custom_search_delegate_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
-import 'package:meetmeyou_app/view/home/homePage.dart';
-import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
-class CustomSearchDelegate extends SearchDelegate   {
+class SeeAllEvents extends StatelessWidget {
+   SeeAllEvents({Key? key, required this.query, required this.eventLists}) : super(key: key);
+   String query;
+   List<Event> eventLists = [];
   final answer1Controller = TextEditingController();
   final answer2Controller = TextEditingController();
   final answer3Controller = TextEditingController();
   final answer4Controller = TextEditingController();
   final answer5Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
   @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
+  Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    // if (query.length < 3) {
-    //   return Column(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: <Widget>[
-    //       Center(
-    //         child: Text(
-    //           "Search term must be longer than two letters.",
-    //         ),
-    //       )
-    //     ],
-    //   );
-    // }
-
-   return BaseView<CustomSearchDelegateProvider>(
-     onModelReady: (provider){
-       provider.search(context, query);
-     },
-       builder: (context, provider, _){
-     return provider.state == ViewState.Busy ?  Column(
-       mainAxisAlignment: MainAxisAlignment.center,
-       crossAxisAlignment: CrossAxisAlignment.center,
-       children: [
-         Center(child: CircularProgressIndicator()),
-         SizedBox(height: scaler.getHeight(1)),
-         Text("searching_data".tr()).mediumText(
-             ColorConstants.primaryColor,
-             scaler.getTextSize(10),
-             TextAlign.left),
-       ],
-     ) : (provider.contactsList.isEmpty && provider.eventLists.isEmpty) ?  Expanded(
-       child:
-       Center(
-         child: Text("no_data_found".tr())
-             .mediumText(
-             ColorConstants.primaryColor,
-             scaler.getTextSize(10),
-             TextAlign.left),
-       ),
-     ) :  Column(
-       children: [
-         (provider.contactsList.isEmpty || provider.contactsList == null) ?
-             Container()
-             :  Expanded(
-           child: Padding(
-             padding: scaler.getPaddingAll(10.5),
-             child: Column(
-               children: <Widget>[
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     Text("people".tr()).boldText(ColorConstants.colorBlack, 20.0, TextAlign.left),
-                     (provider.contactsList.length > 3) ? GestureDetector(
-                       onTap: (){
-                         Navigator.pushNamed(context, RoutesConstants.seeAllPeople, arguments: provider.contactsList);
-                       },
-                     child: Text("see_all".tr()).mediumText(ColorConstants.primaryColor, 15.0, TextAlign.left),) : Container()
-                   ],
-                 ),
-                 SizedBox(height: scaler.getHeight(1.0)),
-                 contactList(scaler, provider),
-               ],
-             ),
-           ),
-         ),
-         (provider.eventLists.isEmpty || provider.eventLists == null) ? Container() :  Expanded(
-           child: Padding(
-             padding: scaler.getPaddingLTRB(2.5, 1.5, 2.5, 0.0),
-             child: Column(
-               children: [
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     Text("events".tr()).boldText(ColorConstants.colorBlack, 20.0, TextAlign.left),
-                     (provider.eventLists.length > 3) ?  GestureDetector(
-                       onTap: (){
-
-                         Navigator.pushNamed(context, RoutesConstants.seeAllEvents, arguments: SeeAllEvents(query: query, eventLists: provider.eventLists));
-                       },
-                       child: Text("see_all".tr()).mediumText(ColorConstants.primaryColor, 15.0, TextAlign.left),) : Container()
-                   ],
-                 ),
-                 SizedBox(height: scaler.getHeight(1.0)),
-                eventsList(scaler, provider),
-               ],
-             ),
-           ),
-         )
-       ],
-     );
-   });
-
-
-  }
-
-  Widget contactList(ScreenScaler scaler, CustomSearchDelegateProvider provider) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: provider.contactsList.length <= 3 ? provider.contactsList.length : 3,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: provider.contactsList[index].status ==
-                            'Listed profile' ||
-                        provider.contactsList[index].status ==
-                            'Invited contact'
-                    ? () {}
-                    : () {
-                  provider.setContactsValue(provider.contactsList[index]);
-                  provider.discussionDetail.userId = provider.contactsList[index].cid;
-                        Navigator.pushNamed(
-                            context, RoutesConstants.contactDescription,
-                        );
-                      },
-                child: CommonWidgets.userContactCard(
-                    scaler,
-                    provider.contactsList[index].email,
-                    provider.contactsList[index].displayName,
-                    profileImg: provider.contactsList[index].photoURL,
-                    searchStatus: provider.contactsList[index].status,
-                    search: true, addIconTapAction: () {
-                  provider.inviteProfile(context, provider.contactsList[index]);
-                }),
-              );
-            }),
-      ),
+    return Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context),
+        body: BaseView<CustomSearchDelegateProvider>(
+          onModelReady: (provider){
+            provider.getMultipleDate = List<bool>.filled(eventLists.length, false);
+          },
+          builder: (context, provider, _){
+            return Padding(
+              padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("events".tr()).boldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(16), TextAlign.left),
+                  SizedBox(height: scaler.getHeight(1)),
+                  eventsList(scaler, provider)
+                ],
+              ),
+            );
+          },
+        )
     );
   }
 
@@ -188,7 +60,7 @@ class CustomSearchDelegate extends SearchDelegate   {
         child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: provider.eventLists.length <= 3 ? provider.eventLists.length : 3,
+            itemCount: eventLists.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: scaler.getPaddingLTRB(1.0, 0.0, 1.0, 1.0),
@@ -196,31 +68,29 @@ class CustomSearchDelegate extends SearchDelegate   {
                   onTap: (){
                     provider.homePageProvider
                         .setEventValuesForEdit(
-                        provider.eventLists[index]);
+                        eventLists[index]);
                     provider.eventDetail.eventBtnStatus =
                         CommonEventFunction.getEventBtnStatus(
-                            provider.eventLists[index],
+                            eventLists[index],
                             provider.auth.currentUser!.uid.toString());
                     provider.eventDetail.textColor =
                         CommonEventFunction
                             .getEventBtnColorStatus(
-                            provider.eventLists[index],
+                            eventLists[index],
                             provider.auth.currentUser!.uid.toString());
                     provider.eventDetail.btnBGColor =
                         CommonEventFunction
                             .getEventBtnColorStatus(
-                            provider.eventLists[index],
+                            eventLists[index],
                             provider.auth.currentUser!.uid.toString(),
                             textColor: false);
-                    provider.eventDetail.eventMapData = provider
-                        .eventLists[index].invitedContacts;
+                    provider.eventDetail.eventMapData =  eventLists[index].invitedContacts;
                     provider.eventDetail.eid =
-                        provider.eventLists[index].eid;
+                        eventLists[index].eid;
                     provider.eventDetail.organiserId =
-                        provider.eventLists[index].organiserID;
+                        eventLists[index].organiserID;
                     provider.eventDetail.organiserName =
-                        provider
-                            .eventLists[index].organiserName;
+                        eventLists[index].organiserName;
                     provider.calendarDetail.fromCalendarPage =
                     false;
                     Navigator.pushNamed(context,
@@ -235,7 +105,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                     elevation: 3.0,
                     shape: RoundedRectangleBorder(
                         borderRadius: scaler.getBorderRadiusCircular(10)),
-                    child: eventCard(scaler, context, provider, provider.eventLists[index], index),
+                    child: eventCard(scaler, context, provider, eventLists[index], index),
                   ),
                 ),
               );
@@ -349,7 +219,7 @@ class CustomSearchDelegate extends SearchDelegate   {
             ],
           ),
         )
-            ],
+      ],
     );
   }
 
@@ -394,37 +264,36 @@ class CustomSearchDelegate extends SearchDelegate   {
             Navigator.of(context).pop();
             provider.homePageProvider
                 .setEventValuesForEdit(
-                provider.eventLists[index]);
+                eventLists[index]);
             provider.eventDetail.eventBtnStatus =
                 CommonEventFunction.getEventBtnStatus(
-                    provider.eventLists[index],
+                    eventLists[index],
                     provider.auth.currentUser!.uid.toString());
             provider.eventDetail.textColor =
                 CommonEventFunction
                     .getEventBtnColorStatus(
-                    provider.eventLists[index],
+                    eventLists[index],
                     provider.auth.currentUser!.uid.toString());
             provider.eventDetail.btnBGColor =
                 CommonEventFunction
                     .getEventBtnColorStatus(
-                    provider.eventLists[index],
+                    eventLists[index],
                     provider.auth.currentUser!.uid.toString(),
                     textColor: false);
-            provider.eventDetail.eventMapData = provider
-                .eventLists[index].invitedContacts;
+            provider.eventDetail.eventMapData =
+                eventLists[index].invitedContacts;
             provider.eventDetail.eid =
-                provider.eventLists[index].eid;
+                eventLists[index].eid;
             provider.eventDetail.organiserId =
-                provider.eventLists[index].organiserID;
+                eventLists[index].organiserID;
             provider.eventDetail.organiserName =
-                provider
-                    .eventLists[index].organiserName;
+                eventLists[index].organiserName;
             provider.calendarDetail.fromCalendarPage =
             false;
             Navigator.pushNamed(context,
                 RoutesConstants.eventDetailScreen)
                 .then((value) {
-           //   provider.getUserEvents(context);
+              //   provider.getUserEvents(context);
               provider.search(context, query);
               provider.unRespondedEventsApi(context);
             });
@@ -465,7 +334,7 @@ class CustomSearchDelegate extends SearchDelegate   {
           provider.homePageProvider.clearMultiDateOption();
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
               .then((value) {
-          //  provider.getUserEvents(context);
+            //  provider.getUserEvents(context);
             provider.search(context, query);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
@@ -627,11 +496,5 @@ class CustomSearchDelegate extends SearchDelegate   {
 
       case 4:
         return answer5Controller;
-    }
-  }
-    @override
-  Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-      return Column();
-  }
+    }}
 }

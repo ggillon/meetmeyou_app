@@ -28,6 +28,7 @@ import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionS
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
+import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
@@ -195,6 +196,10 @@ class Router {
 
       case RoutesConstants.seeAllPeople:
         return MaterialPageRoute(builder: (_) => SeeAllPeople(contactsList: settings.arguments as List<Contact>), settings: settings);
+
+      case RoutesConstants.seeAllEvents:
+        final args = settings.arguments as SeeAllEvents;
+        return MaterialPageRoute(builder: (_) => SeeAllEvents(query: args.query, eventLists: args.eventLists,), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

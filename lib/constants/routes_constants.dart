@@ -36,4 +36,5 @@ class RoutesConstants {
   static const viewImageScreen = "viewImageScreen";
   static const groupImageView = "groupImageView";
   static const seeAllPeople = "seeAllPeople";
+  static const seeAllEvents = "seeAllEvents";
 }
