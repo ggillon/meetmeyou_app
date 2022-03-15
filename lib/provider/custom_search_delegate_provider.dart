@@ -37,6 +37,8 @@ class CustomSearchDelegateProvider extends BaseProvider{
       DialogHelper.showMessage(context, e.message);
     });
 
+   contactsList.clear();
+   eventLists.clear();
   if(value != null){
     searchList = value;
     contactsList = searchList!.contacts;
@@ -58,7 +60,30 @@ class CustomSearchDelegateProvider extends BaseProvider{
     userDetail.checkForInvitation = false;
   }
 
-  Future replyToEvent(BuildContext context, String eid, String response, {bool idle = true}) async {
+
+  bool _value = false;
+
+  bool get value => _value;
+
+  updateValue(bool value) {
+    _value = value;
+    notifyListeners();
+  }
+
+
+  inviteProfile(BuildContext context, Contact contact) async {
+    updateValue(true);
+
+    // await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
+    //   updateValue(false);
+    //   DialogHelper.showMessage(context, e.message);
+    // });
+    contact.status = 'Invited contact';
+    updateValue(false);
+    DialogHelper.showMessage(context, "Invitation send Successfully");
+  }
+
+  Future replyToEvent(BuildContext context, String eid, String response, String query, {bool idle = true}) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.replyToEvent(eid, response: response).catchError((e) {
@@ -67,7 +92,8 @@ class CustomSearchDelegateProvider extends BaseProvider{
     });
 
   //  getUserEvents(context);
-    Navigator.of(context).pop();
+   await search(context, query);
+  //  Navigator.of(context).pop();
     unRespondedEventsApi(context);
 
     idle == true ?  setState(ViewState.Idle) : setState(ViewState.Busy);
@@ -86,7 +112,7 @@ class CustomSearchDelegateProvider extends BaseProvider{
     setState(ViewState.Idle);
   }
 
-  Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers) async{
+  Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers, String query) async{
     setState(ViewState.Busy);
 
     await mmyEngine!.answerEventForm(eid, answers: answers).catchError((e) {
@@ -94,7 +120,7 @@ class CustomSearchDelegateProvider extends BaseProvider{
       DialogHelper.showMessage(context, e.message);
     });
 
-    await replyToEvent(context, eid, EVENT_ATTENDING, idle: false);
+    await replyToEvent(context, eid, EVENT_ATTENDING, query, idle: false);
     setState(ViewState.Idle);
   }
 

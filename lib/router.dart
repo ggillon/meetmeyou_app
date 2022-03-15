@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_calendar/device_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScreen.dart';
@@ -27,6 +28,7 @@ import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionS
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
+import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
@@ -190,6 +192,9 @@ class Router {
 
       case RoutesConstants.groupImageView:
         return MaterialPageRoute(builder: (_) => GroupImageView(groupImageData: settings.arguments as GroupImageData,), settings: settings);
+
+      case RoutesConstants.seeAllPeople:
+        return MaterialPageRoute(builder: (_) => SeeAllPeople(contactsList: settings.arguments as List<Contact>), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

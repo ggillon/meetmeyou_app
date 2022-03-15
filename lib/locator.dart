@@ -37,6 +37,7 @@ import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
+import 'package:meetmeyou_app/provider/see_all_people_provider.dart';
 import 'package:meetmeyou_app/provider/settings_provider.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/provider/verify_provider.dart';
@@ -91,6 +92,7 @@ void setupLocator() {
   locator.registerFactory<ViewImageProvider>(() => ViewImageProvider());
   locator.registerFactory<CustomSearchDelegateProvider>(() => CustomSearchDelegateProvider());
   locator.registerFactory<GroupImageViewProvider>(() => GroupImageViewProvider());
+  locator.registerFactory<SeeAllPeopleProvider>(() => SeeAllPeopleProvider());
 
 
   /*

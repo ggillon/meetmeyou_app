@@ -193,6 +193,7 @@ class EventDetailProvider extends BaseProvider {
       getOrganiserProfileUrl(context, eventDetail.organiserId!);
       getUsersProfileUrl(context);
       setEventValuesForEdit(event!);
+      eventDetail.organiserId == auth.currentUser?.uid ? Container() : getContact(context);
 
         eventDetail.event = event!;
         eventDetail.event?.multipleDates == true

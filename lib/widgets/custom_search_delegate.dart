@@ -102,11 +102,11 @@ class CustomSearchDelegate extends SearchDelegate   {
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: [
                      Text("people".tr()).boldText(ColorConstants.colorBlack, 20.0, TextAlign.left),
-                     GestureDetector(
+                     (provider.contactsList.length > 3) ? GestureDetector(
                        onTap: (){
-
+                         Navigator.pushNamed(context, RoutesConstants.seeAllPeople, arguments: provider.contactsList);
                        },
-                     child: Text("see_all".tr()).mediumText(ColorConstants.primaryColor, 15.0, TextAlign.left),)
+                     child: Text("see_all".tr()).mediumText(ColorConstants.primaryColor, 15.0, TextAlign.left),) : Container()
                    ],
                  ),
                  SizedBox(height: scaler.getHeight(1.0)),
@@ -172,8 +172,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                     profileImg: provider.contactsList[index].photoURL,
                     searchStatus: provider.contactsList[index].status,
                     search: true, addIconTapAction: () {
-                  // provider.inviteProfile(_scaffoldKey.currentContext!,
-                  //     provider.searchContactList[index]);
+                  provider.inviteProfile(context, provider.contactsList[index]);
                 }),
               );
             }),
@@ -192,7 +191,43 @@ class CustomSearchDelegate extends SearchDelegate   {
               return Padding(
                 padding: scaler.getPaddingLTRB(1.0, 0.0, 1.0, 1.0),
                 child: GestureDetector(
-                  onTap: (){},
+                  onTap: (){
+                    provider.homePageProvider
+                        .setEventValuesForEdit(
+                        provider.eventLists[index]);
+                    provider.eventDetail.eventBtnStatus =
+                        CommonEventFunction.getEventBtnStatus(
+                            provider.eventLists[index],
+                            provider.auth.currentUser!.uid.toString());
+                    provider.eventDetail.textColor =
+                        CommonEventFunction
+                            .getEventBtnColorStatus(
+                            provider.eventLists[index],
+                            provider.auth.currentUser!.uid.toString());
+                    provider.eventDetail.btnBGColor =
+                        CommonEventFunction
+                            .getEventBtnColorStatus(
+                            provider.eventLists[index],
+                            provider.auth.currentUser!.uid.toString(),
+                            textColor: false);
+                    provider.eventDetail.eventMapData = provider
+                        .eventLists[index].invitedContacts;
+                    provider.eventDetail.eid =
+                        provider.eventLists[index].eid;
+                    provider.eventDetail.organiserId =
+                        provider.eventLists[index].organiserID;
+                    provider.eventDetail.organiserName =
+                        provider
+                            .eventLists[index].organiserName;
+                    provider.calendarDetail.fromCalendarPage =
+                    false;
+                    Navigator.pushNamed(context,
+                        RoutesConstants.eventDetailScreen)
+                        .then((value) {
+                      provider.search(context, query);
+                      provider.unRespondedEventsApi(context);
+                    });
+                  },
                   child:  Card(
                     shadowColor: ColorConstants.colorWhite,
                     elevation: 3.0,
@@ -411,15 +446,15 @@ class CustomSearchDelegate extends SearchDelegate   {
                   context, scaler, event, questionsList, provider);
             } else {
               Navigator.of(context).pop();
-              provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+              provider.replyToEvent(context, event.eid, EVENT_ATTENDING, query);
             }
             //   }
           }, notGoing: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING, query);
           }, hide: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, query);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
             event, provider.auth.currentUser!.uid.toString()) ==
@@ -553,7 +588,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                               };
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
-                                  context, event.eid, answersMap);
+                                  context, event.eid, answersMap, query);
                             }
                           },
                           child: Container(

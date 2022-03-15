@@ -52,7 +52,9 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
-         provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
+          provider.calendarDetail.fromCalendarPage == true
+              ? Container()
+              :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
           provider.calendarDetail.fromDeepLink == false
               ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromCalendarPage == true

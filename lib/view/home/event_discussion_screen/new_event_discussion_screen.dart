@@ -158,7 +158,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                   : provider.eventDiscussion!.title.toString();
 
                            //  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop())
-                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop()) : ((provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == true) ? alertForChangeGroupTitle(context, scaler) : Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen));
+                             provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT ?  (fromChatScreen == true ? Navigator.pushNamed(context, RoutesConstants.eventDetailScreen) :  Navigator.of(context).pop()) : ((provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == true) ? alertForChangeGroupTitle(context, scaler) : ((provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == false) ? Navigator.pushNamed(context, RoutesConstants.eventAttendingScreen) : Container()));
                            },
                            child: Column(
                              children: [

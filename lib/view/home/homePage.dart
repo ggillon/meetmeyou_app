@@ -135,7 +135,9 @@ class _HomePageState extends State<HomePage>
                             showSearch(
                               context: context,
                               delegate: CustomSearchDelegate(),
-                            );
+                            ).then((value) {
+                              provider.getIndexChanging(context);
+                            });
                           },
                           child:
                               Icon(Icons.search_outlined, color: ColorConstants.primaryColor, size: 30),
