@@ -60,7 +60,9 @@ class NewEventDiscussionScreen extends StatelessWidget {
           // });
         } else{
           fromContactOrGroup == true
-              ? provider.startContactDiscussion(context)
+              ? provider.startContactDiscussion(context).then((value) {
+            jump = false;
+          })
               : provider.getEventDiscussion(context, true).then((value) {
                 jump = false;
           });

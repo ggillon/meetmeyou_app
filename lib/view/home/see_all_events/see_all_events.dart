@@ -5,6 +5,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
@@ -45,7 +46,20 @@ class SeeAllEvents extends StatelessWidget {
                   Text("events".tr()).boldText(ColorConstants.colorBlack,
                       scaler.getTextSize(16), TextAlign.left),
                   SizedBox(height: scaler.getHeight(1)),
-                  eventsList(scaler, provider)
+                  provider.state == ViewState.Busy ?  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(child: CircularProgressIndicator()),
+                        SizedBox(height: scaler.getHeight(1)),
+                        Text("loading_your_events".tr()).mediumText(
+                            ColorConstants.primaryColor,
+                            scaler.getTextSize(10),
+                            TextAlign.left),
+                      ],
+                    ),
+                  ) : eventsList(scaler, provider)
                 ],
               ),
             );
@@ -95,8 +109,11 @@ class SeeAllEvents extends StatelessWidget {
                     false;
                     Navigator.pushNamed(context,
                         RoutesConstants.eventDetailScreen)
-                        .then((value) {
-                      provider.search(context, query);
+                        .then((value) async {
+                     await provider.search(context, query).then((value) {
+                        eventLists.clear();
+                        eventLists = provider.eventLists;
+                      });
                       provider.unRespondedEventsApi(context);
                     });
                   },
@@ -292,9 +309,12 @@ class SeeAllEvents extends StatelessWidget {
             false;
             Navigator.pushNamed(context,
                 RoutesConstants.eventDetailScreen)
-                .then((value) {
+                .then((value) async {
               //   provider.getUserEvents(context);
-              provider.search(context, query);
+              await  provider.search(context, query).then((value) {
+                eventLists.clear();
+                eventLists = provider.eventLists;
+              });
               provider.unRespondedEventsApi(context);
             });
           },going: () {
@@ -317,15 +337,24 @@ class SeeAllEvents extends StatelessWidget {
                   context, scaler, event, questionsList, provider);
             } else {
               Navigator.of(context).pop();
-              provider.replyToEvent(context, event.eid, EVENT_ATTENDING, query);
+              provider.replyToEvent(context, event.eid, EVENT_ATTENDING, query).then((value) {
+                eventLists.clear();
+                eventLists = provider.eventLists;
+              });
             }
             //   }
           }, notGoing: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING, query);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING, query).then((value) {
+              eventLists.clear();
+              eventLists = provider.eventLists;
+            });
           }, hide: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, query);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, query).then((value) {
+              eventLists.clear();
+              eventLists = provider.eventLists;
+            });
           });
         } else if (CommonEventFunction.getEventBtnStatus(
             event, provider.auth.currentUser!.uid.toString()) ==
@@ -333,9 +362,12 @@ class SeeAllEvents extends StatelessWidget {
           provider.homePageProvider.setEventValuesForEdit(event);
           provider.homePageProvider.clearMultiDateOption();
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
-              .then((value) {
+              .then((value) async {
             //  provider.getUserEvents(context);
-            provider.search(context, query);
+            await provider.search(context, query).then((value) {
+              eventLists.clear();
+              eventLists = provider.eventLists;
+            });
           });
         } else if (CommonEventFunction.getEventBtnStatus(
             event, provider.auth.currentUser!.uid.toString()) ==
@@ -459,7 +491,10 @@ class SeeAllEvents extends StatelessWidget {
                               };
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
-                                  context, event.eid, answersMap, query);
+                                  context, event.eid, answersMap, query).then((value) {
+                                eventLists.clear();
+                                eventLists = provider.eventLists;
+                              });
                             }
                           },
                           child: Container(

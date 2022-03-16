@@ -81,44 +81,39 @@ class CustomSearchDelegate extends SearchDelegate   {
              scaler.getTextSize(10),
              TextAlign.left),
        ],
-     ) : (provider.contactsList.isEmpty && provider.eventLists.isEmpty) ?  Expanded(
-       child:
-       Center(
-         child: Text("no_data_found".tr())
-             .mediumText(
-             ColorConstants.primaryColor,
-             scaler.getTextSize(10),
-             TextAlign.left),
-       ),
+     ) : (provider.contactsList.isEmpty && provider.eventLists.isEmpty) ?  Center(
+       child: Text("no_data_found".tr())
+           .mediumText(
+           ColorConstants.primaryColor,
+           scaler.getTextSize(10),
+           TextAlign.left),
      ) :  Column(
        children: [
          (provider.contactsList.isEmpty || provider.contactsList == null) ?
              Container()
-             :  Expanded(
-           child: Padding(
-             padding: scaler.getPaddingAll(10.5),
-             child: Column(
-               children: <Widget>[
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     Text("people".tr()).boldText(ColorConstants.colorBlack, 20.0, TextAlign.left),
-                     (provider.contactsList.length > 3) ? GestureDetector(
-                       onTap: (){
-                         Navigator.pushNamed(context, RoutesConstants.seeAllPeople, arguments: provider.contactsList);
-                       },
-                     child: Text("see_all".tr()).mediumText(ColorConstants.primaryColor, 15.0, TextAlign.left),) : Container()
-                   ],
-                 ),
-                 SizedBox(height: scaler.getHeight(1.0)),
-                 contactList(scaler, provider),
-               ],
+             :  Padding(
+           padding: scaler.getPaddingLTRB(2.5, 1.5, 2.5, 0.0),
+               child: Column(
+                 children: <Widget>[
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     children: [
+                       Text("people".tr()).boldText(ColorConstants.colorBlack, 20.0, TextAlign.left),
+                       (provider.contactsList.length > 3) ? GestureDetector(
+                         onTap: (){
+                           Navigator.pushNamed(context, RoutesConstants.seeAllPeople, arguments: provider.contactsList);
+                         },
+                       child: Text("see_all".tr()).mediumText(ColorConstants.primaryColor, 15.0, TextAlign.left),) : Container()
+                     ],
+                   ),
+                   SizedBox(height: scaler.getHeight(1.0)),
+                   contactList(scaler, provider),
+                 ],
+               ),
              ),
-           ),
-         ),
-         (provider.eventLists.isEmpty || provider.eventLists == null) ? Container() :  Expanded(
+         (provider.eventLists.isEmpty || provider.eventLists == null) ? Container() : Expanded(
            child: Padding(
-             padding: scaler.getPaddingLTRB(2.5, 1.5, 2.5, 0.0),
+             padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
              child: Column(
                children: [
                  Row(
@@ -147,39 +142,35 @@ class CustomSearchDelegate extends SearchDelegate   {
   }
 
   Widget contactList(ScreenScaler scaler, CustomSearchDelegateProvider provider) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: provider.contactsList.length <= 3 ? provider.contactsList.length : 3,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: provider.contactsList[index].status ==
-                            'Listed profile' ||
-                        provider.contactsList[index].status ==
-                            'Invited contact'
-                    ? () {}
-                    : () {
-                  provider.setContactsValue(provider.contactsList[index]);
-                  provider.discussionDetail.userId = provider.contactsList[index].cid;
-                        Navigator.pushNamed(
-                            context, RoutesConstants.contactDescription,
-                        );
-                      },
-                child: CommonWidgets.userContactCard(
-                    scaler,
-                    provider.contactsList[index].email,
-                    provider.contactsList[index].displayName,
-                    profileImg: provider.contactsList[index].photoURL,
-                    searchStatus: provider.contactsList[index].status,
-                    search: true, addIconTapAction: () {
-                  provider.inviteProfile(context, provider.contactsList[index]);
-                }),
-              );
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: provider.contactsList.length <= 3 ? provider.contactsList.length : 3,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: provider.contactsList[index].status ==
+                        'Listed profile' ||
+                    provider.contactsList[index].status ==
+                        'Invited contact'
+                ? () {}
+                : () {
+              provider.setContactsValue(provider.contactsList[index]);
+              provider.discussionDetail.userId = provider.contactsList[index].cid;
+                    Navigator.pushNamed(
+                        context, RoutesConstants.contactDescription,
+                    );
+                  },
+            child: CommonWidgets.userContactCard(
+                scaler,
+                provider.contactsList[index].email,
+                provider.contactsList[index].displayName,
+                profileImg: provider.contactsList[index].photoURL,
+                searchStatus: provider.contactsList[index].status,
+                search: true, addIconTapAction: () {
+              provider.inviteProfile(context, provider.contactsList[index]);
             }),
-      ),
-    );
+          );
+        });
   }
 
   Widget eventsList(ScreenScaler scaler, CustomSearchDelegateProvider provider){

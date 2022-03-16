@@ -85,14 +85,14 @@ class CustomSearchDelegateProvider extends BaseProvider{
 
   Future replyToEvent(BuildContext context, String eid, String response, String query, {bool idle = true}) async {
     setState(ViewState.Busy);
-
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     await mmyEngine!.replyToEvent(eid, response: response).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
 
   //  getUserEvents(context);
-   await search(context, query);
+  await search(context, query);
   //  Navigator.of(context).pop();
     unRespondedEventsApi(context);
 
