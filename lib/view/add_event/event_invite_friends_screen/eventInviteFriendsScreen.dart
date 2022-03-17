@@ -4,6 +4,7 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
@@ -11,6 +12,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/provider/event_invite_friends_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
@@ -177,7 +179,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                    if (provider.eventDetail.contactCIDs.isNotEmpty) {
                      provider.startGroupDiscussion(context, provider.eventDetail.contactCIDs).then((value) {
                        provider.eventDetail.contactCIDs.clear();
-                        Navigator.of(context).pop();
+                       // Navigator.of(context).pop();
                      });
                    } else {
                      DialogHelper.showMessage(

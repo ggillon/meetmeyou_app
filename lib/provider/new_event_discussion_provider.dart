@@ -210,6 +210,7 @@ class NewEventDiscussionProvider extends BaseProvider {
   }
 
   Future leaveDiscussion(BuildContext context, bool fromChatScreen, String chatID) async {
+    Navigator.of(context).pop();
     updateLeave(true);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);

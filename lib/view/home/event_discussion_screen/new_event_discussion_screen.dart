@@ -193,7 +193,9 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         behavior: HitTestBehavior.translucent,
                             onTap: () {
                           provider.eventDetail.contactCIDs = provider.eventDetail.attendingProfileKeys!;
-                          Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid), fromChatDiscussion: false));
+                          Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid), fromChatDiscussion: false)).then((value) {
+                            fromChatScreen == true ?  provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : provider.startContactDiscussion(context);
+                          });
                             },
                         child: Icon(Icons.people))
                             : GestureDetector(
@@ -205,7 +207,6 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                       "sure_to_leave_discussion".tr(),
                                       positiveButtonLabel: "leave".tr(),
                                       positiveButtonPress: () {
-                                    Navigator.of(context).pop();
                                     provider
                                         .leaveDiscussion(context, fromChatScreen, chatDid)
                                         .then((value) {

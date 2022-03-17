@@ -39,9 +39,11 @@ class ChatsScreen extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: (){
+              provider.eventDetail.contactCIDs.clear();
               Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: true)).then((value) {
                provider.eventDetail.contactCIDs.clear();
                provider.eventDetail.groupIndexList.clear();
+               provider.getUserDiscussion(context);
               });
             },
             child: Row(

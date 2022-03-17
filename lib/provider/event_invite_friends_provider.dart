@@ -1,5 +1,6 @@
 import 'package:collection/src/list_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -7,6 +8,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 
 class EventInviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -387,6 +389,10 @@ class EventInviteFriendsProvider extends BaseProvider {
 
   if(value != null){
     updateStartGroup(false);
+    Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: value.did)).then((value){
+      Navigator.of(context).pop();
+    });
+
   }
 
   }

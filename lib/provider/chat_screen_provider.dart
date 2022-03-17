@@ -23,7 +23,7 @@ class ChatScreenProvider extends BaseProvider{
     });
 
     if(value != null){
-      userDiscussions = [];
+      userDiscussions.clear();
       userDiscussions = value;
       setState(ViewState.Idle);
     }
