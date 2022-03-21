@@ -206,11 +206,12 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                       "leave_discussion".tr(),
                                       "sure_to_leave_discussion".tr(),
                                       positiveButtonLabel: "leave".tr(),
-                                      positiveButtonPress: () {
-                                    provider
-                                        .leaveDiscussion(context, fromChatScreen, chatDid)
+                                      positiveButtonPress: () async {
+                                  await provider.leaveDiscussion(context, fromChatScreen, chatDid)
                                         .then((value) {
+                                    Future.delayed(Duration(milliseconds: 200), () {
                                       Navigator.of(context).pop();
+                                    });
                                     });
                                   });
                                 },

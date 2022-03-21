@@ -150,8 +150,9 @@ class ChatsScreen extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: (){
-        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did)).then((value) {
-          provider.getUserDiscussion(context);
+        Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: provider.userDiscussions[index].did)).then((value) async {
+          await provider.getUserDiscussion(context);
+          provider.updateSearchValue(true);
         });
       },
       child: SwipeTo(

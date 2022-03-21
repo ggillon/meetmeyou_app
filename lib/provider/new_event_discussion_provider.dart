@@ -215,7 +215,7 @@ class NewEventDiscussionProvider extends BaseProvider {
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!.leaveDiscussion(fromChatScreen == true ? chatID : eventDetail.eid!).catchError((e) {
+    await mmyEngine?.leaveDiscussion(fromChatScreen == true ? chatID : eventDetail.eid!).catchError((e) {
       updateLeave(false);
       DialogHelper.showMessage(context, "error_message".tr());
     });
