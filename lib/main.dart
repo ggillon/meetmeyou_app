@@ -2,22 +2,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import 'helper/shared_pref.dart';
 import 'test.dart';
 import 'router.dart' as router;
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await EasyLocalization.ensureInitialized();
   SharedPref.prefs = await SharedPreferences.getInstance();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -44,24 +54,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<AuthBase>(
       create: (_) => Auth(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'MeetMeYou',
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: EasyLocalization.of(context).supportedLocales,
-        locale: EasyLocalization.of(context).locale,
-        theme: ThemeData(
-          primarySwatch: color,
+      child: OverlaySupport(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'MeetMeYou',
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: EasyLocalization.of(context).supportedLocales,
+          locale: EasyLocalization.of(context).locale,
+          theme: ThemeData(
+            primarySwatch: color,
+          ),
+          onGenerateRoute: router.Router.generateRoute,
+          initialRoute:
+              SharedPref.prefs.getBool(SharedPref.INTRODUCTION_COMPLETE) == null
+                  ? RoutesConstants.introductionPage
+                  : SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) == null ||
+                          SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) ==
+                              false
+                      ? RoutesConstants.loginOptions
+                      : RoutesConstants.dashboardPage,
         ),
-        onGenerateRoute: router.Router.generateRoute,
-        initialRoute:
-            SharedPref.prefs.getBool(SharedPref.INTRODUCTION_COMPLETE) == null
-                ? RoutesConstants.introductionPage
-                : SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) == null ||
-                        SharedPref.prefs.getBool(SharedPref.IS_USER_LOGIN) ==
-                            false
-                    ? RoutesConstants.loginOptions
-                    : RoutesConstants.dashboardPage,
       ),
     );
   }

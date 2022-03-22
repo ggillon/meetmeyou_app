@@ -202,5 +202,9 @@
   "click_to_go_to_event" : "click to go to event",
   "update_photo" : "Update Photo",
   "events" : "Events",
-  "no_data_found" : "Sorry No data found"
-   }
+  "no_data_found" : "Sorry No data found",
+  "notification_settings" : "Notification Settings",
+  "receive_event_notification" : "Receive notification for events",
+  "receive_contact_notification" : "Receive notification for contact invitations",
+  "receive_message_notification" : "Receive notification for messages"
+}

@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
+import 'package:meetmeyou_app/models/notification_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
@@ -34,6 +35,7 @@ import 'package:meetmeyou_app/provider/multiple_date_time_provider.dart';
 import 'package:meetmeyou_app/provider/my_account_provider.dart';
 import 'package:meetmeyou_app/provider/contact_description_provider.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
+import 'package:meetmeyou_app/provider/notification_settings_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
@@ -57,6 +59,7 @@ void setupLocator() {
   locator.registerLazySingleton<MultipleDateOption>(() => MultipleDateOption());
   locator.registerLazySingleton<DynamicLinksApi>(() => DynamicLinksApi());
   locator.registerLazySingleton<DiscussionDetail>(() => DiscussionDetail());
+  locator.registerLazySingleton<NotificationDetail>(() => NotificationDetail());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -93,6 +96,7 @@ void setupLocator() {
   locator.registerFactory<CustomSearchDelegateProvider>(() => CustomSearchDelegateProvider());
   locator.registerFactory<GroupImageViewProvider>(() => GroupImageViewProvider());
   locator.registerFactory<SeeAllPeopleProvider>(() => SeeAllPeopleProvider());
+  locator.registerFactory<NotificationSettingsProvider>(() => NotificationSettingsProvider());
 
 
   /*

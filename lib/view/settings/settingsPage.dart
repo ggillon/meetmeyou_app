@@ -100,6 +100,16 @@ class SettingsPage extends StatelessWidget {
                         CommonWidgets.settingsPageCard(
                             scaler,
                             context,
+                            ImageConstants.speaker_icon,
+                            "notification_settings".tr(),
+                            true, onTapCard: () {
+                          Navigator.pushNamed(
+                              context, RoutesConstants.notificationSettings);
+                        }),
+                        SizedBox(height: scaler.getHeight(1)),
+                        CommonWidgets.settingsPageCard(
+                            scaler,
+                            context,
                             ImageConstants.about_icon,
                             "about".tr(),
                             false, onTapCard: () {

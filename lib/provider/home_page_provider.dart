@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/src/public_ext.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
@@ -12,11 +15,14 @@ import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
+import 'package:meetmeyou_app/models/push_notification.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
+import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class HomePageProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -339,6 +345,60 @@ class HomePageProvider extends BaseProvider {
       updateDiscussion(false);
     }
   }
+
+
+  // NOTIFICATIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  late final FirebaseMessaging _messaging;
+  PushNotification? _notificationInfo;
+  int badgeCount = 0;
+
+
+  void registerNotification(BuildContext context) async {
+    _messaging = FirebaseMessaging.instance;
+
+
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print('Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
+
+        // Parse the message received
+        PushNotification notification = PushNotification(
+          title: message.notification?.title,
+          body: message.notification?.body,
+          // dataTitle: message.data['title'],
+          // dataBody: message.data['body'],
+        );
+
+          _notificationInfo = notification;
+          notifyListeners();
+
+
+        if (_notificationInfo != null) {
+          // For displaying the notification as an overlay
+          showSimpleNotification(
+            Text(_notificationInfo!.title!),
+            leading: ImageView(path: ImageConstants.small_logo_icon),
+            subtitle: Text(_notificationInfo!.body!),
+            background: Colors.cyan.shade700,
+            duration: Duration(seconds: 2),
+          );
+        }
+      });
+    } else {
+     print("User declined or has not accepted permission");
+    }
+  }
+
+
   // for checking whether any multi date date is selected or not.
   // bool statusMultiDate = false;
   //

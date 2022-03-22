@@ -40,6 +40,7 @@ import 'package:meetmeyou_app/view/settings/about/aboutPage.dart';
 import 'package:meetmeyou_app/view/settings/calendar_settings/calendarSettingsScreen.dart';
 import 'package:meetmeyou_app/view/settings/history/historyScreen.dart';
 import 'package:meetmeyou_app/view/settings/invite_friends/inviteFriendsScreen.dart';
+import 'package:meetmeyou_app/view/settings/notifcation_settings/notification_settings.dart';
 import 'package:meetmeyou_app/view/settings/privacy_policy_and_terms/privacyPolicyAndTerms.dart';
 import 'package:meetmeyou_app/view/settings/rejected_invites/rejectedInvitesScreen.dart';
 import 'package:meetmeyou_app/view/settings/rejected_invites_description/rejectedInvitesDescriptionScreen.dart';
@@ -200,6 +201,9 @@ class Router {
       case RoutesConstants.seeAllEvents:
         final args = settings.arguments as SeeAllEvents;
         return MaterialPageRoute(builder: (_) => SeeAllEvents(query: args.query, eventLists: args.eventLists,), settings: settings);
+
+      case RoutesConstants.notificationSettings:
+        return MaterialPageRoute(builder: (_) => NotificationSettings(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

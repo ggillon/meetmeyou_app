@@ -115,6 +115,8 @@ class _HomePageState extends State<HomePage>
               provider.unRespondedEventsApi(context);
             }
           });
+          // for notifications
+          provider.registerNotification(context);
         },
         builder: (context, provider, _) {
           return Column(
