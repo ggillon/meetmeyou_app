@@ -130,6 +130,18 @@ Future<String> getDiscussionTitle(User currentUser, Discussion discussion) async
     for (String key in discussion.participants.keys) {
       if (key != currentUser.uid) result = (await db.getProfile(key))!.displayName; // Use the other persons photo
     }
+  } else { // it's a multiple discussion title return other users name
+    result = '';
+    for(String key in discussion.participants.keys) {
+      if(key != currentUser.uid) {
+        Profile profile = (await db.getProfile(key))!;
+        if(result != '') {
+          result = result + ', ' + profile.displayName;
+        } else {
+          result = profile.displayName;
+        }
+      }
+    }
   }
   return result;
 }
@@ -181,7 +193,7 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
         discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
         discussion.title = await getDiscussionTitle(currentUser, discussion);
       }
-      results.add(discussion);
+      if(discussion.participants.length != 1) results.add(discussion);
     }
     if(discussion.participants[currentUser.uid] != MESSAGES_UNREAD) {
       discussion.unread = false;
@@ -192,7 +204,7 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
         discussion.photoURL = await getDiscussionPhotoURL(currentUser, discussion);
         discussion.title = await getDiscussionTitle(currentUser, discussion);
       }
-      results.add(discussion);
+      if(discussion.participants.length != 1) results.add(discussion);
     }
   }
   results.sort((a,b)=> a.timeStamp.microsecondsSinceEpoch.compareTo(b.timeStamp.microsecondsSinceEpoch));
@@ -215,7 +227,13 @@ Future<void> removeUserFromDiscussion(User currentUser, String did, String uid) 
 Future<void> inviteUserToDiscussion(User currentUser, String uid, String did) async {
   final db = FirestoreDB(uid: currentUser.uid);
   Discussion discussion = await db.getDiscussion(did);
+  Profile? profile = await db.getProfile(uid);
   discussion.participants.addAll({uid: MESSAGES_UNREAD});
+  if(discussion.params.containsKey('set_title')) {
+    if (!discussion.params['set_title']) {
+      discussion.title = discussion.title + ',' + profile!.displayName;
+    }
+  }
   await db.setDiscussion(discussion);
 }
 
