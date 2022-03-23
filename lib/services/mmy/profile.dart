@@ -172,5 +172,11 @@ Profile createLocalProfile({required String uid, String? displayName, String? fi
 }
 
 
+// PARAMS
+
+const PARAM_NOTIFY_EVENT = "NotifyEvent";
+const PARAM_NOTIFY_INVITATION = "NotifyInvitation";
+const PARAM_NOTIFY_DISCUSSION = "NotifyDiscussion";
+
 
 
