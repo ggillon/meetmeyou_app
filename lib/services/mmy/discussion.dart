@@ -241,7 +241,7 @@ Future<Discussion?> findDiscussion(User currentUser, List<String> UIDs) async {
   Discussion? result = null;
   List<Discussion> userDiscussions = await getUserDiscussions(currentUser);
   for(Discussion discussion in userDiscussions) {
-    if(true) { // Adapt later
+    if(discussion.type == DISCUSSION_TYPE_GROUP || discussion.type == DISCUSSION_TYPE_PRIVATE) { // Adapt later
       bool test1 = true;
       bool test2 = true;
       for(String uid in UIDs) {
