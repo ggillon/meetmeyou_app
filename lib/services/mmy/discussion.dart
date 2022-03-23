@@ -114,6 +114,7 @@ Future<void> postMessage(User currentUser, String did, String type, String text,
     discussion.participants[uid] = MESSAGES_UNREAD;
   }
   discussion.participants[currentUser.uid] = MESSAGES_READ;
+  discussion.timeStamp = DateTime.now();
   await db.setDiscussion(discussion);
   await db.setDiscussionMessage(message);
 }
@@ -165,6 +166,7 @@ Future<String> getDiscussionPhotoURL(User currentUser, Discussion discussion) as
 }
 
 
+
 Future<List<Discussion>> getUserDiscussions(User currentUser) async {
   final db = FirestoreDB(uid: currentUser.uid);
   List<Discussion> discussions = await db.getUserDiscussions(currentUser.uid);
@@ -193,8 +195,12 @@ Future<List<Discussion>> getUserDiscussions(User currentUser) async {
       results.add(discussion);
     }
   }
+  results.sort((a,b)=> a.timeStamp.microsecondsSinceEpoch.compareTo(b.timeStamp.microsecondsSinceEpoch));
+  results = results.reversed.toList();
   return results;
 }
+
+
 
 Future<void> removeUserFromDiscussion(User currentUser, String did, String uid) async {
   final db = FirestoreDB(uid: currentUser.uid);
