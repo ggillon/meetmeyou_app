@@ -48,42 +48,52 @@ Future<void> notifyEventInvite(User currentUser, String eid, String uid) async {
         title: 'New Event',
         text: 'You have been invited to a new event (${event.title}) by ${event.organiserName}',
         photoURL: '${event.photoURL}',
+        id: eid,
         tokens: [token]);
     await db.setNotification(notification);
   }
 }
 
-Future<void> notifyEventModified(User currentUser, String eid, String uid) async {
+Future<void> notifyEventModified(User currentUser, String eid) async {
   final db = FirestoreDB(uid: currentUser.uid);
-  String token = await db.getUserToken(uid);
   Event event = await db.getEvent(eid);
-  if(token != '') {
-    MMYNotification notification = MMYNotification(
-        nid: idGenerator(),
-        type: NOTIFICATION_TEXT,
-        uid: currentUser.uid,
-        title: 'Event modified',
-        text: 'Event (${event.title}) by ${event.organiserName} has been modified',
-        photoURL: '${event.photoURL}',
-        tokens: [token]);
-    await db.setNotification(notification);
+
+  for(String uid in event.invitedContacts.keys) {
+    String token = await db.getUserToken(uid);
+    if(token != '') {
+      MMYNotification notification = MMYNotification(
+          nid: idGenerator(),
+          type: NOTIFICATION_TEXT,
+          uid: currentUser.uid,
+          title: 'Event modified',
+          text: 'Event (${event.title}) by ${event
+              .organiserName} has been modified',
+          photoURL: '${event.photoURL}',
+          id: eid,
+          tokens: [token]);
+      await db.setNotification(notification);
+    }
   }
 }
 
-Future<void> notifyEventCanceled(User currentUser, String eid, String uid) async {
+Future<void> notifyEventCanceled(User currentUser, String eid) async {
   final db = FirestoreDB(uid: currentUser.uid);
-  String token = await db.getUserToken(uid);
   Event event = await db.getEvent(eid);
-  if(token != '') {
-    MMYNotification notification = MMYNotification(
-        nid: idGenerator(),
-        type: NOTIFICATION_TEXT,
-        uid: currentUser.uid,
-        title: 'Event canceled',
-        text: 'Event (${event.title}) by ${event.organiserName} has been canceled',
-        photoURL: '${event.photoURL}',
-        tokens: [token]);
-    await db.setNotification(notification);
+  for(String uid in event.invitedContacts.keys) {
+    String token = await db.getUserToken(uid);
+    if (token != '') {
+      MMYNotification notification = MMYNotification(
+          nid: idGenerator(),
+          type: NOTIFICATION_TEXT,
+          uid: currentUser.uid,
+          title: 'Event canceled',
+          text: 'Event (${event.title}) by ${event
+              .organiserName} has been canceled',
+          photoURL: '${event.photoURL}',
+          id: eid,
+          tokens: [token]);
+      await db.setNotification(notification);
+    }
   }
 }
 
@@ -99,24 +109,28 @@ Future<void> notifyContactInvite(User currentUser, String uid) async {
         title: 'New contact invitation',
         text: 'You have received contact invitation by ${profile.displayName}',
         photoURL: '${profile.photoURL}',
+        id: profile.uid,
         tokens: [token]);
     await db.setNotification(notification);
   }
 }
 
-Future<void> notifyDiscussionMessage(User currentUser, String did, String uid) async {
+Future<void> notifyDiscussionMessage(User currentUser, String did,) async {
   final db = FirestoreDB(uid: currentUser.uid);
-  String token = await db.getUserToken(uid);
   Discussion discussion = await db.getDiscussion(did);
-  if(token != '') {
-    MMYNotification notification = MMYNotification(
-        nid: idGenerator(),
-        type: NOTIFICATION_TEXT,
-        uid: currentUser.uid,
-        title: 'New message',
-        text: 'You have received a new message',
-        photoURL: '${discussion.photoURL}',
-        tokens: [token]);
-    await db.setNotification(notification);
+  for(String uid in discussion.participants.keys) {
+    String token = await db.getUserToken(uid);
+    if (token != '') {
+      MMYNotification notification = MMYNotification(
+          nid: idGenerator(),
+          type: NOTIFICATION_TEXT,
+          uid: currentUser.uid,
+          title: 'New message',
+          text: 'You have received a new message',
+          photoURL: '${discussion.photoURL}',
+          id: did,
+          tokens: [token]);
+      await db.setNotification(notification);
+    }
   }
 }

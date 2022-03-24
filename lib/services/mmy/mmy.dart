@@ -290,6 +290,7 @@ class MMY implements MMYEngine {
   @override
   Future<void> inviteProfile(String uid) async {
     contactLib.inviteProfile(_currentUser, uid: uid);
+    notificationLib.notifyContactInvite(_currentUser, uid);
   }
 
   @override
@@ -376,6 +377,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> cancelEvent(String eid) async {
+    notificationLib.notifyEventCanceled(_currentUser, eid);
     return await eventLib.cancelEvent(_currentUser, eid);
   }
 
@@ -466,7 +468,9 @@ class MMY implements MMYEngine {
         await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
       } catch (e) {}
     }
-    return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
+    Event result = await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
+    notificationLib.notifyEventModified(_currentUser, result.eid,);
+    return result;
   }
 
   @override
@@ -599,6 +603,7 @@ class MMY implements MMYEngine {
     String? URL;
     if (photoFile != null) URL = await storageLib.messagePicture(photoFile, did: did);
     discussionLib.postMessage(_currentUser, did, type, text, URL, replyMid);
+    notificationLib.notifyDiscussionMessage(_currentUser, did);
   }
 
   @override
