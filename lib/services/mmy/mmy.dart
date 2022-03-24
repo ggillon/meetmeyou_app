@@ -625,7 +625,6 @@ class MMY implements MMYEngine {
   @override
   Future<Discussion> updateDiscussion(String did, {String? title, File? photo}) async {
     Discussion result = await getDiscussion(did);
-    print('updating discussion');
     if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
     if(photo != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photo);
     print(result);
