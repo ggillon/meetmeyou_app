@@ -110,16 +110,16 @@ class DialogHelper {
 
   static PreferredSizeWidget appBarWithBack(
       ScreenScaler scaler, BuildContext context,
-      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick}) {
+      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick, bool back = true, VoidCallback? backIconClick}) {
     return AppBar(
       elevation: 0,
       backgroundColor: ColorConstants.colorWhite,
       leadingWidth: 100,
       leading: InkWell(
-        onTap: () {
+        onTap: back == true ? () {
           hideKeyboard(context);
-          Navigator.pop(context);
-        },
+         Navigator.pop(context);
+        } : backIconClick,
         child: Padding(
           padding: scaler.getPaddingLTRB(2.5, 0.0, 0.0, 0.0),
           child: Row(

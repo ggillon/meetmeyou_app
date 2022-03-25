@@ -142,7 +142,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                   path: fromContactOrGroup == true
                                       ? provider.discussionDetail.photoUrl
                                       : provider.eventDiscussion!.photoURL,
-                                  fit: BoxFit.cover,
+                                //  fit: BoxFit.cover,
                                   height: scaler.getHeight(4.0),
                                   width: scaler.getWidth(10),
                                 ),

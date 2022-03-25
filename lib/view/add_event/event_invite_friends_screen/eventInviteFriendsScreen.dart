@@ -28,185 +28,250 @@ class EventInviteFriendsScreen extends StatefulWidget {
 
 class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
   final searchBarController = TextEditingController();
+  EventInviteFriendsProvider provider = EventInviteFriendsProvider();
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return Scaffold(
-      backgroundColor: ColorConstants.colorWhite,
-      appBar: DialogHelper.appBarWithBack(scaler, context),
-      body: BaseView<EventInviteFriendsProvider>(
-        onModelReady: (provider) {
-          provider.getConfirmedContactsList(context);
-          provider.contactsKeys.addAll(provider.eventDetail.contactCIDs);
-        },
-        builder: (context, provider, _) {
-          return SafeArea(
-            child: Padding(
-              padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                widget.fromChatDiscussion == true ?
-                  Align(
-                    alignment: Alignment.centerLeft,
-                      child: Text("new_discussion".tr()).boldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
-                          TextAlign.left)) : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("invite_friends".tr()).boldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
-                          TextAlign.left),
-                      ImageView(path: ImageConstants.share_icon)
-                    ],
-                  ),
-                  SizedBox(height: scaler.getHeight(1)),
-                  searchBar(scaler, provider),
-                  SizedBox(height: scaler.getHeight(1)),
-                  AnimatedToggle(
-                    values: ['all'.tr(), 'groups'.tr()],
-                    onToggleCallback: (value) {
-                      provider.toggle = value;
-                      if (value == 0) {
-                        provider.contactsKeys =
-                            provider.eventDetail.contactCIDs;
-                        provider.getConfirmedContactsList(context);
-                      } else {
-                        provider.contactsKeys =
-                            provider.eventDetail.contactCIDs;
-                        provider.getGroupList(context);
-                      }
-                      provider.updateToggleValue(true);
-                    },
-                    buttonColor: ColorConstants.colorWhite,
-                    backgroundColor: ColorConstants.colorMediumGray,
-                  ),
-                  SizedBox(height: scaler.getHeight(1)),
-                  provider.toggle == 0
-                      ? provider.state == ViewState.Busy
-                          ? Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Center(child: CircularProgressIndicator()),
-                                  SizedBox(height: scaler.getHeight(1)),
-                                  Text("loading_contacts".tr()).mediumText(
-                                      ColorConstants.primaryColor,
-                                      scaler.getTextSize(10),
-                                      TextAlign.left),
-                                ],
-                              ),
-                            )
-                          : provider.confirmContactList.length == 0
-                              ? Expanded(
-                                  child: Center(
-                                    child: Text("sorry_no_contacts_found".tr())
-                                        .mediumText(
-                                            ColorConstants.primaryColor,
-                                            scaler.getTextSize(10),
-                                            TextAlign.left),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: scaler.getHeight(1)),
-                                        provider.confirmContactList.length == 0
-                                            ? Container()
-                                            : confirmContactOrGroupList(
-                                                scaler,
-                                                provider.confirmContactList,
-                                                provider)
-                                      ],
-                                    ),
-                                  ),
-                                )
-                      : provider.state == ViewState.Busy
-                          ? Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Center(child: CircularProgressIndicator()),
-                                  SizedBox(height: scaler.getHeight(1)),
-                                  Text("loading_groups".tr()).mediumText(
-                                      ColorConstants.primaryColor,
-                                      scaler.getTextSize(10),
-                                      TextAlign.left),
-                                ],
-                              ),
-                            )
-                          : provider.groupList.length == 0
-                              ? Expanded(
-                                  child: Center(
-                                    child: Text("sorry_no_group_found".tr())
-                                        .mediumText(
-                                            ColorConstants.primaryColor,
-                                            scaler.getTextSize(10),
-                                            TextAlign.left),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: scaler.getHeight(1)),
-                                        confirmContactOrGroupList(scaler,
-                                            provider.groupList, provider),
-                                      ],
-                                    ),
-                                  ),
+    return WillPopScope(
+      onWillPop:  widget.fromDiscussion == true ? () async{
+        if (provider.eventDetail.contactCIDs.isNotEmpty ||
+            provider.eventDetail.groupIndexList.isNotEmpty) {
+          if(provider.eventDetail.contactCIDs.length == 1){
+            if(provider.eventDetail.contactCIDs[0] == provider.auth.currentUser!.uid){
+              DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr(), positiveButtonPress: (){
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    RoutesConstants.dashboardPage, (route) => false);
+              });
+            }
+          } else{
+            Navigator.of(context).pop();
+          }
+        } else {
+          DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr());
+        }
+        return false;
+      } : ()async{
+        Navigator.pop(context);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: ColorConstants.colorWhite,
+        appBar: DialogHelper.appBarWithBack(scaler, context, back: false, backIconClick: widget.fromDiscussion == true ? (){
+          if (provider.eventDetail.contactCIDs.isNotEmpty ||
+              provider.eventDetail.groupIndexList.isNotEmpty) {
+            if(provider.eventDetail.contactCIDs.length == 1){
+              if(provider.eventDetail.contactCIDs[0] == provider.auth.currentUser!.uid){
+                DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr(), positiveButtonPress: (){
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      RoutesConstants.dashboardPage, (route) => false);
+                });
+              }
+            } else{
+              Navigator.of(context).pop();
+            }
+          } else {
+            DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr());
+          }
+        } : (){
+          Navigator.pop(context);
+        } ),
+        body: BaseView<EventInviteFriendsProvider>(
+          onModelReady: (provider) {
+            this.provider = provider;
+            provider.getConfirmedContactsList(context);
+            provider.contactsKeys.addAll(provider.eventDetail.contactCIDs);
+          },
+          builder: (context, provider, _) {
+            return SafeArea(
+              child: Padding(
+                padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  widget.fromChatDiscussion == true ?
+                    Align(
+                      alignment: Alignment.centerLeft,
+                        child: Text("new_discussion".tr()).boldText(
+                            ColorConstants.colorBlack,
+                            scaler.getTextSize(16),
+                            TextAlign.left)) : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("invite_friends".tr()).boldText(
+                            ColorConstants.colorBlack,
+                            scaler.getTextSize(16),
+                            TextAlign.left),
+                        ImageView(path: ImageConstants.share_icon)
+                      ],
+                    ),
+                    SizedBox(height: scaler.getHeight(1)),
+                    searchBar(scaler, provider),
+                    SizedBox(height: scaler.getHeight(1)),
+                    AnimatedToggle(
+                      values: ['all'.tr(), 'groups'.tr()],
+                      onToggleCallback: (value) {
+                        provider.toggle = value;
+                        if (value == 0) {
+                          provider.contactsKeys =
+                              provider.eventDetail.contactCIDs;
+                          provider.getConfirmedContactsList(context);
+                        } else {
+                          provider.contactsKeys =
+                              provider.eventDetail.contactCIDs;
+                          provider.getGroupList(context);
+                        }
+                        provider.updateToggleValue(true);
+                      },
+                      buttonColor: ColorConstants.colorWhite,
+                      backgroundColor: ColorConstants.colorMediumGray,
+                    ),
+                    SizedBox(height: scaler.getHeight(1)),
+                    provider.toggle == 0
+                        ? provider.state == ViewState.Busy
+                            ? Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Center(child: CircularProgressIndicator()),
+                                    SizedBox(height: scaler.getHeight(1)),
+                                    Text("loading_contacts".tr()).mediumText(
+                                        ColorConstants.primaryColor,
+                                        scaler.getTextSize(10),
+                                        TextAlign.left),
+                                  ],
                                 ),
-                  SizedBox(height: scaler.getHeight(1)),
-               widget.fromChatDiscussion == true ?
-              provider.startGroup == true ? Center(
-                child: CircularProgressIndicator(),
-              ) : Container(
-                 child: DialogHelper.btnWidget(
-                     scaler,
-                     context,
-                     "invite_to_group_discussion".tr(),
-                     ColorConstants.primaryColor, funOnTap: () {
-                   if (provider.eventDetail.contactCIDs.isNotEmpty) {
-                     provider.startGroupDiscussion(context, provider.eventDetail.contactCIDs).then((value) {
-                       provider.eventDetail.contactCIDs.clear();
-                       // Navigator.of(context).pop();
-                     });
-                   } else {
-                     DialogHelper.showMessage(
-                         context, "Please select contacts to Invite");
-                   }
-                 }),
-               ) : Container(
-                    child: DialogHelper.btnWidget(
-                        scaler,
-                        context,
-                        "invite_friends".tr(),
-                        ColorConstants.primaryColor, funOnTap: () {
-                      if (provider.eventDetail.contactCIDs.isNotEmpty ||
-                          provider.eventDetail.groupIndexList.isNotEmpty) {
-                        Navigator.of(context).pop();
-                      } else {
-                        DialogHelper.showMessage(
-                            context, "Please select contacts to Invite");
-                      }
-                    }),
-                  ),
-                  SizedBox(height: scaler.getHeight(1)),
-                ],
+                              )
+                            : provider.confirmContactList.length == 0
+                                ? Expanded(
+                                    child: Center(
+                                      child: Text("sorry_no_contacts_found".tr())
+                                          .mediumText(
+                                              ColorConstants.primaryColor,
+                                              scaler.getTextSize(10),
+                                              TextAlign.left),
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: scaler.getHeight(1)),
+                                          provider.confirmContactList.length == 0
+                                              ? Container()
+                                              : confirmContactOrGroupList(
+                                                  scaler,
+                                                  provider.confirmContactList,
+                                                  provider)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                        : provider.state == ViewState.Busy
+                            ? Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Center(child: CircularProgressIndicator()),
+                                    SizedBox(height: scaler.getHeight(1)),
+                                    Text("loading_groups".tr()).mediumText(
+                                        ColorConstants.primaryColor,
+                                        scaler.getTextSize(10),
+                                        TextAlign.left),
+                                  ],
+                                ),
+                              )
+                            : provider.groupList.length == 0
+                                ? Expanded(
+                                    child: Center(
+                                      child: Text("sorry_no_group_found".tr())
+                                          .mediumText(
+                                              ColorConstants.primaryColor,
+                                              scaler.getTextSize(10),
+                                              TextAlign.left),
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: scaler.getHeight(1)),
+                                          confirmContactOrGroupList(scaler,
+                                              provider.groupList, provider),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                    SizedBox(height: scaler.getHeight(1)),
+                 widget.fromChatDiscussion == true ?
+                provider.startGroup == true ? Center(
+                  child: CircularProgressIndicator(),
+                ) : Container(
+                   child: DialogHelper.btnWidget(
+                       scaler,
+                       context,
+                       "invite_to_group_discussion".tr(),
+                       ColorConstants.primaryColor, funOnTap: () {
+                     if (provider.eventDetail.contactCIDs.isNotEmpty) {
+                       provider.startGroupDiscussion(context, provider.eventDetail.contactCIDs).then((value) {
+                         provider.eventDetail.contactCIDs.clear();
+                         // Navigator.of(context).pop();
+                       });
+                     } else {
+                       DialogHelper.showMessage(
+                           context, "Please select contacts to Invite");
+                     }
+                   }),
+                 ) : widget.fromDiscussion == true ?  Container(
+                   child: DialogHelper.btnWidget(
+                       scaler,
+                       context,
+                       "update_discussion".tr(),
+                       ColorConstants.primaryColor, funOnTap: () {
+                     if (provider.eventDetail.contactCIDs.isNotEmpty ||
+                         provider.eventDetail.groupIndexList.isNotEmpty) {
+                       if(provider.eventDetail.contactCIDs.length == 1){
+                         if(provider.eventDetail.contactCIDs[0] == provider.auth.currentUser!.uid){
+                           DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr(), positiveButtonPress: (){
+                             Navigator.of(context).pushNamedAndRemoveUntil(
+                                 RoutesConstants.dashboardPage, (route) => false);
+                           });
+                         }
+                       } else{
+                         Navigator.of(context).pop();
+                       }
+                     } else {
+                       DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr());
+                     }
+                   }),
+                 ) : Container(
+                      child: DialogHelper.btnWidget(
+                          scaler,
+                          context,
+                          "invite_friends".tr(),
+                          ColorConstants.primaryColor, funOnTap: () {
+                        if (provider.eventDetail.contactCIDs.isNotEmpty ||
+                            provider.eventDetail.groupIndexList.isNotEmpty) {
+                          Navigator.of(context).pop();
+                        } else {
+                          DialogHelper.showMessage(
+                              context, "Please select contacts to Invite");
+                        }
+                      }),
+                    ),
+                    SizedBox(height: scaler.getHeight(1)),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

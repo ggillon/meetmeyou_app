@@ -154,7 +154,7 @@ class CommonWidgets {
                       path: profileImg,
                       width: scaler.getWidth(10),
                       height: scaler.getWidth(10),
-                      fit: BoxFit.cover,
+                     // fit: BoxFit.contain,
                     ),
                   )),
         Positioned(
