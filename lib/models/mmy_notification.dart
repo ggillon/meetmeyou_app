@@ -12,6 +12,7 @@ class MMYNotification {
         required this.title,
         required this.text,
         required this.photoURL,
+        required this.id,
         required this.tokens,
         this.other = EMPTY_MAP,
       });
@@ -22,6 +23,7 @@ class MMYNotification {
   String title;
   String text;
   String photoURL;
+  String id;
   List<String> tokens;
   Map other;
 
@@ -33,6 +35,7 @@ class MMYNotification {
       title: data['title'],
       text: data['text'],
       photoURL: data['photoURL'],
+      id: data['id'],
       tokens: data['tokens'],
       other: data['other'],
     );
@@ -46,6 +49,7 @@ class MMYNotification {
       title: data['title'],
       text: data['text'],
       photoURL: data['photoURL'],
+      id: data['id'],
       tokens: data['tokens'],
       other: data['other'],
     );
@@ -59,6 +63,7 @@ class MMYNotification {
       'title': title,
       'text': text,
       'photoURL': photoURL,
+      'id': id,
       'tokens': tokens,
       'other': other,
     };
