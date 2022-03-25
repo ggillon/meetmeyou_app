@@ -97,7 +97,9 @@ class FirebaseNotification {
     // }
   }
 
-  intentToNextScreen() {}
+  intentToNextScreen() {
+
+  }
 
 // _downloadAndSaveFile(String url, String fileName) async {
 //   var directory = await getApplicationDocumentsDirectory();

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -348,6 +349,23 @@ class HomePageProvider extends BaseProvider {
     }
   }
 
+
+  // For handling notification when the app is in terminated state
+  checkForInitialMessage(BuildContext context, DashboardProvider dashBoardProvider) async {
+    await Firebase.initializeApp();
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    if(initialMessage!.data['id'] != null){
+      calendarDetail.fromCalendarPage = true;
+      eventDetail.eid = initialMessage.data["id"];
+      Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+        getIndexChanging(context);
+        unRespondedEvents(context, dashBoardProvider);
+        unRespondedEventsApi(context);
+      });
+    }
+  }
 
   // for checking whether any multi date date is selected or not.
   // bool statusMultiDate = false;

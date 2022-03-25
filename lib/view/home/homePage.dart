@@ -1,5 +1,6 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
@@ -115,6 +116,22 @@ class _HomePageState extends State<HomePage>
               provider.unRespondedEventsApi(context);
             }
           });
+          // For handling notification when the app is in background
+          // but not terminated
+          FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+            if(message.data["id"] != null){
+              provider.calendarDetail.fromCalendarPage = true;
+              provider.eventDetail.eid = message.data["id"];
+              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                provider.getIndexChanging(context);
+                provider.unRespondedEvents(context, dashBoardProvider);
+                provider.unRespondedEventsApi(context);
+              });
+            }
+          });
+
+          // For handling notification when the app is in terminated state
+          provider.checkForInitialMessage(context, dashBoardProvider);
         },
         builder: (context, provider, _) {
           return Column(

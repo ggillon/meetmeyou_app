@@ -4,6 +4,7 @@ import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
@@ -50,39 +51,18 @@ class _DashboardPageState extends State<DashboardPage> {
         // For handling notification when the app is in foreground
         provider.registerNotification(context, scaler);
 
-        // For handling notification when the app is in background
-        // but not terminated
-        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-          PushNotification notification = PushNotification(
-            title: message.notification?.title,
-            body: message.notification?.body,
-          );
-
-          provider.notificationInfo = notification;
-          provider.updateNotify(true);
-
-          if (provider.notificationInfo != null) {
-            // For displaying the notification as an overlay
-            showSimpleNotification(
-                Text(provider.notificationInfo!.title!).boldText(
-                    ColorConstants.colorBlack,
-                    scaler.getTextSize(10.5),
-                    TextAlign.left),
-                leading: ImageView(path: ImageConstants.small_logo_icon),
-                subtitle: Text(provider.notificationInfo!.body!).regularText(
-                    ColorConstants.colorBlack,
-                    scaler.getTextSize(10.0),
-                    TextAlign.left),
-                background: ColorConstants.colorWhite,
-                duration: Duration(seconds: 3),
-                position: NotificationPosition.bottom);
-          } else {
-            print("User declined or has not accepted permission");
-          }
-        });
+        // // For handling notification when the app is in background
+        // // but not terminated
+        // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        //   if(message.data["id"] != null){
+        //     provider.calendarDetail.fromCalendarPage = true;
+        //     provider.eventDetail.eid = message.data["id"];
+        //     Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
+        //   }
+        // });
 
         // For handling notification when the app is in terminated state
-        provider.checkForInitialMessage();
+       // provider.checkForInitialMessage();
       },
       builder: (context, provider, _) {
         return Scaffold(

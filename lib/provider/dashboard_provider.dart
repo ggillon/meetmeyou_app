@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
@@ -23,6 +24,7 @@ class DashboardProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   GroupDetail groupDetail = locator<GroupDetail>();
   EventDetail eventDetail = locator<EventDetail>();
+  CalendarDetail calendarDetail = locator<CalendarDetail>();
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
   int _selectedIndex = 0;
 
@@ -128,22 +130,22 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  // For handling notification when the app is in terminated state
-  checkForInitialMessage() async {
-    await Firebase.initializeApp();
-    RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
-
-    if (initialMessage != null) {
-      PushNotification notification = PushNotification(
-        title: initialMessage.notification?.title,
-        body: initialMessage.notification?.body,
-      );
-
-        notificationInfo = notification;
-        notifyListeners();
-    }
-  }
+  // // For handling notification when the app is in terminated state
+  // checkForInitialMessage() async {
+  //   await Firebase.initializeApp();
+  //   RemoteMessage? initialMessage =
+  //   await FirebaseMessaging.instance.getInitialMessage();
+  //
+  //   if (initialMessage != null) {
+  //     PushNotification notification = PushNotification(
+  //       title: initialMessage.notification?.title,
+  //       body: initialMessage.notification?.body,
+  //     );
+  //
+  //       notificationInfo = notification;
+  //       notifyListeners();
+  //   }
+  // }
 
   bool notify = false;
 
