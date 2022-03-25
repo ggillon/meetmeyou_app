@@ -97,7 +97,17 @@ Future<void> deleteContact(User currentUser, {required String cid}) async {
 
 // Get all contacts
 Future<List<Contact>> getContacts(User currentUser,) async {
-  return await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
+  List<Contact> contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
+  for(Contact contact in contacts) {
+    if(contact.status == CONTACT_CONFIRMED) {
+      getContactFromProfile(currentUser, uid: contact.cid).then((value) {
+        value!.status = CONTACT_CONFIRMED;
+        FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, value);
+      });
+      ;
+    }
+  }
+  return contacts;
 }
 
 // Get all contacts CIDs

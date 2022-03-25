@@ -3,9 +3,11 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -343,58 +345,6 @@ class HomePageProvider extends BaseProvider {
     if(value != null){
       chatNotificationCount = value;
       updateDiscussion(false);
-    }
-  }
-
-
-  // NOTIFICATIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  late final FirebaseMessaging _messaging;
-  PushNotification? _notificationInfo;
-  int badgeCount = 0;
-
-
-  void registerNotification(BuildContext context) async {
-    _messaging = FirebaseMessaging.instance;
-
-
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
-
-        // Parse the message received
-        PushNotification notification = PushNotification(
-          title: message.notification?.title,
-          body: message.notification?.body,
-          // dataTitle: message.data['title'],
-          // dataBody: message.data['body'],
-        );
-
-          _notificationInfo = notification;
-          notifyListeners();
-
-
-        if (_notificationInfo != null) {
-          // For displaying the notification as an overlay
-          showSimpleNotification(
-            Text(_notificationInfo!.title!),
-            leading: ImageView(path: ImageConstants.small_logo_icon),
-            subtitle: Text(_notificationInfo!.body!),
-            background: Colors.cyan.shade700,
-            duration: Duration(seconds: 2),
-          );
-        }
-      });
-    } else {
-     print("User declined or has not accepted permission");
     }
   }
 
