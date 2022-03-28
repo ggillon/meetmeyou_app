@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/src/public_ext.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -38,6 +40,8 @@ class HomePageProvider extends BaseProvider {
   Color textColor = ColorConstants.colorWhite;
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
+  EventBus eventBus = locator<EventBus>();
+  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
 
   bool _value = false;
 
@@ -54,6 +58,12 @@ class HomePageProvider extends BaseProvider {
       notifyListeners();
     });
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   eventBus.destroy();
+  // }
 
   Future<void> getUserDetail(BuildContext context) async {
     setState(ViewState.Busy);
@@ -356,9 +366,9 @@ class HomePageProvider extends BaseProvider {
     RemoteMessage? initialMessage =
     await FirebaseMessaging.instance.getInitialMessage();
 
-    if(initialMessage!.data['id'] != null){
+    if(initialMessage?.data['id'] != null){
       calendarDetail.fromCalendarPage = true;
-      eventDetail.eid = initialMessage.data["id"];
+      eventDetail.eid = initialMessage!.data["id"];
       Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
         getIndexChanging(context);
         unRespondedEvents(context, dashBoardProvider);

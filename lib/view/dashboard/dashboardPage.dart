@@ -8,20 +8,24 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/models/messageNotificationEvent.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
+import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/add_event/addEventScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/settings/settingsPage.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class DashboardPage extends StatefulWidget {
-  DashboardPage({Key? key, required this.isFromLogin}) : super(key: key);
-  bool isFromLogin;
+  DashboardPage({Key? key, this.isFromLogin, this.eventOrChatId}) : super(key: key);
+  bool? isFromLogin;
+  String? eventOrChatId;
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -48,21 +52,26 @@ class _DashboardPageState extends State<DashboardPage> {
         provider.unRespondedInvites(context);
         provider.unRespondedEvents(context);
 
-        // For handling notification when the app is in foreground
-        provider.registerNotification(context, scaler);
+        provider.firebaseNotification.configureFireBase(context);
 
-        // // For handling notification when the app is in background
-        // // but not terminated
-        // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        //   if(message.data["id"] != null){
-        //     provider.calendarDetail.fromCalendarPage = true;
-        //     provider.eventDetail.eid = message.data["id"];
-        //     Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
-        //   }
-        // });
 
-        // For handling notification when the app is in terminated state
-       // provider.checkForInitialMessage();
+        // provider.eventBus.fire(widget.eventOrChatId);
+          provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
+          if(provider.selectedIndex != 0){
+            if(event.eventId != null){
+              provider.calendarDetail.fromCalendarPage = true;
+              provider.eventDetail.eid = event.eventId;
+              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
+            }}
+          });
+
+       provider.messageNotifyEvent =  provider.eventBus.on<MessageNotificationEvent>().listen((event) {
+            if(event.chatId != null){
+              print("Message notification ~~~~~~~~~~~~~~~~~~~~~~~~${event.chatId}");
+              Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen,
+                  arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: event.chatId));
+            }
+        });
       },
       builder: (context, provider, _) {
         return Scaffold(

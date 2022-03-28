@@ -17,6 +17,7 @@ import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
@@ -106,9 +107,9 @@ class _HomePageState extends State<HomePage>
           provider.getUserDetail(context);
           widget.provider = provider;
           provider.tabController = TabController(length: 5, vsync: this);
-          provider.tabChangeEvent(context);
-          provider.getIndexChanging(context);
-          provider.updatedDiscussions(context);
+           provider.tabChangeEvent(context);
+          await provider.getIndexChanging(context);
+           provider.updatedDiscussions(context);
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             if ((provider.eventDetail.unRespondedEvent ?? 0) >
                 (provider.eventDetail.unRespondedEvent1 ?? 0)) {
@@ -116,22 +117,37 @@ class _HomePageState extends State<HomePage>
               provider.unRespondedEventsApi(context);
             }
           });
-          // For handling notification when the app is in background
-          // but not terminated
-          FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-            if(message.data["id"] != null){
-              provider.calendarDetail.fromCalendarPage = true;
-              provider.eventDetail.eid = message.data["id"];
-              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-                provider.getIndexChanging(context);
-                provider.unRespondedEvents(context, dashBoardProvider);
-                provider.unRespondedEventsApi(context);
-              });
-            }
+
+         // provider.firebaseNotification.configureFireBase(context);
+
+            provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
+              if(event.eventId != null){
+                 provider.calendarDetail.fromCalendarPage = true;
+                  provider.eventDetail.eid = event.eventId;
+                  Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                    provider.getIndexChanging(context);
+                    provider.unRespondedEvents(context, dashBoardProvider);
+                    provider.unRespondedEventsApi(context);
+                  });
+              }
           });
 
-          // For handling notification when the app is in terminated state
-          provider.checkForInitialMessage(context, dashBoardProvider);
+          // // For handling notification when the app is in background
+          // // but not terminated
+          // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+          //   if(message.data["id"] != null){
+          //     provider.calendarDetail.fromCalendarPage = true;
+          //     provider.eventDetail.eid = message.data["id"];
+          //     Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+          //       provider.getIndexChanging(context);
+          //       provider.unRespondedEvents(context, dashBoardProvider);
+          //       provider.unRespondedEventsApi(context);
+          //     });
+          //   }
+          // });
+          //
+          // // For handling notification when the app is in terminated state
+          // provider.checkForInitialMessage(context, dashBoardProvider);
         },
         builder: (context, provider, _) {
           return Column(

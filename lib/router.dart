@@ -89,8 +89,8 @@ class Router {
             settings: settings);
 
       case RoutesConstants.dashboardPage:
-        return MaterialPageRoute(
-            builder: (_) => DashboardPage(isFromLogin: settings.arguments as bool), settings: settings);
+        final args = settings.arguments as DashboardPage;
+        return MaterialPageRoute(builder: (_) => DashboardPage(isFromLogin: args?.isFromLogin ?? null, eventOrChatId: args?.eventOrChatId ?? null), settings: settings);
 
       case RoutesConstants.myAccountScreen:
         return MaterialPageRoute(
@@ -204,6 +204,7 @@ class Router {
 
       case RoutesConstants.notificationSettings:
         return MaterialPageRoute(builder: (_) => NotificationSettings(), settings: settings);
+
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

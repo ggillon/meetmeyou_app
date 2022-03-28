@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
@@ -8,6 +9,7 @@ import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/notification_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
 import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
@@ -60,6 +62,7 @@ void setupLocator() {
   locator.registerLazySingleton<DynamicLinksApi>(() => DynamicLinksApi());
   locator.registerLazySingleton<DiscussionDetail>(() => DiscussionDetail());
   locator.registerLazySingleton<NotificationDetail>(() => NotificationDetail());
+  locator.registerLazySingleton<EventBus>(() => EventBus());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -97,6 +100,7 @@ void setupLocator() {
   locator.registerFactory<GroupImageViewProvider>(() => GroupImageViewProvider());
   locator.registerFactory<SeeAllPeopleProvider>(() => SeeAllPeopleProvider());
   locator.registerFactory<NotificationSettingsProvider>(() => NotificationSettingsProvider());
+  locator.registerFactory<FirebaseNotification>(() => FirebaseNotification());
 
 
   /*

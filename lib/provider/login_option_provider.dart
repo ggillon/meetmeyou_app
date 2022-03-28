@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/widgets/introduction_widget.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -49,7 +50,7 @@ class LoginOptionProvider extends BaseProvider {
         setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
-            RoutesConstants.dashboardPage, (route) => false, arguments: true);
+            RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
       }
     }
   }
@@ -78,7 +79,7 @@ class LoginOptionProvider extends BaseProvider {
         setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
-            RoutesConstants.dashboardPage, (route) => false, arguments: true);
+            RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
       }
     }
   }

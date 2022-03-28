@@ -13,6 +13,7 @@ import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SignUpProvider extends BaseProvider {
@@ -98,6 +99,6 @@ class SignUpProvider extends BaseProvider {
   void moveToNextScreen(BuildContext context) {
     SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
     Navigator.of(context).pushNamedAndRemoveUntil(
-        RoutesConstants.dashboardPage, (route) => false, arguments: true);
+        RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:event_bus/event_bus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +17,7 @@ import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -26,6 +30,8 @@ class DashboardProvider extends BaseProvider {
   EventDetail eventDetail = locator<EventDetail>();
   CalendarDetail calendarDetail = locator<CalendarDetail>();
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
+  EventBus eventBus = locator<EventBus>();
+  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
   int _selectedIndex = 0;
 
   var unRespondedInvite = 0;
@@ -130,28 +136,20 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  // // For handling notification when the app is in terminated state
-  // checkForInitialMessage() async {
-  //   await Firebase.initializeApp();
-  //   RemoteMessage? initialMessage =
-  //   await FirebaseMessaging.instance.getInitialMessage();
-  //
-  //   if (initialMessage != null) {
-  //     PushNotification notification = PushNotification(
-  //       title: initialMessage.notification?.title,
-  //       body: initialMessage.notification?.body,
-  //     );
-  //
-  //       notificationInfo = notification;
-  //       notifyListeners();
-  //   }
-  // }
 
   bool notify = false;
 
   updateNotify(bool val){
     notify = val;
     notifyListeners();
+  }
+
+  StreamSubscription? messageNotifyEvent;
+
+  @override
+  void dispose() {
+    super.dispose();
+    messageNotifyEvent?.cancel();
   }
 
 }

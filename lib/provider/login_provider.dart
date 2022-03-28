@@ -7,6 +7,7 @@ import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 
 class LoginProvider extends BaseProvider {
   Future<void> login(
@@ -20,7 +21,7 @@ class LoginProvider extends BaseProvider {
       setState(ViewState.Idle);
       SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
       Navigator.of(context).pushNamedAndRemoveUntil(
-          RoutesConstants.dashboardPage, (route) => false, arguments: true);
+          RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
     }
   }
 }

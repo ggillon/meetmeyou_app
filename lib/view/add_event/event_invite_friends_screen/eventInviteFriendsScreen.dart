@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/provider/event_invite_friends_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -41,7 +42,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
             if(provider.eventDetail.contactCIDs[0] == provider.auth.currentUser!.uid){
               DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr(), positiveButtonPress: (){
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    RoutesConstants.dashboardPage, (route) => false);
+                    RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: false));
               });
             }
           } else{
@@ -64,7 +65,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
               if(provider.eventDetail.contactCIDs[0] == provider.auth.currentUser!.uid){
                 DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr(), positiveButtonPress: (){
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                      RoutesConstants.dashboardPage, (route) => false);
+                      RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: false));
                 });
               }
             } else{
@@ -240,7 +241,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                          if(provider.eventDetail.contactCIDs[0] == provider.auth.currentUser!.uid){
                            DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr(), positiveButtonPress: (){
                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                 RoutesConstants.dashboardPage, (route) => false);
+                                 RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: false));
                            });
                          }
                        } else{
