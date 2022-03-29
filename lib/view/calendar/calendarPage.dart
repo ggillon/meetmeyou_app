@@ -233,7 +233,7 @@ class CalendarPage extends StatelessWidget {
                                                     provider.unRespondedEventsApi(context);
                                                   });
                                                 } else {
-                                                  provider.calendarDetail.fromCalendarPage = true;
+                                                  provider.calendarDetail.fromAnotherPage = true;
                                                   provider.eventDetail.eid =       provider
                                                       .calendarDetail
                                                       .calendarEventList![0]

@@ -105,7 +105,7 @@ class SeeAllEvents extends StatelessWidget {
                         eventLists[index].organiserID;
                     provider.eventDetail.organiserName =
                         eventLists[index].organiserName;
-                    provider.calendarDetail.fromCalendarPage =
+                    provider.calendarDetail.fromAnotherPage =
                     false;
                     Navigator.pushNamed(context,
                         RoutesConstants.eventDetailScreen)
@@ -305,7 +305,7 @@ class SeeAllEvents extends StatelessWidget {
                 eventLists[index].organiserID;
             provider.eventDetail.organiserName =
                 eventLists[index].organiserName;
-            provider.calendarDetail.fromCalendarPage =
+            provider.calendarDetail.fromAnotherPage =
             false;
             Navigator.pushNamed(context,
                 RoutesConstants.eventDetailScreen)

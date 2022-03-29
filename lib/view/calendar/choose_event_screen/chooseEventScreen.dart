@@ -167,7 +167,7 @@ class ChooseEventScreen extends StatelessWidget {
           CommonWidgets.eventTimeTitleCard(scaler, event, isActionOnCard: true,
               actionOnCard: () {
             if(event.meetMeYou){
-              provider.calendarDetail.fromCalendarPage = true;
+              provider.calendarDetail.fromAnotherPage = true;
               provider.eventDetail.eid = event.eid;
              // provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
               Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
@@ -185,7 +185,7 @@ class ChooseEventScreen extends StatelessWidget {
               actionOnCard: () {
 
                 if(event.meetMeYou){
-                  provider.calendarDetail.fromCalendarPage = true;
+                  provider.calendarDetail.fromAnotherPage = true;
                   provider.eventDetail.eid = event.eid;
                 //  provider.getEvent(_scaffoldKey.currentContext!, event.eid.toString());
                   Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {

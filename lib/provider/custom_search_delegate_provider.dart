@@ -74,10 +74,10 @@ class CustomSearchDelegateProvider extends BaseProvider{
   inviteProfile(BuildContext context, Contact contact) async {
     updateValue(true);
 
-    // await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
-    //   updateValue(false);
-    //   DialogHelper.showMessage(context, e.message);
-    // });
+    await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
     contact.status = 'Invited contact';
     updateValue(false);
     DialogHelper.showMessage(context, "Invitation send Successfully");

@@ -118,11 +118,9 @@ class _HomePageState extends State<HomePage>
             }
           });
 
-         // provider.firebaseNotification.configureFireBase(context);
-
-            provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
+          provider.eventsNotifyEvent = provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
               if(event.eventId != null){
-                 provider.calendarDetail.fromCalendarPage = true;
+                 provider.calendarDetail.fromAnotherPage = true;
                   provider.eventDetail.eid = event.eventId;
                   Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
                     provider.getIndexChanging(context);
@@ -132,22 +130,6 @@ class _HomePageState extends State<HomePage>
               }
           });
 
-          // // For handling notification when the app is in background
-          // // but not terminated
-          // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-          //   if(message.data["id"] != null){
-          //     provider.calendarDetail.fromCalendarPage = true;
-          //     provider.eventDetail.eid = message.data["id"];
-          //     Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-          //       provider.getIndexChanging(context);
-          //       provider.unRespondedEvents(context, dashBoardProvider);
-          //       provider.unRespondedEventsApi(context);
-          //     });
-          //   }
-          // });
-          //
-          // // For handling notification when the app is in terminated state
-          // provider.checkForInitialMessage(context, dashBoardProvider);
         },
         builder: (context, provider, _) {
           return Column(
@@ -432,7 +414,7 @@ class _HomePageState extends State<HomePage>
                       eventList[index].organiserID;
                   provider.eventDetail.organiserName =
                       eventList[index].organiserName;
-                  provider.calendarDetail.fromCalendarPage = false;
+                  provider.calendarDetail.fromAnotherPage = false;
                   Navigator.pushNamed(
                           context, RoutesConstants.eventDetailScreen)
                       .then((value) {
@@ -673,7 +655,7 @@ class _HomePageState extends State<HomePage>
                 event.organiserID;
             provider.eventDetail.organiserName =
                 event.organiserName;
-            provider.calendarDetail.fromCalendarPage = false;
+            provider.calendarDetail.fromAnotherPage = false;
             Navigator.pushNamed(
                 context, RoutesConstants.eventDetailScreen)
                 .then((value) {

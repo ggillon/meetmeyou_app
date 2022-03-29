@@ -13,6 +13,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/provider/event_attending_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 
 class EventAttendingScreen extends StatelessWidget {
   EventAttendingScreen({Key? key}) : super(key: key);
@@ -126,7 +127,7 @@ class EventAttendingScreen extends StatelessWidget {
           provider.discussionDetail.userId = cList[index].cid;
           provider.setContactsValue(cList[index], false);
                 Navigator.pushNamed(
-                    context, RoutesConstants.contactDescription, arguments: false
+                    context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
                 ).then((value) {
                   // provider.eventAttendingLists.clear();
                   // provider.eventDetail.attendingProfileKeys = provider.eventAttendingKeysList;

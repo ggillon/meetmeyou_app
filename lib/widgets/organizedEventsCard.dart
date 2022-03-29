@@ -88,7 +88,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                     provider.eventDetail.organiserName =
                                         provider
                                             .eventLists[index].organiserName;
-                                    provider.calendarDetail.fromCalendarPage =
+                                    provider.calendarDetail.fromAnotherPage =
                                         false;
                                     Navigator.pushNamed(context,
                                             RoutesConstants.eventDetailScreen)
@@ -261,7 +261,7 @@ class OrganizedEventsCard extends StatelessWidget {
             provider.eventDetail.organiserName =
                 provider
                     .eventLists[index].organiserName;
-            provider.calendarDetail.fromCalendarPage =
+            provider.calendarDetail.fromAnotherPage =
             false;
             Navigator.pushNamed(context,
                 RoutesConstants.eventDetailScreen)

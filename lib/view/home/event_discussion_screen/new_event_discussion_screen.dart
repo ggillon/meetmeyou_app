@@ -153,7 +153,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                          GestureDetector(
                            behavior: HitTestBehavior.translucent,
                            onTap: (){
-                              provider.calendarDetail.fromCalendarPage = true;
+                              provider.calendarDetail.fromAnotherPage = true;
                               provider.eventDetail.eid = provider.eventDiscussion?.did;
                               titleController.text = fromContactOrGroup == true
                                   ? provider.discussion!.title.toString()

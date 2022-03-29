@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -222,7 +223,7 @@ class ContactsScreen extends StatelessWidget {
                 provider.setContactsValue(iList[index], true, iList[index].cid);
                 Navigator.pushNamed(
                   context,
-                  RoutesConstants.contactDescription, arguments: true
+                  RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "")
                 ).then((value) {
                   provider.getConfirmedContactsAndInvitationsList(context);
                   provider.unRespondedInvites(context, dashboardProvider);
@@ -287,7 +288,7 @@ class ContactsScreen extends StatelessWidget {
               provider.discussionDetail.userId = cList[index].cid;
               Navigator.pushNamed(
                 context,
-                RoutesConstants.contactDescription, arguments: true
+                RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "")
               ).then((value) {
                 provider.getConfirmedContactsAndInvitationsList(context);
               });

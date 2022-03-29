@@ -37,10 +37,10 @@ class SeeAllPeopleProvider extends BaseProvider{
     updateValue(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    // await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
-    //   updateValue(false);
-    //   DialogHelper.showMessage(context, e.message);
-    // });
+    await mmyEngine!.inviteProfile(contact.cid).catchError((e) {
+      updateValue(false);
+      DialogHelper.showMessage(context, e.message);
+    });
     contact.status = 'Invited contact';
     updateValue(false);
     DialogHelper.showMessage(context, "Invitation send Successfully");

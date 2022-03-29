@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/see_all_people_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 
 class SeeAllPeople extends StatelessWidget {
    SeeAllPeople({Key? key, required this.contactsList}) : super(key: key);
@@ -61,7 +62,7 @@ class SeeAllPeople extends StatelessWidget {
                    provider.setContactsValue(contactsList[index]);
                    provider.discussionDetail.userId = contactsList[index].cid;
                    Navigator.pushNamed(
-                     context, RoutesConstants.contactDescription,
+                     context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
                    );
                  },
                  child: Column(

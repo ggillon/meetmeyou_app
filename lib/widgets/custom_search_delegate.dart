@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/search_result.dart';
 import 'package:meetmeyou_app/provider/custom_search_delegate_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -157,7 +158,7 @@ class CustomSearchDelegate extends SearchDelegate   {
               provider.setContactsValue(provider.contactsList[index]);
               provider.discussionDetail.userId = provider.contactsList[index].cid;
                     Navigator.pushNamed(
-                        context, RoutesConstants.contactDescription,
+                        context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
                     );
                   },
             child: CommonWidgets.userContactCard(
@@ -212,7 +213,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                     provider.eventDetail.organiserName =
                         provider
                             .eventLists[index].organiserName;
-                    provider.calendarDetail.fromCalendarPage =
+                    provider.calendarDetail.fromAnotherPage =
                     false;
                     Navigator.pushNamed(context,
                         RoutesConstants.eventDetailScreen)
@@ -410,7 +411,7 @@ class CustomSearchDelegate extends SearchDelegate   {
             provider.eventDetail.organiserName =
                 provider
                     .eventLists[index].organiserName;
-            provider.calendarDetail.fromCalendarPage =
+            provider.calendarDetail.fromAnotherPage =
             false;
             Navigator.pushNamed(context,
                 RoutesConstants.eventDetailScreen)

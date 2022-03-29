@@ -69,7 +69,7 @@ class DynamicLinksApi extends BaseProvider {
     dynamicLinks.onLink.listen((dynamicLinkData) {
         linkEid = dynamicLinkData.link.toString().split("=");
         // print(linkEid);
-        calendarDetail.fromCalendarPage = true;
+        calendarDetail.fromAnotherPage = true;
         calendarDetail.fromDeepLink = true;
         eventDetail.eid = linkEid[1].toString();
         // inviteUrl(context, linkEid[1].toString()).then((value) {
@@ -91,7 +91,7 @@ class DynamicLinksApi extends BaseProvider {
     try {
       if (data != null) {
         linkEid = data.link.toString().split("=");
-        calendarDetail.fromCalendarPage = true;
+        calendarDetail.fromAnotherPage = true;
         calendarDetail.fromDeepLink = true;
         eventDetail.eid = linkEid[1].toString();
         // inviteUrl(context, linkEid[1].toString()).then((value) {

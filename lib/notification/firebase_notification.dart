@@ -1,12 +1,16 @@
 import 'dart:convert';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/constants/string_constants.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/contactInvitationNotificationEvent.dart';
 import 'package:meetmeyou_app/models/messageNotificationEvent.dart';
 import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -30,13 +34,20 @@ class FirebaseNotification {
       provisional: false,
       sound: true,
     );
+
     FirebaseMessaging.instance.getInitialMessage().then((value) {
       if (value != null) {
-       // intentToNextScreen(value.data['id']);
-        if(value.notification!.title == "New Event"){
+        if(value.notification!.title == StringConstants.newEvent ||value.notification!.title == StringConstants.eventModified || value.notification!.title == StringConstants.eventCancelled){
           eventBus.fire(UserEventsNotificationEvent(eventId: value.data["id"]));
-        } else  if(value.notification!.title == "New message"){
+          return;
+        } else if(value.notification!.title == StringConstants.newMessage){
           eventBus.fire(MessageNotificationEvent(chatId: value.data["id"]));
+          return;
+        } else if(value.notification!.title == StringConstants.newInvitation){
+          eventBus.fire(ContactInvitationNotificationEvent(contactId: value.data["id"]));
+          return;
+        } else{
+          DialogHelper.showMessage(context, "sorry_notification_data_changed".tr());
         }
       }
     });
@@ -79,18 +90,30 @@ class FirebaseNotification {
           payload: json.encode(message.data)
       );
     });
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      print("notification data is ${message.data}");
-     // intentToNextScreen(message.data["id"]);
-      if(message.notification!.title == "New Event"){
-        eventBus.fire(UserEventsNotificationEvent(eventId: message.data["id"]));
-        return;
-      } else  if(message.notification!.title == "New message"){
-        eventBus.fire(MessageNotificationEvent(chatId: message.data["id"]));
-        return;
-      }
-    });
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+        print("notification data is ${message.data}");
+
+        if(message.notification!.title == StringConstants.newEvent ||message.notification!.title == StringConstants.eventModified || message.notification!.title == StringConstants.eventCancelled){
+          eventBus.fire(UserEventsNotificationEvent(eventId: message.data["id"]));
+          return;
+        } else if(message.notification!.title == StringConstants.newMessage){
+          eventBus.fire(MessageNotificationEvent(chatId: message.data["id"]));
+          return;
+        } else if(message.notification!.title == StringConstants.newInvitation){
+          eventBus.fire(ContactInvitationNotificationEvent(contactId: message.data["id"]));
+          return;
+        } else{
+          DialogHelper.showMessage(context, "sorry_notification_data_changed".tr());
+        }
+
+      });
+    } else {
+      print('User declined or has not accepted permission');
+    }
+
   }
 
   void flutterNotification(BuildContext context) {
@@ -113,10 +136,15 @@ class FirebaseNotification {
       var dataMap = json.decode(payload);
       var id = dataMap["id"];
        intentToNextScreen(id);
-      if(title == "New Event"){
+      if(title == StringConstants.newEvent || title == StringConstants.eventModified || title == StringConstants.eventCancelled){
         eventBus.fire(UserEventsNotificationEvent(eventId: id));
-      } else  if(title == "New message"){
+        return;
+      }else if(title == StringConstants.newMessage){
         eventBus.fire(MessageNotificationEvent(chatId: id));
+        return;
+      } else if(title == StringConstants.newInvitation){
+        eventBus.fire(ContactInvitationNotificationEvent(contactId: id));
+        return;
       }
 
     }
@@ -127,14 +155,4 @@ class FirebaseNotification {
         RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: false, eventOrChatId: id));
   }
 
-// _downloadAndSaveFile(String url, String fileName) async {
-//   var directory = await getApplicationDocumentsDirectory();
-//   var filePath = '${directory.path}/$fileName';
-//   var response = await http.get(Uri.parse(url));
-//   var file = File(filePath);
-//   var raf = file.openSync(mode: FileMode.write);
-//   raf.writeFromSync(response.bodyBytes);
-//   await raf.close();
-//   return filePath;
-// }
 }

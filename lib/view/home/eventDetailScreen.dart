@@ -22,6 +22,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -52,22 +53,22 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
-          provider.calendarDetail.fromCalendarPage == true
+          provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
           provider.calendarDetail.fromDeepLink == false
               ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
-          provider.calendarDetail.fromCalendarPage == true
+          provider.calendarDetail.fromAnotherPage == true
               ? Container()
               : provider.eventGoingLength();
-          provider.calendarDetail.fromCalendarPage == true
+          provider.calendarDetail.fromAnotherPage == true
               ? Container()
               : provider.getUsersProfileUrl(context);
-          provider.calendarDetail.fromCalendarPage == true
+          provider.calendarDetail.fromAnotherPage == true
               ? Container()
               : provider.getOrganiserProfileUrl(
                   context, provider.eventDetail.organiserId!);
-          provider.calendarDetail.fromCalendarPage == true
+          provider.calendarDetail.fromAnotherPage == true
               ? provider.getEvent(context, provider.eventDetail.eid!)
               : Container();
           provider.eventDetail.event?.multipleDates == true
@@ -90,7 +91,7 @@ class EventDetailScreen extends StatelessWidget {
               : Container();
         },
         builder: (context, provider, _) {
-          return provider.calendarDetail.fromCalendarPage == true &&
+          return provider.calendarDetail.fromAnotherPage == true &&
                   provider.eventValue == true
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -581,7 +582,7 @@ class EventDetailScreen extends StatelessWidget {
         provider.setContactsValue();
         provider.discussionDetail.userId = provider.eventDetail.organiserId;
         Navigator.pushNamed(
-            context, RoutesConstants.contactDescription, arguments: false
+            context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
         );
       },
       child: Card(

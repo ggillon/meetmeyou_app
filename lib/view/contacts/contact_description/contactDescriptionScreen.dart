@@ -21,148 +21,165 @@ import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 import 'package:provider/provider.dart';
 
 class ContactDescriptionScreen extends StatelessWidget {
-  ContactDescriptionScreen({Key? key, required this.showEventScreen}) : super(key: key);
+  ContactDescriptionScreen({Key? key, required this.showEventScreen, required this.isFromNotification, required this.contactId}) : super(key: key);
 
   bool showEventScreen;
+  bool isFromNotification;
+  String contactId;
   ContactDescriptionProvider provider = ContactDescriptionProvider();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
 
-    return Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        appBar:  provider.userDetail.checkForInvitation! ? DialogHelper.appBarWithBack(scaler, context) : DialogHelper.appBarWithBack(scaler, context, showEdit: true, message: true, messageIconClick: (){
-         provider.discussionDetail.title = "${provider.userDetail.firstName} ${provider.userDetail.lastName}";
-         provider.discussionDetail.photoUrl = provider.userDetail.profileUrl;
-          Navigator.pushNamed(
-              context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
-        }),
-        body: BaseView<ContactDescriptionProvider>(
-          onModelReady: (provider){
-            this.provider = provider;
-          },
-            builder: (builder, provider, _) {
-              return LayoutBuilder(builder: (context, constraint) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraint.maxHeight),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: scaler.getHeight(2)),
-                                CommonWidgets.userDetails(scaler,
-                                    profilePic: provider.userDetail.profileUrl,
-                                    firstName: provider.userDetail.firstName
-                                        .toString()
-                                        .capitalize(),
-                                    lastName: provider.userDetail.lastName
-                                        .toString()
-                                        .capitalize(),
-                                    email: provider.userDetail.email,
-                                    actionOnEmail: provider.userDetail.checkForInvitation!
-                                        ? () {}
-                                        : () {
-                                      provider.sendingMails(context);
-                                    }),
-                                SizedBox(height: scaler.getHeight(2.5)),
-                                GestureDetector(
-                                  onTap: () {
-                                    provider.userDetail.checkForInvitation!
-                                        ? Container()
-                                        // : CommonWidgets.bottomSheet(
-                                        // context,
-                                        // scaler,
-                                        // bottomDesign(context, scaler,
-                                        //     callClick: () {
-                                        //       provider.makePhoneCall(context);
-                                        //     }, smsClick: () {
-                                        //       provider.sendingSMS(context);
-                                        //     }, whatsAppClick: () {
-                                        //       provider.openingWhatsApp(context);
-                                        //     }));
-                                    : bottomDesign(context, scaler,
-                                        callClick: () {
-                                          provider.makePhoneCall(context);
-                                        }, smsClick: () {
-                                          provider.sendingSMS(context);
-                                        }, whatsAppClick: () {
-                                          provider.openingWhatsApp(context);
-                                        });
-                                  },
-                                  child: CommonWidgets.phoneNoAndAddressFun(
-                                      scaler,
-                                      ImageConstants.phone_no_icon,
-                                      "phone_number".tr(),
-                                      provider.userDetail.phone ?? "",
-                                      countryCode: true,
-                                      cCode: provider.userDetail.countryCode),
-                                ),
-                                SizedBox(height: scaler.getHeight(1.5)),
-                                GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: provider.userDetail.address == "" || provider.userDetail.address == null ?  (){} : ()  async {
-                                    try{
-                                      List<Location> locations = await locationFromAddress(provider.userDetail.address?? "");
-                                      print(locations);
-                                      provider.launchMap(context, locations[0].latitude, locations[0].longitude);
-                                    } on PlatformException catch(err){
-                                      DialogHelper.showMessage(context, "could_not_open_map".tr());
-                                    } catch(e){
-                                      DialogHelper.showMessage(context, "could_not_open_map".tr());
-                                    }
-                                  },
-                                  child: CommonWidgets.phoneNoAndAddressFun(
-                                      scaler,
-                                      ImageConstants.address_icon,
-                                      "address".tr(),
-                                      provider.userDetail.address ?? ""),
-                                ),
-                                SizedBox(height: scaler.getHeight(3)),
-                                // Text("organized_events".tr()).boldText(
-                                //     ColorConstants.colorBlack,
-                                //     scaler.getTextSize(10),
-                                //     TextAlign.left),
-                                // SizedBox(height: scaler.getHeight(1.5)),
-                              ],
-                            ),
+    return  BaseView<ContactDescriptionProvider>(
+      onModelReady: (provider){
+        this.provider = provider;
+        isFromNotification == true ? provider.getContact(context, contactId) : Container();
+      },
+        builder: (builder, provider, _) {
+          return provider.contact == true ?  Scaffold(
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(child: CircularProgressIndicator()),
+                SizedBox(height: scaler.getHeight(1)),
+                Text("fetching_contact".tr()).mediumText(
+                    ColorConstants.primaryColor,
+                    scaler.getTextSize(10),
+                    TextAlign.left),
+              ],
+            ),
+          ) : Scaffold(
+            backgroundColor: ColorConstants.colorWhite,
+            appBar:  provider.userDetail.checkForInvitation! ? DialogHelper.appBarWithBack(scaler, context) : DialogHelper.appBarWithBack(scaler, context, showEdit: true, message: true, messageIconClick: (){
+              provider.discussionDetail.title = "${provider.userDetail.firstName} ${provider.userDetail.lastName}";
+              provider.discussionDetail.photoUrl = provider.userDetail.profileUrl;
+              Navigator.pushNamed(
+                  context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
+            }),
+            body: LayoutBuilder(builder: (context, constraint) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraint.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: scaler.getHeight(2)),
+                              CommonWidgets.userDetails(scaler,
+                                  profilePic: provider.userDetail.profileUrl,
+                                  firstName: provider.userDetail.firstName
+                                      .toString()
+                                      .capitalize(),
+                                  lastName: provider.userDetail.lastName
+                                      .toString()
+                                      .capitalize(),
+                                  email: provider.userDetail.email,
+                                  actionOnEmail: provider.userDetail.checkForInvitation!
+                                      ? () {}
+                                      : () {
+                                    provider.sendingMails(context);
+                                  }),
+                              SizedBox(height: scaler.getHeight(2.5)),
+                              GestureDetector(
+                                onTap: () {
+                                  provider.userDetail.checkForInvitation!
+                                      ? Container()
+                                      // : CommonWidgets.bottomSheet(
+                                      // context,
+                                      // scaler,
+                                      // bottomDesign(context, scaler,
+                                      //     callClick: () {
+                                      //       provider.makePhoneCall(context);
+                                      //     }, smsClick: () {
+                                      //       provider.sendingSMS(context);
+                                      //     }, whatsAppClick: () {
+                                      //       provider.openingWhatsApp(context);
+                                      //     }));
+                                  : bottomDesign(context, scaler,
+                                      callClick: () {
+                                        provider.makePhoneCall(context);
+                                      }, smsClick: () {
+                                        provider.sendingSMS(context);
+                                      }, whatsAppClick: () {
+                                        provider.openingWhatsApp(context);
+                                      });
+                                },
+                                child: CommonWidgets.phoneNoAndAddressFun(
+                                    scaler,
+                                    ImageConstants.phone_no_icon,
+                                    "phone_number".tr(),
+                                    provider.userDetail.phone ?? "",
+                                    countryCode: true,
+                                    cCode: provider.userDetail.countryCode),
+                              ),
+                              SizedBox(height: scaler.getHeight(1.5)),
+                              GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: provider.userDetail.address == "" || provider.userDetail.address == null ?  (){} : ()  async {
+                                  try{
+                                    List<Location> locations = await locationFromAddress(provider.userDetail.address?? "");
+                                    print(locations);
+                                    provider.launchMap(context, locations[0].latitude, locations[0].longitude);
+                                  } on PlatformException catch(err){
+                                    DialogHelper.showMessage(context, "could_not_open_map".tr());
+                                  } catch(e){
+                                    DialogHelper.showMessage(context, "could_not_open_map".tr());
+                                  }
+                                },
+                                child: CommonWidgets.phoneNoAndAddressFun(
+                                    scaler,
+                                    ImageConstants.address_icon,
+                                    "address".tr(),
+                                    provider.userDetail.address ?? ""),
+                              ),
+                              SizedBox(height: scaler.getHeight(3)),
+                              // Text("organized_events".tr()).boldText(
+                              //     ColorConstants.colorBlack,
+                              //     scaler.getTextSize(10),
+                              //     TextAlign.left),
+                              // SizedBox(height: scaler.getHeight(1.5)),
+                            ],
                           ),
-                          OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: showEventScreen),
-                          provider.userDetail.checkForInvitation!
-                              ? provider.state == ViewState.Busy
-                              ? Expanded(
-                              child: Container(
-                                  padding: scaler.getPaddingLTRB(
-                                      0.0, 0.0, 0.0, 1.0),
-                                  alignment: Alignment.bottomCenter,
-                                  child: CircularProgressIndicator()))
-                              : Expanded(
-                            child: CommonWidgets.expandedRowButton(
-                                context,
-                                scaler,
-                                "reject_invite".tr(),
-                                "accept_invite".tr(),
-                                btn1: false, onTapBtn1: () {
-                              provider.acceptOrRejectInvitation(context,
-                                  provider.userDetail.cid!, false, "Reject");
-                            }, onTapBtn2: () {
-                              provider.acceptOrRejectInvitation(context,
-                                  provider.userDetail.cid!, true, "Accept");
-                            }),
-                          )
-                              : Container(),
-                          SizedBox(height: scaler.getHeight(1.5))
-                        ],
-                      ),
+                        ),
+                        OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: showEventScreen),
+                        provider.userDetail.checkForInvitation!
+                            ? provider.state == ViewState.Busy
+                            ? Expanded(
+                            child: Container(
+                                padding: scaler.getPaddingLTRB(
+                                    0.0, 0.0, 0.0, 1.0),
+                                alignment: Alignment.bottomCenter,
+                                child: CircularProgressIndicator()))
+                            : Expanded(
+                          child: CommonWidgets.expandedRowButton(
+                              context,
+                              scaler,
+                              "reject_invite".tr(),
+                              "accept_invite".tr(),
+                              btn1: false, onTapBtn1: () {
+                            provider.acceptOrRejectInvitation(context,
+                                provider.userDetail.cid!, false, "Reject");
+                          }, onTapBtn2: () {
+                            provider.acceptOrRejectInvitation(context,
+                                provider.userDetail.cid!, true, "Accept");
+                          }),
+                        )
+                            : Container(),
+                        SizedBox(height: scaler.getHeight(1.5))
+                      ],
                     ),
                   ),
-                );
-              });
-            }));
+                ),
+              );
+            }),
+          );
+        });
   }
 
    bottomDesign(BuildContext context, ScreenScaler scaler,

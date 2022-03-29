@@ -123,8 +123,9 @@ class Router {
             builder: (_) => CalendarSettingsScreen(), settings: settings);
 
       case RoutesConstants.contactDescription:
+        final args = settings.arguments as ContactDescriptionScreen;
         return MaterialPageRoute(
-            builder: (_) => ContactDescriptionScreen(showEventScreen: settings.arguments as bool),
+            builder: (_) => ContactDescriptionScreen(showEventScreen: args.showEventScreen, isFromNotification: args.isFromNotification, contactId: args.contactId),
             settings: settings);
 
       case RoutesConstants.editContactScreen:

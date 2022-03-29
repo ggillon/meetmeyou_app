@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/models/contactInvitationNotificationEvent.dart';
 import 'package:meetmeyou_app/models/messageNotificationEvent.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
 import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
@@ -15,6 +16,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/view/add_event/addEventScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
+import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
@@ -55,11 +57,10 @@ class _DashboardPageState extends State<DashboardPage> {
         provider.firebaseNotification.configureFireBase(context);
 
 
-        // provider.eventBus.fire(widget.eventOrChatId);
-          provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
+        provider.eventsNotifyEvent = provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
           if(provider.selectedIndex != 0){
             if(event.eventId != null){
-              provider.calendarDetail.fromCalendarPage = true;
+              provider.calendarDetail.fromAnotherPage = true;
               provider.eventDetail.eid = event.eventId;
               Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
             }}
@@ -71,6 +72,12 @@ class _DashboardPageState extends State<DashboardPage> {
               Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen,
                   arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: event.chatId));
             }
+        });
+
+        provider.messageNotifyEvent =  provider.eventBus.on<ContactInvitationNotificationEvent>().listen((event) {
+          if(event.contactId != null){
+            Navigator.pushNamed(context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: true, contactId: event.contactId));
+          }
         });
       },
       builder: (context, provider, _) {
