@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -18,5 +20,16 @@ class BaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  StreamSubscription? eventsNotifyEvent;
+  StreamSubscription? messageNotifyEvent;
+  StreamSubscription? ContactInvitationNotifyEvent;
+
+  @override
+  void dispose() {
+    super.dispose();
+    eventsNotifyEvent?.cancel();
+    messageNotifyEvent?.cancel();
+    ContactInvitationNotifyEvent?.cancel();
+  }
 }
 
