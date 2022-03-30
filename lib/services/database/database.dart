@@ -3,6 +3,7 @@
 // Service imports
 
 
+import 'package:flutter/cupertino.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
@@ -70,6 +71,7 @@ abstract class Database {
   Future<void> setNotification(MMYNotification notification);
   Future<void> setUserToken(String token);
   Future<String> getUserToken(String uid);
+  Future<List<MMYNotification>> getUserNotifications(String uid);
 
 }
 
@@ -324,6 +326,17 @@ class FirestoreDB implements Database {
     Profile? profile = await getProfile(uid);
     profile!.parameters['token'] = token;
     await setProfile(profile);
+  }
+
+  @override
+  Future<List<MMYNotification>> getUserNotifications(String uid) {
+    return _service.getListDataWhere(
+        path: APIPath.notifications(),
+        field: 'uid',
+        value: uid,
+        builder: (data) {
+          return MMYNotification.fromMap(data);
+        });
   }
 
 }

@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
 import '../../models/discussion.dart';
 import '../../models/discussion_message.dart';
+import '../../models/mmy_notification.dart';
 import '../../models/search_result.dart';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
@@ -185,6 +186,9 @@ abstract class MMYEngine {
 
   /// Search
   Future<SearchResult> search(String searchText);
+
+  /// NOTIFICATION
+  Future<List<MMYNotification>> getUserNotification();
 
 }
 
@@ -652,6 +656,11 @@ class MMY implements MMYEngine {
   @override
   Future<Discussion> startGroupDiscussion(List<String> CIDs) {
     return discussionLib.startGroupDiscussion(_currentUser, CIDs);
+  }
+
+  @override
+  Future<List<MMYNotification>> getUserNotification() {
+    return notificationLib.getUserNotifications(_currentUser);
   }
 
 
