@@ -19,6 +19,7 @@ class MMYNotification {
         required this.photoURL,
         required this.id,
         required this.tokens,
+        required this.timeStamp,
         this.other = EMPTY_MAP,
       });
 
@@ -29,10 +30,13 @@ class MMYNotification {
   String text;
   String photoURL;
   String id;
+  DateTime timeStamp;
   List<String> tokens;
   Map other;
 
   factory MMYNotification.fromMap(Map<String, dynamic> data) {
+    final int timeMillisec = data['timeStamp'];
+
     return MMYNotification(
       nid: data['nid'],
       uid: data['uid'],
@@ -41,12 +45,15 @@ class MMYNotification {
       text: data['text'],
       photoURL: data['photoURL'],
       id: data['id'],
+      timeStamp: DateTime.fromMillisecondsSinceEpoch(timeMillisec),
       tokens: data['tokens'],
       other: data['other'],
     );
   }
 
   MMYNotification getFromMap(Map<String, dynamic> data) {
+    final int timeMillisec = data['timeStamp'];
+
     return MMYNotification(
       nid: data['nid'],
       uid: data['uid'],
@@ -55,6 +62,7 @@ class MMYNotification {
       text: data['text'],
       photoURL: data['photoURL'],
       id: data['id'],
+      timeStamp: DateTime.fromMillisecondsSinceEpoch(timeMillisec),
       tokens: data['tokens'],
       other: data['other'],
     );
@@ -69,6 +77,7 @@ class MMYNotification {
       'text': text,
       'photoURL': photoURL,
       'id': id,
+      'timeStamp': timeStamp.millisecondsSinceEpoch,
       'tokens': tokens,
       'other': other,
     };

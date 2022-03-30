@@ -54,6 +54,7 @@ Future<void> notifyEventInvite(User currentUser, String eid, String uid) async {
         text: 'You have been invited to a new event (${event.title}) by ${event.organiserName}',
         photoURL: '${event.photoURL}',
         id: eid,
+        timeStamp: DateTime.now(),
         tokens: [token]);
     await db.setNotification(notification);
   }
@@ -75,6 +76,7 @@ Future<void> notifyEventModified(User currentUser, String eid) async {
               .organiserName} has been modified',
           photoURL: '${event.photoURL}',
           id: eid,
+          timeStamp: DateTime.now(),
           tokens: [token]);
       await db.setNotification(notification);
     }
@@ -96,6 +98,7 @@ Future<void> notifyEventCanceled(User currentUser, String eid) async {
               .organiserName} has been canceled',
           photoURL: '${event.photoURL}',
           id: eid,
+          timeStamp: DateTime.now(),
           tokens: [token]);
       await db.setNotification(notification);
     }
@@ -115,6 +118,7 @@ Future<void> notifyContactInvite(User currentUser, String uid) async {
         text: 'You have received contact invitation by ${profile.displayName}',
         photoURL: '${profile.photoURL}',
         id: profile.uid,
+        timeStamp: DateTime.now(),
         tokens: [token]);
     await db.setNotification(notification);
   }
@@ -134,6 +138,7 @@ Future<void> notifyDiscussionMessage(User currentUser, String did,) async {
           text: 'You have received a new message',
           photoURL: '${discussion.photoURL}',
           id: did,
+          timeStamp: DateTime.now(),
           tokens: [token]);
       await db.setNotification(notification);
     }
