@@ -2,6 +2,11 @@ import 'constants.dart';
 
 const NOTIFICATION_TEXT = "Text notification";
 const NOTIFICATION_PHOTO = "Photo notification";
+const NOTIFICATION_EVENT_INVITE = "Event invitation";
+const NOTIFICATION_EVENT_UPDATE = "Updated event";
+const NOTIFICATION_EVENT_CANCEL = "Canceled event";
+const NOTIFICATION_USER_INVITE = "User invitation";
+const NOTIFICATION_MESSAGE_NEW = "New message";
 
 class MMYNotification {
   MMYNotification(

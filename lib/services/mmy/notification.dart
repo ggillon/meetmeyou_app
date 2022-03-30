@@ -36,6 +36,11 @@ Future<void> setToken(User currentUser) async {
   await db.setProfile(profile);
 }
 
+Future<List<MMYNotification>> getUserNotifications(User currentUser) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  return db.getUserNotifications(currentUser.uid);
+}
+
 Future<void> notifyEventInvite(User currentUser, String eid, String uid) async {
   final db = FirestoreDB(uid: currentUser.uid);
   String token = await db.getUserToken(uid);
@@ -43,8 +48,8 @@ Future<void> notifyEventInvite(User currentUser, String eid, String uid) async {
   if(token != '') {
     MMYNotification notification = MMYNotification(
         nid: idGenerator(),
-        type: NOTIFICATION_TEXT,
-        uid: currentUser.uid,
+        type: NOTIFICATION_EVENT_INVITE,
+        uid: uid,
         title: 'New Event',
         text: 'You have been invited to a new event (${event.title}) by ${event.organiserName}',
         photoURL: '${event.photoURL}',
@@ -63,8 +68,8 @@ Future<void> notifyEventModified(User currentUser, String eid) async {
     if(token != '') {
       MMYNotification notification = MMYNotification(
           nid: idGenerator(),
-          type: NOTIFICATION_TEXT,
-          uid: currentUser.uid,
+          type: NOTIFICATION_EVENT_UPDATE,
+          uid: uid,
           title: 'Event modified',
           text: 'Event (${event.title}) by ${event
               .organiserName} has been modified',
@@ -84,8 +89,8 @@ Future<void> notifyEventCanceled(User currentUser, String eid) async {
     if (token != '') {
       MMYNotification notification = MMYNotification(
           nid: idGenerator(),
-          type: NOTIFICATION_TEXT,
-          uid: currentUser.uid,
+          type: NOTIFICATION_EVENT_CANCEL,
+          uid: uid,
           title: 'Event canceled',
           text: 'Event (${event.title}) by ${event
               .organiserName} has been canceled',
@@ -104,8 +109,8 @@ Future<void> notifyContactInvite(User currentUser, String uid) async {
   if(token != '') {
     MMYNotification notification = MMYNotification(
         nid: idGenerator(),
-        type: NOTIFICATION_TEXT,
-        uid: currentUser.uid,
+        type: NOTIFICATION_USER_INVITE,
+        uid: uid,
         title: 'New contact invitation',
         text: 'You have received contact invitation by ${profile.displayName}',
         photoURL: '${profile.photoURL}',
@@ -123,8 +128,8 @@ Future<void> notifyDiscussionMessage(User currentUser, String did,) async {
     if (token != '') {
       MMYNotification notification = MMYNotification(
           nid: idGenerator(),
-          type: NOTIFICATION_TEXT,
-          uid: currentUser.uid,
+          type: NOTIFICATION_MESSAGE_NEW,
+          uid: uid,
           title: 'New message',
           text: 'You have received a new message',
           photoURL: '${discussion.photoURL}',
