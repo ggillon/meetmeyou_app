@@ -24,7 +24,7 @@ class MultipleDateTimeProvider extends BaseProvider {
     showDatePicker(
             context: context,
             initialDate: checkDate == true ? startDate : endDate,
-            firstDate:  checkDate == true ? DateTime.now().add(Duration(days: 7)) : DateTime(startDate.year, startDate.month, startDate.day),
+            firstDate:  checkDate == true ? DateTime.now() : DateTime(startDate.year, startDate.month, startDate.day),
             lastDate: DateTime(2100))
         .then((pickedDate) {
       if (pickedDate == null) {

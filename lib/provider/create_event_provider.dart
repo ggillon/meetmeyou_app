@@ -129,7 +129,7 @@ class CreateEventProvider extends BaseProvider {
             //     ? endDate
             //     : DateTime(startDate.year, startDate.month, startDate.day),
             firstDate: checkOrEndStartDate
-                ? DateTime.now().add(Duration(days: 7))
+                ? DateTime.now()
                 : startDate,
             // : dateCheck
             //     ? endDate
