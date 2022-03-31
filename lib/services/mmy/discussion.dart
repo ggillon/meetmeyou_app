@@ -71,7 +71,7 @@ Future<Discussion> createDiscussion(User currentUser, String title, {String? eid
     adminDisplayName: admin.displayName,
     photoURL: (eid==null) ? admin.photoURL : event!.photoURL,
     participants: participants,
-    timeStamp: DateTime.now(),
+    timeStamp: DateTime.now().toUtc(),
   );
   await db.setDiscussion(discussion);
   return discussion;
@@ -107,14 +107,14 @@ Future<void> postMessage(User currentUser, String did, String type, String text,
       replyMid: replyMid ?? '',
       isReply: (replyMid==null) ? false:true,
       level: (replyMid==null) ? 0:1,
-      createdTimeStamp: DateTime.now(), editedTimeStamp: DateTime.now());
+      createdTimeStamp: DateTime.now().toUtc(), editedTimeStamp: DateTime.now().toUtc());
 
   Discussion discussion = await db.getDiscussion(did);
   for(String uid in discussion.participants.keys) {
     discussion.participants[uid] = MESSAGES_UNREAD;
   }
   discussion.participants[currentUser.uid] = MESSAGES_READ;
-  discussion.timeStamp = DateTime.now();
+  discussion.timeStamp = DateTime.now().toUtc();
   await db.setDiscussion(discussion);
   await db.setDiscussionMessage(message);
 }
