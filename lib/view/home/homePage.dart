@@ -154,8 +154,15 @@ class _HomePageState extends State<HomePage>
                               provider.getIndexChanging(context);
                             });
                           },
-                          child:
-                              Icon(Icons.search_outlined, color: ColorConstants.primaryColor, size: 30),
+                          child: Icon(Icons.search_outlined, color: ColorConstants.primaryColor, size: 30),
+                        ),
+                        SizedBox(width: scaler.getWidth(2.0)),
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: (){
+                            Navigator.pushNamed(context, RoutesConstants.notificationsHistoryScreen);
+                          },
+                          child: Icon(Icons.notifications, color: ColorConstants.primaryColor, size: 28),
                         ),
                         SizedBox(width: scaler.getWidth(2.0)),
                         GestureDetector(

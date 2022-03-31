@@ -38,4 +38,5 @@ class RoutesConstants {
   static const seeAllPeople = "seeAllPeople";
   static const seeAllEvents = "seeAllEvents";
   static const notificationSettings = "notificationSettings";
+  static const notificationsHistoryScreen = "notificationsHistoryScreen";
 }

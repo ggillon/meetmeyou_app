@@ -38,6 +38,7 @@ import 'package:meetmeyou_app/provider/my_account_provider.dart';
 import 'package:meetmeyou_app/provider/contact_description_provider.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/provider/notification_settings_provider.dart';
+import 'package:meetmeyou_app/provider/notifications_history_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
@@ -101,7 +102,7 @@ void setupLocator() {
   locator.registerFactory<SeeAllPeopleProvider>(() => SeeAllPeopleProvider());
   locator.registerFactory<NotificationSettingsProvider>(() => NotificationSettingsProvider());
   locator.registerFactory<FirebaseNotification>(() => FirebaseNotification());
-
+  locator.registerFactory<NotificationsHistoryProvider>(() => NotificationsHistoryProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

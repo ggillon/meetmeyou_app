@@ -88,6 +88,7 @@ dependencies:
   overlay_support: ^1.2.1
   flutter_local_notifications: ^9.4.0
   event_bus: ^2.0.0
+  flutter_sticky_header: ^0.6.1
 dependency_overrides:
     firebase_messaging_platform_interface: 3.1.6
     firebase_crashlytics_platform_interface: 3.1.13

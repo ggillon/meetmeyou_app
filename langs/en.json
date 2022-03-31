@@ -211,5 +211,9 @@
   "un_invite_users" : "UnInvite all user",
   "un_invite_all_users" : " UnInvite all user will result in deleting discussion",
   "fetching_contact" : "Fetching Contact",
-  "sorry_notification_data_changed" : "Sorry Notification data changed....."
+  "sorry_notification_data_changed" : "Sorry Notification data changed.....",
+  "notifications" : "Notifications",
+  "loading_notifications" : "Loading notifications....",
+  "no_notifications" : "No notifications for now",
+  "exception" : "Exception"
 }

@@ -28,6 +28,7 @@ import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionS
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
+import 'package:meetmeyou_app/view/home/notifications_history_screen/notifications_history_screen.dart';
 import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
@@ -206,6 +207,8 @@ class Router {
       case RoutesConstants.notificationSettings:
         return MaterialPageRoute(builder: (_) => NotificationSettings(), settings: settings);
 
+      case RoutesConstants.notificationsHistoryScreen:
+        return MaterialPageRoute(builder: (_) => NotificationsHistoryScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());
