@@ -681,4 +681,25 @@ class CommonWidgets {
       ],
     );
   }
+
+  static notificationImage(ScreenScaler scaler, String photoUrl){
+  return  ClipRRect(
+        borderRadius: scaler.getBorderRadiusCircular(10.0),
+        child: photoUrl == null || photoUrl == ""
+            ? Container(
+          color: ColorConstants.primaryColor,
+          width: scaler.getWidth(12.5),
+          height: scaler.getWidth(12.5),
+        )
+            : Container(
+          width: scaler.getWidth(12.5),
+          height: scaler.getWidth(12.5),
+          child: ImageView(
+            path: photoUrl,
+            width: scaler.getWidth(12.5),
+            height: scaler.getWidth(12.5),
+             fit: BoxFit.cover,
+          ),
+        ));
+  }
 }

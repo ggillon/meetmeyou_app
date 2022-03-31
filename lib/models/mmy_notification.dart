@@ -31,7 +31,7 @@ class MMYNotification {
   String photoURL;
   String id;
   DateTime timeStamp;
-  List<String> tokens;
+  List<dynamic> tokens;
   Map other;
 
   factory MMYNotification.fromMap(Map<String, dynamic> data) {

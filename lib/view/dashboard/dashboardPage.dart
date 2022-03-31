@@ -74,7 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
             }
         });
 
-        provider.messageNotifyEvent =  provider.eventBus.on<ContactInvitationNotificationEvent>().listen((event) {
+        provider.ContactInvitationNotifyEvent =  provider.eventBus.on<ContactInvitationNotificationEvent>().listen((event) {
           if(event.contactId != null){
             Navigator.pushNamed(context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: true, contactId: event.contactId));
           }
