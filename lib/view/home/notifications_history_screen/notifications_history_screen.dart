@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/mmy_notification.dart';
 import 'package:meetmeyou_app/provider/notifications_history_provider.dart';
@@ -68,21 +69,26 @@ class NotificationsHistoryScreen extends StatelessWidget {
   }
 
   Widget notificationHistoryListView(ScreenScaler scaler, NotificationsHistoryProvider provider){
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: provider.notificationHistoryList.length,
-        itemBuilder: (context, index){
-          String currentHeader = provider.notificationHistoryList[index].timeStamp.toString().substring(0, 11);
-          String header = index == 0
-              ? provider.notificationHistoryList[index].timeStamp.toString().substring(0, 11)
-              : provider.notificationHistoryList[index-1].timeStamp.toString().substring(0, 11);
-      // return Column(
-      //   children: [
-      //     notificationType(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index])
-      //   ],
-      // );
-          return aToZHeader(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index], index, header, currentHeader);
-    });
+    return Expanded(
+      child: SingleChildScrollView(
+        child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: provider.notificationHistoryList.length,
+            itemBuilder: (context, index){
+              String currentHeader = provider.notificationHistoryList[index].timeStamp.toString().substring(0, 11);
+              String header = index == 0
+                  ? provider.notificationHistoryList[index].timeStamp.toString().substring(0, 11)
+                  : provider.notificationHistoryList[index-1].timeStamp.toString().substring(0, 11);
+          // return Column(
+          //   children: [
+          //     notificationType(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index])
+          //   ],
+          // );
+              return aToZHeader(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index], index, header, currentHeader);
+        }),
+      ),
+    );
   }
 
 
@@ -93,7 +99,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
         children: [
           Container(
             padding: scaler.getPaddingLTRB(1.0, 0.5, 1.0, 1.0),
-            child: Text(cHeader == DateTime.now().toString().substring(0, 11) ? "today".tr() : cHeader).boldText(ColorConstants.colorBlack,
+            child: Text(cHeader == DateTime.now().toString().substring(0, 11) ? "today".tr() : (cHeader == DateTime.now().subtract(Duration(days: 1)).toString().substring(0, 11)? "yesterday".tr() : DateTimeHelper.notificationDateFormat(provider.notificationHistoryList[index].timeStamp))).boldText(ColorConstants.colorBlack,
                 scaler.getTextSize(11.5), TextAlign.left),
           ),
          // SizedBox(height: scaler.getHeight(1.0)),

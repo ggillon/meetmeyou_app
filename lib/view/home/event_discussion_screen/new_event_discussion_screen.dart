@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
@@ -22,6 +23,7 @@ import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
+import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/reply_image_widget.dart';
@@ -342,229 +344,265 @@ class NewEventDiscussionScreen extends StatelessWidget {
             }
           });
           provider.userName = provider.eventDiscussionList[index].contactUid == provider.auth.currentUser?.uid ? "you".tr() : provider.eventDiscussionList[index].contactDisplayName;
-          return (provider
-              .eventDiscussionList[index]
-              .contactUid) !=
-              provider.auth.currentUser!.uid
-              ? Column(
-            children: [
-              SwipeTo(
-                child: ChatBubble(
-                  clipper: ChatBubbleClipper3(
-                      type: BubbleType
-                          .receiverBubble),
-                  backGroundColor:
-                  ColorConstants
-                      .colorWhite,
-                  margin: EdgeInsets.only(
-                      top: 20),
-                  child: Container(
-                    constraints:
-                    BoxConstraints(
-                      maxWidth: MediaQuery.of(
-                          context)
-                          .size
-                          .width *
-                          0.7,
-                    ),
-                    child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
-                        ? Column(
-                      crossAxisAlignment : CrossAxisAlignment.start,
-                      children: [
-                        sendReplySwipe(provider.eventDiscussionList.any((element){
-                          provider.replyMessageImageUrl = element.attachmentURL;
-                          provider.replyMessageText = element.text;
-                          return element.mid == provider.eventDiscussionList[index].replyMid;
-                        }) ? provider.replyMessageText : ""),
-                        SizedBox(height: scaler.getHeight(0.1)),
-                        Row(
-                          children: [
-                            SizedBox(width: scaler.getWidth(0.5)),
-                            Text(provider.eventDiscussionList[index].text).regularText(
-                                ColorConstants
-                                    .colorBlack,
-                                scaler
-                                    .getTextSize(
-                                    10),
-                                TextAlign
-                                    .left,
-                                isHeight:
-                                true),
-                          ],
-                        ),
-                      ],
-                    )
-                        :
-                    Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
-                      children: [
-                        Text(provider
-                            .eventDiscussionList[
-                        index]
-                            .contactDisplayName)
-                            .boldText(
-                            ColorConstants
-                                .colorRed,
-                            scaler
-                                .getTextSize(
-                                10.0),
-                            TextAlign
-                                .left),
-                        (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
-                            .eventDiscussionList[
-                        index]
-                            .text)
-                            .regularText(
-                            ColorConstants
-                                .colorBlack,
-                            scaler
-                                .getTextSize(
-                                10),
-                            TextAlign
-                                .left,
-                            isHeight:
-                            true) :
-                        InkWell(
-                          onTap: (){
-                            Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
-                          },
-                          child: ClipRRect(
-                            borderRadius: scaler.getBorderRadiusCircular(7.5),
-                            child: Container(
-                              color: ColorConstants.primaryColor,
-                              height: scaler.getHeight(30.0),
-                              width: scaler.getWidth(70.0),
-                              child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                onRightSwipe: () {
-                  provider.isRightSwipe = true;
-                  FocusScope.of(context).requestFocus(messageFocusNode);
-                  provider.replyMessage = provider.eventDiscussionList[index].text;
-                  provider.replyMid = provider.eventDiscussionList[index].mid;
-                  provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
-                  // provider.userName ="you".tr();
-                  provider.updateSwipe(true);
-                },
-              ),
-              SizedBox(
-                  height:
-                  scaler.getHeight(0.5)),
-            ],
-          )
-              : Column(
-            children: [
-              SwipeTo(
-                child: ChatBubble(
-                  elevation : (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? 0.0 : 2,
-                  clipper: ChatBubbleClipper3(
-                      type: BubbleType
-                          .sendBubble),
-                  alignment:
-                  Alignment.topRight,
-                  margin: EdgeInsets.only(
-                      top: 20),
-                  backGroundColor:
-                  (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants
-                      .primaryColor,
-                  child: Container(
-                    constraints:
-                    BoxConstraints(
-                      maxWidth: MediaQuery.of(
-                          context)
-                          .size
-                          .width *
-                          0.7,
-                    ),
-                    child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
-                        ? Column(
-                      crossAxisAlignment : CrossAxisAlignment.start,
-                      children: [
-                        sendReplySwipe(provider.eventDiscussionList.any((element){
-                          provider.replyMessageText = element.text;
-                          provider.replyMessageImageUrl = element.attachmentURL;
-                          return element.mid == provider.eventDiscussionList[index].replyMid;
-                        }) ? provider.replyMessageText: ""),
-                        SizedBox(height: scaler.getHeight(0.1)),
-                        Row(
-                          children: [
-                            SizedBox(width: scaler.getWidth(0.5)),
-                            Text(provider.eventDiscussionList[index].text).regularText(
-                                ColorConstants
-                                    .colorBlack,
-                                scaler
-                                    .getTextSize(
-                                    10),
-                                TextAlign
-                                    .left,
-                                isHeight:
-                                true),
-                          ],
-                        ),
-                      ],
-                    )
-                        : Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
-                      children: [
-                        // Text("you".tr()).boldText(
-                        //     Colors
-                        //         .limeAccent,
-                        //     scaler.getTextSize(
-                        //         10.0),
-                        //     TextAlign
-                        //         .left),
-                        (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
-                        Text(provider.eventDiscussionList[index].text)
-                            .regularText(
-                            ColorConstants
-                                .colorWhite,
-                            scaler.getTextSize(
-                                10),
-                            TextAlign
-                                .left,
-                            isHeight:
-                            true) :
-                        InkWell(
-                          onTap: (){
-                            Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
-                          },
-                          child: ClipRRect(
-                            borderRadius: scaler.getBorderRadiusCircular(7.5),
-                            child: Container(
-                              color: ColorConstants.primaryColor,
-                              height: scaler.getHeight(30.0),
-                              width: scaler.getWidth(70.0),
-                              child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                onRightSwipe: () {
-                  provider.isRightSwipe = true;
-                  FocusScope.of(context).requestFocus(messageFocusNode);
-                  provider.replyMessage = provider.eventDiscussionList[index].text;
-                  provider.replyMid = provider.eventDiscussionList[index].mid;
-                  provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
-                  // provider.userName = "you".tr();
-                  provider.updateSwipe(true);
-                },
-              ),
-              SizedBox(height: scaler.getHeight(0.5)),
-            ],
-          );
+          String currentHeader = provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 11);
+          String header = index == 0
+              ? provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 11)
+              : provider.eventDiscussionList[index-1].createdTimeStamp.toLocal().toString().substring(0, 11);
+          return aToZHeader(context, scaler, index, header, currentHeader);
         });
+  }
+
+  aToZHeader(BuildContext context,  ScreenScaler scaler, int index, String header, String cHeader) {
+    if (index == 0 ? true : (header != cHeader)) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CustomShape(
+            child: Center(
+                child:Text(DateTimeHelper.chatHeaderDateFormat(provider.eventDiscussionList[index].createdTimeStamp.toLocal()))
+                    .semiBoldText(
+                    ColorConstants.colorBlackDown,
+                    scaler.getTextSize(9.5),
+                    TextAlign.center)),
+            bgColor: ColorConstants.colorNewGray,
+            radius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+            width: scaler.getWidth(21),
+            height: scaler.getHeight(2.0),
+          ),
+          // SizedBox(height: scaler.getHeight(1.0)),
+          chat(context, scaler, index)
+        ],
+      );
+    } else {
+      return chat(context, scaler, index);
+    }
+  }
+
+  Widget chat(BuildContext context, ScreenScaler scaler, int index){
+    return (provider
+        .eventDiscussionList[index]
+        .contactUid) !=
+        provider.auth.currentUser!.uid
+        ? Column(
+      children: [
+        SwipeTo(
+          child: ChatBubble(
+            clipper: ChatBubbleClipper3(
+                type: BubbleType
+                    .receiverBubble),
+            backGroundColor:
+            ColorConstants
+                .colorWhite,
+            margin: EdgeInsets.only(
+                top: 20),
+            child: Container(
+              constraints:
+              BoxConstraints(
+                maxWidth: MediaQuery.of(
+                    context)
+                    .size
+                    .width *
+                    0.7,
+              ),
+              child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
+                  ? Column(
+                crossAxisAlignment : CrossAxisAlignment.start,
+                children: [
+                  sendReplySwipe(provider.eventDiscussionList.any((element){
+                    provider.replyMessageImageUrl = element.attachmentURL;
+                    provider.replyMessageText = element.text;
+                    return element.mid == provider.eventDiscussionList[index].replyMid;
+                  }) ? provider.replyMessageText : ""),
+                  SizedBox(height: scaler.getHeight(0.1)),
+                  Row(
+                    children: [
+                      SizedBox(width: scaler.getWidth(0.5)),
+                      Text(provider.eventDiscussionList[index].text).regularText(
+                          ColorConstants
+                              .colorBlack,
+                          scaler
+                              .getTextSize(
+                              10),
+                          TextAlign
+                              .left,
+                          isHeight:
+                          true),
+                    ],
+                  ),
+                ],
+              )
+                  :
+              Column(
+                crossAxisAlignment:
+                CrossAxisAlignment
+                    .start,
+                children: [
+                  Text(provider
+                      .eventDiscussionList[
+                  index]
+                      .contactDisplayName)
+                      .boldText(
+                      ColorConstants
+                          .colorRed,
+                      scaler
+                          .getTextSize(
+                          10.0),
+                      TextAlign
+                          .left),
+                  (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
+                      .eventDiscussionList[
+                  index]
+                      .text)
+                      .regularText(
+                      ColorConstants
+                          .colorBlack,
+                      scaler
+                          .getTextSize(
+                          10),
+                      TextAlign
+                          .left,
+                      isHeight:
+                      true) :
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
+                    },
+                    child: ClipRRect(
+                      borderRadius: scaler.getBorderRadiusCircular(7.5),
+                      child: Container(
+                        color: ColorConstants.primaryColor,
+                        height: scaler.getHeight(30.0),
+                        width: scaler.getWidth(70.0),
+                        child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          onRightSwipe: () {
+            provider.isRightSwipe = true;
+            FocusScope.of(context).requestFocus(messageFocusNode);
+            provider.replyMessage = provider.eventDiscussionList[index].text;
+            provider.replyMid = provider.eventDiscussionList[index].mid;
+            provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
+            // provider.userName ="you".tr();
+            provider.updateSwipe(true);
+          },
+        ),
+        SizedBox(
+            height:
+            scaler.getHeight(0.5)),
+      ],
+    )
+        : Column(
+      children: [
+        SwipeTo(
+          child: ChatBubble(
+            elevation : (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? 0.0 : 2,
+            clipper: ChatBubbleClipper3(
+                type: BubbleType
+                    .sendBubble),
+            alignment:
+            Alignment.topRight,
+            margin: EdgeInsets.only(
+                top: 20),
+            backGroundColor:
+            (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants
+                .primaryColor,
+            child: Container(
+              constraints:
+              BoxConstraints(
+                maxWidth: MediaQuery.of(
+                    context)
+                    .size
+                    .width *
+                    0.7,
+              ),
+              child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
+                  ? Column(
+                crossAxisAlignment : CrossAxisAlignment.start,
+                children: [
+                  sendReplySwipe(provider.eventDiscussionList.any((element){
+                    provider.replyMessageText = element.text;
+                    provider.replyMessageImageUrl = element.attachmentURL;
+                    return element.mid == provider.eventDiscussionList[index].replyMid;
+                  }) ? provider.replyMessageText: ""),
+                  SizedBox(height: scaler.getHeight(0.1)),
+                  Row(
+                    children: [
+                      SizedBox(width: scaler.getWidth(0.5)),
+                      Text(provider.eventDiscussionList[index].text).regularText(
+                          ColorConstants
+                              .colorBlack,
+                          scaler
+                              .getTextSize(
+                              10),
+                          TextAlign
+                              .left,
+                          isHeight:
+                          true),
+                    ],
+                  ),
+                ],
+              )
+                  : Column(
+                crossAxisAlignment:
+                CrossAxisAlignment
+                    .start,
+                children: [
+                  // Text("you".tr()).boldText(
+                  //     Colors
+                  //         .limeAccent,
+                  //     scaler.getTextSize(
+                  //         10.0),
+                  //     TextAlign
+                  //         .left),
+                  (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
+                  Text(provider.eventDiscussionList[index].text)
+                      .regularText(
+                      ColorConstants
+                          .colorWhite,
+                      scaler.getTextSize(
+                          10),
+                      TextAlign
+                          .left,
+                      isHeight:
+                      true) :
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
+                    },
+                    child: ClipRRect(
+                      borderRadius: scaler.getBorderRadiusCircular(7.5),
+                      child: Container(
+                        color: ColorConstants.primaryColor,
+                        height: scaler.getHeight(30.0),
+                        width: scaler.getWidth(70.0),
+                        child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          onRightSwipe: () {
+            provider.isRightSwipe = true;
+            FocusScope.of(context).requestFocus(messageFocusNode);
+            provider.replyMessage = provider.eventDiscussionList[index].text;
+            provider.replyMid = provider.eventDiscussionList[index].mid;
+            provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
+            // provider.userName = "you".tr();
+            provider.updateSwipe(true);
+          },
+        ),
+        SizedBox(height: scaler.getHeight(0.5)),
+      ],
+    );
   }
 
   static final inputTopRadius = Radius.circular(12);

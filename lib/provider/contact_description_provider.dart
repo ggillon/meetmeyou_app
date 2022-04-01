@@ -111,7 +111,7 @@ class ContactDescriptionProvider extends BaseProvider {
 
     if(value != null){
       contactFromInvitation = value;
-      setContactsValue(contactFromInvitation!, true, contactFromInvitation!.cid);
+      setContactsValue(contactFromInvitation!, value.status == "Confirmed contact" ? false : true, contactFromInvitation!.cid);
       updateGetContact(false);
     }
 

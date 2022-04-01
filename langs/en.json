@@ -216,5 +216,7 @@
   "loading_notifications" : "Loading notifications....",
   "no_notifications" : "No notifications for now",
   "exception" : "Exception",
-  "today" : "Today"
+  "accept" : "Accept",
+  "today" : "Today",
+  "yesterday" : "Yesterday"
 }

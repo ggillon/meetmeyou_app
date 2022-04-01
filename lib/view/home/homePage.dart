@@ -160,7 +160,9 @@ class _HomePageState extends State<HomePage>
                         GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: (){
-                            Navigator.pushNamed(context, RoutesConstants.notificationsHistoryScreen);
+                            Navigator.pushNamed(context, RoutesConstants.notificationsHistoryScreen).then((value) {
+                              provider.getIndexChanging(context);
+                            });
                           },
                           child: Icon(Icons.notifications, color: ColorConstants.primaryColor, size: 28),
                         ),

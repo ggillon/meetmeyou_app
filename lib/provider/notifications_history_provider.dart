@@ -29,6 +29,9 @@ class NotificationsHistoryProvider extends BaseProvider{
 
     if(value != null){
       notificationHistoryList = value;
+      notificationHistoryList.sort((a,b) {
+        return b.timeStamp.compareTo(a.timeStamp);
+      });
       setState(ViewState.Idle);
     }
   }

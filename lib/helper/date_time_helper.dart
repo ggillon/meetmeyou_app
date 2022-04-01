@@ -88,4 +88,24 @@ class DateTimeHelper {
     // print(tempDate);
     return tempDate;
   }
+
+  static notificationDateFormat(DateTime date){
+    int day = date.day;
+
+    int month = date.month;
+    String mon = MONTHS[month - 1];
+
+    int year = date.year;
+
+    return "${day} ${mon} ${year}";
+  }
+
+  static chatHeaderDateFormat(DateTime date){
+    int day = date.day;
+
+    int month = date.month;
+    String mon = MONTHS[month - 1];
+
+    return "${getWeekDay(date).toString().substring(0,3)} ${day} ${mon.substring(0,3)}";
+  }
 }
