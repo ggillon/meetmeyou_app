@@ -63,6 +63,7 @@ Future<Event> updateEvent(User currentUser, String? eid, {String? title, String?
   ..formText = formText ?? event.formText
   ..form = form ?? event.form;
 
+
   await FirestoreDB(uid: currentUser.uid).setEvent(event);
   return event;
 }
