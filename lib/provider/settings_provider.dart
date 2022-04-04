@@ -3,6 +3,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/notification_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -11,6 +12,7 @@ class SettingsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
   CalendarDetail calendarDetail = locator<CalendarDetail>();
+  NotificationDetail notificationDetail = locator<NotificationDetail>();
 
   bool _isLoading = false;
 
@@ -58,6 +60,45 @@ class SettingsProvider extends BaseProvider {
     if (response != null) {
       calendarDetail.calendarSync = response['calendar_sync'];
       calendarDetail.calendarDisplay = response['calendar_display'];
+    }
+    updateLoadingStatus(false);
+  }
+
+  Future getUserParameterForEvent(BuildContext context, String param)async{
+    updateLoadingStatus(true);
+
+    final response = await mmyEngine!.getUserParameter(param).catchError((e) {
+      updateLoadingStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (response != null) {
+      notificationDetail.eventNotification = response;
+    }
+    updateLoadingStatus(false);
+  }
+
+  Future getUserParameterForMessages(BuildContext context, String param)async{
+    updateLoadingStatus(true);
+
+    final response = await mmyEngine!.getUserParameter(param).catchError((e) {
+      updateLoadingStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (response != null) {
+      notificationDetail.messagesNotification = response;
+    }
+    updateLoadingStatus(false);
+  }
+
+  Future getUserParameterForInvitation(BuildContext context, String param)async{
+    updateLoadingStatus(true);
+
+    final response = await mmyEngine!.getUserParameter(param).catchError((e) {
+      updateLoadingStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (response != null) {
+      notificationDetail.contactInvitationNotification = response;
     }
     updateLoadingStatus(false);
   }

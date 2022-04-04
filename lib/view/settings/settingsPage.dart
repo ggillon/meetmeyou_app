@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/settings_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:meetmeyou_app/services/mmy/notification.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -34,6 +35,9 @@ class SettingsPage extends StatelessWidget {
             this.provider = provider;
             provider.getUserDetail(context);
             provider.getCalendarParams(context);
+            provider.getUserParameterForEvent(context, PARAM_NOTIFY_EVENT);
+            provider.getUserParameterForMessages(context, PARAM_NOTIFY_DISCUSSION);
+            provider.getUserParameterForInvitation(context, PARAM_NOTIFY_INVITATION);
           },
           builder: (context, provider, _) {
             return SingleChildScrollView(
