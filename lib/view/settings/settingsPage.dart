@@ -163,43 +163,59 @@ class SettingsPage extends StatelessWidget {
             },
             child: Padding(
               padding: scaler.getPaddingAll(10.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Container(
-                    width: scaler.getWidth(22),
-                    height: scaler.getWidth(22),
-                    child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(10.0),
-                      child: ImageView(
-                        path: provider.userDetail.profileUrl,
+                  Row(
+                    children: [
+                      Container(
                         width: scaler.getWidth(22),
                         height: scaler.getWidth(22),
-                        fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: scaler.getBorderRadiusCircular(10.0),
+                          child: ImageView(
+                            path: provider.userDetail.profileUrl,
+                            width: scaler.getWidth(22),
+                            height: scaler.getWidth(22),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(width: scaler.getWidth(2.5)),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(provider.userDetail.firstName.toString() +
+                                    " " +
+                                    provider.userDetail.lastName.toString())
+                                .boldText(ColorConstants.colorBlack,
+                                    scaler.getTextSize(11), TextAlign.left,
+                                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                            SizedBox(height: scaler.getHeight(0.2)),
+                            Text(provider.userDetail.email.toString()).regularText(
+                                ColorConstants.colorGray,
+                                scaler.getTextSize(9.5),
+                                TextAlign.left,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis),
+                          ],
+                        ),
+                      ),
+                      ImageView(path: ImageConstants.arrow_icon)
+                    ],
                   ),
-                  SizedBox(width: scaler.getWidth(2.5)),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(provider.userDetail.firstName.toString() +
-                                " " +
-                                provider.userDetail.lastName.toString())
-                            .boldText(ColorConstants.colorBlack,
-                                scaler.getTextSize(11), TextAlign.left,
-                                maxLines: 1, overflow: TextOverflow.ellipsis),
-                        SizedBox(height: scaler.getHeight(0.2)),
-                        Text(provider.userDetail.email.toString()).regularText(
-                            ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis)
-                      ],
-                    ),
-                  ),
-                  ImageView(path: ImageConstants.arrow_icon)
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.end,
+                   children: [
+                     Text(provider.auth.currentUser!.uid.toString()).regularText(
+                         Colors.grey[300] ?? ColorConstants.colorGray,
+                         scaler.getTextSize(9.5),
+                         TextAlign.left,
+                         maxLines: 1,
+                         overflow: TextOverflow.ellipsis),
+                     SizedBox(width: scaler.getWidth(2.5))
+                   ],
+                 )
                 ],
               ),
             ),

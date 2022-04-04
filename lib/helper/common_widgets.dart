@@ -418,38 +418,63 @@ class CommonWidgets {
                 ),
                 Column(
                   children: [
-                    SizedBox(height: scaler.getHeight(2)),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: multipleDate == true ? multiDate : going,
-                      child: Text(multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(2)),
+                          Container(
+                            width: double.infinity,
+                            child: Text(multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(0.9)),
+                        ],
+                      )
                     ),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     Divider(),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: notGoing,
-                      child: Text("not_going_to_event".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(0.9)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("not_going_to_event".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(0.9)),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     Divider(),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: hide,
-                      child: Text("hide_event".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(0.9)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("hide_event".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(2)),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: scaler.getHeight(2)),
                   ],
                 ),
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.of(context).pop();
                   },

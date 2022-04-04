@@ -375,7 +375,17 @@ class EventDetailScreen extends StatelessWidget {
                               .regularText(ColorConstants.colorBlack,
                                   scaler.getTextSize(10), TextAlign.left),
                           SizedBox(height: scaler.getHeight(2.5)),
-                          eventDiscussionCard(context, scaler)
+                          eventDiscussionCard(context, scaler),
+                          SizedBox(height: scaler.getHeight(5.0)),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(provider.eventDetail.eid.toString()).regularText(
+                                ColorConstants.colorGray,
+                                scaler.getTextSize(9.5),
+                                TextAlign.left,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis),
+                          )
                         ],
                       ),
                     ),

@@ -336,8 +336,8 @@ class ContactsScreen extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    SizedBox(height: scaler.getHeight(2)),
                     GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.pushNamed(
@@ -347,15 +347,23 @@ class ContactsScreen extends StatelessWidget {
                               .getConfirmedContactsAndInvitationsList(context);
                         });
                       },
-                      child: Text("search_for_contact".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(2)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("search_for_contact".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(0.9)),
+                        ],
+                      )
                     ),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     Divider(),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.pushNamed(
@@ -364,15 +372,24 @@ class ContactsScreen extends StatelessWidget {
                           provider.getGroupList(context);
                         });
                       },
-                      child: Text("create_group_of_contacts".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child:  Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(2)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("create_group_of_contacts".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(2)),
+                        ],
+                      )
                     ),
-                    SizedBox(height: scaler.getHeight(2)),
                   ],
                 ),
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.of(context).pop();
                   },

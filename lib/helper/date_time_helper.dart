@@ -100,12 +100,14 @@ class DateTimeHelper {
     return "${day} ${mon} ${year}";
   }
 
-  static chatHeaderDateFormat(DateTime date){
+  static chatHeaderDateFormat(DateTime date, bool currentYear){
     int day = date.day;
 
     int month = date.month;
     String mon = MONTHS[month - 1];
 
-    return "${getWeekDay(date).toString().substring(0,3)} ${day} ${mon.substring(0,3)}";
+    int year = date.year;
+
+    return currentYear == true ? "${getWeekDay(date).toString().substring(0,3)} ${day} ${mon.substring(0,3)}" : "${getWeekDay(date).toString().substring(0,3)} ${day} ${mon.substring(0,3)} ${year}";
   }
 }

@@ -1319,32 +1319,49 @@ class CreateEventScreen extends StatelessWidget {
               ),
               Column(
                 children: [
-                  SizedBox(height: scaler.getHeight(2)),
+
                   GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                     onTap: () {
                       provider.getImage(context, 1);
                     },
-                    child: Text("take_a_photo".tr()).regularText(
-                        ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
-                        TextAlign.center),
+                    child: Column(
+                      children: [
+                        SizedBox(height: scaler.getHeight(2)),
+                        Container(
+                          width: double.infinity,
+                          child: Text("take_a_photo".tr()).regularText(
+                              ColorConstants.primaryColor,
+                              scaler.getTextSize(11),
+                              TextAlign.center),
+                        ),
+                        SizedBox(height: scaler.getHeight(0.9)),
+                      ],
+                    )
                   ),
-                  SizedBox(height: scaler.getHeight(0.9)),
                   Divider(),
-                  SizedBox(height: scaler.getHeight(0.9)),
                   GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                     onTap: () {
                       provider.getImage(context, 2);
                     },
-                    child: Text("choose_photo".tr()).regularText(
-                        ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
-                        TextAlign.center),
+                    child: Column(
+                      children: [
+                        SizedBox(height: scaler.getHeight(0.9)),
+                        Container(
+                          width: double.infinity,
+                          child: Text("choose_photo".tr()).regularText(
+                              ColorConstants.primaryColor,
+                              scaler.getTextSize(11),
+                              TextAlign.center),
+                        ),
+                        SizedBox(height: scaler.getHeight(0.9)),
+                      ],
+                    )
                   ),
-                  SizedBox(height: scaler.getHeight(0.9)),
                   Divider(),
-                  SizedBox(height: scaler.getHeight(0.9)),
                   GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.pushNamed(
@@ -1355,23 +1372,34 @@ class CreateEventScreen extends StatelessWidget {
                         provider.setState(ViewState.Idle);
                       });
                     },
-                    child: Text("default_photo".tr()).regularText(
-                        ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
-                        TextAlign.center),
+                    child: Column(
+                      children: [
+                        SizedBox(height: scaler.getHeight(0.9)),
+                        Container(
+                          width: double.infinity,
+                          child: Text("default_photo".tr()).regularText(
+                              ColorConstants.primaryColor,
+                              scaler.getTextSize(11),
+                              TextAlign.center),
+                        ),
+                        SizedBox(height: scaler.getHeight(2)),
+                      ],
+                    )
                   ),
-                  SizedBox(height: scaler.getHeight(2)),
                 ],
               ),
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(context).pop();
                 },
                 child: Center(
-                  child: Text("cancel".tr()).semiBoldText(
-                      ColorConstants.colorRed,
-                      scaler.getTextSize(11),
-                      TextAlign.center),
+                  child: Container(
+                    child: Text("cancel".tr()).semiBoldText(
+                        ColorConstants.colorRed,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  )
                 ),
               ),
               SizedBox(height: scaler.getHeight(1.5)),

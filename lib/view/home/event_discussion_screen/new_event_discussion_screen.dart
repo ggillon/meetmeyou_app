@@ -348,18 +348,19 @@ class NewEventDiscussionScreen extends StatelessWidget {
           String header = index == 0
               ? provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 11)
               : provider.eventDiscussionList[index-1].createdTimeStamp.toLocal().toString().substring(0, 11);
-          return aToZHeader(context, scaler, index, header, currentHeader);
+          return dateHeader(context, scaler, index, header, currentHeader);
         });
   }
 
-  aToZHeader(BuildContext context,  ScreenScaler scaler, int index, String header, String cHeader) {
+  dateHeader(BuildContext context,  ScreenScaler scaler, int index, String header, String cHeader) {
     if (index == 0 ? true : (header != cHeader)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CustomShape(
             child: Center(
-                child:Text(DateTimeHelper.chatHeaderDateFormat(provider.eventDiscussionList[index].createdTimeStamp.toLocal()))
+                child:Text(DateTimeHelper.chatHeaderDateFormat(provider.eventDiscussionList[index].createdTimeStamp.toLocal(),
+                    provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 4) == DateTime.now().toLocal().toString().substring(0, 4) ? true : false ))
                     .semiBoldText(
                     ColorConstants.colorBlackDown,
                     scaler.getTextSize(9.5),
@@ -368,7 +369,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
             radius: BorderRadius.all(
               Radius.circular(12),
             ),
-            width: scaler.getWidth(21),
+            width: scaler.getWidth(provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 4) == DateTime.now().toLocal().toString().substring(0, 4) ? 21 : 25),
             height: scaler.getHeight(2.0),
           ),
           // SizedBox(height: scaler.getHeight(1.0)),
