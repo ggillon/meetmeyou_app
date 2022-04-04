@@ -48,6 +48,8 @@ abstract class MMYEngine {
   Future<void> deleteUser();
   /// Set a parameter
   Future<Profile> setUserParameter(String param, dynamic value);
+  /// Get a parameter
+  Future<dynamic> getUserParameter(String param,);
 
   /// CONTACT ///
 
@@ -234,6 +236,12 @@ class MMY implements MMYEngine {
   @override
   Future<Profile> setUserParameter(String param, dynamic value) async {
     return await profileLib.setProfileParameter(_currentUser, param: param, value: value);
+  }
+
+  @override
+  Future<dynamic> getUserParameter(String param,) async {
+    Profile user = await profileLib.getUserProfile(_currentUser);
+    return user.parameters[param];
   }
 
   @override
