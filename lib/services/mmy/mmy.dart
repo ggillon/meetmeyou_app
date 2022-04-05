@@ -17,6 +17,8 @@ import '../../models/discussion.dart';
 import '../../models/discussion_message.dart';
 import '../../models/mmy_notification.dart';
 import '../../models/search_result.dart';
+import 'mmy_admin.dart';
+import 'mmy_creator.dart';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
 import 'event.dart' as eventLib;
@@ -29,6 +31,9 @@ import 'discussion.dart' as discussionLib;
 import 'search.dart' as searchLib;
 import 'notification.dart' as notificationLib;
 
+const USER_TYPE_NORMAL = "Normal User";
+const USER_TYPE_PRO = "Pro User";
+const USER_TYPE_ADMIN = "Admin User";
 
 abstract class MMYEngine {
 
@@ -192,6 +197,13 @@ abstract class MMYEngine {
   /// NOTIFICATION
   Future<List<MMYNotification>> getUserNotification();
 
+  /// User Mode
+  Future<String> getUserType();
+  /// get Creator object if user allowed
+  Future<MMYCreator> getCreator();
+  /// get Creator object if user allowed
+  Future<MMYAdmin> getAdmin();
+
 }
 
 class MMY implements MMYEngine {
@@ -239,7 +251,7 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<dynamic> getUserParameter(String param,) async {
+  Future<dynamic?> getUserParameter(String param,) async {
     Profile user = await profileLib.getUserProfile(_currentUser);
     return user.parameters[param];
   }
@@ -671,5 +683,34 @@ class MMY implements MMYEngine {
     return notificationLib.getUserNotifications(_currentUser);
   }
 
+  @override
+  Future<MMYAdmin> getAdmin() async {
+    String userType = await getUserType();
+    if(userType == USER_TYPE_ADMIN) {
+      return MMYAdmin(_currentUser);
+    } else {
+      throw Error();
+    }
+  }
+
+  @override
+  Future<MMYCreator> getCreator() async {
+    String userType = await getUserType();
+    if(userType == USER_TYPE_ADMIN || userType == USER_TYPE_PRO) {
+      return MMYCreator(_currentUser);
+    } else {
+      throw Error();
+    }
+  }
+
+  @override
+  Future<String> getUserType() async {
+    String? userType = await getUserParameter('UserType');
+    if(userType == null)
+      userType = USER_TYPE_NORMAL;
+    return userType;
+  }
+
 
 }
+
