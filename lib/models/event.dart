@@ -7,6 +7,7 @@ const EVENT_TYPE_ANNOUNCEMENT = 'Announcement';
 const EVENT_TYPE_SAVE_THE_DATE = 'Save the date';
 const EVENT_TYPE_UPDATED = 'Updated event';
 const EVENT_TYPE_PUBLIC = 'Public event';
+const EVENT_TYPE_LOCATION = 'Public Location event';
 
 // Reply type
 const EVENT_INVITED = 'Invited';
@@ -31,7 +32,7 @@ const NONE = 'None';
 const DEFAULT_EVENT_PHOTO_URL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/MeetMeYou.jpg?alt=media&token=6a8fc7ac-1925-4bc3-b5d0-f422473363a1';
 
 class Event {
-  Event({required this.eid, required this.organiserID, required this.organiserName, required this.admins, this.eventType='Private Event', required this.timeStamp, required this.title, required this.start, required this.end, this.location='', this.geoLocation=EMPTY_MAP, this.multipleDates=false, this.description='', this.photoURL=DEFAULT_EVENT_PHOTO_URL, this.invitedContacts=EMPTY_MAP, this.status='', this.formText='', this.form=EMPTY_MAP, this.params=EMPTY_MAP, this.invites=EMPTY_MAP});
+  Event({required this.eid, required this.organiserID, required this.organiserName, required this.admins, this.eventType='Private Event', required this.timeStamp, required this.title, required this.start, required this.end, this.location='', this.geoLocation=EMPTY_MAP, this.multipleDates=false, this.description='', this.photoURL=DEFAULT_EVENT_PHOTO_URL, this.invitedContacts=EMPTY_MAP, this.status='', this.website='', this.formText='', this.form=EMPTY_MAP, this.params=EMPTY_MAP, this.invites=EMPTY_MAP});
   String eid;
   String title;
   String eventType;
@@ -52,6 +53,7 @@ class Event {
   Map form;
   Map params;
   Map invites;
+  String website;
 
   double get durationInHours => end.difference(start).inMinutes.toDouble()/60;
 
@@ -82,8 +84,9 @@ class Event {
     final Map form = data['form'] ?? EMPTY_MAP;
     final Map params = data['params'] ?? EMPTY_MAP;
     final Map invites = data['invites'] ?? EMPTY_MAP;
+    final String website = data['website'] ?? '';
 
-    return Event(eid: eid, organiserID: organiserID, organiserName: organiserName, admins: admins, eventType: eventType, timeStamp: timeStamp, title: title, start: start, end: end, multipleDates: multipleDates, location: location, geoLocation: geoLocation, description: description, photoURL: photoURL, status: status, invitedContacts: invitedContacts, formText: formText, form: form, params: params, invites: invites);
+    return Event(eid: eid, organiserID: organiserID, organiserName: organiserName, admins: admins, eventType: eventType, timeStamp: timeStamp, title: title, start: start, end: end, multipleDates: multipleDates, location: location, geoLocation: geoLocation, description: description, photoURL: photoURL, status: status, invitedContacts: invitedContacts, formText: formText, form: form, params: params, invites: invites, website: website);
   }
 
   Event getFromMap(Map<String, dynamic> data) {
@@ -111,9 +114,9 @@ class Event {
     final String formText = data['formText'] ?? '';
     final Map form = data['form'] ?? EMPTY_MAP;
     final Map params = data['params'] ?? EMPTY_MAP;
-    final Map invites = data['invites'] ?? EMPTY_MAP;
+    final String website = data['website'] ?? '';
 
-    return Event(eid: eid, organiserID: organiserID, organiserName: organiserName, admins: admins, eventType: eventType, timeStamp: timeStamp, title: title, start: start, end: end, multipleDates: multipleDates, location: location, geoLocation: geoLocation, description: description, photoURL: photoURL, status: status, invitedContacts: invitedContacts, formText: formText, form: form, params: params, invites: invites);
+    return Event(eid: eid, organiserID: organiserID, organiserName: organiserName, admins: admins, eventType: eventType, timeStamp: timeStamp, title: title, start: start, end: end, multipleDates: multipleDates, location: location, geoLocation: geoLocation, description: description, photoURL: photoURL, status: status, invitedContacts: invitedContacts, formText: formText, form: form, params: params, invites: invites, website: website);
   }
 
   Map<String, dynamic> toMap() {
@@ -138,6 +141,7 @@ class Event {
       'form': form,
       'params': params,
       'invites': invites,
+      'website': website,
     };
   }
 }
