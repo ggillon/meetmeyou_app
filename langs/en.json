@@ -222,5 +222,11 @@
   "switch_mode" : "Switch mode",
   "normal_usage" : "Normal Usage",
   "creator_mode" : "Creator Mode",
-  "admin_mode" : "Admin Mode"
+  "admin_mode" : "Admin Mode",
+  "location" : "Location",
+  "create_a_location" : "Create a Location (Restaurant, Museum, Attraction, etc.) accessible to anyone to create an event from",
+  "public_event" : "Public Event",
+  "create_a_public" : "Create a public event accessible to anybody on the platform",
+  "website" : "Website",
+  "click_here_to_add_website" : "Click here to add website"
 }

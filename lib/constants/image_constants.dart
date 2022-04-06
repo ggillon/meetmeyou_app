@@ -56,4 +56,5 @@ class ImageConstants {
   static const eventFinalDateAlert_close = "images/ic_close_eventFinalDateAlert.svg";
   static const eventShare_icon = "images/ic_event_share.svg";
   static const speaker_icon = "images/ic_speaker.svg";
-}
+  static const globe_icon = "images/ic_globe.svg";
+ }

@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/settings_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/mmy/notification.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -28,133 +29,135 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        body: BaseView<SettingsProvider>(
-          onModelReady: (provider) {
-            this.provider = provider;
-            provider.getUserDetail(context);
-            provider.getCalendarParams(context);
-            provider.getUserParameterForEvent(context, PARAM_NOTIFY_EVENT);
-            provider.getUserParameterForMessages(context, PARAM_NOTIFY_DISCUSSION);
-            provider.getUserParameterForInvitation(context, PARAM_NOTIFY_INVITATION);
-          },
-          builder: (context, provider, _) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Card(
-                      shadowColor: ColorConstants.colorWhite,
-                      elevation: 3.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: scaler.getBorderRadiusCircular(10)),
-                      child: CustomShape(
-                        child: userDetails(scaler, context, provider),
-                        bgColor: ColorConstants.colorWhite,
-                        radius: scaler.getBorderRadiusCircular(10),
-                        width: MediaQuery.of(context).size.width,
+    return BaseView<SettingsProvider>(
+        onModelReady: (provider) {
+          this.provider = provider;
+          provider.getUserDetail(context);
+          provider.getCalendarParams(context);
+          provider.getUserParameterForEvent(context, PARAM_NOTIFY_EVENT);
+          provider.getUserParameterForMessages(context, PARAM_NOTIFY_DISCUSSION);
+          provider.getUserParameterForInvitation(context, PARAM_NOTIFY_INVITATION);
+        },
+        builder: (context, provider, _) {
+          return SafeArea(
+            child: Scaffold(
+              backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Card(
+                        shadowColor: ColorConstants.colorWhite,
+                        elevation: 3.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: scaler.getBorderRadiusCircular(10)),
+                        child: CustomShape(
+                          child: userDetails(scaler, context, provider),
+                          bgColor: ColorConstants.colorWhite,
+                          radius: scaler.getBorderRadiusCircular(10),
+                          width: MediaQuery.of(context).size.width,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: scaler.getHeight(2.5)),
-                    Column(
-                      children: [
-                        CommonWidgets.settingsPageCard(
-                            scaler,
-                            context,
-                            ImageConstants.person_icon,
-                            "search_contact_book".tr(),
-                            true, onTapCard: () {
-                          Navigator.pushNamed(
-                              context, RoutesConstants.inviteFriendsScreen);
-                        }),
-                        SizedBox(height: scaler.getHeight(1)),
-                        CommonWidgets.settingsPageCard(
-                            scaler,
-                            context,
-                            ImageConstants.person_icon,
-                            "rejected_invites".tr(),
-                            true, onTapCard: () {
-                          Navigator.pushNamed(
-                              context, RoutesConstants.rejectedInvitesScreen);
-                        }, isIcon: false),
-                        SizedBox(height: scaler.getHeight(1)),
-                        CommonWidgets.settingsPageCard(
-                            scaler,
-                            context,
-                            ImageConstants.archive_icon,
-                            "history".tr(),
-                            true, onTapCard: () {
-                          Navigator.pushNamed(
-                              context, RoutesConstants.historyScreen);
-                        }),
-                        SizedBox(height: scaler.getHeight(1)),
-                        CommonWidgets.settingsPageCard(
-                            scaler,
-                            context,
-                            ImageConstants.calendar_icon,
-                            "calender_settings".tr(),
-                            true, onTapCard: () {
-                          Navigator.pushNamed(
-                              context, RoutesConstants.calendarSettingsScreen);
-                        }),
-                        SizedBox(height: scaler.getHeight(1)),
-                        CommonWidgets.settingsPageCard(
-                            scaler,
-                            context,
-                            ImageConstants.speaker_icon,
-                            "notification_settings".tr(),
-                            true, onTapCard: () {
-                          Navigator.pushNamed(
-                              context, RoutesConstants.notificationSettings);
-                        }),
-                        SizedBox(height: scaler.getHeight(1)),
-                        CommonWidgets.settingsPageCard(
-                            scaler,
-                            context,
-                            ImageConstants.about_icon,
-                            "about".tr(),
-                            false, onTapCard: () {
-                          Navigator.pushNamed(
-                              context, RoutesConstants.aboutPage);
-                        }),
-                        SizedBox(height: scaler.getHeight(1.5)),
-                        DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
-                            ColorConstants.colorRed, funOnTap: () {
-                              switchModeBottomSheet(context, scaler);
-                            }),
-                        DialogHelper.btnWidget(scaler, context, "logout".tr(),
-                            ColorConstants.primaryColor, funOnTap: () async {
-                          auth.signOut();
-                          provider.userDetail.profileUrl = null;
-                          SharedPref.clearSharePref();
-                          provider.calendarDetail.fromDeepLink == false;
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              RoutesConstants.loginOptions, (route) => false);
-                        }),
-                        DialogHelper.btnWidget(
-                            scaler,
-                            context,
-                            "delete_user".tr(),
-                            ColorConstants.colorRed, funOnTap: () {
-                          DialogHelper.showDialogWithTwoButtons(
+                      SizedBox(height: scaler.getHeight(2.5)),
+                      Column(
+                        children: [
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.person_icon,
+                              "search_contact_book".tr(),
+                              true, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.inviteFriendsScreen);
+                          }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.person_icon,
+                              "rejected_invites".tr(),
+                              true, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.rejectedInvitesScreen);
+                          }, isIcon: false),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.archive_icon,
+                              "history".tr(),
+                              true, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.historyScreen);
+                          }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.calendar_icon,
+                              "calender_settings".tr(),
+                              true, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.calendarSettingsScreen);
+                          }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.speaker_icon,
+                              "notification_settings".tr(),
+                              true, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.notificationSettings);
+                          }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.about_icon,
+                              "about".tr(),
+                              false, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.aboutPage);
+                          }),
+                          SizedBox(height: scaler.getHeight(1.5)),
+                          DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
+                              ColorConstants.colorRed, funOnTap: () {
+                                provider.userDetail.userType == null ? Container() : switchModeBottomSheet(context, scaler);
+                              }),
+                          DialogHelper.btnWidget(scaler, context, "logout".tr(),
+                              ColorConstants.primaryColor, funOnTap: () async {
+                            auth.signOut();
+                            provider.userDetail.userType = null;
+                            provider.userDetail.profileUrl = null;
+                            SharedPref.clearSharePref();
+                            provider.calendarDetail.fromDeepLink == false;
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                RoutesConstants.loginOptions, (route) => false);
+                          }),
+                          DialogHelper.btnWidget(
+                              scaler,
                               context,
                               "delete_user".tr(),
-                              "sure_to_delete_user".tr());
-                        }),
-                      ],
-                    ),
-                    SizedBox(height: scaler.getHeight(1)),
-                  ],
+                              ColorConstants.colorRed, funOnTap: () {
+                            DialogHelper.showDialogWithTwoButtons(
+                                context,
+                                "delete_user".tr(),
+                                "sure_to_delete_user".tr());
+                          }),
+                        ],
+                      ),
+                      SizedBox(height: scaler.getHeight(1)),
+                    ],
+                  ),
                 ),
               ),
-            );
-          },
-        ),
-      ),
-    );
+            ),
+          );
+        },
+      );
   }
 
   Widget userDetails(
@@ -283,12 +286,12 @@ class SettingsPage extends StatelessWidget {
                                 scaler.getTextSize(11),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          provider!.userDetail.userType == USER_TYPE_ADMIN ? SizedBox(height: scaler.getHeight(0.9)) : SizedBox(height: scaler.getHeight(2.0)),
                         ],
                       ),
                     ),
-                    Divider(),
-                    GestureDetector(
+                  provider!.userDetail.userType == USER_TYPE_ADMIN ? Divider() : Container(),
+                    provider!.userDetail.userType == USER_TYPE_ADMIN ? GestureDetector(
                       behavior: HitTestBehavior.opaque,
                     //  onTap: hide,
                       child: Column(
@@ -304,7 +307,7 @@ class SettingsPage extends StatelessWidget {
                           SizedBox(height: scaler.getHeight(2)),
                         ],
                       ),
-                    ),
+                    ) : Container(),
                   ],
                 ),
                 GestureDetector(

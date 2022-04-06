@@ -13,6 +13,7 @@ import 'package:meetmeyou_app/models/messageNotificationEvent.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
 import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/add_event/addEventScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
@@ -83,6 +84,7 @@ class _DashboardPageState extends State<DashboardPage> {
       },
       builder: (context, provider, _) {
         return Scaffold(
+         // backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
           body: Center(
             child: _widgetOptions.elementAt(provider.selectedIndex),
           ),

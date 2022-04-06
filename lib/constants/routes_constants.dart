@@ -39,4 +39,5 @@ class RoutesConstants {
   static const seeAllEvents = "seeAllEvents";
   static const notificationSettings = "notificationSettings";
   static const notificationsHistoryScreen = "notificationsHistoryScreen";
+  static const publicLocationCreateEventScreen = "publicLocationCreateEventScreen";
 }

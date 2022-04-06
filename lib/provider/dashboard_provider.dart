@@ -21,6 +21,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/services/mmy/mmy_creator.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -95,6 +96,7 @@ class DashboardProvider extends BaseProvider {
 
   Future getUserType(BuildContext context) async{
     updateUserType(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine?.getUserType().catchError((e){
       updateUserType(false);
@@ -102,9 +104,33 @@ class DashboardProvider extends BaseProvider {
     });
 
     if(value != null){
+      userDetail.userType = value;
+      if(value == USER_TYPE_ADMIN || value == USER_TYPE_PRO) {
+        getCreator(context);
+      }
       updateUserType(false);
     }
   }
 
+  bool creator = true;
+
+  updateCreator(bool val){
+    creator = val;
+    notifyListeners();
+  }
+
+  Future getCreator(BuildContext context) async{
+    updateCreator(true);
+
+    var value = await mmyEngine!.getCreator().catchError((e){
+      updateCreator(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      userDetail.mmyCreator = value;
+      updateCreator(false);
+    }
+  }
 
 }

@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/contacts/contact_description/contactDescriptionScreen.dart';
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
@@ -25,166 +26,167 @@ class ContactsScreen extends StatelessWidget {
   ContactsScreen({Key? key}) : super(key: key);
   final searchBarController = TextEditingController();
 
+  ContactsProvider? provider;
   @override
   Widget build(BuildContext context) {
     final dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstants.colorWhite,
-        body: BaseView<ContactsProvider>(
+    return BaseView<ContactsProvider>(
           onModelReady: (provider) {
             provider.getConfirmedContactsAndInvitationsList(context);
           },
           builder: (context, provider, _) {
-            return Padding(
-              padding: scaler.getPaddingLTRB(2.5, 0.7, 2.5, 2.5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return SafeArea(
+              child: Scaffold(
+                backgroundColor: provider!.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider!.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
+                body: Padding(
+                  padding: scaler.getPaddingLTRB(2.5, 0.7, 2.5, 2.5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("contacts".tr()).semiBoldText(
-                          ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
-                          TextAlign.left),
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            bottomSheet(context, scaler, provider);
-                          },
-                          child: Padding(
-                            padding: scaler.getPaddingLTRB(0.0, 0.0, 1.5, 0.0),
-                            child: ImageView(path: ImageConstants.small_add_icon, height: scaler.getHeight(3.0), width: scaler.getWidth(10.0)),
-                          )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("contacts".tr()).semiBoldText(
+                              ColorConstants.colorBlack,
+                              scaler.getTextSize(16),
+                              TextAlign.left),
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                bottomSheet(context, scaler, provider);
+                              },
+                              child: Padding(
+                                padding: scaler.getPaddingLTRB(0.0, 0.0, 1.5, 0.0),
+                                child: ImageView(path: ImageConstants.small_add_icon, height: scaler.getHeight(3.0), width: scaler.getWidth(10.0)),
+                              )),
+                        ],
+                      ),
+                      SizedBox(height: scaler.getHeight(1)),
+                      AnimatedToggle(
+                        values: ['all'.tr(), 'groups'.tr()],
+                        onToggleCallback: (value) {
+                          provider.toggle = value;
+                          if (value == 0) {
+                            provider
+                                .getConfirmedContactsAndInvitationsList(context);
+                          } else {
+                            provider.getGroupList(context);
+                          }
+                          provider.updateValue(true);
+                        },
+                        buttonColor: ColorConstants.colorWhite,
+                        backgroundColor: ColorConstants.colorMediumGray,
+                      ),
+                      SizedBox(height: scaler.getHeight(1)),
+                      provider.toggle == 0
+                          ? provider.state == ViewState.Busy
+                              ? Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Center(child: CircularProgressIndicator()),
+                                      SizedBox(height: scaler.getHeight(1)),
+                                      Text("loading_contacts".tr()).mediumText(
+                                          ColorConstants.primaryColor,
+                                          scaler.getTextSize(10),
+                                          TextAlign.left),
+                                    ],
+                                  ),
+                                )
+                              : provider.invitationContactList.length == 0 &&
+                                      provider.confirmContactList.length == 0
+                                  ? Expanded(
+                                      child: Center(
+                                        child: Text("sorry_no_contacts_found".tr())
+                                            .mediumText(
+                                                ColorConstants.primaryColor,
+                                                scaler.getTextSize(10),
+                                                TextAlign.left),
+                                      ),
+                                    )
+                                  : Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            provider.invitationContactList.length ==
+                                                    0
+                                                ? Container()
+                                                : Text("invitations".tr())
+                                                    .semiBoldText(
+                                                        ColorConstants.colorBlack,
+                                                        scaler.getTextSize(9.8),
+                                                        TextAlign.left),
+                                            SizedBox(height: scaler.getHeight(1)),
+                                            provider.invitationContactList.length ==
+                                                    0
+                                                ? Container()
+                                                : invitationContactList(
+                                                    scaler,
+                                                    provider.invitationContactList,
+                                                    provider, dashBoardProvider),
+                                            provider.invitationContactList.length ==
+                                                    0
+                                                ? Container()
+                                                : SizedBox(
+                                                    height: scaler.getHeight(2.5)),
+                                            provider.confirmContactList.length == 0
+                                                ? Container()
+                                                : confirmContactGroupList(
+                                                    scaler,
+                                                    provider.confirmContactList,
+                                                    provider)
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                          : provider.state == ViewState.Busy
+                              ? Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Center(child: CircularProgressIndicator()),
+                                      SizedBox(height: scaler.getHeight(1)),
+                                      Text("loading_groups".tr()).mediumText(
+                                          ColorConstants.primaryColor,
+                                          scaler.getTextSize(10),
+                                          TextAlign.left),
+                                    ],
+                                  ),
+                                )
+                              : provider.groupList.length == 0
+                                  ? Expanded(
+                                      child: Center(
+                                        child: Text("sorry_no_group_found".tr())
+                                            .mediumText(
+                                                ColorConstants.primaryColor,
+                                                scaler.getTextSize(10),
+                                                TextAlign.left),
+                                      ),
+                                    )
+                                  : Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: scaler.getHeight(1)),
+                                            confirmContactGroupList(scaler,
+                                                provider.groupList, provider),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                     ],
                   ),
-                  SizedBox(height: scaler.getHeight(1)),
-                  AnimatedToggle(
-                    values: ['all'.tr(), 'groups'.tr()],
-                    onToggleCallback: (value) {
-                      provider.toggle = value;
-                      if (value == 0) {
-                        provider
-                            .getConfirmedContactsAndInvitationsList(context);
-                      } else {
-                        provider.getGroupList(context);
-                      }
-                      provider.updateValue(true);
-                    },
-                    buttonColor: ColorConstants.colorWhite,
-                    backgroundColor: ColorConstants.colorMediumGray,
-                  ),
-                  SizedBox(height: scaler.getHeight(1)),
-                  provider.toggle == 0
-                      ? provider.state == ViewState.Busy
-                          ? Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Center(child: CircularProgressIndicator()),
-                                  SizedBox(height: scaler.getHeight(1)),
-                                  Text("loading_contacts".tr()).mediumText(
-                                      ColorConstants.primaryColor,
-                                      scaler.getTextSize(10),
-                                      TextAlign.left),
-                                ],
-                              ),
-                            )
-                          : provider.invitationContactList.length == 0 &&
-                                  provider.confirmContactList.length == 0
-                              ? Expanded(
-                                  child: Center(
-                                    child: Text("sorry_no_contacts_found".tr())
-                                        .mediumText(
-                                            ColorConstants.primaryColor,
-                                            scaler.getTextSize(10),
-                                            TextAlign.left),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        provider.invitationContactList.length ==
-                                                0
-                                            ? Container()
-                                            : Text("invitations".tr())
-                                                .semiBoldText(
-                                                    ColorConstants.colorBlack,
-                                                    scaler.getTextSize(9.8),
-                                                    TextAlign.left),
-                                        SizedBox(height: scaler.getHeight(1)),
-                                        provider.invitationContactList.length ==
-                                                0
-                                            ? Container()
-                                            : invitationContactList(
-                                                scaler,
-                                                provider.invitationContactList,
-                                                provider, dashBoardProvider),
-                                        provider.invitationContactList.length ==
-                                                0
-                                            ? Container()
-                                            : SizedBox(
-                                                height: scaler.getHeight(2.5)),
-                                        provider.confirmContactList.length == 0
-                                            ? Container()
-                                            : confirmContactGroupList(
-                                                scaler,
-                                                provider.confirmContactList,
-                                                provider)
-                                      ],
-                                    ),
-                                  ),
-                                )
-                      : provider.state == ViewState.Busy
-                          ? Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Center(child: CircularProgressIndicator()),
-                                  SizedBox(height: scaler.getHeight(1)),
-                                  Text("loading_groups".tr()).mediumText(
-                                      ColorConstants.primaryColor,
-                                      scaler.getTextSize(10),
-                                      TextAlign.left),
-                                ],
-                              ),
-                            )
-                          : provider.groupList.length == 0
-                              ? Expanded(
-                                  child: Center(
-                                    child: Text("sorry_no_group_found".tr())
-                                        .mediumText(
-                                            ColorConstants.primaryColor,
-                                            scaler.getTextSize(10),
-                                            TextAlign.left),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: scaler.getHeight(1)),
-                                        confirmContactGroupList(scaler,
-                                            provider.groupList, provider),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                ],
+                ),
               ),
             );
           },
-        ),
-      ),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:contacts_service/contacts_service.dart' as phoneContact;
+import 'package:meetmeyou_app/services/mmy/mmy_creator.dart';
 
 class UserDetail {
   String? firstName;
@@ -26,6 +27,11 @@ class UserDetail {
   String? groupCid;*/
 
   Iterable<phoneContact.Contact> phoneContacts = [];
+
+  String? userType;
+
+  //for creator mode
+  MMYCreator? mmyCreator;
 
   UserDetail(
       {this.firstName,

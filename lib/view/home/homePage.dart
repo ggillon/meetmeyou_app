@@ -22,6 +22,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_search_delegate.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
@@ -99,279 +100,281 @@ class _HomePageState extends State<HomePage>
         Provider.of<DashboardProvider>(context, listen: false);
     this._dashboardProvider = dashBoardProvider;
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return SafeArea(
-      child: Scaffold(
-          body: BaseView<HomePageProvider>(
-        onModelReady: (provider) async {
-          this.provider = provider;
-          provider.getUserDetail(context);
-          widget.provider = provider;
-          provider.tabController = TabController(length: 5, vsync: this);
-           provider.tabChangeEvent(context);
-          await provider.getIndexChanging(context);
-           provider.updatedDiscussions(context);
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
-            if ((provider.eventDetail.unRespondedEvent ?? 0) >
-                (provider.eventDetail.unRespondedEvent1 ?? 0)) {
-              dashBoardProvider.updateEventNotificationCount();
-              provider.unRespondedEventsApi(context);
+    return BaseView<HomePageProvider>(
+      onModelReady: (provider) async {
+        this.provider = provider;
+        provider.getUserDetail(context);
+        widget.provider = provider;
+        provider.tabController = TabController(length: 5, vsync: this);
+         provider.tabChangeEvent(context);
+        await provider.getIndexChanging(context);
+         provider.updatedDiscussions(context);
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          if ((provider.eventDetail.unRespondedEvent ?? 0) >
+              (provider.eventDetail.unRespondedEvent1 ?? 0)) {
+            dashBoardProvider.updateEventNotificationCount();
+            provider.unRespondedEventsApi(context);
+          }
+        });
+
+        provider.eventsNotifyEvent = provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
+            if(event.eventId != null){
+               provider.calendarDetail.fromAnotherPage = true;
+                provider.eventDetail.eid = event.eventId;
+                Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                  provider.getIndexChanging(context);
+                  provider.unRespondedEvents(context, dashBoardProvider);
+                  provider.unRespondedEventsApi(context);
+                });
             }
-          });
+        });
 
-          provider.eventsNotifyEvent = provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
-              if(event.eventId != null){
-                 provider.calendarDetail.fromAnotherPage = true;
-                  provider.eventDetail.eid = event.eventId;
-                  Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-                    provider.getIndexChanging(context);
-                    provider.unRespondedEvents(context, dashBoardProvider);
-                    provider.unRespondedEventsApi(context);
-                  });
-              }
-          });
-
-        },
-        builder: (context, provider, _) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: scaler.getPaddingLTRB(2.5, 2.0, 4.5, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("home".tr()).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(16), TextAlign.left),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: (){
-                            showSearch(
-                              context: context,
-                              delegate: CustomSearchDelegate(),
-                            ).then((value) {
-                              provider.getIndexChanging(context);
-                            });
-                          },
-                          child: Icon(Icons.search_outlined, color: ColorConstants.primaryColor, size: 30),
+      },
+      builder: (context, provider, _) {
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: scaler.getPaddingLTRB(2.5, 2.0, 4.5, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("home".tr()).boldText(ColorConstants.colorBlack,
+                          scaler.getTextSize(16), TextAlign.left),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: (){
+                              showSearch(
+                                context: context,
+                                delegate: CustomSearchDelegate(),
+                              ).then((value) {
+                                provider.getIndexChanging(context);
+                              });
+                            },
+                            child: Icon(Icons.search_outlined, color: ColorConstants.primaryColor, size: 30),
+                          ),
+                          SizedBox(width: scaler.getWidth(2.0)),
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: (){
+                              Navigator.pushNamed(context, RoutesConstants.notificationsHistoryScreen).then((value) {
+                                provider.getIndexChanging(context);
+                              });
+                            },
+                            child: Icon(Icons.notifications, color: ColorConstants.primaryColor, size: 28),
+                          ),
+                          SizedBox(width: scaler.getWidth(2.0)),
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: (){
+                              Navigator.pushNamed(context, RoutesConstants.chatsScreen).then((value) {
+                                provider.updatedDiscussions(context);
+                              });
+                            },
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Icon(Icons.message, color: ColorConstants.primaryColor, size: 28),
+                                  CommonWidgets.notificationBadge(scaler,
+                                      provider.chatNotificationCount ?? 0)
+                                ],
+                              ),
+                              ),
+                        ],
+                      )
+                     // ImageView(path: ImageConstants.search_icon)
+                    ],
+                  ),
+                ),
+                SizedBox(height: scaler.getHeight(2.0)),
+                Padding(
+                  padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
+                  child: Text("my_upcoming_events".tr()).boldText(
+                      ColorConstants.colorBlack,
+                      scaler.getTextSize(12),
+                      TextAlign.left),
+                ),
+                SizedBox(height: scaler.getHeight(0.5)),
+                Padding(
+                  padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
+                  child: TabBar(
+                    labelPadding: scaler.getPadding(0.0, 1.5),
+                    indicatorColor: Colors.transparent,
+                    controller: widget.provider?.tabController,
+                    isScrollable: true,
+                    onTap: (index) {
+                      if (provider.tabController!.indexIsChanging) {
+                        provider.getIndexChanging(context);
+                      }
+                      provider.updateValue(true);
+                    },
+                    tabs: [
+                      Tab(
+                          child: ClipRRect(
+                        borderRadius: scaler.getBorderRadiusCircular(15.0),
+                        child: Container(
+                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          color: provider.tabController!.index == 0
+                              ? ColorConstants.primaryColor
+                              : ColorConstants.colorWhitishGray,
+                          child: Text('all'.tr()).mediumText(
+                              provider.tabController!.index == 0
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorGray,
+                              scaler.getTextSize(9.5),
+                              TextAlign.left),
                         ),
-                        SizedBox(width: scaler.getWidth(2.0)),
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: (){
-                            Navigator.pushNamed(context, RoutesConstants.notificationsHistoryScreen).then((value) {
-                              provider.getIndexChanging(context);
-                            });
-                          },
-                          child: Icon(Icons.notifications, color: ColorConstants.primaryColor, size: 28),
+                      )),
+                      Tab(
+                          child: ClipRRect(
+                        borderRadius: scaler.getBorderRadiusCircular(15.0),
+                        child: Container(
+                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          color: provider.tabController!.index == 1
+                              ? ColorConstants.primaryColor
+                              : ColorConstants.colorWhitishGray,
+                          child: Text('going'.tr()).mediumText(
+                              provider.tabController!.index == 1
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorGray,
+                              scaler.getTextSize(9.5),
+                              TextAlign.left),
                         ),
-                        SizedBox(width: scaler.getWidth(2.0)),
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: (){
-                            Navigator.pushNamed(context, RoutesConstants.chatsScreen).then((value) {
-                              provider.updatedDiscussions(context);
-                            });
-                          },
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              alignment: Alignment.topRight,
-                              children: [
-                                Icon(Icons.message, color: ColorConstants.primaryColor, size: 28),
-                                CommonWidgets.notificationBadge(scaler,
-                                    provider.chatNotificationCount ?? 0)
-                              ],
-                            ),
-                            ),
-                      ],
-                    )
-                   // ImageView(path: ImageConstants.search_icon)
-                  ],
+                      )),
+                      Tab(
+                          child: ClipRRect(
+                        borderRadius: scaler.getBorderRadiusCircular(15.0),
+                        child: Container(
+                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          color: provider.tabController!.index == 2
+                              ? ColorConstants.primaryColor
+                              : ColorConstants.colorWhitishGray,
+                          child: Text('not_going'.tr()).mediumText(
+                              provider.tabController!.index == 2
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorGray,
+                              scaler.getTextSize(9.5),
+                              TextAlign.left),
+                        ),
+                      )),
+                      Tab(
+                          child: ClipRRect(
+                        borderRadius: scaler.getBorderRadiusCircular(15.0),
+                        child: Container(
+                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          color: provider.tabController!.index == 3
+                              ? ColorConstants.primaryColor
+                              : ColorConstants.colorWhitishGray,
+                          child: Text('not_replied'.tr()).mediumText(
+                              provider.tabController!.index == 3
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorGray,
+                              scaler.getTextSize(9.5),
+                              TextAlign.left),
+                        ),
+                      )),
+                      Tab(
+                          child: ClipRRect(
+                        borderRadius: scaler.getBorderRadiusCircular(15.0),
+                        child: Container(
+                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          color: provider.tabController!.index == 4
+                              ? ColorConstants.primaryColor
+                              : ColorConstants.colorWhitishGray,
+                          child: Text('hidden'.tr()).mediumText(
+                              provider.tabController!.index == 4
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorGray,
+                              scaler.getTextSize(9.5),
+                              TextAlign.left),
+                        ),
+                      )),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: scaler.getHeight(2.0)),
-              Padding(
-                padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
-                child: Text("my_upcoming_events".tr()).boldText(
-                    ColorConstants.colorBlack,
-                    scaler.getTextSize(12),
-                    TextAlign.left),
-              ),
-              SizedBox(height: scaler.getHeight(0.5)),
-              Padding(
-                padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
-                child: TabBar(
-                  labelPadding: scaler.getPadding(0.0, 1.5),
-                  indicatorColor: Colors.transparent,
-                  controller: widget.provider?.tabController,
-                  isScrollable: true,
-                  onTap: (index) {
-                    if (provider.tabController!.indexIsChanging) {
-                      provider.getIndexChanging(context);
-                    }
-                    provider.updateValue(true);
-                  },
-                  tabs: [
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 0
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('all'.tr()).mediumText(
-                            provider.tabController!.index == 0
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 1
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('going'.tr()).mediumText(
-                            provider.tabController!.index == 1
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 2
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('not_going'.tr()).mediumText(
-                            provider.tabController!.index == 2
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 3
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('not_replied'.tr()).mediumText(
-                            provider.tabController!.index == 3
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                    Tab(
-                        child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(15.0),
-                      child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                        color: provider.tabController!.index == 4
-                            ? ColorConstants.primaryColor
-                            : ColorConstants.colorWhitishGray,
-                        child: Text('hidden'.tr()).mediumText(
-                            provider.tabController!.index == 4
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorGray,
-                            scaler.getTextSize(9.5),
-                            TextAlign.left),
-                      ),
-                    )),
-                  ],
+                Expanded(
+                  child: TabBarView(
+                    controller: provider.tabController,
+                    children: <Widget>[
+                      provider.state == ViewState.Busy
+                          ? loading(scaler)
+                          : provider.eventLists.length == 0
+                              ? noEventFoundText(scaler)
+                              : RefreshIndicator(
+                                  onRefresh: refreshListTab1,
+                                  key: refreshKeyTab1,
+                                  child: upcomingEventsList(
+                                      scaler,
+                                      provider.eventLists,
+                                      provider,
+                                      dashBoardProvider),
+                                ),
+                      provider.state == ViewState.Busy
+                          ? loading(scaler)
+                          : provider.eventLists.length == 0
+                              ? noEventFoundText(scaler)
+                              : RefreshIndicator(
+                                  onRefresh: refreshListTab2,
+                                  key: refreshKeyTab2,
+                                  child: upcomingEventsList(
+                                      scaler,
+                                      provider.eventLists,
+                                      provider,
+                                      dashBoardProvider),
+                                ),
+                      provider.state == ViewState.Busy
+                          ? loading(scaler)
+                          : provider.eventLists.length == 0
+                              ? noEventFoundText(scaler)
+                              : RefreshIndicator(
+                                  onRefresh: refreshListTab3,
+                                  key: refreshKeyTab3,
+                                  child: upcomingEventsList(
+                                      scaler,
+                                      provider.eventLists,
+                                      provider,
+                                      dashBoardProvider),
+                                ),
+                      provider.state == ViewState.Busy
+                          ? loading(scaler)
+                          : provider.eventLists.length == 0
+                              ? noEventFoundText(scaler)
+                              : RefreshIndicator(
+                                  onRefresh: refreshListTab4,
+                                  key: refreshKeyTab4,
+                                  child: upcomingEventsList(
+                                      scaler,
+                                      provider.eventLists,
+                                      provider,
+                                      dashBoardProvider),
+                                ),
+                      provider.state == ViewState.Busy
+                          ? loading(scaler)
+                          : provider.eventLists.length == 0
+                              ? noEventFoundText(scaler)
+                              : RefreshIndicator(
+                                  onRefresh: refreshListTab5,
+                                  key: refreshKeyTab5,
+                                  child: upcomingEventsList(
+                                      scaler,
+                                      provider.eventLists,
+                                      provider,
+                                      dashBoardProvider),
+                                ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: provider.tabController,
-                  children: <Widget>[
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
-                            ? noEventFoundText(scaler)
-                            : RefreshIndicator(
-                                onRefresh: refreshListTab1,
-                                key: refreshKeyTab1,
-                                child: upcomingEventsList(
-                                    scaler,
-                                    provider.eventLists,
-                                    provider,
-                                    dashBoardProvider),
-                              ),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
-                            ? noEventFoundText(scaler)
-                            : RefreshIndicator(
-                                onRefresh: refreshListTab2,
-                                key: refreshKeyTab2,
-                                child: upcomingEventsList(
-                                    scaler,
-                                    provider.eventLists,
-                                    provider,
-                                    dashBoardProvider),
-                              ),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
-                            ? noEventFoundText(scaler)
-                            : RefreshIndicator(
-                                onRefresh: refreshListTab3,
-                                key: refreshKeyTab3,
-                                child: upcomingEventsList(
-                                    scaler,
-                                    provider.eventLists,
-                                    provider,
-                                    dashBoardProvider),
-                              ),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
-                            ? noEventFoundText(scaler)
-                            : RefreshIndicator(
-                                onRefresh: refreshListTab4,
-                                key: refreshKeyTab4,
-                                child: upcomingEventsList(
-                                    scaler,
-                                    provider.eventLists,
-                                    provider,
-                                    dashBoardProvider),
-                              ),
-                    provider.state == ViewState.Busy
-                        ? loading(scaler)
-                        : provider.eventLists.length == 0
-                            ? noEventFoundText(scaler)
-                            : RefreshIndicator(
-                                onRefresh: refreshListTab5,
-                                key: refreshKeyTab5,
-                                child: upcomingEventsList(
-                                    scaler,
-                                    provider.eventLists,
-                                    provider,
-                                    dashBoardProvider),
-                              ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      )),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
