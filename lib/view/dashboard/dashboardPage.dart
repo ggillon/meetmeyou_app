@@ -46,7 +46,8 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<DashboardProvider>(
-      onModelReady: (provider) {
+      onModelReady: (provider) async {
+       await provider.getUserType(context);
         //  if(widget.isFromLogin == null){
         provider.dynamicLinksApi.handleDynamicLink(context);
         //  }

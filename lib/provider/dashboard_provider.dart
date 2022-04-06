@@ -85,4 +85,26 @@ class DashboardProvider extends BaseProvider {
     notifyListeners();
   }
 
+  /// User Mode
+  bool userType = false;
+
+  updateUserType(bool val){
+    userType = val;
+    notifyListeners();
+  }
+
+  Future getUserType(BuildContext context) async{
+    updateUserType(true);
+
+    var value = await mmyEngine?.getUserType().catchError((e){
+      updateUserType(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      updateUserType(false);
+    }
+  }
+
+
 }

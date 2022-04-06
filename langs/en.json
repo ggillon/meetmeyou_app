@@ -218,5 +218,9 @@
   "exception" : "Exception",
   "accept" : "Accept",
   "today" : "Today",
-  "yesterday" : "Yesterday"
+  "yesterday" : "Yesterday",
+  "switch_mode" : "Switch mode",
+  "normal_usage" : "Normal Usage",
+  "creator_mode" : "Creator Mode",
+  "admin_mode" : "Admin Mode"
 }

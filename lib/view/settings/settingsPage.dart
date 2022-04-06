@@ -130,6 +130,10 @@ class SettingsPage extends StatelessWidget {
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               RoutesConstants.loginOptions, (route) => false);
                         }),
+                        DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
+                            ColorConstants.colorBlackDown, funOnTap: () {
+                          switchModeBottomSheet(context, scaler);
+                            }),
                         DialogHelper.btnWidget(
                             scaler,
                             context,
@@ -224,5 +228,101 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
           );
+  }
+
+  switchModeBottomSheet(BuildContext context, ScreenScaler scaler){
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: scaler.getHeight(0.5)),
+                Container(
+                  decoration: BoxDecoration(
+                      color: ColorConstants.colorMediumGray,
+                      borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                  height: scaler.getHeight(0.4),
+                  width: scaler.getWidth(12),
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                       // onTap: going,
+                        child: Column(
+                          children: [
+                            SizedBox(height: scaler.getHeight(2)),
+                            Container(
+                              width: double.infinity,
+                              child: Text("normal_usage".tr()).regularText(
+                                  ColorConstants.primaryColor,
+                                  scaler.getTextSize(11),
+                                  TextAlign.center),
+                            ),
+                            SizedBox(height: scaler.getHeight(0.9)),
+                          ],
+                        )
+                    ),
+                    Divider(),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                     // onTap: notGoing,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(0.9)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("creator_mode".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(0.9)),
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                    //  onTap: hide,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(0.9)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("admin_mode".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(11),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(2)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Center(
+                    child: Text("cancel".tr()).semiBoldText(
+                        ColorConstants.colorRed,
+                        scaler.getTextSize(11),
+                        TextAlign.center),
+                  ),
+                ),
+                SizedBox(height: scaler.getHeight(0.5)),
+              ],
+            ),
+          );
+        });
   }
 }
