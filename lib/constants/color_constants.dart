@@ -12,4 +12,5 @@ class ColorConstants {
   static var colorBlackDown = Color(0xFF3F3F3F);
   static var colorNewGray = Color(0xFFE9EDEC);
   static var colorCalender = Color(0x3C3C434D);
+  static var colorLightCyan = Color(0xFFe0ffff);
 }

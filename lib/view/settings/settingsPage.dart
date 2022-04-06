@@ -121,6 +121,10 @@ class SettingsPage extends StatelessWidget {
                               context, RoutesConstants.aboutPage);
                         }),
                         SizedBox(height: scaler.getHeight(1.5)),
+                        DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
+                            ColorConstants.colorRed, funOnTap: () {
+                              switchModeBottomSheet(context, scaler);
+                            }),
                         DialogHelper.btnWidget(scaler, context, "logout".tr(),
                             ColorConstants.primaryColor, funOnTap: () async {
                           auth.signOut();
@@ -130,10 +134,6 @@ class SettingsPage extends StatelessWidget {
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               RoutesConstants.loginOptions, (route) => false);
                         }),
-                        DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
-                            ColorConstants.colorBlackDown, funOnTap: () {
-                          switchModeBottomSheet(context, scaler);
-                            }),
                         DialogHelper.btnWidget(
                             scaler,
                             context,
