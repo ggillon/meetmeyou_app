@@ -6,6 +6,7 @@ import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/creator_mode.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -17,7 +18,7 @@ class AddEventScreen extends StatelessWidget {
    AddEventScreen({Key? key}) : super(key: key);
   EventDetail eventDetail = locator<EventDetail>();
    MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
-
+  CreatorMode creatorMode = locator<CreatorMode>();
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +125,8 @@ class AddEventScreen extends StatelessWidget {
      return GestureDetector(
        onTap: () {
          eventDetail.eventPhotoUrl = null;
+         creatorMode.editPublicEvent = false;
+         creatorMode.isLocationEvent = true;
          Navigator.of(context).pushNamed(RoutesConstants.publicLocationCreateEventScreen).then((value) {
           // dashboardProvider.onItemTapped(0);
          });
@@ -180,6 +183,8 @@ class AddEventScreen extends StatelessWidget {
      return GestureDetector(
        onTap: () {
          eventDetail.eventPhotoUrl = null;
+         creatorMode.editPublicEvent = false;
+         creatorMode.isLocationEvent = false;
          Navigator.of(context).pushNamed(RoutesConstants.publicLocationCreateEventScreen).then((value) {
          //  dashboardProvider.onItemTapped(0);
          });

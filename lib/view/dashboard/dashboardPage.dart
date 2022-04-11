@@ -21,6 +21,7 @@ import 'package:meetmeyou_app/view/contacts/contact_description/contactDescripti
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
+import 'package:meetmeyou_app/view/home/public_home_page/public_home_page.dart';
 import 'package:meetmeyou_app/view/settings/settingsPage.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -35,13 +36,14 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  static List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    CalendarPage(),
-    AddEventScreen(),
-    ContactsScreen(),
-    SettingsPage()
-  ];
+ // static List<Widget> _widgetOptions = [];
+  // = <Widget>[
+  //   HomePage(),
+  //   CalendarPage(),
+  //   AddEventScreen(),
+  //   ContactsScreen(),
+  //   SettingsPage()
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +85,15 @@ class _DashboardPageState extends State<DashboardPage> {
         });
       },
       builder: (context, provider, _) {
-        return Scaffold(
+        return provider.userType == true ? Scaffold(
+          backgroundColor: ColorConstants.primaryColor,
+          body: Center(
+            child: CircularProgressIndicator(color: ColorConstants.colorWhite),
+          ),
+        ) : Scaffold(
          // backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
           body: Center(
-            child: _widgetOptions.elementAt(provider.selectedIndex),
+            child: provider.widgetOptions.elementAt(provider.selectedIndex),
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: <BottomNavigationBarItem>[
@@ -132,9 +139,15 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               BottomNavigationBarItem(
                 icon: ImageView(path: ImageConstants.add_icon),
-                label: 'Home',
+                label: 'Create Event',
               ),
-              BottomNavigationBarItem(
+              provider.userDetail.userType == USER_TYPE_PRO ?  BottomNavigationBarItem(
+                icon: ImageView(path: ImageConstants.stats_icon),
+                label: 'Stats',
+                activeIcon: ImageView(
+                  path: ImageConstants.active_stats_icon,
+                )
+              ) : BottomNavigationBarItem(
                 icon: provider.unRespondedInvite <= 0
                     ? ImageView(
                         path: ImageConstants.contacts_icon,

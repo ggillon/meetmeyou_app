@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/creator_mode.dart';
 import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
@@ -40,6 +41,7 @@ import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/provider/notification_settings_provider.dart';
 import 'package:meetmeyou_app/provider/notifications_history_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
+import 'package:meetmeyou_app/provider/public_home_page_provider.dart';
 import 'package:meetmeyou_app/provider/public_location_create_event_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
@@ -65,6 +67,7 @@ void setupLocator() {
   locator.registerLazySingleton<DiscussionDetail>(() => DiscussionDetail());
   locator.registerLazySingleton<NotificationDetail>(() => NotificationDetail());
   locator.registerLazySingleton<EventBus>(() => EventBus());
+  locator.registerLazySingleton<CreatorMode>(() => CreatorMode());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());
@@ -105,6 +108,7 @@ void setupLocator() {
   locator.registerFactory<FirebaseNotification>(() => FirebaseNotification());
   locator.registerFactory<NotificationsHistoryProvider>(() => NotificationsHistoryProvider());
   locator.registerFactory<PublicLocationCreateEventProvider>(() => PublicLocationCreateEventProvider());
+  locator.registerFactory<PublicHomePageProvider>(() => PublicHomePageProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

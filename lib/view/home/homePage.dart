@@ -21,6 +21,7 @@ import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
+import 'package:meetmeyou_app/provider/public_home_page_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
@@ -100,34 +101,35 @@ class _HomePageState extends State<HomePage>
         Provider.of<DashboardProvider>(context, listen: false);
     this._dashboardProvider = dashBoardProvider;
     ScreenScaler scaler = new ScreenScaler()..init(context);
-    return BaseView<HomePageProvider>(
+    return  BaseView<HomePageProvider>(
       onModelReady: (provider) async {
         this.provider = provider;
-        provider.getUserDetail(context);
-        widget.provider = provider;
-        provider.tabController = TabController(length: 5, vsync: this);
-         provider.tabChangeEvent(context);
-        await provider.getIndexChanging(context);
-         provider.updatedDiscussions(context);
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          if ((provider.eventDetail.unRespondedEvent ?? 0) >
-              (provider.eventDetail.unRespondedEvent1 ?? 0)) {
-            dashBoardProvider.updateEventNotificationCount();
-            provider.unRespondedEventsApi(context);
-          }
-        });
-
-        provider.eventsNotifyEvent = provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
-            if(event.eventId != null){
-               provider.calendarDetail.fromAnotherPage = true;
-                provider.eventDetail.eid = event.eventId;
-                Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-                  provider.getIndexChanging(context);
-                  provider.unRespondedEvents(context, dashBoardProvider);
-                  provider.unRespondedEventsApi(context);
-                });
+          provider.getUserDetail(context);
+          widget.provider = provider;
+          provider.tabController = TabController(length: 5, vsync: this);
+          provider.tabChangeEvent(context);
+          await provider.getIndexChanging(context);
+          provider.updatedDiscussions(context);
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            if ((provider.eventDetail.unRespondedEvent ?? 0) >
+                (provider.eventDetail.unRespondedEvent1 ?? 0)) {
+              dashBoardProvider.updateEventNotificationCount();
+              provider.unRespondedEventsApi(context);
             }
-        });
+          });
+
+          provider.eventsNotifyEvent = provider.eventBus.on<UserEventsNotificationEvent>().listen((event) {
+            if(event.eventId != null){
+              provider.calendarDetail.fromAnotherPage = true;
+              provider.eventDetail.eid = event.eventId;
+              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                provider.getIndexChanging(context);
+                provider.unRespondedEvents(context, dashBoardProvider);
+                provider.unRespondedEventsApi(context);
+              });
+            }
+          });
+
 
       },
       builder: (context, provider, _) {
@@ -303,9 +305,9 @@ class _HomePageState extends State<HomePage>
                     controller: provider.tabController,
                     children: <Widget>[
                       provider.state == ViewState.Busy
-                          ? loading(scaler)
+                          ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0
-                              ? noEventFoundText(scaler)
+                              ? CommonWidgets.noEventFoundText(scaler)
                               : RefreshIndicator(
                                   onRefresh: refreshListTab1,
                                   key: refreshKeyTab1,
@@ -316,9 +318,9 @@ class _HomePageState extends State<HomePage>
                                       dashBoardProvider),
                                 ),
                       provider.state == ViewState.Busy
-                          ? loading(scaler)
+                          ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0
-                              ? noEventFoundText(scaler)
+                              ? CommonWidgets.noEventFoundText(scaler)
                               : RefreshIndicator(
                                   onRefresh: refreshListTab2,
                                   key: refreshKeyTab2,
@@ -329,9 +331,9 @@ class _HomePageState extends State<HomePage>
                                       dashBoardProvider),
                                 ),
                       provider.state == ViewState.Busy
-                          ? loading(scaler)
+                          ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0
-                              ? noEventFoundText(scaler)
+                              ? CommonWidgets.noEventFoundText(scaler)
                               : RefreshIndicator(
                                   onRefresh: refreshListTab3,
                                   key: refreshKeyTab3,
@@ -342,9 +344,9 @@ class _HomePageState extends State<HomePage>
                                       dashBoardProvider),
                                 ),
                       provider.state == ViewState.Busy
-                          ? loading(scaler)
+                          ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0
-                              ? noEventFoundText(scaler)
+                              ? CommonWidgets.noEventFoundText(scaler)
                               : RefreshIndicator(
                                   onRefresh: refreshListTab4,
                                   key: refreshKeyTab4,
@@ -355,9 +357,9 @@ class _HomePageState extends State<HomePage>
                                       dashBoardProvider),
                                 ),
                       provider.state == ViewState.Busy
-                          ? loading(scaler)
+                          ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0
-                              ? noEventFoundText(scaler)
+                              ? CommonWidgets.noEventFoundText(scaler)
                               : RefreshIndicator(
                                   onRefresh: refreshListTab5,
                                   key: refreshKeyTab5,
@@ -378,25 +380,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget loading(ScreenScaler scaler) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Center(child: CircularProgressIndicator()),
-        SizedBox(height: scaler.getHeight(1)),
-        Text("loading_event".tr()).mediumText(ColorConstants.primaryColor,
-            scaler.getTextSize(10), TextAlign.left),
-      ],
-    );
-  }
-
-  Widget noEventFoundText(ScreenScaler scaler) {
-    return Center(
-      child: Text("sorry_no_event_found".tr()).mediumText(
-          ColorConstants.primaryColor, scaler.getTextSize(10), TextAlign.left),
-    );
-  }
 
   Widget upcomingEventsList(ScreenScaler scaler, List<Event> eventList,
       HomePageProvider provider, DashboardProvider dashboardProvider) {

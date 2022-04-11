@@ -7,14 +7,17 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/creator_mode.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PublicLocationCreateEventProvider extends BaseProvider{
-
+  MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
+  CreatorMode creatorMode = locator<CreatorMode>();
   EventDetail eventDetail = locator<EventDetail>();
   File? image;
 
@@ -23,6 +26,7 @@ class PublicLocationCreateEventProvider extends BaseProvider{
   DateTime endDate = DateTime.now().add(Duration(days: 7));
   TimeOfDay endTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
   bool addEndDate = false;
+  bool addLocationDate = false;
 
   bool _isLoading = false;
 
@@ -227,7 +231,7 @@ class PublicLocationCreateEventProvider extends BaseProvider{
   Future createPublicEvent(BuildContext context, String title, String location, String description, DateTime start, {File? image, String? website, DateTime? end}) async{
     setState(ViewState.Busy);
 
-    var value = await userDetail.mmyCreator!.createPublicEvent(title: title, location: location, description: description, start: start, photoFile: image, website: website, end: end).catchError((e){
+    var value = await creatorMode.mmyCreator!.createPublicEvent(title: title, location: location, description: description, start: start, photoFile: image, website: website, end: end).catchError((e){
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
     });
@@ -238,4 +242,64 @@ class PublicLocationCreateEventProvider extends BaseProvider{
       Navigator.of(context).pop();
     }
   }
-}
+
+  Future updatePublicEvent(BuildContext context, String eid, String title, String location, String description, DateTime start, {File? image, String? website, DateTime? end, String? photoURL}) async{
+    setState(ViewState.Busy);
+
+    var value = await creatorMode.mmyCreator!.updatePublicEvent(eid, title: title, location: location, description: description, start: start, photoFile: image, website: website, end: end, photoURL: photoURL).catchError((e){
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.toString());
+    });
+
+    if(value != null){
+      image = null;
+      setState(ViewState.Idle);
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future cancelEvent(BuildContext context, String eid) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.cancelEvent(eid).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (value != null) {
+      setState(ViewState.Idle);
+      Navigator.of(context).pop();
+    }
+  }
+
+
+    Future createLocationEvent(BuildContext context, String title, String location, String description, {File? photoFile, String? website, DateTime? start, DateTime? end}) async{
+      setState(ViewState.Busy);
+
+    var value = await creatorMode.mmyCreator!.createLocationEvent(title: title, location: location, description: description, photoFile: photoFile, website: website, start: start, end: end).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      image = null;
+      setState(ViewState.Idle);
+      Navigator.of(context).pop();
+    }
+    }
+
+  Future updateLocationEvent(BuildContext context, String eid, String title, String location, String description, DateTime start, {File? image, String? website, DateTime? end, String? photoURL}) async{
+    setState(ViewState.Busy);
+
+    var value = await creatorMode.mmyCreator!.updateLocationEvent(eid, title: title, location: location, description: description, start: start, photoFile: image, website: website, end: end, photoURL: photoURL).catchError((e){
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.toString());
+    });
+
+    if(value != null){
+      image = null;
+      setState(ViewState.Idle);
+      Navigator.of(context).pop();
+    }
+  }
+  }

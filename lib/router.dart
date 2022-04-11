@@ -30,6 +30,7 @@ import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discus
 import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/home/notifications_history_screen/notifications_history_screen.dart';
+import 'package:meetmeyou_app/view/home/public_home_page/public_home_page.dart';
 import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
@@ -213,6 +214,7 @@ class Router {
 
       case RoutesConstants.publicLocationCreateEventScreen:
         return MaterialPageRoute(builder: (_) => PublicLocationCreateEventScreen(), settings: settings);
+
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

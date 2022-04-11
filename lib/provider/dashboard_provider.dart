@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/creator_mode.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
@@ -22,11 +23,19 @@ import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/mmy/mmy_creator.dart';
+import 'package:meetmeyou_app/view/add_event/addEventScreen.dart';
+import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
+import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
+import 'package:meetmeyou_app/view/home/homePage.dart';
+import 'package:meetmeyou_app/view/home/public_home_page/public_home_page.dart';
+import 'package:meetmeyou_app/view/settings/settingsPage.dart';
+import 'package:meetmeyou_app/view/stats/stats.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class DashboardProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  List<Widget> widgetOptions = [];
   UserDetail userDetail = locator<UserDetail>();
   GroupDetail groupDetail = locator<GroupDetail>();
   EventDetail eventDetail = locator<EventDetail>();
@@ -34,6 +43,7 @@ class DashboardProvider extends BaseProvider {
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
   EventBus eventBus = locator<EventBus>();
   FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
+  CreatorMode creatorModel = locator<CreatorMode>();
   int _selectedIndex = 0;
 
   var unRespondedInvite = 0;
@@ -106,8 +116,25 @@ class DashboardProvider extends BaseProvider {
     if(value != null){
       userDetail.userType = value;
       if(value == USER_TYPE_ADMIN || value == USER_TYPE_PRO) {
-        getCreator(context);
+        await getCreator(context);
+      } else{
+        widgetOptions = <Widget>[
+          userDetail.userType == USER_TYPE_PRO ? PublicHomePage() : HomePage(),
+          CalendarPage(),
+          AddEventScreen(),
+          userDetail.userType == USER_TYPE_PRO ? Stats() : ContactsScreen(),
+          SettingsPage()
+        ];
       }
+      updateUserType(false);
+    } else{
+      widgetOptions = <Widget>[
+        userDetail.userType == USER_TYPE_PRO ? PublicHomePage() : HomePage(),
+        CalendarPage(),
+        AddEventScreen(),
+        userDetail.userType == USER_TYPE_PRO ? Stats() :  ContactsScreen(),
+        SettingsPage()
+      ];
       updateUserType(false);
     }
   }
@@ -128,7 +155,14 @@ class DashboardProvider extends BaseProvider {
     });
 
     if(value != null){
-      userDetail.mmyCreator = value;
+      creatorModel.mmyCreator = value;
+      widgetOptions = <Widget>[
+        userDetail.userType == USER_TYPE_PRO ? PublicHomePage() : HomePage(),
+        CalendarPage(),
+        AddEventScreen(),
+        userDetail.userType == USER_TYPE_PRO ? Stats() :  ContactsScreen(),
+        SettingsPage()
+      ];
       updateCreator(false);
     }
   }

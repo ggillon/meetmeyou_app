@@ -51,7 +51,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
                           TextAlign.left),
                     ],
                   ),
-                ) : provider.notificationHistoryList.length == 0 ?  Expanded(
+                ) : (provider.notificationHistoryList.length == 0 || provider.notificationHistoryList == null) ?  Expanded(
                   child: Center(
                     child: Text("no_notifications".tr())
                         .mediumText(

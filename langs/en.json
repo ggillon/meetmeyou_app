@@ -228,5 +228,12 @@
   "public_event" : "Public Event",
   "create_a_public" : "Create a public event accessible to anybody on the platform",
   "website" : "Website",
-  "click_here_to_add_website" : "Click here to add website"
+  "click_here_to_add_website" : "Click here to add website",
+  "my_managed_events" : "My Managed Events",
+  "public_events" : "Public Events",
+  "locations" : "Locations",
+  "manage" : "Manage",
+  "add_location_for_limited_dates" : "Add Location for limited dates",
+  "booking_parameters" : "Booking Parameters",
+  "stats" : "Stats"
 }

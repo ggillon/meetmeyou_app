@@ -42,7 +42,78 @@ class SettingsPage extends StatelessWidget {
           return SafeArea(
             child: Scaffold(
               backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
-              body: SingleChildScrollView(
+              body:  provider.userDetail.userType ==  USER_TYPE_PRO ? Padding(
+                padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Card(
+                      shadowColor: ColorConstants.colorWhite,
+                      elevation: 3.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: scaler.getBorderRadiusCircular(10)),
+                      child: CustomShape(
+                        child: userDetails(scaler, context, provider),
+                        bgColor: ColorConstants.colorWhite,
+                        radius: scaler.getBorderRadiusCircular(10),
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                    ),
+                    SizedBox(height: scaler.getHeight(2.5)),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.booking_parameters_icon,
+                              "booking_parameters".tr(),
+                              false, onTapCard: () {
+
+                          }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.archive_icon,
+                              "history".tr(),
+                              true, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.historyScreen);
+                          }),
+                          SizedBox(height: scaler.getHeight(1)),
+                          CommonWidgets.settingsPageCard(
+                              scaler,
+                              context,
+                              ImageConstants.about_icon,
+                              "about".tr(),
+                              false, onTapCard: () {
+                            Navigator.pushNamed(
+                                context, RoutesConstants.aboutPage);
+                          }),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: scaler.getHeight(1.5)),
+                    DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
+                        ColorConstants.colorRed, funOnTap: () {
+                          provider.userDetail.userType == null ? Container() : switchModeBottomSheet(context, scaler);
+                        }),
+                    SizedBox(height: scaler.getHeight(0.4)),
+                    DialogHelper.btnWidget(scaler, context, "logout".tr(),
+                        ColorConstants.primaryColor, funOnTap: () async {
+                          auth.signOut();
+                          provider.userDetail.userType = null;
+                          provider.userDetail.profileUrl = null;
+                          SharedPref.clearSharePref();
+                          provider.calendarDetail.fromDeepLink == false;
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              RoutesConstants.loginOptions, (route) => false);
+                        }),
+                    SizedBox(height: scaler.getHeight(2.0)),
+                  ],
+                ),
+              ) : SingleChildScrollView(
                 child: Padding(
                   padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
                   child: Column(
@@ -61,7 +132,7 @@ class SettingsPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: scaler.getHeight(2.5)),
-                      Column(
+                     Column(
                         children: [
                           CommonWidgets.settingsPageCard(
                               scaler,
@@ -123,10 +194,6 @@ class SettingsPage extends StatelessWidget {
                                 context, RoutesConstants.aboutPage);
                           }),
                           SizedBox(height: scaler.getHeight(1.5)),
-                          DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
-                              ColorConstants.colorRed, funOnTap: () {
-                                provider.userDetail.userType == null ? Container() : switchModeBottomSheet(context, scaler);
-                              }),
                           DialogHelper.btnWidget(scaler, context, "logout".tr(),
                               ColorConstants.primaryColor, funOnTap: () async {
                             auth.signOut();
@@ -137,7 +204,8 @@ class SettingsPage extends StatelessWidget {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 RoutesConstants.loginOptions, (route) => false);
                           }),
-                          DialogHelper.btnWidget(
+                          SizedBox(height: scaler.getHeight(0.4)),
+                        DialogHelper.btnWidget(
                               scaler,
                               context,
                               "delete_user".tr(),

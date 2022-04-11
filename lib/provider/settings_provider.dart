@@ -3,6 +3,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/creator_mode.dart';
 import 'package:meetmeyou_app/models/notification_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -13,6 +14,7 @@ class SettingsProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   CalendarDetail calendarDetail = locator<CalendarDetail>();
   NotificationDetail notificationDetail = locator<NotificationDetail>();
+  CreatorMode creatorMode = locator<CreatorMode>();
 
   bool _isLoading = false;
 

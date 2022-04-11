@@ -727,4 +727,24 @@ class CommonWidgets {
           ),
         ));
   }
+
+ static Widget loading(ScreenScaler scaler) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(child: CircularProgressIndicator()),
+        SizedBox(height: scaler.getHeight(1)),
+        Text("loading_event".tr()).mediumText(ColorConstants.primaryColor,
+            scaler.getTextSize(10), TextAlign.left),
+      ],
+    );
+  }
+
+  static Widget noEventFoundText(ScreenScaler scaler) {
+    return Center(
+      child: Text("sorry_no_event_found".tr()).mediumText(
+          ColorConstants.primaryColor, scaler.getTextSize(10), TextAlign.left),
+    );
+  }
 }

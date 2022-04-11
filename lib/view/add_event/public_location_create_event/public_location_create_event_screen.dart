@@ -33,6 +33,21 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
       body: BaseView<PublicLocationCreateEventProvider>(
         onModelReady: (provider){
           this.provider = provider;
+          if(provider.creatorMode.editPublicEvent == true){
+            provider.eventDetail.eventPhotoUrl = provider.creatorMode.publicEvent?.photoURL;
+            eventNameController.text = provider.creatorMode.publicEvent?.title ?? "";
+            websiteController.text = provider.creatorMode.publicEvent?.website ?? "";
+            eventDescriptionController.text = provider.creatorMode.publicEvent?.description ?? "";
+            addressController.text = provider.creatorMode.publicEvent?.location ?? "";
+            provider.startDate =
+                provider.creatorMode.publicEvent?.start ?? DateTime.now().add(Duration(days: 7));
+            provider.startTime = TimeOfDay.fromDateTime(
+                provider.creatorMode.publicEvent?.start ?? DateTime.now());
+            provider.endDate =
+                provider.creatorMode.publicEvent?.end ?? DateTime.now().add(Duration(days: 7));
+            provider.endTime = TimeOfDay.fromDateTime(
+                provider.creatorMode.publicEvent?.end ?? DateTime.now());
+          }
         },
         builder: (context, provider, _){
           return GestureDetector(
@@ -86,7 +101,105 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            Column(
+                       provider.creatorMode.editPublicEvent == true ? Column(
+                         crossAxisAlignment:
+                         CrossAxisAlignment.start,
+                         children: [
+                           Align(
+                             alignment: Alignment.bottomLeft,
+                             child:
+                             Text("start_date_and_time".tr())
+                                 .boldText(
+                                 Colors.black,
+                                 scaler.getTextSize(9.5),
+                                 TextAlign.center),
+                           ),
+                           SizedBox(
+                               height: scaler.getHeight(0.2)),
+                           startDateTimePickField(
+                               context, scaler, provider),
+                           SizedBox(
+                               height: scaler.getHeight(1.5)),
+                           Align(
+                             alignment:
+                             Alignment.bottomLeft,
+                             child: Text(
+                                 "end_date_and_time"
+                                     .tr())
+                                 .boldText(
+                                 Colors.black,
+                                 scaler
+                                     .getTextSize(9.5),
+                                 TextAlign.center),
+                           ), SizedBox(
+                               height: scaler.getHeight(0.2)),
+                           endDateTimePickField(
+                               context, scaler, provider),
+                         ],
+                       ) : provider.creatorMode.isLocationEvent == true ?
+                             (provider.addLocationDate == true ?
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child:
+                                Text("start_date_and_time".tr())
+                                    .boldText(
+                                    Colors.black,
+                                    scaler.getTextSize(9.5),
+                                    TextAlign.center),
+                              ),
+                              SizedBox(
+                                  height: scaler.getHeight(0.2)),
+                              startDateTimePickField(
+                                  context, scaler, provider),
+                              SizedBox(
+                                  height: scaler.getHeight(1.5)),
+                              Align(
+                                alignment:
+                                Alignment.bottomLeft,
+                                child: Text(
+                                    "end_date_and_time"
+                                        .tr())
+                                    .boldText(
+                                    Colors.black,
+                                    scaler
+                                        .getTextSize(9.5),
+                                    TextAlign.center),
+                              ), SizedBox(
+                                  height: scaler.getHeight(0.2)),
+                              endDateTimePickField(
+                                  context, scaler, provider),
+                            ],
+                          ) : GestureDetector(
+                               onTap: () {
+                                 provider.addLocationDate = true;
+                                 provider.updateLoadingStatus(true);
+                               },
+                               child: Align(
+                                   alignment:
+                                   Alignment.bottomLeft,
+                                   child: Row(
+                                     children: [
+                                       Icon(Icons.add,
+                                           color: ColorConstants
+                                               .primaryColor,
+                                           size: 16),
+                                       Text("add_location_for_limited_dates"
+                                           .tr())
+                                           .mediumText(
+                                           ColorConstants
+                                               .primaryColor,
+                                           scaler
+                                               .getTextSize(
+                                               10),
+                                           TextAlign
+                                               .center)
+                                     ],
+                                   )),
+                             )) : Column(
                               crossAxisAlignment:
                               CrossAxisAlignment.start,
                               children: [
@@ -239,7 +352,7 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
                               onFieldSubmitted: (data) {
                                 // FocusScope.of(context).requestFocus(nodes[1]);
                               },
-                              textInputAction: TextInputAction.next,
+                              textInputAction: TextInputAction.done,
                               keyboardType: TextInputType.url,
                             ),
                             SizedBox(height: scaler.getHeight(2)),
@@ -283,7 +396,86 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
                             ),
 
                             SizedBox(height: scaler.getHeight(3.5)),
-                            provider.state == ViewState.Busy
+                                provider.creatorMode.editPublicEvent == true
+                                ? ((provider.state == ViewState.Busy)
+                                ? Center(
+                              child: Column(
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(
+                                      height: scaler.getHeight(1.5)),
+                                ],
+                              ),
+                            ) :  CommonWidgets.commonBtn(
+                                    scaler,
+                                    context,
+                                    "save_event".tr(),
+                                    ColorConstants.primaryColor,
+                                    ColorConstants.colorWhite,
+                                    onTapFun: () {
+                                      hideKeyboard(context);
+                                      if (_formKey.currentState!
+                                          .validate()) {
+                                        if(provider.creatorMode.isLocationEvent == false){
+                                          provider.updatePublicEvent(context, provider.creatorMode.publicEvent!.eid, eventNameController.text, addressController.text, eventDescriptionController.text,
+                                              DateTimeHelper
+                                                  .dateTimeFormat(
+                                                  provider.startDate,
+                                                  provider.startTime), image: provider.image, website: websiteController.text, end: DateTimeHelper
+                                                  .dateTimeFormat(
+                                                  provider.endDate,
+                                                  provider.endTime), photoURL: provider.image == null ? provider.eventDetail.eventPhotoUrl : "");
+                                        } else{
+                                          provider.updateLocationEvent(context, provider.creatorMode.publicEvent!.eid, eventNameController.text, addressController.text, eventDescriptionController.text,
+                                              DateTimeHelper
+                                                  .dateTimeFormat(
+                                                  provider.startDate,
+                                                  provider.startTime), image: provider.image, website: websiteController.text, end: DateTimeHelper
+                                                  .dateTimeFormat(
+                                                  provider.endDate,
+                                                  provider.endTime), photoURL: provider.image == null ? provider.eventDetail.eventPhotoUrl : "");
+                                        }
+                                      }
+                                    }))
+                                // CommonWidgets.expandedRowButton(
+                                // context,
+                                // scaler,
+                                // "cancel_event".tr(),
+                                // "save_event".tr(),
+                                // onTapBtn1: () {
+                                //   DialogHelper.showDialogWithTwoButtons(
+                                //       context,
+                                //       "cancel_event".tr(),
+                                //       "sure_to_cancel_event".tr(),
+                                //       negativeButtonLabel: "No",
+                                //       positiveButtonPress: () {
+                                //         Navigator.of(context).pop();
+                                //         provider.cancelEvent(context, provider.creatorMode.publicEvent!.eid);
+                                //       });
+                                // },
+                                // btn1: false,
+                                // onTapBtn2: () {
+                                // if(provider.creatorMode.isLocationEvent == false){
+                                //   provider.updatePublicEvent(context, provider.creatorMode.publicEvent!.eid, eventNameController.text, addressController.text, eventDescriptionController.text,
+                                //       DateTimeHelper
+                                //           .dateTimeFormat(
+                                //           provider.startDate,
+                                //           provider.startTime), image: provider.image ?? null, website: websiteController.text, end: DateTimeHelper
+                                //           .dateTimeFormat(
+                                //           provider.endDate,
+                                //           provider.endTime), photoURL: provider.eventDetail.eventPhotoUrl ?? "");
+                                // } else{
+                                //   provider.updateLocationEvent(context, provider.creatorMode.publicEvent!.eid, eventNameController.text, addressController.text, eventDescriptionController.text,
+                                //       DateTimeHelper
+                                //           .dateTimeFormat(
+                                //           provider.startDate,
+                                //           provider.startTime), image: provider.image ?? null, website: websiteController.text, end: DateTimeHelper
+                                //           .dateTimeFormat(
+                                //           provider.endDate,
+                                //           provider.endTime), photoURL: provider.eventDetail.eventPhotoUrl ?? "");
+                                // }
+                                // }))
+                                :  (provider.state == ViewState.Busy)
                                 ? Center(
                               child: Column(
                                 children: [
@@ -303,13 +495,25 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
                                   hideKeyboard(context);
                                   if (_formKey.currentState!
                                       .validate()) {
-                                    provider.createPublicEvent(context, eventNameController.text, addressController.text, eventDescriptionController.text, DateTimeHelper
-                                        .dateTimeFormat(
-                                        provider.startDate,
-                                        provider.startTime), image: provider.image, website: websiteController.text, end: DateTimeHelper
-                                        .dateTimeFormat(
-                                        provider.endDate,
-                                        provider.endTime));
+                                    if(provider.creatorMode.isLocationEvent == false){
+                                      provider.createPublicEvent(context, eventNameController.text, addressController.text, eventDescriptionController.text, DateTimeHelper
+                                          .dateTimeFormat(
+                                          provider.startDate,
+                                          provider.startTime), image: provider.image, website: websiteController.text, end: DateTimeHelper
+                                          .dateTimeFormat(
+                                          provider.endDate,
+                                          provider.endTime));
+                                    } else{
+                                      provider.createLocationEvent(context, eventNameController.text, addressController.text, eventDescriptionController.text, photoFile: provider.image, website: websiteController.text,
+                                      start: DateTimeHelper
+                                          .dateTimeFormat(
+                                          provider.startDate,
+                                          provider.startTime), end: DateTimeHelper
+                                              .dateTimeFormat(
+                                              provider.endDate,
+                                              provider.endTime));
+                                    }
+
                                   }
                                 }),
                             SizedBox(height: scaler.getHeight(0.5)),

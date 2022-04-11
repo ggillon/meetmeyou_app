@@ -45,11 +45,11 @@ class CreateEventScreen extends StatelessWidget {
                   provider.eventDetail.photoUrlEvent;
               eventNameController.text = provider.eventDetail.eventName ?? "";
               provider.startDate =
-                  provider.eventDetail.startDateAndTime ?? DateTime.now();
+                  provider.eventDetail.startDateAndTime ?? DateTime.now().add(Duration(days: 7));
               provider.startTime = TimeOfDay.fromDateTime(
                   provider.eventDetail.startDateAndTime ?? DateTime.now());
               provider.endDate =
-                  provider.eventDetail.endDateAndTime ?? DateTime.now();
+                  provider.eventDetail.endDateAndTime ?? DateTime.now().add(Duration(days: 7));
               provider.endTime = TimeOfDay.fromDateTime(
                   provider.eventDetail.endDateAndTime ?? DateTime.now());
               addressController.text = provider.eventDetail.eventLocation ?? "";

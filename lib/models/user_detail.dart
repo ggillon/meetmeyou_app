@@ -30,9 +30,6 @@ class UserDetail {
 
   String? userType;
 
-  //for creator mode
-  MMYCreator? mmyCreator;
-
   UserDetail(
       {this.firstName,
       this.lastName,
