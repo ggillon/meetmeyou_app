@@ -46,6 +46,8 @@ abstract class MMYEngine {
   Future<Profile> createUserProfile();
   /// Checks if profile exists
   Future<bool> isNew();
+  /// Apple Sign in profile creation
+  Future<Profile> appleFirstSignIn();
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
   /// Delete User - Cautious
@@ -708,6 +710,11 @@ class MMY implements MMYEngine {
     if(userType == null)
       userType = USER_TYPE_NORMAL;
     return userType;
+  }
+
+  @override
+  Future<Profile> appleFirstSignIn() {
+    return profileLib.createProfileFromUser(_currentUser);
   }
 
 
