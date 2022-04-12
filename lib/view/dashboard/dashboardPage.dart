@@ -88,7 +88,8 @@ class _DashboardPageState extends State<DashboardPage> {
         return provider.userType == true ? Scaffold(
           backgroundColor: ColorConstants.primaryColor,
           body: Center(
-            child: CircularProgressIndicator(color: ColorConstants.colorWhite),
+           // child: CircularProgressIndicator(color: ColorConstants.colorWhite),
+            child: ImageView(path: ImageConstants.ic_logo,),
           ),
         ) : Scaffold(
          // backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
