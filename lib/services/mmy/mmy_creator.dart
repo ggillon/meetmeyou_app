@@ -46,10 +46,8 @@ class MMYCreator implements MMYCreatorEngine {
 
   @override
   Future<Event> updatePublicEvent(String eid, {String? title, String? location, String? description, String? photoURL, String? website, File? photoFile, DateTime? start, DateTime? end,}) async {
-    if(photoFile!=null) {
+    if(photoFile!=null)
       photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
-      await discussionLib.changePictureOfDiscussion(_currentUser, eid, photoURL);
-    }
     Event result = await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end, website: website, eventType: EVENT_TYPE_PUBLIC);;
     notificationLib.notifyEventModified(_currentUser, result.eid,);
     return result;
@@ -67,10 +65,8 @@ class MMYCreator implements MMYCreatorEngine {
 
   @override
   Future<Event> updateLocationEvent(String eid, {String? title, String? location, String? description, String? photoURL, String? website, File? photoFile, DateTime? start, DateTime? end,}) async {
-    if(photoFile!=null) {
+    if(photoFile!=null)
       photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
-      await discussionLib.changePictureOfDiscussion(_currentUser, eid, photoURL);
-    }
     Event result = await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end, website: website, eventType: EVENT_TYPE_LOCATION);;
     notificationLib.notifyEventModified(_currentUser, result.eid,);
     return result;
