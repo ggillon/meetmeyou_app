@@ -20,6 +20,7 @@ import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:meetmeyou_app/widgets/shimmer/multiDateShimmer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CreateEventScreen extends StatelessWidget {
   CreateEventScreen({Key? key}) : super(key: key);
@@ -692,10 +693,19 @@ class CreateEventScreen extends StatelessWidget {
       onTap: () async {
         hideKeyboard(context);
         provider.removeMultiDate = false;
-        var value = await provider.permissionCheck();
-        if (value) {
+        if (await Permission.storage.request().isGranted) {
           selectImageBottomSheet(context, scaler, provider);
+        } else if(await Permission.storage.request().isDenied){
+          Map<Permission, PermissionStatus> statuses = await [
+            Permission.storage,
+          ].request();
+        } else if(await Permission.storage.request().isPermanentlyDenied){
+          CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
         }
+        // var value = await provider.permissionCheck();
+        // if (value) {
+        //   selectImageBottomSheet(context, scaler, provider);
+        // }
       },
       child: Card(
         margin: scaler.getMarginLTRB(1.0, 0.0, 1.0, 0.0),
@@ -1343,7 +1353,9 @@ class CreateEventScreen extends StatelessWidget {
                   GestureDetector(
                       behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      provider.getImage(context, 2);
+                      provider.getImage(context, 2).catchError((e){
+                        CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                      });
                     },
                     child: Column(
                       children: [

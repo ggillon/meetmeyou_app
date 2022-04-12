@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/provider/create_event_provider.dart';
 import 'package:meetmeyou_app/provider/public_location_create_event_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PublicLocationCreateEventScreen extends StatelessWidget {
    PublicLocationCreateEventScreen({Key? key}) : super(key: key);
@@ -536,10 +537,20 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
      return GestureDetector(
        onTap: () async {
          hideKeyboard(context);
-         var value = await provider.permissionCheck();
-         if (value) {
+         if (await Permission.storage.request().isGranted) {
            selectImageBottomSheet(context, scaler);
+         } else if(await Permission.storage.request().isDenied){
+           Map<Permission, PermissionStatus> statuses = await [
+             Permission.storage,
+           ].request();
+
+         } else if(await Permission.storage.request().isPermanentlyDenied){
+           CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
          }
+         // var value = await provider.permissionCheck();
+         // if (value) {
+         //   selectImageBottomSheet(context, scaler);
+         // }
        },
        child: Card(
          margin: scaler.getMarginLTRB(1.0, 0.0, 1.0, 0.0),
@@ -680,7 +691,9 @@ class PublicLocationCreateEventScreen extends StatelessWidget {
                    GestureDetector(
                        behavior: HitTestBehavior.opaque,
                        onTap: () {
-                         provider.getImage(context, 2);
+                         provider.getImage(context, 2).catchError((e){
+                           CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                         });
                        },
                        child: Column(
                          children: [

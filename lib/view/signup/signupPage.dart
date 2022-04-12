@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/constants/validations.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
@@ -22,6 +23,7 @@ import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
@@ -65,24 +67,50 @@ class SignUpPage extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           if (provider.userDetail.profileUrl == null) {
-                            var value = await provider.permissionCheck();
-                            if (value) {
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      CustomDialog(
-                                        cameraClick: () {
-                                          provider.getImage(context, 1);
-                                        },
-                                        galleryClick: () {
-                                          provider.getImage(context, 2);
-                                        },
-                                        cancelClick: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ));
+                            if (await Permission.storage.request().isGranted) {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                          cameraClick: () {
+                                            provider.getImage(context, 1);
+                                          },
+                                          galleryClick: () {
+                                            provider.getImage(context, 2).catchError((e){
+                                              CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                            });
+                                          },
+                                          cancelClick: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ));
+                            } else if(await Permission.storage.request().isDenied){
+                              Map<Permission, PermissionStatus> statuses = await [
+                                Permission.storage,
+                              ].request();
+
+                            } else if(await Permission.storage.request().isPermanentlyDenied){
+                              CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                             }
+                            // var value = await provider.permissionCheck();
+                            // if (value) {
+                            //   showDialog(
+                            //       barrierDismissible: false,
+                            //       context: context,
+                            //       builder: (BuildContext context) =>
+                            //           CustomDialog(
+                            //             cameraClick: () {
+                            //               provider.getImage(context, 1);
+                            //             },
+                            //             galleryClick: () {
+                            //               provider.getImage(context, 2);
+                            //             },
+                            //             cancelClick: () {
+                            //               Navigator.of(context).pop();
+                            //             },
+                            //           ));
+                            // }
                           }
                         },
                         child: ClipRRect(

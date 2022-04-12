@@ -235,5 +235,6 @@
   "manage" : "Manage",
   "add_location_for_limited_dates" : "Add Location for limited dates",
   "booking_parameters" : "Booking Parameters",
-  "stats" : "Stats"
+  "stats" : "Stats",
+  "enable_storage_permission" : "Please enable Storage access permission in system settings."
 }

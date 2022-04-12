@@ -28,6 +28,7 @@ import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:meetmeyou_app/widgets/reply_image_widget.dart';
 import 'package:meetmeyou_app/widgets/reply_message_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:swipe_to/swipe_to.dart';
 
 class NewEventDiscussionScreen extends StatelessWidget {
@@ -113,9 +114,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: (provider.eventDiscussion?.type == DISCUSSION_TYPE_GROUP && provider.eventDiscussion?.isOrganiser == true) ? () async {
-                              var value =
-                              await provider.permissionCheck();
-                              if (value) {
+                              if (await Permission.storage.request().isGranted) {
                                 showDialog(
                                     barrierDismissible: false,
                                     context: context,
@@ -127,13 +126,42 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                           },
                                           galleryClick: () {
                                             provider.changeGroupImage(
-                                                _scaffoldKey.currentContext!, 2, fromChatScreen, chatDid);
+                                                _scaffoldKey.currentContext!, 2, fromChatScreen, chatDid).catchError((e){
+                                              CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                            });
                                           },
                                           cancelClick: () {
                                             Navigator.of(context).pop();
                                           },
                                         ));
+                              } else if(await Permission.storage.request().isDenied){
+                                Map<Permission, PermissionStatus> statuses = await [
+                                  Permission.storage,
+                                ].request();
+                              } else if(await Permission.storage.request().isPermanentlyDenied){
+                                CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                               }
+                              // var value =
+                              // await provider.permissionCheck();
+                              // if (value) {
+                              //   showDialog(
+                              //       barrierDismissible: false,
+                              //       context: context,
+                              //       builder: (BuildContext context) =>
+                              //           CustomDialog(
+                              //             cameraClick: () {
+                              //               provider.changeGroupImage(
+                              //                   _scaffoldKey.currentContext!, 1, fromChatScreen, chatDid);
+                              //             },
+                              //             galleryClick: () {
+                              //               provider.changeGroupImage(
+                              //                   _scaffoldKey.currentContext!, 2, fromChatScreen, chatDid);
+                              //             },
+                              //             cancelClick: () {
+                              //               Navigator.of(context).pop();
+                              //             },
+                              //           ));
+                              // }
                             } : (){},
                             child: ClipRRect(
                               borderRadius: scaler.getBorderRadiusCircular(100),
@@ -267,9 +295,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                 SizedBox(width: scaler.getWidth(1.5)),
                                 GestureDetector(
                                     onTap: () async {
-                                      var value =
-                                          await provider.permissionCheck();
-                                      if (value) {
+                                      if (await Permission.storage.request().isGranted) {
                                         showDialog(
                                             barrierDismissible: false,
                                             context: context,
@@ -281,13 +307,42 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                   },
                                                   galleryClick: () {
                                                     provider.getImage(
-                                                        _scaffoldKey.currentContext!, 2, fromContactOrGroup, fromChatScreen, chatDid);
+                                                        _scaffoldKey.currentContext!, 2, fromContactOrGroup, fromChatScreen, chatDid).catchError((e){
+                                                      CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                                    });
                                                   },
                                                   cancelClick: () {
                                                     Navigator.of(context).pop();
                                                   },
                                                 ));
+                                      } else if(await Permission.storage.request().isDenied){
+                                        Map<Permission, PermissionStatus> statuses = await [
+                                          Permission.storage,
+                                        ].request();
+                                      } else if(await Permission.storage.request().isPermanentlyDenied){
+                                        CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                                       }
+                                      // var value =
+                                      //     await provider.permissionCheck();
+                                      // if (value) {
+                                      //   showDialog(
+                                      //       barrierDismissible: false,
+                                      //       context: context,
+                                      //       builder: (BuildContext context) =>
+                                      //           CustomDialog(
+                                      //             cameraClick: () {
+                                      //               provider.getImage(
+                                      //                   _scaffoldKey.currentContext!, 1, fromContactOrGroup, fromChatScreen, chatDid);
+                                      //             },
+                                      //             galleryClick: () {
+                                      //               provider.getImage(
+                                      //                   _scaffoldKey.currentContext!, 2, fromContactOrGroup, fromChatScreen, chatDid);
+                                      //             },
+                                      //             cancelClick: () {
+                                      //               Navigator.of(context).pop();
+                                      //             },
+                                      //           ));
+                                      // }
                                     },
                                     child: Icon(Icons.camera_alt_outlined,
                                         color: ColorConstants.primaryColor,
