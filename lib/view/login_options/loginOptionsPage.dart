@@ -246,9 +246,14 @@ class LoginOptions extends StatelessWidget {
         provider.userDetail.firstName = userProfile.firstName;
         provider.userDetail.lastName = userProfile.lastName;
         provider.userDetail.profileUrl = userProfile.photoURL;
+      //   provider.setState(ViewState.Idle);
+      //   Navigator.pushNamed(context, RoutesConstants.signUpPage,
+      //       arguments: StringConstants.social);
+      // } else {
         provider.setState(ViewState.Idle);
-        Navigator.pushNamed(context, RoutesConstants.signUpPage,
-            arguments: StringConstants.social);
+        SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            RoutesConstants.dashboardPage, (route) => false, arguments: true);
       } else {
         provider.setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
