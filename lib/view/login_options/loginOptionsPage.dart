@@ -16,6 +16,7 @@ import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/provider/login_option_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/full_screen_loader.dart';
 import 'package:meetmeyou_app/widgets/login_option_widget.dart';
@@ -253,12 +254,12 @@ class LoginOptions extends StatelessWidget {
         provider.setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
-            RoutesConstants.dashboardPage, (route) => false, arguments: true);
+            RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
       } else {
         provider.setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
-            RoutesConstants.dashboardPage, (route) => false, arguments: true);
+            RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
       }
     }
   }
