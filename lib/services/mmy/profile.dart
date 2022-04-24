@@ -1,6 +1,7 @@
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
+import 'package:meetmeyou_app/services/mmy/event.dart';
 
 
 // Use to get the user profile, if non exist will create one from user in auth.
@@ -29,6 +30,39 @@ Future<bool> isNewProfile(User currentUser) async {
   } catch(e) {
     return true;
   }
+}
+
+Future<Profile> createAnonProfileFromUser(User user) async {
+  String id = eidGenerator();
+  String firstName = 'Anonymous';
+  String lastName = 'User-$id';
+  String displayName = '$firstName $lastName';
+
+  try { // Trying as there can be strange names messing up the recognition
+    if (user.displayName != null) {
+      final names = user.displayName!.split(" ");
+      firstName = names.removeAt(0);
+      lastName = names.join(" ");
+    } } catch(e) {print(e);}
+
+  Profile profile = Profile(
+    uid: user.uid,
+    displayName: user.displayName ?? displayName,
+    firstName: firstName,
+    lastName: lastName,
+    email: user.email ?? 'no@email.com',
+    countryCode: '+44',
+    phoneNumber: '7777888999',
+    photoURL: user.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    addresses: <String, dynamic>{},
+    about: '',
+    other: <String, dynamic>{},
+    parameters: <String, dynamic>{'New': true},
+  );
+
+  FirestoreDB(uid: user.uid).setProfile(profile);
+
+  return profile;
 }
 
 
@@ -128,6 +162,10 @@ Future<Profile> setProfileParameter(User currentUser, {required String param, re
 
 
 Future<void> deleteProfile(User currentUser) async {
+  // Missing -> delete all chats
+  // Missing -> delete all invites
+  // Missing -> delete all contact
+
   await FirestoreDB(uid: currentUser.uid).deleteProfile(currentUser.uid);
   await currentUser.delete();
 }

@@ -36,6 +36,9 @@ const USER_TYPE_ADMIN = "Admin User";
 
 abstract class MMYEngine {
 
+  /// DEBUG MESSAGE
+  void debugMsg(String text, {Map? attachment});
+
   /// PROFILE ///
 
   /// Get the user profile or create new one
@@ -212,6 +215,12 @@ class MMY implements MMYEngine {
 
   MMY(this._currentUser);
   final User _currentUser;
+
+  @override
+  void debugMsg(String text, {Map? attachment}) {
+    final db = FirestoreDB(uid: _currentUser.uid);
+    db.debugMsg(_currentUser.uid, text, attachment);
+  }
 
   @override
   Future<Profile> getUserProfile() async {
@@ -714,7 +723,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Profile> appleFirstSignIn() {
-    return profileLib.createProfileFromUser(_currentUser);
+    return profileLib.createAnonProfileFromUser(_currentUser);
   }
 
 

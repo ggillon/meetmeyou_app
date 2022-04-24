@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
 import 'package:meetmeyou_app/models/mmy_notification.dart';
+import 'package:meetmeyou_app/services/mmy/event.dart';
 
 import 'firestore_service.dart';
 import 'api_path.dart';
@@ -23,6 +24,9 @@ import 'package:meetmeyou_app/models/event.dart';
 abstract class Database {
 
   String get userID;
+
+  // debug message
+  void debugMsg(String uid, String text, Map? attachment);
 
   // Profile DB Functions
   Future<void> setProfile(Profile profile);
@@ -338,6 +342,15 @@ class FirestoreDB implements Database {
         builder: (data) {
           return MMYNotification.fromMap(data);
         });
+  }
+
+  @override
+  void debugMsg(String uid, String text, Map? attachment) {
+    String did = eidGenerator();
+    Map<String, dynamic> data = {
+      'uid': uid, 'did': did, 'timeStamp': DateTime.now(), 'message': text, 'attachment': attachment
+    };
+    _service.setData(path: '/debug/$uid/messages/$did/', data: data);
   }
 
 }
