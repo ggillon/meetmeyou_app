@@ -57,7 +57,7 @@ Future<Profile> createAnonProfileFromUser(User user) async {
     addresses: <String, dynamic>{},
     about: '',
     other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true},
+    parameters: <String, dynamic>{'New': true, 'Anon': true},
   );
 
   FirestoreDB(uid: user.uid).setProfile(profile);
