@@ -91,7 +91,7 @@ Future<Profile> createProfileFromUser(User user) async {
       addresses: <String, dynamic>{},
       about: '',
       other: <String, dynamic>{},
-      parameters: <String, dynamic>{'New': true},
+      parameters: <String, dynamic>{'New': true, 'Anon': false},
   );
 
   FirestoreDB(uid: user.uid).setProfile(profile);
@@ -114,7 +114,7 @@ Future<Profile> createProfile(User currentUser, {String? displayName, String? fi
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
     about: about ?? '',
     other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true},
+    parameters: <String, dynamic>{'New': true, 'Anon': false},
   );
 
   await FirestoreDB(uid: currentUser.uid).setProfile(profile);
