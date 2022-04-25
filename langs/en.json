@@ -49,7 +49,7 @@
   "save_changes": "Save changes",
   "profile_updated_successfully": "Profile Updated Successfully",
   "terms_and_conditions": "Terms & Conditions",
-  "privacy_policy": "Privacy Policy",
+  "privacy_policy": "Data and Privacy Policy",
   "application_version": "Application Version",
   "calender_settings": "Calendar settings",
   "delete_user": "Delete user",
@@ -236,5 +236,10 @@
   "add_location_for_limited_dates" : "Add Location for limited dates",
   "booking_parameters" : "Booking Parameters",
   "stats" : "Stats",
-  "enable_storage_permission" : "Please enable Storage access permission in system settings."
+  "enable_storage_permission" : "Please enable Storage access permission in system settings.",
+  "our_detailed_data_policy" : "Our detailed data policy",
+  "delete_all_the_data_linked_to_your_account" : "Delete all the data linked to your account",
+  "all_data_delete" : "confirm all the data linked to your account will be deleted",
+  "delete_data" : "Delete Data",
+  "check_attendance" : "Check attendance"
 }

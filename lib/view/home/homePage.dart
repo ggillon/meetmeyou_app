@@ -135,6 +135,21 @@ class _HomePageState extends State<HomePage>
       builder: (context, provider, _) {
         return SafeArea(
           child: Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: GestureDetector(
+              onTap: (){
+                Navigator.pushNamed(context, RoutesConstants.editProfileScreen);
+              },
+              child: Card(
+                color: Colors.orange,
+                child: Container(
+                  padding: scaler.getPaddingAll(10.0),
+                  child: Text("You have not filled in profile, click here to edit").mediumText(ColorConstants.colorWhite,
+                      scaler.getTextSize(10), TextAlign.center),
+                ),
+              ),
+            ),
+
             backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

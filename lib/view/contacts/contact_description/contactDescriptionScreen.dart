@@ -32,9 +32,9 @@ class ContactDescriptionScreen extends StatelessWidget {
     ScreenScaler scaler = new ScreenScaler()..init(context);
 
     return  BaseView<ContactDescriptionProvider>(
-      onModelReady: (provider){
+      onModelReady: (provider) async {
         this.provider = provider;
-        isFromNotification == true ? provider.getContact(context, contactId) : Container();
+        isFromNotification == true ? await provider.getContact(context, contactId) : Container();
       },
         builder: (builder, provider, _) {
           return provider.contact == true ?  Scaffold(
@@ -79,7 +79,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                   lastName: provider.userDetail.lastName
                                       .toString()
                                       .capitalize(),
-                                  email: provider.userDetail.email,
+                                  email: isFromNotification == true ? provider.email :  provider.userDetail.email,
                                   actionOnEmail: provider.userDetail.checkForInvitation!
                                       ? () {}
                                       : () {
@@ -162,12 +162,16 @@ class ContactDescriptionScreen extends StatelessWidget {
                               scaler,
                               "reject_invite".tr(),
                               "accept_invite".tr(),
-                              btn1: false, onTapBtn1: () {
+                              btn1: false, onTapBtn1: isFromNotification == true ? (){
+                            provider.acceptOrRejectInvitation(context,
+                                contactId, false, "Reject");
+                          } : () {
                             provider.acceptOrRejectInvitation(context,
                                 provider.userDetail.cid!, false, "Reject");
-                          }, onTapBtn2: () {
-                            provider.acceptOrRejectInvitation(context,
-                                provider.userDetail.cid!, true, "Accept");
+                          }, onTapBtn2:  isFromNotification == true ? (){
+                            provider.acceptOrRejectInvitation(context, contactId, true, "Accept");
+                          } : () {
+                            provider.acceptOrRejectInvitation(context, provider.userDetail.cid!, true, "Accept");
                           }),
                         )
                             : Container(),

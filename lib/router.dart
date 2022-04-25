@@ -24,6 +24,7 @@ import 'package:meetmeyou_app/view/contacts/search_profile/searchProfileScreen.d
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
 import 'package:meetmeyou_app/view/home/chats_screen/chats_screen.dart';
+import 'package:meetmeyou_app/view/home/check_attendance_screen/check_attendance_screen.dart';
 import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
@@ -214,6 +215,9 @@ class Router {
 
       case RoutesConstants.publicLocationCreateEventScreen:
         return MaterialPageRoute(builder: (_) => PublicLocationCreateEventScreen(), settings: settings);
+
+      case RoutesConstants.checkAttendanceScreen:
+        return MaterialPageRoute(builder: (_) => CheckAttendanceScreen(), settings: settings);
 
 
       default:

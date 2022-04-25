@@ -129,7 +129,8 @@ class EventDetailScreen extends StatelessWidget {
                               provider.getMultipleDate == true)
                             Center(child: CircularProgressIndicator())
                           else
-                             provider.eventDetail.event!.multipleDates == true ? Container() : CommonWidgets.commonBtn(
+                             (provider.eventDetail.event!.multipleDates == true &&
+                                 provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid) ? Container() : CommonWidgets.commonBtn(
                                 scaler,
                                 context,
                                  provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
@@ -232,7 +233,9 @@ class EventDetailScreen extends StatelessWidget {
                                   children: [
                                     GestureDetector(
                                       behavior: HitTestBehavior.translucent,
-                                      onTap: () {
+                                      onTap: provider.eventDetail.event!.multipleDates == true ? (){
+                                        Navigator.pushNamed(context, RoutesConstants.checkAttendanceScreen);
+                                      } : () {
                                         provider.eventDetail.attendingProfileKeys =
                                             provider.eventAttendingKeysList;
                                       // provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?  Navigator.pushNamed(
@@ -261,83 +264,87 @@ class EventDetailScreen extends StatelessWidget {
                                           provider.updateBackValue(true);
                                         });
                                       },
-                                      child: Stack(
-                                        alignment: Alignment.centerRight,
-                                        clipBehavior: Clip.none,
+                                      child: Row(
                                         children: [
-                                          ImageStack(
-                                            imageList: provider
-                                                .eventAttendingPhotoUrlLists,
-                                            totalCount: provider
-                                                .eventAttendingPhotoUrlLists
-                                                .length,
-                                            imageRadius: 25,
-                                            imageCount: provider
-                                                .imageStackLength(provider
+                                          Stack(
+                                            alignment: Alignment.centerRight,
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              ImageStack(
+                                                imageList: provider
+                                                    .eventAttendingPhotoUrlLists,
+                                                totalCount: provider
                                                     .eventAttendingPhotoUrlLists
-                                                    .length),
-                                            imageBorderColor:
-                                                ColorConstants.colorWhite,
-                                            backgroundColor:
-                                                ColorConstants.primaryColor,
-                                            imageBorderWidth: 1,
-                                            extraCountTextStyle: TextStyle(
-                                                fontSize: 7.7,
-                                                color:
-                                                    ColorConstants.colorWhite,
-                                                fontWeight: FontWeight.w500),
-                                            showTotalCount: false,
-                                          ),
-                                          Positioned(
-                                            right: -22,
-                                            child: provider
+                                                    .length,
+                                                imageRadius: 25,
+                                                imageCount: provider
+                                                    .imageStackLength(provider
                                                         .eventAttendingPhotoUrlLists
-                                                        .length <=
-                                                    6
-                                                ? Container()
-                                                : ClipRRect(
-                                                    borderRadius: scaler
-                                                        .getBorderRadiusCircular(
-                                                            15.0),
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      color: ColorConstants
-                                                          .primaryColor,
-                                                      height: scaler
-                                                          .getHeight(2.0),
-                                                      width:
-                                                          scaler.getWidth(6),
-                                                      child: Text((provider
-                                                                      .eventAttendingPhotoUrlLists
-                                                                      .length -
-                                                                  6)
-                                                              .toString())
-                                                          .mediumText(
-                                                              ColorConstants
-                                                                  .colorWhite,
-                                                              scaler
-                                                                  .getTextSize(
-                                                                      7.7),
-                                                              TextAlign
-                                                                  .center),
-                                                    ),
-                                                  ),
-                                          )
+                                                        .length),
+                                                imageBorderColor:
+                                                    ColorConstants.colorWhite,
+                                                backgroundColor:
+                                                    ColorConstants.primaryColor,
+                                                imageBorderWidth: 1,
+                                                extraCountTextStyle: TextStyle(
+                                                    fontSize: 7.7,
+                                                    color:
+                                                        ColorConstants.colorWhite,
+                                                    fontWeight: FontWeight.w500),
+                                                showTotalCount: false,
+                                              ),
+                                              Positioned(
+                                                right: -22,
+                                                child: provider
+                                                            .eventAttendingPhotoUrlLists
+                                                            .length <=
+                                                        6
+                                                    ? Container()
+                                                    : ClipRRect(
+                                                        borderRadius: scaler
+                                                            .getBorderRadiusCircular(
+                                                                15.0),
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          color: ColorConstants
+                                                              .primaryColor,
+                                                          height: scaler
+                                                              .getHeight(2.0),
+                                                          width:
+                                                              scaler.getWidth(6),
+                                                          child: Text((provider
+                                                                          .eventAttendingPhotoUrlLists
+                                                                          .length -
+                                                                      6)
+                                                                  .toString())
+                                                              .mediumText(
+                                                                  ColorConstants
+                                                                      .colorWhite,
+                                                                  scaler
+                                                                      .getTextSize(
+                                                                          7.7),
+                                                                  TextAlign
+                                                                      .center),
+                                                        ),
+                                                      ),
+                                              ),
+                                            ],
+                                          ),
+                                          provider.eventAttendingPhotoUrlLists
+                                              .length <=
+                                              6
+                                              ? SizedBox(
+                                              width: scaler.getWidth(1))
+                                              : SizedBox(
+                                              width: scaler.getWidth(6)),
+                                          Text(provider.eventDetail.event!.multipleDates == true ? "check_attendance".tr() : "attending".tr()).regularText(
+                                              ColorConstants.colorGray,
+                                              scaler.getTextSize(8),
+                                              TextAlign.center),
                                         ],
                                       ),
                                     ),
-                                    provider.eventAttendingPhotoUrlLists
-                                                .length <=
-                                            6
-                                        ? SizedBox(
-                                            width: scaler.getWidth(1))
-                                        : SizedBox(
-                                            width: scaler.getWidth(6)),
-                                    Text("going".tr()).regularText(
-                                        ColorConstants.colorGray,
-                                        scaler.getTextSize(8),
-                                        TextAlign.center),
                                     provider.auth.currentUser!.uid == provider.eventDetail.organiserId && provider.eventDetail.eventBtnStatus ==
                                         "edit" ? Expanded(child: Container(
                                       alignment: Alignment.centerRight,

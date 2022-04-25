@@ -91,7 +91,7 @@ class HomePageProvider extends BaseProvider {
 
   Future getUserEvents(BuildContext context, {List<String>? filters, bool refresh = false}) async {
    refresh == true ? updateRefresh(true) : setState(ViewState.Busy);
-    //mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value =
         await mmyEngine!.getUserEvents(filters: filters).catchError((e) {

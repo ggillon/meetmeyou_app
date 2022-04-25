@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
 import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
+import 'package:meetmeyou_app/provider/check_attendance_provider.dart';
 import 'package:meetmeyou_app/provider/choose_event_provider.dart';
 import 'package:meetmeyou_app/provider/create_event_provider.dart';
 import 'package:meetmeyou_app/provider/custom_search_delegate_provider.dart';
@@ -41,6 +42,7 @@ import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/provider/notification_settings_provider.dart';
 import 'package:meetmeyou_app/provider/notifications_history_provider.dart';
 import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
+import 'package:meetmeyou_app/provider/privacy_policy_provider.dart';
 import 'package:meetmeyou_app/provider/public_home_page_provider.dart';
 import 'package:meetmeyou_app/provider/public_location_create_event_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
@@ -109,6 +111,8 @@ void setupLocator() {
   locator.registerFactory<NotificationsHistoryProvider>(() => NotificationsHistoryProvider());
   locator.registerFactory<PublicLocationCreateEventProvider>(() => PublicLocationCreateEventProvider());
   locator.registerFactory<PublicHomePageProvider>(() => PublicHomePageProvider());
+  locator.registerFactory<PrivacyPolicyProvider>(() => PrivacyPolicyProvider());
+  locator.registerFactory<CheckAttendanceProvider>(() => CheckAttendanceProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

@@ -100,6 +100,7 @@ class ContactDescriptionProvider extends BaseProvider {
     notifyListeners();
   }
 
+  String? email;
   Future getContact(BuildContext context, String contactId) async{
 
     updateGetContact(true);
@@ -111,6 +112,7 @@ class ContactDescriptionProvider extends BaseProvider {
 
     if(value != null){
       contactFromInvitation = value;
+      email = value.email;
       setContactsValue(contactFromInvitation!, value.status == "Confirmed contact" ? false : true, contactFromInvitation!.cid);
       updateGetContact(false);
     }
@@ -126,6 +128,6 @@ class ContactDescriptionProvider extends BaseProvider {
     userDetail.countryCode = contact.countryCode;
     userDetail.address = contact.addresses['Home'];
     userDetail.checkForInvitation = value;
-    userDetail.cid = cid;
+    userDetail.cid = contact.cid;
   }
 }

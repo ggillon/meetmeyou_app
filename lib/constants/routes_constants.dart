@@ -40,4 +40,5 @@ class RoutesConstants {
   static const notificationSettings = "notificationSettings";
   static const notificationsHistoryScreen = "notificationsHistoryScreen";
   static const publicLocationCreateEventScreen = "publicLocationCreateEventScreen";
+  static const checkAttendanceScreen = "checkAttendanceScreen";
 }
