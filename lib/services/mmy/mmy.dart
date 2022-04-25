@@ -37,6 +37,9 @@ const USER_TYPE_ADMIN = "Admin User";
 
 abstract class MMYEngine {
 
+  /// DEBUG MESSAGE
+  void debugMsg(String text, {Map? attachment});
+
   /// PROFILE ///
 
   /// Get the user profile or create new one
@@ -47,6 +50,8 @@ abstract class MMYEngine {
   Future<Profile> createUserProfile();
   /// Checks if profile exists
   Future<bool> isNew();
+  /// Apple Sign in profile creation
+  Future<Profile> appleFirstSignIn();
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
   /// Delete User - Cautious
@@ -211,6 +216,12 @@ class MMY implements MMYEngine {
 
   MMY(this._currentUser);
   final User _currentUser;
+
+  @override
+  void debugMsg(String text, {Map? attachment}) {
+    final db = FirestoreDB(uid: _currentUser.uid);
+    db.debugMsg(_currentUser.uid, text, attachment);
+  }
 
   @override
   Future<Profile> getUserProfile({bool user = true, String? uid}) async{
@@ -656,7 +667,6 @@ class MMY implements MMYEngine {
     Discussion result = await getDiscussion(did);
     if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
     if(photo != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photo);
-    print(result);
     return result;
   }
 
@@ -709,6 +719,11 @@ class MMY implements MMYEngine {
     if(userType == null)
       userType = USER_TYPE_NORMAL;
     return userType;
+  }
+
+  @override
+  Future<Profile> appleFirstSignIn() {
+    return profileLib.createAnonProfileFromUser(_currentUser);
   }
 
 
