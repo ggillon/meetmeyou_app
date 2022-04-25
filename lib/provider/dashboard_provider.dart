@@ -108,7 +108,7 @@ class DashboardProvider extends BaseProvider {
     updateUserType(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine?.getUserType().catchError((e){
+    var value = await mmyEngine!.getUserType().catchError((e){
       updateUserType(false);
       DialogHelper.showMessage(context, e.message);
     });

@@ -118,18 +118,18 @@ class EventDetailScreen extends StatelessWidget {
                       )
                     ],
                   ),
-                    Platform.isIOS ? SizedBox(height: scaler.getHeight(1.8)) : SizedBox(height: scaler.getHeight(3.5)),
+                    provider.eventDetail.event!.multipleDates == true ? SizedBox(height: scaler.getHeight(1.8)) : Platform.isIOS ? SizedBox(height: scaler.getHeight(1.8)) : SizedBox(height: scaler.getHeight(3.5)),
                   SafeArea(
                     child: Padding(
                       padding: scaler.getPaddingLTRB(3, 0.0, 3, 1.5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (provider.value == true ||
+                       if (provider.value == true ||
                               provider.getMultipleDate == true)
                             Center(child: CircularProgressIndicator())
                           else
-                            CommonWidgets.commonBtn(
+                             provider.eventDetail.event!.multipleDates == true ? Container() : CommonWidgets.commonBtn(
                                 scaler,
                                 context,
                                  provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
