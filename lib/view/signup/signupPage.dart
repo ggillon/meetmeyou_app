@@ -446,6 +446,7 @@ class SignUpPage extends StatelessWidget {
                                         addressController.text);
                                   } else {
                                     var userDetail = UserDetail();
+                                    userDetail.appleSignUpType = false;
                                     userDetail.email = emailController.text;
                                     userDetail.firstName =
                                         firstNameController.text;

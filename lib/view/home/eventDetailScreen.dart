@@ -355,7 +355,9 @@ class EventDetailScreen extends StatelessWidget {
                                               String eventLink = provider.mmyEngine!.getEventLink(provider.eventDetail.eid!);
                                               await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
                                                 String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
-                                                Share.share("Please find link to the event I’m organising: ${shareLink}");
+                                                String fid = shareLink.split("https://meetmeyou.page.link/")[1];
+                                                Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${provider.eventDetail.eid!}&fid=${fid}");
+                                                //    Share.share("Please find link to the event I’m organising: ${shareLink}");
                                               });
                                             },
                                             child: ImageView(path: ImageConstants.share_icon)))) : Container()

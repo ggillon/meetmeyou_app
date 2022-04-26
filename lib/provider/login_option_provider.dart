@@ -44,10 +44,12 @@ class LoginOptionProvider extends BaseProvider {
         userDetail.lastName = userProfile.lastName;
         userDetail.profileUrl = userProfile.photoURL;
         setState(ViewState.Idle);
+        userDetail.appleSignUpType = false;
         Navigator.pushNamed(context, RoutesConstants.signUpPage,
             arguments: StringConstants.social);
       } else {
         setState(ViewState.Idle);
+        userDetail.appleSignUpType = false;
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
             RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
@@ -73,15 +75,28 @@ class LoginOptionProvider extends BaseProvider {
         userDetail.lastName = userProfile.lastName;
         userDetail.profileUrl = userProfile.photoURL;
         setState(ViewState.Idle);
+        userDetail.appleSignUpType = false;
         Navigator.pushNamed(context, RoutesConstants.signUpPage,
             arguments: StringConstants.social);
       } else {
         setState(ViewState.Idle);
+        userDetail.appleSignUpType = false;
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
             RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
       }
     }
+  }
+
+  Future appleFirstSignIn(BuildContext context) async{
+    setState(ViewState.Busy);
+
+    await mmyEngine!.appleFirstSignIn().catchError((e){
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "error_message".tr());
+    });
+
+    setState(ViewState.Idle);
   }
 
   // Future<void> signInWithApple(BuildContext context) async {

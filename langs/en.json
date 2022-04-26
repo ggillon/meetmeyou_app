@@ -241,5 +241,6 @@
   "delete_all_the_data_linked_to_your_account" : "Delete all the data linked to your account",
   "all_data_delete" : "confirm all the data linked to your account will be deleted",
   "delete_data" : "Delete Data",
-  "check_attendance" : "Check attendance"
+  "check_attendance" : "Check attendance",
+  "click_here_to_edit" : "You have not filled in profile, click here to edit"
 }

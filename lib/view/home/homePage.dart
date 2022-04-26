@@ -105,6 +105,7 @@ class _HomePageState extends State<HomePage>
       onModelReady: (provider) async {
         this.provider = provider;
           provider.getUserDetail(context);
+          provider.userDetail.appleSignUpType == true ? provider.checkFilledProfile(context) : Container();
           widget.provider = provider;
           provider.tabController = TabController(length: 5, vsync: this);
           provider.tabChangeEvent(context);
@@ -130,25 +131,25 @@ class _HomePageState extends State<HomePage>
             }
           });
 
-
       },
       builder: (context, provider, _) {
         return SafeArea(
           child: Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: GestureDetector(
+            floatingActionButton: (provider.checkAppleLoginFilledProfile == true || provider.checkAppleLoginFilledProfile == null) ? Container() : GestureDetector(
               onTap: (){
                 Navigator.pushNamed(context, RoutesConstants.editProfileScreen);
               },
               child: Card(
                 color: Colors.orange,
                 child: Container(
+                  width: double.infinity,
                   padding: scaler.getPaddingAll(10.0),
-                  child: Text("You have not filled in profile, click here to edit").mediumText(ColorConstants.colorWhite,
+                  child: Text("click_here_to_edit".tr()).mediumText(ColorConstants.colorWhite,
                       scaler.getTextSize(10), TextAlign.center),
                 ),
               ),
-            ),
+            ) ,
 
             backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
             body: Column(
@@ -617,7 +618,8 @@ class _HomePageState extends State<HomePage>
         String eventLink = provider.mmyEngine!.getEventLink(event.eid);
         await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
           String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
-          Share.share("Please find link to the event I’m organising: ${shareLink}");
+          String fid = shareLink.split("https://meetmeyou.page.link/")[1];
+          Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}&fid=${fid}");
         });
       },
       child: Card(

@@ -85,7 +85,7 @@ class SignUpProvider extends BaseProvider {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        countryCode: phone == "" ? null : userDetail.countryCode,
+        countryCode: phone == "" ? null : countryCode,
         phoneNumber: phone,
         homeAddress: address,
         parameters: <String, dynamic>{'New': false}).catchError((e) {

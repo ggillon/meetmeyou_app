@@ -30,6 +30,8 @@ class UserDetail {
 
   String? userType;
 
+  bool appleSignUpType = false;
+
   UserDetail(
       {this.firstName,
       this.lastName,

@@ -251,11 +251,14 @@ class LoginOptions extends StatelessWidget {
       //   Navigator.pushNamed(context, RoutesConstants.signUpPage,
       //       arguments: StringConstants.social);
       // } else {
+        await provider.mmyEngine!.appleFirstSignIn();
+        provider.userDetail.appleSignUpType = true;
         provider.setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(
             RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
       } else {
+        provider.userDetail.appleSignUpType = true;
         provider.setState(ViewState.Idle);
         SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
         Navigator.of(context).pushNamedAndRemoveUntil(

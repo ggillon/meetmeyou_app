@@ -153,6 +153,7 @@ class LoginPage extends StatelessWidget {
                           ? GestureDetector(
                               onTap: () {
                                 if (_formKey.currentState!.validate()) {
+                                  provider.userDetail.appleSignUpType = false;
                                   provider.login(context, emailController.text,
                                       passwordController.text);
                                 }

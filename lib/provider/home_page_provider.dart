@@ -360,6 +360,30 @@ class HomePageProvider extends BaseProvider {
     }
   }
 
+  // this is used when user sign up with apple login
+  bool? checkAppleLoginFilledProfile;
+
+  bool checkFilled = true;
+
+  updateCheckFilled(bool val){
+    checkFilled = val;
+    notifyListeners();
+  }
+
+  Future checkFilledProfile(BuildContext context) async{
+    updateCheckFilled(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.filledProfile().catchError((e){
+      updateCheckFilled(false);
+      DialogHelper.showMessage(context, "error_message".tr());
+    });
+
+    if(value != null){
+      checkAppleLoginFilledProfile = value;
+      updateCheckFilled(false);
+    }
+  }
 
   // for checking whether any multi date date is selected or not.
   // bool statusMultiDate = false;
