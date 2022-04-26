@@ -60,7 +60,7 @@ Future<Profile> createAnonProfileFromUser(User user) async {
     addresses: <String, dynamic>{},
     about: '',
     other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true},
+    parameters: <String, dynamic>{'New': true, 'Anon': true},
   );
 
   FirestoreDB(uid: user.uid).setProfile(profile);
@@ -87,25 +87,25 @@ Future<Profile> createProfileFromUser(User user) async {
   }
 
   Profile profile = Profile(
-    uid: user.uid,
-    displayName: user.displayName ?? '',
-    firstName: firstName,
-    lastName: lastName,
-    email: user.email ?? '',
-    countryCode: '',
-    phoneNumber: '',
-    photoURL: user.photoURL ??
-        'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-    addresses: <String, dynamic>{},
-    about: '',
-    other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true},
+      uid: user.uid,
+      displayName: user.displayName ?? '',
+      firstName: firstName,
+      lastName: lastName,
+      email: user.email ?? '',
+      countryCode: '',
+      phoneNumber: '',
+      photoURL: user.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+      addresses: <String, dynamic>{},
+      about: '',
+      other: <String, dynamic>{},
+      parameters: <String, dynamic>{'New': true, 'Anon': false},
   );
 
   FirestoreDB(uid: user.uid).setProfile(profile);
 
   return profile;
 }
+
 
 // Create Profile from fields, if fields are null they will be set to default value
 Future<Profile> createProfile(
@@ -133,13 +133,14 @@ Future<Profile> createProfile(
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
     about: about ?? '',
     other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true},
+    parameters: <String, dynamic>{'New': true, 'Anon': false},
   );
 
   await FirestoreDB(uid: currentUser.uid).setProfile(profile);
 
   return profile;
 }
+
 
 // Update whatever fields are not null
 Future<Profile> updateProfile(User currentUser,
@@ -179,6 +180,7 @@ Future<Profile> updateProfile(User currentUser,
   );
 
   await db.setProfile(profile);
+  await setProfileParameter(currentUser, param: 'Anon', value: false);
 
   return profile;
 }
@@ -191,6 +193,7 @@ Future<Profile> setProfileParameter(User currentUser,
   await db.setProfile(profile);
   return profile;
 }
+
 
 Future<void> deleteProfile(User currentUser) async {
   // Missing -> delete all chats
@@ -222,9 +225,9 @@ Future<List<Profile>> searchProfiles(User currentUser,
       }
     }
   }
-
   return results;
 }
+
 
 // Create Profile from fields without storing it for tests purposes
 Profile createLocalProfile({

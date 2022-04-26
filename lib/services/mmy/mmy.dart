@@ -52,6 +52,8 @@ abstract class MMYEngine {
   Future<bool> isNew();
   /// Apple Sign in profile creation
   Future<Profile> appleFirstSignIn();
+  /// Apple Sign in profile creation
+  Future<bool> filledProfile();
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
   /// Delete User - Cautious
@@ -724,6 +726,13 @@ class MMY implements MMYEngine {
   @override
   Future<Profile> appleFirstSignIn() {
     return profileLib.createAnonProfileFromUser(_currentUser);
+  }
+
+  @override
+  Future<bool> filledProfile() async {
+    bool output;
+    output = !((await profileLib.getUserProfile(_currentUser)).parameters['Anon']);
+    return output ?? true;
   }
 
 
