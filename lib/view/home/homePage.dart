@@ -620,6 +620,7 @@ class _HomePageState extends State<HomePage>
           String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
           String fid = shareLink.split("https://meetmeyou.page.link/")[1];
           Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}&fid=${fid}");
+         // Share.share("Please find link to the event I’m organising: ${shareLink}");
         });
       },
       child: Card(

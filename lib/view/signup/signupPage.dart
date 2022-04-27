@@ -250,7 +250,7 @@ class SignUpPage extends StatelessWidget {
                         height: scaler.getHeight(0.2),
                       ),
                       TextFormField(
-                        enabled: signUpType != StringConstants.social,
+                      //  enabled: signUpType != StringConstants.social,
                         controller: emailController,
                         style: ViewDecoration.textFieldStyle(
                             scaler.getTextSize(9.5), ColorConstants.colorBlack),
@@ -345,7 +345,7 @@ class SignUpPage extends StatelessWidget {
                             ColorConstants.primaryColor,
                             prefixIcon: CountryCodePicker(
                               onChanged: (value) {
-                                provider.countryCode = value.dialCode!;
+                                provider.countryCode = value.dialCode ?? "+1";
                               },
                               padding:
                                   scaler.getPaddingLTRB(0.0, 0.0, 0.0, 0.1),

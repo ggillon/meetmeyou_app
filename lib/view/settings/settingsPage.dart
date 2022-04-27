@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -196,7 +197,7 @@ class SettingsPage extends StatelessWidget {
                           SizedBox(height: scaler.getHeight(1.5)),
                           DialogHelper.btnWidget(scaler, context, "logout".tr(),
                               ColorConstants.primaryColor, funOnTap: () async {
-                            auth.signOut();
+                           await auth.signOut();
                             provider.userDetail.userType = null;
                             provider.userDetail.profileUrl = null;
                             SharedPref.clearSharePref();
