@@ -7,7 +7,7 @@ import 'package:meetmeyou_app/services/database/id_gen.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
 import 'package:contacts_service/contacts_service.dart' as Phone;
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:meetmeyou_app/models/event.dart';
 
 const CONTACT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 const GROUP_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
@@ -292,10 +292,22 @@ Future<void> respondProfile(User currentUser, {required String cid, required boo
 // Linking two profile - happens when one invites the second one to an event, they become linked
 Future<void> linkProfiles(User currentUser, {required String uid,}) async {
   Database db = FirestoreDB(uid: currentUser.uid);
-  Contact contact1 = contactFromProfile((await db.getProfile(uid))!, uid: currentUser.uid);
-  Contact contact2 = contactFromProfile((await db.getProfile(currentUser.uid))!, uid: uid);
-  await db.setContact(currentUser.uid, contact1);
-  await db.setContact(contact1.uid, contact2);
+  if(currentUser.uid != uid) {
+    Contact contact1 = contactFromProfile(
+        (await db.getProfile(uid))!, uid: currentUser.uid);
+    Contact contact2 = contactFromProfile(
+        (await db.getProfile(currentUser.uid))!, uid: uid);
+    contact1.status = CONTACT_CONFIRMED;
+    contact2.status = CONTACT_CONFIRMED;
+    await db.setContact(currentUser.uid, contact1);
+    await db.setContact(contact1.cid, contact2);
+  }
+}
+
+Future<void> linkEvent(User currentUser, {required String eid,}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Event event = await db.getEvent(eid);
+  linkProfiles(currentUser, uid: event.organiserID);
 }
 
 Future<List<Contact>> getPhoneContacts(User currentUser) async {
