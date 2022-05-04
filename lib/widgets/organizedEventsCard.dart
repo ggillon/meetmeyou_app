@@ -146,7 +146,7 @@ class OrganizedEventsCard extends StatelessWidget {
                     )
                   : ImageView(
                       path: eventList.photoURL,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       height: scaler.getHeight(21),
                       width: MediaQuery.of(context).size.width / 1.2,
                     ),

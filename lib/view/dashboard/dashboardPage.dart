@@ -27,15 +27,15 @@ import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class DashboardPage extends StatefulWidget {
-  DashboardPage({Key? key, this.isFromLogin, this.eventOrChatId}) : super(key: key);
+  DashboardPage({Key? key, required this.isFromLogin}) : super(key: key);
   bool? isFromLogin;
-  String? eventOrChatId;
+ // String eventOrChatId;
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserver {
  // static List<Widget> _widgetOptions = [];
   // = <Widget>[
   //   HomePage(),
@@ -44,12 +44,40 @@ class _DashboardPageState extends State<DashboardPage> {
   //   ContactsScreen(),
   //   SettingsPage()
   // ];
+  DashboardProvider provider = DashboardProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        provider.onItemTapped(0);
+        break;
+      case AppLifecycleState.detached:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      // Nothing to do.
+    }
+    print('state = $state');
+  }
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<DashboardProvider>(
       onModelReady: (provider) async {
+        this.provider = provider;
        await provider.getUserType(context);
         //  if(widget.isFromLogin == null){
         provider.dynamicLinksApi.handleDynamicLink(context);

@@ -732,7 +732,7 @@ class MMY implements MMYEngine {
   Future<bool> filledProfile() async {
     bool output;
     output = !((await profileLib.getUserProfile(_currentUser)).parameters['Anon']);
-    return output ?? true;
+    return output;
   }
 
 

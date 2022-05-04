@@ -152,7 +152,7 @@ class FirebaseNotification {
 
   intentToNextScreen(String id) {
     Navigator.of(context!).pushNamedAndRemoveUntil(
-        RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: false, eventOrChatId: id));
+        RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: false));
   }
 
 }

@@ -94,7 +94,7 @@ class Router {
 
       case RoutesConstants.dashboardPage:
         final args = settings.arguments as DashboardPage;
-        return MaterialPageRoute(builder: (_) => DashboardPage(isFromLogin: args?.isFromLogin ?? null, eventOrChatId: args?.eventOrChatId ?? null), settings: settings);
+        return MaterialPageRoute(builder: (_) => DashboardPage(isFromLogin: null), settings: settings);
 
       case RoutesConstants.myAccountScreen:
         return MaterialPageRoute(

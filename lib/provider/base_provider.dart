@@ -13,11 +13,13 @@ class BaseProvider extends ChangeNotifier {
   ViewState get state => _state;
   AuthBase auth = locator<AuthBase>();
   //Api api = locator<Api>();
-
+  bool _disposed = false;
 
   void setState(ViewState viewState) {
     _state = viewState;
-    notifyListeners();
+    if (!_disposed) {
+      notifyListeners();
+    }
   }
 
   StreamSubscription? eventsNotifyEvent;
@@ -26,10 +28,18 @@ class BaseProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    super.dispose();
     eventsNotifyEvent?.cancel();
     messageNotifyEvent?.cancel();
     ContactInvitationNotifyEvent?.cancel();
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
   }
 }
 

@@ -28,7 +28,7 @@ class OrganizeEventCardProvider extends BaseProvider{
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value =
-    await mmyEngine!.getUserEvents(filters: filters).catchError((e) {
+    await mmyEngine!.getOrganisedEvents().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
