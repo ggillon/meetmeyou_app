@@ -481,6 +481,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> replyToEvent(String eid, {required String response}) async {
+    contactLib.linkEvent(_currentUser, eid: eid);
     return await eventLib.updateInvitations(_currentUser, eid,
         eventLib.Invitations(CIDs: [_currentUser.uid], inviteStatus: response));
   }
