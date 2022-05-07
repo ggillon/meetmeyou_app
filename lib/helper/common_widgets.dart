@@ -53,7 +53,7 @@ class CommonWidgets {
           height: scaler.getWidth(22),
           child: ClipRRect(
             borderRadius: scaler.getBorderRadiusCircular(10.0),
-            child: profilePic == null || profilePic == ""
+            child: profilePic == null
                 ? Container(
                     color: ColorConstants.primaryColor,
                     width: scaler.getWidth(22),

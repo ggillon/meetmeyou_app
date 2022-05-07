@@ -44,7 +44,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with TickerProviderStateMixin<HomePage> {
+    with TickerProviderStateMixin<HomePage> , WidgetsBindingObserver {
   final answer1Controller = TextEditingController();
   final answer2Controller = TextEditingController();
   final answer3Controller = TextEditingController();
@@ -93,6 +93,37 @@ class _HomePageState extends State<HomePage>
     await Future.delayed(Duration(seconds: 2));
 
     await this.provider.getIndexChanging(context, refresh: true);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        provider.getUserDetail(context);
+        provider.userDetail.appleSignUpType == true ? provider.checkFilledProfile(context) : Container();
+        provider.tabChangeEvent(context);
+        await provider.getIndexChanging(context);
+        provider.updatedDiscussions(context);
+        provider.unRespondedEventsApi(context);
+        break;
+      case AppLifecycleState.detached:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      // Nothing to do.
+    }
+    print('state = $state');
   }
 
   @override

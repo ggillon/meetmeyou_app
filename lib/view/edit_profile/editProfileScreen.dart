@@ -36,6 +36,7 @@ class EditProfileScreen extends StatelessWidget {
 
   EditProfileProvider? provider;
   UserDetail userDetail = locator<UserDetail>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   EditProfileScreen({Key? key}) : super(key: key);
 
@@ -43,6 +44,7 @@ class EditProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: ColorConstants.colorWhite,
       appBar: DialogHelper.appBarWithBack(scaler, context),
       body: BaseView<EditProfileProvider>(
@@ -81,11 +83,11 @@ class EditProfileScreen extends StatelessWidget {
                                                   CustomDialog(
                                                     cameraClick: () {
                                                       provider.getImage(
-                                                          context, 1);
+                                                          _scaffoldKey.currentContext!, 1);
                                                     },
                                                     galleryClick: () {
                                                       provider.getImage(
-                                                          context, 2).catchError((e){
+                                                          _scaffoldKey.currentContext!, 2).catchError((e){
                                                         CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                                                       });
                                                     },

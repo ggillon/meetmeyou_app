@@ -20,6 +20,7 @@ import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/services/storage/storage.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -101,18 +102,33 @@ class CreateEventProvider extends BaseProvider {
     Navigator.of(context).pop();
     if (type == 1) {
       final pickedFile = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: 90, maxHeight: 1440);
-      image = File(pickedFile!.path);
+          source: ImageSource.camera, imageQuality: 85, maxHeight: 1440);
+     // image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
+      }
+      if (pickedFile != null) {
+        eventDetail.eventPhotoUrl = "";
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          image = value;
+          notifyListeners();
+        });
       }
       notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(
-          source: ImageSource.gallery, imageQuality: 90, maxHeight: 1440);
-      image = File(pickedFile!.path);
+          source: ImageSource.gallery, imageQuality: 85, maxHeight: 1440);
+     // image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = "";
+      }
+
+      if (pickedFile != null) {
+        eventDetail.eventPhotoUrl = "";
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          image = value;
+          notifyListeners();
+        });
       }
       notifyListeners();
     }
@@ -293,7 +309,7 @@ class CreateEventProvider extends BaseProvider {
             title: title,
             location: location,
             description: description,
-            photoFile: photoFile ?? null,
+           // photoFile: photoFile ?? null,
             photoURL: photoURL ?? "",
             start: addMultipleDate == true ? null : startDateTime,
             end: addMultipleDate == true ? null : endDateTime,
@@ -307,10 +323,20 @@ class CreateEventProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.message);
     });
     if (value != null) {
-      setState(ViewState.Idle);
+    //  setState(ViewState.Idle);
       eventDetail.eid = value.eid;
-      photoFile = null;
-      eventDetail.eventPhotoUrl = value.photoURL;
+     // photoFile = null;
+      if(image != null){
+        eventDetail.eventPhotoUrl =  await storeFile(image!, path: StoragePath.eventPhoto(value.eid)).catchError((e) {
+          setState(ViewState.Idle);
+          DialogHelper.showMessage(context, e.message);
+        });
+        await updateEvent(context, title, location, description, startDateTime, endDateTime, photoURL: eventDetail.eventPhotoUrl);
+      } else{
+        setState(ViewState.Idle);
+        eventDetail.eventPhotoUrl = value.photoURL;
+      }
+    //  eventDetail.eventPhotoUrl = value.photoURL;
 
       clearMultiDateOption();
       //   DialogHelper.showMessage(context, "Event created Successfully");
@@ -329,13 +355,19 @@ class CreateEventProvider extends BaseProvider {
       {String? photoURL, File? photoFile}) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    if(image != null){
+      eventDetail.eventPhotoUrl =  await storeFile(image!, path: StoragePath.eventPhoto(eventDetail.eid.toString())).catchError((e) {
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
+      });
+    }
     var value = await mmyEngine!
         .updateEvent(eventDetail.eid.toString(),
             title: title,
             location: location,
             description: description,
             photoURL: eventDetail.eventPhotoUrl ?? "",
-            photoFile: eventDetail.eventPhotoUrl == "" ? image ?? null : null,
+         //   photoFile: eventDetail.eventPhotoUrl == "" ? image ?? null : null,
             start: startDateTime,
             end: endDateTime)
         .catchError((e) {
@@ -368,6 +400,7 @@ class CreateEventProvider extends BaseProvider {
       eventDetail.contactCIDs = contactsKeys;
       clearMultiDateOption();
       // DialogHelper.showMessage(context, "Event updated Successfully");
+
       Navigator.of(context).pop();
     }
   }

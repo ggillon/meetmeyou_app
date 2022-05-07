@@ -33,11 +33,12 @@ class CreateEventScreen extends StatelessWidget {
 
   // List<String> questionsList = [];
   final questionController = TextEditingController();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
+      key: _scaffoldKey,
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<CreateEventProvider>(
           onModelReady: (provider) {
@@ -1333,7 +1334,7 @@ class CreateEventScreen extends StatelessWidget {
                   GestureDetector(
                       behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      provider.getImage(context, 1);
+                      provider.getImage(_scaffoldKey.currentContext!, 1);
                     },
                     child: Column(
                       children: [
@@ -1353,7 +1354,7 @@ class CreateEventScreen extends StatelessWidget {
                   GestureDetector(
                       behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      provider.getImage(context, 2).catchError((e){
+                      provider.getImage(_scaffoldKey.currentContext!, 2).catchError((e){
                         CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                       });
                     },

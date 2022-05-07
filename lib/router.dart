@@ -50,6 +50,7 @@ import 'package:meetmeyou_app/view/settings/rejected_invites/rejectedInvitesScre
 import 'package:meetmeyou_app/view/settings/rejected_invites_description/rejectedInvitesDescriptionScreen.dart';
 import 'package:meetmeyou_app/view/signup/signupPage.dart';
 import 'package:meetmeyou_app/view/verify_screen/verifyScreen.dart';
+import 'package:meetmeyou_app/widgets/image_cropper.dart';
 
 import 'widgets/autoCompletePlaces.dart';
 import 'constants/routes_constants.dart';
@@ -219,6 +220,8 @@ class Router {
       case RoutesConstants.checkAttendanceScreen:
         return MaterialPageRoute(builder: (_) => CheckAttendanceScreen(), settings: settings);
 
+      case RoutesConstants.imageCropper:
+        return MaterialPageRoute(builder: (_) => ImageCrop(image: settings.arguments as File), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

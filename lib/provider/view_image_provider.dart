@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/services/storage/storage.dart';
 
 class ViewImageProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -19,7 +20,12 @@ class ViewImageProvider extends BaseProvider {
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
+    // if(photoFile != null){
+    //   eventDetail.eventPhotoUrl =  await storeFile(photoFile, path: StoragePath.eventPhoto(eventDetail.eid.toString())).catchError((e) {
+    //     setState(ViewState.Idle);
+    //     DialogHelper.showMessage(context, e.message);
+    //   });
+    // }
     await mmyEngine!.postDiscussionMessage(
      fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: PHOTO_MESSAGE, text: "", photoFile: photoFile)
         .catchError((e) {

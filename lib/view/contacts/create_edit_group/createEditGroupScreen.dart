@@ -25,11 +25,13 @@ class CreateEditGroupScreen extends StatelessWidget {
   final groupNameController = TextEditingController();
   final descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
+      key: _scaffoldKey,
         backgroundColor: ColorConstants.colorWhite,
         appBar: DialogHelper.appBarWithBack(scaler, context),
         body: BaseView<CreateEditGroupProvider>(onModelReady: (provider) {
@@ -64,10 +66,10 @@ class CreateEditGroupScreen extends StatelessWidget {
                                         builder: (BuildContext context) =>
                                             CustomDialog(
                                               cameraClick: () {
-                                                provider.getImage(context, 1);
+                                                provider.getImage(_scaffoldKey.currentContext!, 1);
                                               },
                                               galleryClick: () {
-                                                provider.getImage(context, 2).catchError((e){
+                                                provider.getImage(_scaffoldKey.currentContext!, 2).catchError((e){
                                                   CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                                                 });
                                               },

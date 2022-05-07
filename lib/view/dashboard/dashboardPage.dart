@@ -63,6 +63,8 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
     switch (state) {
       case AppLifecycleState.resumed:
         provider.onItemTapped(0);
+        provider.unRespondedInvites(context);
+        provider.unRespondedEvents(context);
         break;
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
