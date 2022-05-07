@@ -179,7 +179,7 @@ abstract class MMYEngine {
   /// Access Discussion of Event (retreive or join it)
   Future<Discussion> getEventDiscussion(String eid);
   /// Post a message in a discussion
-  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, File? photoFile, String? replyMid});
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, String? photoURL, String? replyMid});
   /// Get List of discussion
   Future<List<Discussion>> getUserDiscussions();
   /// Start Discussion between contacts or a groups
