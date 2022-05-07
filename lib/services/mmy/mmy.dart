@@ -637,7 +637,7 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, File? photoFile, String? photoURL, String? replyMid}) async {
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, String? photoURL, String? replyMid}) async {
     discussionLib.postMessage(_currentUser, did, type, text, photoURL, replyMid);
     notificationLib.notifyDiscussionMessage(_currentUser, did);
   }
