@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/provider/view_image_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ViewImageScreen extends StatelessWidget {
    ViewImageScreen({Key? key, required this.viewImageData}) : super(key: key);
@@ -39,10 +40,15 @@ class ViewImageScreen extends StatelessWidget {
                   color: ColorConstants.primaryColor,
                     width: double.infinity,
                     height: viewImageData.image == null || viewImageData.image == "" ? scaler.getHeight(80.0) : scaler.getHeight(72.0),
-                    child: ImageView(
-                      path:  viewImageData.image == null || viewImageData.image == "" ? viewImageData.imageUrl :  viewImageData.image!.path,
-                      fit: BoxFit.fitWidth,
-                    ),
+                    child: viewImageData.image == null || viewImageData.image == "" ?
+                    PhotoView(
+                      imageProvider: NetworkImage (viewImageData.imageUrl)) :
+                  ImageView(path: viewImageData.image!.path, fit: BoxFit.fitWidth)
+
+                    // ImageView(
+                    //   path:  viewImageData.image == null || viewImageData.image == "" ? viewImageData.imageUrl :  viewImageData.image!.path,
+                    //   fit: BoxFit.fitWidth,
+                    // ),
                   ),
               ),
                 SizedBox(height: scaler.getHeight(2)),

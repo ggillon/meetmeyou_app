@@ -90,31 +90,59 @@ class NewEventDiscussionProvider extends BaseProvider {
     if (type == 1) {
       final pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
-      image = File(pickedFile!.path);
-      if(image != null || image != ""){
-        Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
-          image = null;
-          value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
+      // image = File(pickedFile!.path);
+      // if(image != null || image != ""){
+      //   Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+      //     image = null;
+      //     value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
+      //   });
+      // }
+      // else{
+      //   DialogHelper.showMessage(context, "no_image_selected".tr());
+      // }
+      if(pickedFile != null){
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          image = value;
+          if(image != null){
+            Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+              image = null;
+              value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
+            });
+          } else{
+            DialogHelper.showMessage(context, "no_image_selected".tr());
+          }
         });
-      } else{
-        DialogHelper.showMessage(context, "no_image_selected".tr());
       }
       notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(
           source: ImageSource.gallery, imageQuality: 90, maxHeight: 720);
       //  image = File(pickedFile!.path);
-      if (pickedFile != null) {
-        image = File(pickedFile.path);
-        if(image != null || image != ""){
-          Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
-            image = null;
-           value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
-          });
-        } else{
-          DialogHelper.showMessage(context, "no_image_selected".tr());
-        }
-      } else {
+      // if (pickedFile != null) {
+      //   image = File(pickedFile.path);
+      //   if(image != null || image != ""){
+      //     Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+      //       image = null;
+      //      value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
+      //     });
+      //   } else{
+      //     DialogHelper.showMessage(context, "no_image_selected".tr());
+      //   }
+      // }
+      if(pickedFile != null){
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          image = value;
+          if(image != null){
+            Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+              image = null;
+              value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
+            });
+          } else{
+            DialogHelper.showMessage(context, "no_image_selected".tr());
+          }
+        });
+      }
+      else {
         print('No image selected.');
         return;
       }
@@ -349,21 +377,33 @@ class NewEventDiscussionProvider extends BaseProvider {
     Navigator.of(context).pop();
     if (type == 1) {
       final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
-      groupImage = File(pickedFile!.path);
-      Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
-        groupImage = null;
-        fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
-      });
+     // groupImage = File(pickedFile!.path);
+      if(pickedFile != null){
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          groupImage = value;
+          Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
+            groupImage = null;
+            fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
+          });
+        });
+      }
       notifyListeners();
     } else {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 720);
       if (pickedFile != null) {
-        groupImage = File(pickedFile.path);
-        Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
-          groupImage = null;
-          fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
-
+       // groupImage = File(pickedFile.path);
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          groupImage = value;
+          Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
+            groupImage = null;
+            fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
+          });
         });
+        // Navigator.pushNamed(context, RoutesConstants.groupImageView, arguments: GroupImageData(groupImage: groupImage!, fromChatScreen: fromChatScreen, did: fromChatScreen == true ? chatDid: discussion!.did)).then((value) {
+        //   groupImage = null;
+        //   fromChatScreen == true ?  getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : startContactDiscussion(context);
+        //
+        // });
       } else {
         print('No image selected.');
         return;

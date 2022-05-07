@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/provider/group_image_view_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:photo_view/photo_view.dart';
 
 class GroupImageView extends StatelessWidget {
    GroupImageView({Key? key, required this.groupImageData}) : super(key: key);
@@ -40,9 +41,9 @@ class GroupImageView extends StatelessWidget {
                       width: double.infinity,
                       height: scaler.getHeight(40.0),
                       child: ImageView(
-                        path: groupImageData.groupImage.path,
-                        fit: BoxFit.cover,
-                      ),
+                          path: groupImageData.groupImage.path,
+                          fit: BoxFit.cover,
+                        ),
                     ),
                   ),
                   SizedBox(height: scaler.getHeight(5.0)),
