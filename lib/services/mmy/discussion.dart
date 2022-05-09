@@ -154,10 +154,10 @@ Future<Discussion> setDiscussionTitle(User currentUser, String did, String title
   return discussion;
 }
 
-Future<Discussion> setDiscussionPhoto(User currentUser, String did, File photo) async {
+Future<Discussion> setDiscussionPhoto(User currentUser, String did, String photoURL) async {
   final db = FirestoreDB(uid: currentUser.uid);
   Discussion discussion = await db.getDiscussion(did);
-  discussion.photoURL = await messagePicture(photo, did: did);
+  discussion.photoURL = photoURL;
   await db.setDiscussion(discussion);
   return discussion;
 }
