@@ -1,5 +1,3 @@
-
-import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
@@ -11,7 +9,6 @@ import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
-import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
 import '../../models/discussion.dart';
 import '../../models/discussion_message.dart';
@@ -82,9 +79,9 @@ abstract class MMYEngine {
   /// Number of unresponded invites
   Future<int> unrespondedInvites();
   /// Create a Group of contacts
-  Future<Contact> newGroupContact(String name, {String photoURL, String about, File? photoFile});
+  Future<Contact> newGroupContact(String name, {String photoURL, String about});
   /// Update a Group of contacts
-  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about});
+  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about});
   /// Add contact(s) to group
   Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
   /// Remove contact(s) from group
@@ -105,9 +102,9 @@ abstract class MMYEngine {
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
   /// Update an event
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateOption>? multipleDates});
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, List<DateOption>? multipleDates});
   /// Get status of user
   Future<String> eventUserStatus(String eid);
   /// Cancel an event
@@ -194,7 +191,7 @@ abstract class MMYEngine {
   /// Remove user from discussion
   Future<void> removeContactFromDiscussion(String did, {required String cid});
   /// Change title of discussion
-  Future<Discussion> updateDiscussion(String did, {String? title, File? photo});
+  Future<Discussion> updateDiscussion(String did, {String title, String photoURL});
   /// Change title of discussion
   Future<int> updatedDiscussions();
 
@@ -270,9 +267,7 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, File? photoFile, String about = ''}) async {
-    if (photoFile!=null)
-      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
+  Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, String about = ''}) async {
     final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
     return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
   }
@@ -332,9 +327,7 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about}) async {
-    if (photoFile!=null)
-      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
+  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about}) async {
     return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
   }
 
@@ -399,16 +392,12 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions}) async {
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions}) async {
     Event event = await eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start ?? startDateOptions!.first, end: end ?? endDateOptions!.last);
     if(startDateOptions != null && endDateOptions != null) {
       for(int i=0; i<startDateOptions.length; i++) {
         await dateLib.addDateToEvent(_currentUser, event.eid, startDateOptions[i], endDateOptions[i]);
       }
-    }
-    if (photoFile!=null) {
-      photoURL = await storageLib.storeEventPicture(photoFile, eid: event.eid);
-      event = await updateEvent(event.eid, photoURL: photoURL);
     }
     return event;
   }
@@ -495,11 +484,7 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
-    if (photoFile!=null) {
-      photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
-      await discussionLib.changePictureOfDiscussion(_currentUser, eid, photoURL);
-    }
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
     if(multipleDates != null)
       dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
     if(title != null) {
@@ -664,10 +649,10 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Discussion> updateDiscussion(String did, {String? title, File? photo}) async {
+  Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL}) async {
     Discussion result = await getDiscussion(did);
     if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
-    if(photo != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photo);
+    if(photoURL != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photoURL);
     return result;
   }
 
