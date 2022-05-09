@@ -416,7 +416,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     Navigator.of(context).pop();
     updateTitleAndPhoto(true);
 
-   var value =  await mmyEngine?.updateDiscussion(did, title: title, photo: photo).catchError((e) {
+   var value =  await mmyEngine?.updateDiscussion(did, title: title.toString()).catchError((e) {
      updateTitleAndPhoto(false);
      DialogHelper.showMessage(context, e.message);
    });

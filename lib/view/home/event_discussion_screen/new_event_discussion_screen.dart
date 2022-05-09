@@ -170,7 +170,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                 width: scaler.getWidth(10),
                                 child: ImageView(
                                   path: fromContactOrGroup == true
-                                      ? provider.discussionDetail.photoUrl
+                                     // ? provider.discussionDetail.photoUrl
+                                      ? provider.discussion!.photoURL
                                       : provider.eventDiscussion!.photoURL,
                                 //  fit: BoxFit.cover,
                                   height: scaler.getHeight(4.0),
