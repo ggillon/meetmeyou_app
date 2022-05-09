@@ -486,11 +486,12 @@ class MMY implements MMYEngine {
   Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
     if(multipleDates != null)
       dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
-    if(title != null) {
-      try { // Discussion might not exist
-        await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
-      } catch (e) {}
-    }
+
+    try { // Discussion might not exist
+        if(title != null) await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
+        if(photoURL != null) await discussionLib.changePictureOfDiscussion(_currentUser, eid, photoURL);
+    } catch (e) {}
+
     Event result = await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
     notificationLib.notifyEventModified(_currentUser, result.eid,);
     return result;
