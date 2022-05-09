@@ -92,7 +92,7 @@ class _ImageCropState extends State<ImageCrop> {
   Future<Null> _cropImage() async {
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: widget.image.path,
-      aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 1),
+    //  aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 1),
       aspectRatioPresets: Platform.isAndroid
       ? [
       CropAspectRatioPreset.square,

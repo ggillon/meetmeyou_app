@@ -14,20 +14,22 @@ import 'package:meetmeyou_app/services/storage/storage.dart';
 class ViewImageProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
+  String photoUrl = "";
 
   Future postDiscussionMessage(BuildContext context, File photoFile, bool fromContactOrGroup, String contactGroupDid, bool fromChatScreen, String fromChatScreenDid) async {
 
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    // if(photoFile != null){
-    //   eventDetail.eventPhotoUrl =  await storeFile(photoFile, path: StoragePath.eventPhoto(eventDetail.eid.toString())).catchError((e) {
-    //     setState(ViewState.Idle);
-    //     DialogHelper.showMessage(context, e.message);
-    //   });
-    // }
+    if(photoFile != null){
+     photoUrl =  await storeFile(photoFile, path: StoragePath.discussionChatGallery(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!),
+          fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!))).catchError((e) {
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
+      });
+    }
     await mmyEngine!.postDiscussionMessage(
-     fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: PHOTO_MESSAGE, text: "", photoFile: photoFile)
+     fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: PHOTO_MESSAGE, text: "", photoURL: photoUrl)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "error_message".tr());

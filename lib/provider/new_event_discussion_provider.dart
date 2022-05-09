@@ -210,10 +210,10 @@ class NewEventDiscussionProvider extends BaseProvider {
 
   Future postDiscussionMessage(BuildContext context, String type, String text,
       TextEditingController controller, bool fromContactOrGroup, bool fromChatScreen, String fromChatScreenDid,
-      {File? photoFile, String? replyMid}) async {
+      {String? replyMid}) async {
     updatePostMessage(true);
 
-    await mmyEngine!.postDiscussionMessage(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? discussion!.did : eventDetail.eid!), type: type, text: text, photoFile: photoFile, replyMid: replyMid)
+    await mmyEngine!.postDiscussionMessage(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? discussion!.did : eventDetail.eid!), type: type, text: text, photoURL: "", replyMid: replyMid)
         .catchError((e) {
       updatePostMessage(false);
       DialogHelper.showMessage(context, "error_message".tr());
