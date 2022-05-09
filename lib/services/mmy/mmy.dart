@@ -189,8 +189,8 @@ abstract class MMYEngine {
   Future<void> addContactToDiscussion(String did, {required String cid});
   /// Remove user from discussion
   Future<void> removeContactFromDiscussion(String did, {required String cid});
-  /// Change title of discussion
-  Future<Discussion> updateDiscussion(String did, {String title, String photoURL});
+  /// Change title or photo of discussion
+  Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL});
   /// Change title of discussion
   Future<int> updatedDiscussions();
 
@@ -650,7 +650,7 @@ class MMY implements MMYEngine {
   @override
   Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL}) async {
     Discussion result = await getDiscussion(did);
-    if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
+    if(title != null) {result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
     if(photoURL != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photoURL);
     return result;
   }
