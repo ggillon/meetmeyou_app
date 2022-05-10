@@ -5,6 +5,8 @@ import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/services/mmy/discussion.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../mmy/idgen.dart';
+
 Future<String> storeFile(File file, {required String path}) async {
   await FirebaseStorage.instance.ref(path).putFile(file);
   return FirebaseStorage.instance.ref(path).getDownloadURL();
