@@ -127,6 +127,16 @@ Future<List<Event>> getUserEvents(User currentUser,{List<String>? filters}) asyn
   return eventList;
 }
 
+Future<List<Event>> getPastEvents(User currentUser,) async {
+  List<Event> eventList = [];
+  for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(currentUser.uid)) {
+    if(event.start.isBefore(DateTime.now().subtract(Duration(hours: 24))))
+      eventList.add(event);
+  }
+  return eventList;
+}
+
+
 Future<Event> getEvent(User currentUser, String eid) async {
   return await FirestoreDB(uid: currentUser.uid).getEvent(eid);
 }
