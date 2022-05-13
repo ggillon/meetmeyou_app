@@ -97,6 +97,8 @@ abstract class MMYEngine {
 
   /// Get all Events where user is invited or organiser
   Future<List<Event>> getUserEvents({List<String>? filters});
+  /// Get all past Event where user was invited
+  Future<List<Event>> getPastEvents();
   /// Get all Events where user is organiser
   Future<List<Event>> getOrganisedEvents();
   /// Get a particular Event
@@ -386,6 +388,11 @@ class MMY implements MMYEngine {
   @override
   Future<List<Event>> getUserEvents({List<String>? filters}) {
     return eventLib.getUserEvents(_currentUser, filters: filters);
+  }
+
+  @override
+  Future<List<Event>> getPastEvents() {
+    return eventLib.getPastEvents(_currentUser,);
   }
 
   @override
