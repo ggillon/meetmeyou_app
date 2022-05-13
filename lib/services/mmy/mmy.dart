@@ -190,8 +190,8 @@ abstract class MMYEngine {
   Future<void> addContactToDiscussion(String did, {required String cid});
   /// Remove user from discussion
   Future<void> removeContactFromDiscussion(String did, {required String cid});
-  /// Change title of discussion
-  Future<Discussion> updateDiscussion(String did, {String title, String photoURL});
+  /// Change title or photo of discussion
+  Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL});
   /// Change title of discussion
   Future<int> updatedDiscussions();
 
@@ -328,7 +328,9 @@ class MMY implements MMYEngine {
 
   @override
   Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about}) async {
-    return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
+    Contact contact = await contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
+    discussionLib.updateLinkedDiscussion(_currentUser, cid, title: displayName, photoURL: photoURL);
+    return contact;
   }
 
   @override
@@ -487,11 +489,7 @@ class MMY implements MMYEngine {
   Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
     if(multipleDates != null)
       dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
-    if(title != null) {
-      try { // Discussion might not exist
-        await discussionLib.changeTitleOfDiscussion(_currentUser, eid, title);
-      } catch (e) {}
-    }
+    discussionLib.updateLinkedDiscussion(_currentUser, eid, title: title, photoURL: photoURL);
     Event result = await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
     notificationLib.notifyEventModified(_currentUser, result.eid,);
     return result;
@@ -605,16 +603,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> getEventDiscussion(String eid) async {
-    Discussion discussion;
-    try{
-      discussion = await discussionLib.getDiscussion(_currentUser, eid);
-    } catch(e) { // For old events
-      discussion = await discussionLib.createDiscussion(_currentUser, (await eventLib.getEvent(_currentUser, eid)).title, eid: eid);
-    }
-    if(!discussion.participants.containsKey(_currentUser.uid)) {
-      discussionLib.inviteUserToDiscussion(_currentUser, _currentUser.uid, eid);
-    }
-    return discussion;
+    return discussionLib.getDiscussion(_currentUser, eid);
   }
 
   @override
@@ -630,7 +619,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> startContactDiscussion(String cid) async {
-    return await discussionLib.startContactDiscussion(_currentUser, cid);
+    return await discussionLib.startContactDiscussion(_currentUser, cid: cid,);
   }
 
   @override
@@ -650,17 +639,13 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL}) async {
-    Discussion result = await getDiscussion(did);
-    if(title != null) result = await discussionLib.changeTitleOfDiscussion(_currentUser, did, title);
-    if(photoURL != null) result = await discussionLib.setDiscussionPhoto(_currentUser, did, photoURL);
-    return result;
+    return await discussionLib.updateDiscussion(_currentUser, did, title: title, photoURL: photoURL);
   }
 
   @override
   Future<int> updatedDiscussions() async {
     int count=0;
-    List<Discussion> discussions = await getUserDiscussions();
-    for (Discussion discussion in discussions) if (discussion.unread) count++;
+    for (Discussion discussion in (await getUserDiscussions())) if (discussion.unread) count++;
     return count;
   }
 
@@ -671,7 +656,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> startGroupDiscussion(List<String> CIDs) {
-    return discussionLib.startGroupDiscussion(_currentUser, CIDs);
+    return discussionLib.startGroupDiscussion(_currentUser, CIDs: CIDs);
   }
 
   @override
