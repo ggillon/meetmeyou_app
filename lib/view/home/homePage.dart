@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage>
           provider.getUserDetail(context);
           provider.userDetail.appleSignUpType == true ? provider.checkFilledProfile(context) : Container();
           widget.provider = provider;
-          provider.tabController = TabController(length: 5, vsync: this);
+          provider.tabController = TabController(length: 6, vsync: this);
           provider.tabChangeEvent(context);
           await provider.getIndexChanging(context);
           provider.updatedDiscussions(context);
@@ -330,14 +330,30 @@ class _HomePageState extends State<HomePage>
                       )),
                       Tab(
                           child: ClipRRect(
+                            borderRadius: scaler.getBorderRadiusCircular(15.0),
+                            child: Container(
+                              padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                              color: provider.tabController!.index == 4
+                                  ? ColorConstants.primaryColor
+                                  : ColorConstants.colorWhitishGray,
+                              child: Text('past'.tr()).mediumText(
+                                  provider.tabController!.index == 4
+                                      ? ColorConstants.colorWhite
+                                      : ColorConstants.colorGray,
+                                  scaler.getTextSize(9.5),
+                                  TextAlign.left),
+                            ),
+                          )),
+                      Tab(
+                          child: ClipRRect(
                         borderRadius: scaler.getBorderRadiusCircular(15.0),
                         child: Container(
                           padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
-                          color: provider.tabController!.index == 4
+                          color: provider.tabController!.index == 5
                               ? ColorConstants.primaryColor
                               : ColorConstants.colorWhitishGray,
                           child: Text('hidden'.tr()).mediumText(
-                              provider.tabController!.index == 4
+                              provider.tabController!.index == 5
                                   ? ColorConstants.colorWhite
                                   : ColorConstants.colorGray,
                               scaler.getTextSize(9.5),
@@ -403,6 +419,21 @@ class _HomePageState extends State<HomePage>
                                       provider,
                                       dashBoardProvider),
                                 ),
+                      provider.state == ViewState.Busy
+                          ? CommonWidgets.loading(scaler)
+                          : provider.eventLists.length == 0
+                          ? CommonWidgets.noEventFoundText(scaler)
+                          :
+                      // RefreshIndicator(
+                      //   onRefresh: refreshListTab4,
+                      //   key: refreshKeyTab4,
+                      //   child:
+                        upcomingEventsList(
+                            scaler,
+                            provider.eventLists,
+                            provider,
+                            dashBoardProvider),
+                     // ),
                       provider.state == ViewState.Busy
                           ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0

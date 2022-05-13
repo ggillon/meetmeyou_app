@@ -196,6 +196,10 @@ class HomePageProvider extends BaseProvider {
         break;
 
       case 4:
+        getUserEvents(context, refresh: refresh);
+        break;
+
+      case 5:
         getUserEvents(context, filters: ["Not Interested"], refresh: refresh);
         break;
     }
