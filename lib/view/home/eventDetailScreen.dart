@@ -129,7 +129,18 @@ class EventDetailScreen extends StatelessWidget {
                               provider.getMultipleDate == true)
                             Center(child: CircularProgressIndicator())
                           else
-                             (provider.eventDetail.event!.multipleDates == true &&
+                          provider.eventDetail.isPastEvent == true ? CommonWidgets.commonBtn(scaler, context, "hide".tr(), ColorConstants.primaryColor, ColorConstants.colorWhite,
+                          onTapFun: (){
+                            CommonWidgets.respondToEventBottomSheet(
+                                context, scaler, hide: () {
+                              Navigator.of(context).pop();
+                              provider.replyToEvent(
+                                  context,
+                                  provider.eventDetail.eid!,
+                                  EVENT_NOT_INTERESTED);
+                            }, pastEvent: true);
+                          }
+                          )  : (provider.eventDetail.event!.multipleDates == true &&
                                  provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid) ? Container() : CommonWidgets.commonBtn(
                                 scaler,
                                 context,
@@ -345,6 +356,7 @@ class EventDetailScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
+                                    provider.eventDetail.isPastEvent == true ? Container() :
                                     provider.auth.currentUser!.uid == provider.eventDetail.organiserId && provider.eventDetail.eventBtnStatus ==
                                         "edit" ? Expanded(child: Container(
                                       alignment: Alignment.centerRight,
@@ -365,7 +377,7 @@ class EventDetailScreen extends StatelessWidget {
                                 ),
                               ),
                           SizedBox(height: scaler.getHeight(1)),
-                          provider.eventDetail.event?.multipleDates == true &&
+                          provider.eventDetail.isPastEvent == true ? Container() : provider.eventDetail.event?.multipleDates == true &&
                                   provider.eventDetail.organiserId !=
                                       provider.auth.currentUser!.uid
                               ?
@@ -652,7 +664,7 @@ class EventDetailScreen extends StatelessWidget {
 
   Widget manageInvitationCardCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return GestureDetector(
-      onTap: (){
+      onTap: provider.eventDetail.isPastEvent == true ? (){} : (){
         provider.setContactKeys(provider.eventDetail.event!);
         Navigator.pushNamed(
             context,

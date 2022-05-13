@@ -196,7 +196,7 @@ class HomePageProvider extends BaseProvider {
         break;
 
       case 4:
-        getUserEvents(context, refresh: refresh);
+      getPastEvents(context, refresh: refresh);
         break;
 
       case 5:
@@ -386,6 +386,36 @@ class HomePageProvider extends BaseProvider {
     if(value != null){
       checkAppleLoginFilledProfile = value;
       updateCheckFilled(false);
+    }
+  }
+
+
+  // get past events
+  //List<Event> pastEvents = [];
+  bool pastEvent = true;
+
+  updatePastEvent(bool val){
+    pastEvent = val;
+    notifyListeners();
+  }
+
+  Future getPastEvents(BuildContext context, {bool refresh = false}) async{
+   refresh == true ? updatePastEvent(true) : setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.getPastEvents().catchError((e){
+      refresh == true ?  updatePastEvent(false) : setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "error_message".tr());
+    });
+
+    if(value != null){
+      eventLists = [];
+      eventLists = value;
+      eventLists.sort((a,b) {
+        return a.start.compareTo(b.start);
+      });
+      getMultipleDate = List<bool>.filled(eventLists.length, false);
+      refresh == true ?  updatePastEvent(false) : setState(ViewState.Idle);
     }
   }
 

@@ -35,6 +35,8 @@ class EventDetail{
 
   int? eventListLength;
 
+  // past event
+  bool isPastEvent = false;
 
   EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys, this.organiserId, this.organiserName, this.eventListLength});
 

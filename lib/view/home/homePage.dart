@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage>
   var refreshKeyTab3 = GlobalKey<RefreshIndicatorState>();
   var refreshKeyTab4 = GlobalKey<RefreshIndicatorState>();
   var refreshKeyTab5 = GlobalKey<RefreshIndicatorState>();
+  var refreshKeyTab6 = GlobalKey<RefreshIndicatorState>();
   HomePageProvider provider = HomePageProvider();
   DashboardProvider _dashboardProvider = DashboardProvider();
 
@@ -90,6 +91,13 @@ class _HomePageState extends State<HomePage>
 
   Future<Null> refreshListTab5() async {
     refreshKeyTab5.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+
+    await this.provider.getPastEvents(context, refresh: true);
+  }
+
+  Future<Null> refreshListTab6() async {
+    refreshKeyTab6.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
 
     await this.provider.getIndexChanging(context, refresh: true);
@@ -424,23 +432,26 @@ class _HomePageState extends State<HomePage>
                           : provider.eventLists.length == 0
                           ? CommonWidgets.noEventFoundText(scaler)
                           :
-                      // RefreshIndicator(
-                      //   onRefresh: refreshListTab4,
-                      //   key: refreshKeyTab4,
-                      //   child:
-                        upcomingEventsList(
+                      provider.state == ViewState.Busy
+                          ? CommonWidgets.loading(scaler)
+                          : provider.eventLists.length == 0
+                          ? CommonWidgets.noEventFoundText(scaler)
+                          : RefreshIndicator(
+                        onRefresh: refreshListTab5,
+                        key: refreshKeyTab5,
+                        child: upcomingEventsList(
                             scaler,
                             provider.eventLists,
                             provider,
-                            dashBoardProvider),
-                     // ),
+                            dashBoardProvider, pastEvent: true),
+                      ),
                       provider.state == ViewState.Busy
                           ? CommonWidgets.loading(scaler)
                           : provider.eventLists.length == 0
                               ? CommonWidgets.noEventFoundText(scaler)
                               : RefreshIndicator(
-                                  onRefresh: refreshListTab5,
-                                  key: refreshKeyTab5,
+                                  onRefresh: refreshListTab6,
+                                  key: refreshKeyTab6,
                                   child: upcomingEventsList(
                                       scaler,
                                       provider.eventLists,
@@ -460,7 +471,7 @@ class _HomePageState extends State<HomePage>
 
 
   Widget upcomingEventsList(ScreenScaler scaler, List<Event> eventList,
-      HomePageProvider provider, DashboardProvider dashboardProvider) {
+      HomePageProvider provider, DashboardProvider dashboardProvider, {bool pastEvent = false}) {
     return Padding(
       padding: scaler.getPaddingLTRB(5.8, 0.5, 5.8, 0.0),
       child: ListView.builder(
@@ -488,6 +499,8 @@ class _HomePageState extends State<HomePage>
                   provider.eventDetail.organiserName =
                       eventList[index].organiserName;
                   provider.calendarDetail.fromAnotherPage = false;
+                  // past event
+                  provider.eventDetail.isPastEvent = pastEvent;
                   Navigator.pushNamed(
                           context, RoutesConstants.eventDetailScreen)
                       .then((value) {
@@ -506,7 +519,7 @@ class _HomePageState extends State<HomePage>
                       borderRadius: scaler.getBorderRadiusCircular(10)),
                   // child: CustomShape(
                   child: eventCard(scaler, context, eventList, index, provider,
-                      dashboardProvider),
+                      dashboardProvider, pastEvent: pastEvent),
                   //  bgColor: ColorConstants.colorWhite,
                   //   radius: scaler.getBorderRadiusCircular(10),
                   //  width: MediaQuery.of(context).size.width / 1.2
@@ -524,7 +537,7 @@ class _HomePageState extends State<HomePage>
       List<Event> eventList,
       int index,
       HomePageProvider provider,
-      DashboardProvider dashboardProvider) {
+      DashboardProvider dashboardProvider, {bool pastEvent = false}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -557,7 +570,7 @@ class _HomePageState extends State<HomePage>
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: [
                      dateCard(scaler, eventList[index]),
-                     shareCard(scaler, eventList[index])
+                    pastEvent == true ? Container() : shareCard(scaler, eventList[index])
                    ],
                  ),
                )) :  Positioned(
@@ -638,8 +651,7 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               SizedBox(width: scaler.getWidth(1)),
-              eventRespondBtn(
-                  scaler, eventList[index], provider, dashboardProvider, index)
+           pastEvent == false ? eventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index) : pastEventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, pastEvent)
             ],
           ),
         )
@@ -773,12 +785,12 @@ class _HomePageState extends State<HomePage>
         } else if (CommonEventFunction.getEventBtnStatus(
                 event, provider.userDetail.cid.toString()) ==
             "edit") {
-          provider.setEventValuesForEdit(event);
-          provider.clearMultiDateOption();
-          Navigator.pushNamed(context, RoutesConstants.createEventScreen)
-              .then((value) {
-            provider.getIndexChanging(context);
-          });
+            provider.setEventValuesForEdit(event);
+            provider.clearMultiDateOption();
+            Navigator.pushNamed(context, RoutesConstants.createEventScreen)
+                .then((value) {
+              provider.getIndexChanging(context);
+            });
         } else if (CommonEventFunction.getEventBtnStatus(
                 event, provider.userDetail.cid.toString()) ==
             "cancelled") {
@@ -814,6 +826,62 @@ class _HomePageState extends State<HomePage>
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.userDetail.cid.toString(),
             textColor: false),
+        radius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        width: scaler.getWidth(20),
+        height: scaler.getHeight(3.5),
+      ),
+    );
+  }
+
+  Widget pastEventRespondBtn(
+      ScreenScaler scaler,
+      Event event,
+      HomePageProvider provider,
+      DashboardProvider dashboardProvider,
+      int index, bool pastEvent) {
+    return GestureDetector(
+      onTap: () {
+       if (provider.auth.currentUser!.uid == event.organiserID) {
+            provider.eventDetail.isPastEvent = pastEvent;
+            provider.setEventValuesForEdit(event);
+            provider.eventDetail.eventMapData =
+                event.invitedContacts;
+            provider.eventDetail.eid = event.eid;
+            provider.eventDetail.organiserId =
+                event.organiserID;
+            provider.eventDetail.organiserName =
+                event.organiserName;
+            provider.calendarDetail.fromAnotherPage = false;
+            Navigator.pushNamed(
+                context, RoutesConstants.eventDetailScreen)
+                .then((value) {
+              provider.getPastEvents(context);
+            });
+
+        } else {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+            Navigator.of(context).pop();
+            dashboardProvider.updateEventNotificationCount();
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+          }, pastEvent: pastEvent);
+        }
+      },
+      child: CustomShape(
+        child: Center(
+            child: provider.getMultipleDate[index] == true
+                ? Container(
+                height: scaler.getHeight(1.5),
+                width: scaler.getWidth(3.0),
+                child: CircularProgressIndicator(
+                    color: ColorConstants.colorWhite))
+                : Text(provider.auth.currentUser!.uid == event.organiserID ? "edit".tr() : "hide".tr())
+                .semiBoldText(
+                provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.colorWhite : ColorConstants.primaryColor,
+                scaler.getTextSize(9.5),
+                TextAlign.center)),
+        bgColor: provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2),
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
