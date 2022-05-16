@@ -29,6 +29,7 @@ import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:meetmeyou_app/view/home/event_gallery_page/event_gallery_page.dart';
+import 'package:meetmeyou_app/view/home/event_gallery_view_image/event_gallery_view_image.dart';
 import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
 import 'package:meetmeyou_app/view/home/notifications_history_screen/notifications_history_screen.dart';
@@ -226,6 +227,9 @@ class Router {
 
       case RoutesConstants.eventGalleryPage:
         return MaterialPageRoute(builder: (_) => EventGalleryPage(), settings: settings);
+
+      case RoutesConstants.eventGalleryImageView:
+        return MaterialPageRoute(builder: (_) => EventGalleryImageView(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

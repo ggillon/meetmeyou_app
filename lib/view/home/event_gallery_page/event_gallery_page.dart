@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/provider/event_gallery_page_provider.dart';
@@ -48,10 +49,11 @@ class EventGalleryPage extends StatelessWidget {
                                       _scaffoldKey.currentContext!, 1);
                                 },
                                 galleryClick: () {
-                                  provider.getImage(
-                                      _scaffoldKey.currentContext!, 2).catchError((e){
-                                    CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
-                                  });
+                                  // provider.getImage(
+                                  //     _scaffoldKey.currentContext!, 2).catchError((e){
+                                  //   CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                  // });
+                                  Navigator.pushNamed(context, RoutesConstants.eventGalleryImageView);
                                 },
                                 cancelClick: () {
                                   Navigator.of(context).pop();

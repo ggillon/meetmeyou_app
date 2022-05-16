@@ -43,4 +43,5 @@ class RoutesConstants {
   static const checkAttendanceScreen = "checkAttendanceScreen";
   static const imageCropper = "imageCropper";
   static const eventGalleryPage = "eventGalleryPage";
+  static const eventGalleryImageView = "eventGalleryImageView";
 }
