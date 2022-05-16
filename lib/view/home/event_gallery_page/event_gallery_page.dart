@@ -21,7 +21,7 @@ class EventGalleryPage extends StatelessWidget {
       key: _scaffoldKey,
       body: BaseView<EventGalleryPageProvider>(
         onModelReady: (provider){
-
+          provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
         },
         builder: (context, provider, _){
           return SingleChildScrollView(
@@ -35,41 +35,61 @@ class EventGalleryPage extends StatelessWidget {
                       scaler.getTextSize(12),
                       TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis),
                 ),
-                SizedBox(height: scaler.getHeight(2)),
-                GestureDetector(
-                  onTap: () async {
-                    if (await Permission.storage.request().isGranted) {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) =>
-                              CustomDialog(
-                                cameraClick: () {
-                                  provider.getImage(
-                                      _scaffoldKey.currentContext!, 1);
-                                },
-                                galleryClick: () {
-                                  // provider.getImage(
-                                  //     _scaffoldKey.currentContext!, 2).catchError((e){
-                                  //   CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
-                                  // });
-                                  Navigator.pushNamed(context, RoutesConstants.eventGalleryImageView);
-                                },
-                                cancelClick: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ));
+                provider.getAlbum == true ? SizedBox(
+                  height: scaler.getHeight(90),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(child: CircularProgressIndicator()),
+                      SizedBox(height: scaler.getHeight(1)),
+                      Text("fetching_gallery".tr()).mediumText(
+                          ColorConstants.primaryColor,
+                          scaler.getTextSize(10),
+                          TextAlign.left),
+                    ],
+                  ),
+                ) :    Column(
+                  children: [
+                    SizedBox(height: scaler.getHeight(2)),
+                    GestureDetector(
+                        onTap: () async {
+                          // if (await Permission.storage.request().isGranted) {
+                          //   showDialog(
+                          //       barrierDismissible: false,
+                          //       context: context,
+                          //       builder: (BuildContext context) =>
+                          //           CustomDialog(
+                          //             cameraClick: () {
+                          //               provider.getImage(
+                          //                   _scaffoldKey.currentContext!, 1);
+                          //             },
+                          //             galleryClick: () {
+                          //               provider.getImage(
+                          //                   _scaffoldKey.currentContext!, 2).catchError((e){
+                          //                 CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                          //               });
+                          //             },
+                          //             cancelClick: () {
+                          //               Navigator.of(context).pop();
+                          //             },
+                          //           ));
+                          //
+                          // } else if(await Permission.storage.request().isDenied){
+                          //   Map<Permission, PermissionStatus> statuses = await [
+                          //     Permission.storage,
+                          //   ].request();
+                          //
+                          // } else if(await Permission.storage.request().isPermanentlyDenied){
+                          //   CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                          // }
+                          Navigator.pushNamed(context, RoutesConstants.eventGalleryImageView, arguments:
+                          "https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/templates%2Fdinner.jpeg?alt=media&token=5aae55ff-8af7-47e4-b067-9f8edfe95602");
+                        },
+                        child: postPhotoBtn(scaler)),
+                  ],
+                ),
 
-                    } else if(await Permission.storage.request().isDenied){
-                      Map<Permission, PermissionStatus> statuses = await [
-                        Permission.storage,
-                      ].request();
-
-                    } else if(await Permission.storage.request().isPermanentlyDenied){
-                      CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
-                    }
-                  },
-                    child: postPhotoBtn(scaler)),
               ],
             ),
           );

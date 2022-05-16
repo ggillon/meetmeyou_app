@@ -452,27 +452,4 @@ class EventDetailProvider extends BaseProvider {
    // userDetail.cid = cid;
   }
 
-  /// Get photo Album
-   bool getAlbum = false;
-  
-  updateGetAlbum(bool val){
-    getAlbum = val;
-    notifyListeners();
-  }
-  
-  Future getPhotoAlbum(BuildContext context, String aid) async{
-    updateGetAlbum(true);
-
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    var value = await mmyEngine!.getPhotoAlbum(aid).catchError((e) {
-      updateGetAlbum(false);
-      DialogHelper.showMessage(context, e.message);
-    });
-
-    if(value != null){
-      updateGetAlbum(false);
-    }
-
-  }
 }

@@ -4,6 +4,8 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
@@ -48,4 +50,40 @@ class EventGalleryPageProvider extends BaseProvider{
       notifyListeners();
     }
   }
+
+  /// Get photo Album
+  bool getAlbum = false;
+
+  updateGetAlbum(bool val){
+    getAlbum = val;
+    notifyListeners();
+  }
+
+  Future getPhotoAlbum(BuildContext context, String aid) async{
+    updateGetAlbum(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.getPhotoAlbum(aid).catchError((e) {
+      updateGetAlbum(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      updateGetAlbum(false);
+    }
+
+  }
+
+  /// Post photo
+  Future postPhoto(BuildContext context, String aid, String photoURL) async{
+    setState(ViewState.Busy);
+
+    await mmyEngine!.postPhoto(aid, photoURL).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    setState(ViewState.Idle);
+}
 }

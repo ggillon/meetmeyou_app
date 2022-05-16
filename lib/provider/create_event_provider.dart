@@ -630,11 +630,14 @@ class CreateEventProvider extends BaseProvider {
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!.createEventAlbum(eid).catchError((e) {
+   var value =  await mmyEngine!.createEventAlbum(eid).catchError((e) {
     updateAlbum(false);
     DialogHelper.showMessage(context, e.message);
     });
 
-    updateAlbum(false);
+   if(value != null){
+     updateAlbum(false);
+   }
+
   }
 }

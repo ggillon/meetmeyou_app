@@ -229,7 +229,7 @@ class Router {
         return MaterialPageRoute(builder: (_) => EventGalleryPage(), settings: settings);
 
       case RoutesConstants.eventGalleryImageView:
-        return MaterialPageRoute(builder: (_) => EventGalleryImageView(), settings: settings);
+        return MaterialPageRoute(builder: (_) => EventGalleryImageView(photoUrl: settings.arguments as String), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

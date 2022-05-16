@@ -246,6 +246,9 @@
   "past" : "Past",
   "hide" : "Hide",
   "photo_gallery" : "Photo Gallery",
-  "add_a_photo_gallery" : "Add a photo gallery"
+  "add_a_photo_gallery" : "Add a photo gallery",
+  "fetching_gallery" : "Fetching gallery.....",
+  "delete_photo" : "Delete Photo",
+  "sure_to_delete_photo" : "Are you sure you want to delete photo?"
 
 }
