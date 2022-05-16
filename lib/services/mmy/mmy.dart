@@ -13,6 +13,7 @@ import 'dart:io';
 import '../../models/discussion.dart';
 import '../../models/discussion_message.dart';
 import '../../models/mmy_notification.dart';
+import '../../models/photo_album.dart';
 import '../../models/search_result.dart';
 import 'mmy_admin.dart';
 import 'mmy_creator.dart';
@@ -27,6 +28,7 @@ import 'date_option.dart' as dateLib;
 import 'discussion.dart' as discussionLib;
 import 'search.dart' as searchLib;
 import 'notification.dart' as notificationLib;
+import 'photo_album.dart' as albumLib;
 
 const USER_TYPE_NORMAL = "Normal User";
 const USER_TYPE_PRO = "Pro User";
@@ -209,6 +211,17 @@ abstract class MMYEngine {
   Future<MMYCreator> getCreator();
   /// get Creator object if user allowed
   Future<MMYAdmin> getAdmin();
+
+  /// PHOTO ALBUM FUNCTIONS
+
+  /// Create an album for event
+  Future<MMYPhotoAlbum> createEventAlbum(String eid);
+  /// Get photo Album
+  Future<MMYPhotoAlbum> getPhotoAlbum(String aid);
+  /// Post photo
+  Future<void> postPhoto(String aid, String photoURL);
+  /// Delete photo
+  Future<void> deletePhoto(String aid, String pid);
 
 }
 
@@ -711,6 +724,25 @@ class MMY implements MMYEngine {
     return output;
   }
 
+  @override
+  Future<MMYPhotoAlbum> createEventAlbum(String eid) async {
+    return await albumLib.createEventAlbum(_currentUser, eid);
+  }
+
+  @override
+  Future<void> deletePhoto(String aid, String pid) async {
+    albumLib.deletePhoto(_currentUser, aid, pid);
+  }
+
+  @override
+  Future<MMYPhotoAlbum> getPhotoAlbum(String aid) async {
+    return await albumLib.getAlbum(_currentUser, aid);
+  }
+
+  @override
+  Future<void> postPhoto(String aid, String photoURL) async {
+    await albumLib.postPhoto(_currentUser, aid, photoURL);
+  }
 
 }
 

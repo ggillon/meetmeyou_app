@@ -42,4 +42,9 @@ class APIPath {
   static String notification(String nid,) => '/notifications/$nid/';
   static String notifications() => '/notifications/';
 
+  static String photoAlbum(String aid,) => '/photoAlbums/$aid';
+
+  static String photo(String aid, String pid) => '/photoAlbums/$aid/photos/$pid';
+  static String photos(String aid,) => '/photoAlbums/$aid/photos/';
+
 }

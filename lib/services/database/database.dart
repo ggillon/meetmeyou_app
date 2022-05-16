@@ -10,8 +10,10 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
 import 'package:meetmeyou_app/models/mmy_notification.dart';
+import 'package:meetmeyou_app/models/photo_album.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
 
+import '../../models/photo.dart';
 import 'firestore_service.dart';
 import 'api_path.dart';
 
@@ -76,6 +78,12 @@ abstract class Database {
   Future<void> setUserToken(String token);
   Future<String> getUserToken(String uid);
   Future<List<MMYNotification>> getUserNotifications(String uid);
+
+  // PhotoAlbum Functions
+  Future<void> setPhotoAlbum(MMYPhotoAlbum album);
+  Future<MMYPhotoAlbum> getPhotoAlbum(String aid);
+  Future<void> setPhoto(MMYPhoto photo);
+  Future<void> deletePhoto(String aid, String pid);
 
 }
 
@@ -350,6 +358,35 @@ class FirestoreDB implements Database {
       'uid': uid, 'did': did, 'timeStamp': DateTime.now(), 'message': text, 'attachment': attachment
     };
     _service.setData(path: '/debug/$uid/messages/$did/', data: data);
+  }
+
+  @override
+  Future<void> deletePhoto(String aid, String pid) async {
+    _service.deleteData(
+      path: APIPath.photo(aid, pid),
+    );
+  }
+
+  @override
+  Future<MMYPhotoAlbum> getPhotoAlbum(String aid) async {
+    MMYPhotoAlbum album = await _service.getData(
+      path: APIPath.photoAlbum(aid),
+      builder: (data) {return MMYPhotoAlbum.fromMap(data);},
+    );
+    album.photos =  await _service.getListData(
+        path: APIPath.photos(aid),
+        builder: (data) {return MMYPhoto.fromMap(data);});
+    return album;
+  }
+
+  @override
+  Future<void> setPhoto(MMYPhoto photo) async {
+    _service.setData(path: APIPath.photo(photo.aid, photo.aid), data: photo.toMap());
+  }
+
+  @override
+  Future<void> setPhotoAlbum(MMYPhotoAlbum album) async {
+    _service.setData(path: APIPath.photoAlbum(album.aid), data: album.toMap());
   }
 
 }
