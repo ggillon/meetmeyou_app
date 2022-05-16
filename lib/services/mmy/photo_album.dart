@@ -11,6 +11,7 @@ Future<MMYPhotoAlbum> createEventAlbum(User currentUser, String eid) async {
   final db = FirestoreDB(uid: currentUser.uid);
   Event event = await db.getEvent(eid);
   MMYPhotoAlbum album = MMYPhotoAlbum(aid: idGenerator(), adminId: event.organiserID, title: event.title, description: event.description, timeStamp: DateTime.now());
+  await db.setPhotoAlbum(album);
   return album;
 }
 
