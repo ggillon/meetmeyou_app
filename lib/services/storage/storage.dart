@@ -16,7 +16,7 @@ class StoragePath {
   static String profilePhoto(String uid) => '/users/${uid}/${uid}.png';
   static String contactGroupPhoto(String uid, String cid) => '/users/${uid}/contacts/groups/${cid}.png';
   static String eventPhoto(String eid) => '/events/${eid}/${eid}.png';
-  static String eventPhotoGallery(String eid, String folder, String pid) => '/events/${eid}/$folder/${pid}.png';
+  static String eventPhotoGallery(String eid,) => '/photoAlbums/$eid/${idGenerator()}.png';
   static String discussionPhoto(String did,) => '/discussions/${did}/${did}.png';
   static String discussionChatGallery(String did, String pid) => '/discussions/${did}/chat/${did}.png';
   static String discussionPhotoGallery(String did, String folder, String pid) => '/discussions/${did}/$folder/${did}.png';

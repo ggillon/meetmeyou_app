@@ -135,6 +135,10 @@ abstract class MMYEngine {
   Future<void> replyToEvent(String eid, {required String response});
   /// Number of unresponded events
   Future<int> unrespondedEvents();
+  /// Set event parameter
+  Future<Event> setEventParam(String eid, {required String param, required dynamic value});
+  /// Get event parameter
+  Future<dynamic> getEventParam(String eid, {required String param, });
 
 
   /// Add a date option to event
@@ -742,6 +746,16 @@ class MMY implements MMYEngine {
   @override
   Future<void> postPhoto(String aid, String photoURL) async {
     await albumLib.postPhoto(_currentUser, aid, photoURL);
+  }
+
+  @override
+  Future<dynamic> getEventParam(String eid, {required String param}) async {
+    return await eventLib.getParam(_currentUser, eid, param);
+  }
+
+  @override
+  Future<Event> setEventParam(String eid, {required String param, required value}) async {
+    return await eventLib.setParam(_currentUser, eid, param, value);
   }
 
 }
