@@ -155,3 +155,15 @@ Future<Event> cancelEvent(User currentUser, String eid) async {
   await FirestoreDB(uid: currentUser.uid).setEvent(event);
   return event;
 }
+
+Future<Event> setParam(User currentUser, String eid, String param, dynamic value) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  Event event = await db.getEvent(eid);
+  event.params[param] = value;
+  db.setEvent(event);
+  return event;
+}
+
+Future<dynamic> getParam(User currentUser, String eid, String param,) async {
+  return (await FirestoreDB(uid: currentUser.uid).getEvent(eid)).params[param];
+}
