@@ -53,7 +53,7 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
-       //   provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
+         // provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
