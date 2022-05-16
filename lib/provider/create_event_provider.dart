@@ -625,7 +625,7 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future createEventAlbum(BuildContext context, String eid) async{
+  Future createEventAlbum(BuildContext context, String eid, bool switchValue) async{
     updateAlbum(true);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
@@ -635,9 +635,62 @@ class CreateEventProvider extends BaseProvider {
     DialogHelper.showMessage(context, e.message);
     });
 
+    await setEventParam(context, eid, "photoAlbum", switchValue);
+
    if(value != null){
      updateAlbum(false);
    }
 
   }
+
+  /// Get event parameter
+  // this fun is used to check photo gallery switch whether on or off.
+  bool getParam = false;
+
+  updateGetParam(bool val){
+    getParam = val;
+    notifyListeners();
+  }
+
+  Future getEventParam(BuildContext context, String eid, String param) async{
+    updateGetParam(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value =  await mmyEngine!.getEventParam(eid, param: param).catchError((e) {
+      updateGetParam(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      photoGallerySwitch = value;
+      updateGetParam(false);
+    }
+
+  }
+
+  /// Set event parameter
+// this fun is used to set photo gallery switch on or off.
+
+  bool setParam = false;
+
+  updateSetParam(bool val){
+    setParam = val;
+    notifyListeners();
+  }
+
+  Future setEventParam(BuildContext context, String eid, String param, dynamic value) async{
+    updateSetParam(true);
+
+    var value =  await mmyEngine!.setEventParam(eid, param: param, value: photoGallerySwitch).catchError((e) {
+      updateSetParam(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      updateSetParam(false);
+    }
+
+  }
+
 }

@@ -452,4 +452,30 @@ class EventDetailProvider extends BaseProvider {
    // userDetail.cid = cid;
   }
 
+  /// Get event parameter
+  // this fun is used to check photo gallery switch whether on or off.
+  bool photoGalleryEnable = false;
+  bool getParam = false;
+
+  updateGetParam(bool val){
+    getParam = val;
+    notifyListeners();
+  }
+
+  Future getEventParam(BuildContext context, String eid, String param) async{
+    updateGetParam(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value =  await mmyEngine!.getEventParam(eid, param: param).catchError((e) {
+      updateGetParam(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      photoGalleryEnable = value;
+      updateGetParam(false);
+    }
+
+  }
 }

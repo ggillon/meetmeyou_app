@@ -43,6 +43,7 @@ class CreateEventScreen extends StatelessWidget {
         body: BaseView<CreateEventProvider>(
           onModelReady: (provider) {
             if (provider.eventDetail.editEvent == true) {
+              provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum");
               provider.eventDetail.eventPhotoUrl =
                   provider.eventDetail.photoUrlEvent;
               eventNameController.text = provider.eventDetail.eventName ?? "";
@@ -1157,7 +1158,7 @@ class CreateEventScreen extends StatelessWidget {
           onToggle: (val) async {
             hideKeyboard(context);
             provider.photoGallerySwitch = val;
-            await provider.createEventAlbum(context, provider.eventDetail.eid.toString());
+            await provider.createEventAlbum(context, provider.eventDetail.eid.toString(), val);
             provider.updateLoadingStatus(true);
           },
         ),

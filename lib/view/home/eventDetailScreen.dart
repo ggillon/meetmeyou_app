@@ -52,8 +52,9 @@ class EventDetailScreen extends StatelessWidget {
     return Scaffold(
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
-        onModelReady: (provider) {
+        onModelReady: (provider) async {
          // provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
+         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum");
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
@@ -398,8 +399,8 @@ class EventDetailScreen extends StatelessWidget {
                                   scaler.getTextSize(10), TextAlign.left),
                           SizedBox(height: scaler.getHeight(2.5)),
                           eventDiscussionCard(context, scaler),
-                          SizedBox(height: scaler.getHeight(1.5)),
-                          photoGalleryCard(context, scaler),
+                          provider.photoGalleryEnable == true ?  SizedBox(height: scaler.getHeight(1.5)) : Container(),
+                          provider.photoGalleryEnable == true ?  photoGalleryCard(context, scaler) : Container(),
                           SizedBox(height: scaler.getHeight(5.0)),
                           Align(
                             alignment: Alignment.center,
