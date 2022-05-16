@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'idgen.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,21 +13,6 @@ const PARAM_NOTIFY_EVENT = 'notify_event';
 const PARAM_NOTIFY_INVITATION = 'notify_invitation';
 const PARAM_NOTIFY_DISCUSSION = 'notify_discussion';
 
-String idGenerator() {
-  final charList = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  String eid = '';
-
-  for(int i=0; i<4; i++) {
-    int randomNumber = Random().nextInt(52);
-    eid = eid + charList.substring(randomNumber, randomNumber+1);
-  }
-  eid = eid + '-';
-  for(int i=0; i<4; i++) {
-    int randomNumber = Random().nextInt(52);
-    eid = eid + charList.substring(randomNumber, randomNumber+1);
-  }
-  return eid;
-}
 
 Future<void> setToken(User currentUser) async {
   final db = FirestoreDB(uid: currentUser.uid);
