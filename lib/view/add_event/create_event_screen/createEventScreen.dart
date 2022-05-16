@@ -448,6 +448,12 @@ class CreateEventScreen extends StatelessWidget {
                             ),
                             SizedBox(height: scaler.getHeight(1.5)),
                             provider.eventDetail.editEvent == true
+                                ? photoGallerySwitch(context, scaler, provider)
+                                : Container(),
+                            provider.eventDetail.editEvent == true
+                                ?  SizedBox(height: scaler.getHeight(1.5))
+                                : Container(),
+                            provider.eventDetail.editEvent == true
                                 ? questionAndFeedback(context, scaler, provider)
                                 : Container(),
                             provider.isSwitched == true && _fields.length > 0
@@ -1120,6 +1126,41 @@ class CreateEventScreen extends StatelessWidget {
         //           color: ColorConstants.colorGray,
         //           height: scaler.getHeight(1.5),
         //         )))
+      ],
+    );
+  }
+
+  Widget photoGallerySwitch(
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("photo_gallery".tr()).boldText(
+                Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+            SizedBox(height: scaler.getHeight(0.2)),
+            Text("add_a_photo_gallery".tr()).regularText(
+                Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+          ],
+        ),
+        FlutterSwitch(
+          activeColor: ColorConstants.primaryColor,
+          width: scaler.getWidth(10.5),
+          height: scaler.getHeight(2.3),
+          toggleSize: scaler.getHeight(1.8),
+          value: provider.photoGallerySwitch,
+          borderRadius: 30.0,
+          padding: 2.0,
+          showOnOff: false,
+          onToggle: (val) async {
+            hideKeyboard(context);
+            provider.photoGallerySwitch = val;
+            await provider.createEventAlbum(context, provider.eventDetail.eid.toString());
+            provider.updateLoadingStatus(true);
+          },
+        ),
       ],
     );
   }

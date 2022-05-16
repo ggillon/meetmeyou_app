@@ -43,6 +43,7 @@ class CreateEventProvider extends BaseProvider {
   bool removeMultiDate = false;
   int? selectedIndex;
   bool addEndDate = false;
+  bool photoGallerySwitch = false;
 
   bool _isLoading = false;
 
@@ -607,11 +608,33 @@ class CreateEventProvider extends BaseProvider {
       BuildContext context, String eid, String did) async {
     updateDate(true);
 
-    await mmyEngine?.removeDateFromEvent(eid, did).catchError((e) {
+    await mmyEngine!.removeDateFromEvent(eid, did).catchError((e) {
       updateDate(false);
       DialogHelper.showMessage(context, e.message);
     });
 
     updateDate(false);
+  }
+
+  /// Create an album for event
+
+  bool album = false;
+
+  updateAlbum(bool val){
+    album = val;
+    notifyListeners();
+  }
+
+  Future createEventAlbum(BuildContext context, String eid) async{
+    updateAlbum(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.createEventAlbum(eid).catchError((e) {
+    updateAlbum(false);
+    DialogHelper.showMessage(context, e.message);
+    });
+
+    updateAlbum(false);
   }
 }

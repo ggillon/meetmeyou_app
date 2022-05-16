@@ -244,5 +244,8 @@
   "check_attendance" : "Check attendance",
   "click_here_to_edit" : "You have not filled in profile, click here to edit",
   "past" : "Past",
-  "hide" : "Hide"
+  "hide" : "Hide",
+  "photo_gallery" : "Photo Gallery",
+  "add_a_photo_gallery" : "Add a photo gallery"
+
 }

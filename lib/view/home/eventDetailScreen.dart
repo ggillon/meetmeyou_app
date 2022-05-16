@@ -53,6 +53,7 @@ class EventDetailScreen extends StatelessWidget {
       key: _scaffoldkey,
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) {
+       //   provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
@@ -397,6 +398,8 @@ class EventDetailScreen extends StatelessWidget {
                                   scaler.getTextSize(10), TextAlign.left),
                           SizedBox(height: scaler.getHeight(2.5)),
                           eventDiscussionCard(context, scaler),
+                          SizedBox(height: scaler.getHeight(1.5)),
+                          photoGalleryCard(context, scaler),
                           SizedBox(height: scaler.getHeight(5.0)),
                           Align(
                             alignment: Alignment.center,
@@ -900,6 +903,41 @@ class EventDetailScreen extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
               )),
+              SizedBox(width: scaler.getWidth(2)),
+              ImageView(
+                path: ImageConstants.small_arrow_icon,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget photoGalleryCard(BuildContext context, ScreenScaler scaler) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RoutesConstants.eventGalleryPage);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(8)),
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+          child: Row(
+            children: [
+              Icon(Icons.picture_in_picture_alt_outlined),
+              SizedBox(width: scaler.getWidth(2)),
+              Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("photo_gallery".tr()).mediumText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(9.5),
+                        TextAlign.left,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  )),
               SizedBox(width: scaler.getWidth(2)),
               ImageView(
                 path: ImageConstants.small_arrow_icon,

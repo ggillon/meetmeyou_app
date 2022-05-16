@@ -21,6 +21,7 @@ import 'package:meetmeyou_app/provider/custom_search_delegate_provider.dart';
 import 'package:meetmeyou_app/provider/event_attending_provider.dart';
 import 'package:meetmeyou_app/provider/event_detail_provider.dart';
 import 'package:meetmeyou_app/provider/event_discussion_provider.dart';
+import 'package:meetmeyou_app/provider/event_gallery_page_provider.dart';
 import 'package:meetmeyou_app/provider/event_invite_friends_provider.dart';
 import 'package:meetmeyou_app/provider/group_contacts_provider.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
@@ -113,6 +114,7 @@ void setupLocator() {
   locator.registerFactory<PublicHomePageProvider>(() => PublicHomePageProvider());
   locator.registerFactory<PrivacyPolicyProvider>(() => PrivacyPolicyProvider());
   locator.registerFactory<CheckAttendanceProvider>(() => CheckAttendanceProvider());
+  locator.registerFactory<EventGalleryPageProvider>(() => EventGalleryPageProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {
