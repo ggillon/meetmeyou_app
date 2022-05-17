@@ -383,7 +383,7 @@ class FirestoreDB implements Database {
 
   @override
   Future<void> setPhoto(MMYPhoto photo) async {
-    _service.setData(path: APIPath.photo(photo.aid, idGenerator()), data: photo.toMap());
+    _service.setData(path: APIPath.photo(photo.aid, photo.pid), data: photo.toMap());
   }
 
   @override
