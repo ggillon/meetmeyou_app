@@ -42,12 +42,12 @@ class EventGalleryImageView extends StatelessWidget {
         actions: [
           Row(
             children: [
-              GestureDetector(
-                  onTap: (){
-                    _fileFromImageUrl();
-                  },
-                  child: Icon(Icons.save_alt, color: Colors.blue,)),
-              SizedBox(width: scaler.getWidth(3.0)),
+              // GestureDetector(
+              //     onTap: (){
+              //       _fileFromImageUrl();
+              //     },
+              //     child: Icon(Icons.save_alt, color: Colors.blue,)),
+              // SizedBox(width: scaler.getWidth(3.0)),
               GestureDetector(
                 onTap: (){
                   shareImage();
