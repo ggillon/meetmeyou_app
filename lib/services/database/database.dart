@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/models/event_chat_message.dart';
 import 'package:meetmeyou_app/models/mmy_notification.dart';
 import 'package:meetmeyou_app/models/photo_album.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
+import 'package:meetmeyou_app/services/mmy/idgen.dart';
 
 import '../../models/photo.dart';
 import 'firestore_service.dart';
@@ -382,7 +383,7 @@ class FirestoreDB implements Database {
 
   @override
   Future<void> setPhoto(MMYPhoto photo) async {
-    _service.setData(path: APIPath.photo(photo.aid, photo.aid), data: photo.toMap());
+    _service.setData(path: APIPath.photo(photo.aid, idGenerator()), data: photo.toMap());
   }
 
   @override
