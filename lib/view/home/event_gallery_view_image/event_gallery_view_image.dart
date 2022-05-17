@@ -1,17 +1,24 @@
+import 'dart:io';
+
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/provider/event_gallery_image_view_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' show get;
 
 class EventGalleryImageView extends StatelessWidget {
-  EventGalleryImageView({Key? key, required this.photoUrl}) : super(key: key);
-  String photoUrl;
+  EventGalleryImageView({Key? key, required this.mmyPhoto}) : super(key: key);
+ MMYPhoto mmyPhoto;
+
+ EventGalleryImageViewProvider provider = EventGalleryImageViewProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -36,25 +43,37 @@ class EventGalleryImageView extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
+                  onTap: (){
+                    _fileFromImageUrl();
+                  },
+                  child: Icon(Icons.save_alt, color: Colors.blue,)),
+              SizedBox(width: scaler.getWidth(3.0)),
+              GestureDetector(
                 onTap: (){
-                //  Share.shareFiles(photoUrl);
+                  shareImage();
                 },
                   child: Icon(Icons.share, color: Colors.blue,)),
               SizedBox(width: scaler.getWidth(3.0)),
-              GestureDetector(
+            (provider.auth.currentUser!.uid == mmyPhoto.ownerId || provider.auth.currentUser!.uid == provider.eventDetail.albumAdminId) ? GestureDetector(
                 onTap: (){
                   DialogHelper.showDialogWithTwoButtons(
                       context,
                       "delete_photo".tr(),
-                      "sure_to_delete_photo".tr());
+                      "sure_to_delete_photo".tr(), positiveButtonPress: () async {
+                    Navigator.of(context).pop();
+                    await provider.deletePhoto(context, mmyPhoto.aid, mmyPhoto.pid);
+                  });
                 },
-                  child: Icon(Icons.delete_outline, color: Colors.blue,)),
-              SizedBox(width: scaler.getWidth(3.0)),
+                  child: Icon(Icons.delete_outline, color: Colors.blue,)) : Container(),
+              (provider.auth.currentUser!.uid == mmyPhoto.ownerId || provider.auth.currentUser!.uid == provider.eventDetail.albumAdminId) ?  SizedBox(width: scaler.getWidth(3.0)) : Container(),
             ],
           )
         ],
       ),
       body: BaseView<EventGalleryImageViewProvider>(
+        onModelReady: (provider){
+          this.provider = provider;
+        },
         builder: (context, provider, _){
           return ClipRRect(
             borderRadius: scaler.getBorderRadiusCircular(10),
@@ -62,11 +81,39 @@ class EventGalleryImageView extends StatelessWidget {
                 color: ColorConstants.primaryColor,
                 width: double.infinity,
                 height: scaler.getHeight(90.0),
-                child: PhotoView(imageProvider: NetworkImage (photoUrl))
+                child: PhotoView(imageProvider: NetworkImage(mmyPhoto.photoURL))
             ),
           );
         },
       ),
     );
+  }
+
+
+  void shareImage() async {
+    final Directory temp = await getApplicationDocumentsDirectory();
+    final File imageFile = File('${temp.path}/${mmyPhoto.pid}.png');
+    if (imageFile.existsSync()) {
+     // print('file already exist');
+      await imageFile.readAsBytes();
+      Share.shareFiles([imageFile.path]);
+    } else{
+      final response = await get(Uri.parse(mmyPhoto.photoURL));
+      var bytes = await response.bodyBytes;
+      imageFile.writeAsBytes(bytes);
+      Share.shareFiles([imageFile.path]);
+    }
+  }
+
+  Future<File> _fileFromImageUrl() async {
+    final response = await get(Uri.parse(mmyPhoto.photoURL));
+
+    final Directory documentDirectory = await getApplicationDocumentsDirectory();
+
+    final File file = File('${documentDirectory.path}/${mmyPhoto.pid}.png');
+
+    file.writeAsBytesSync(response.bodyBytes);
+
+    return file;
   }
 }

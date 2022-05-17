@@ -37,6 +37,8 @@ class EventDetail{
 
   // past event
   bool isPastEvent = false;
+  
+  String? albumAdminId;
 
   EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys, this.organiserId, this.organiserName, this.eventListLength});
 

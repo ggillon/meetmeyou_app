@@ -8,8 +8,10 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/services/storage/storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EventGalleryPageProvider extends BaseProvider{
@@ -17,9 +19,11 @@ class EventGalleryPageProvider extends BaseProvider{
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   File? image;
+  List<MMYPhoto> mmyPhotoList = [];
+  List<dynamic> galleryImagesUrl = [];
 
 
-  Future getImage(BuildContext context, int type) async {
+  Future getImage(BuildContext context, int type, Widget postBtn) async {
     final picker = ImagePicker();
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
@@ -28,6 +32,11 @@ class EventGalleryPageProvider extends BaseProvider{
       if (pickedFile != null) {
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
           image = value;
+          if(image != null){
+            setState(ViewState.Busy);
+            var photoUrl = await storeFile(image!, path: StoragePath.eventPhotoGallery(eventDetail.eid.toString()));
+            await postPhoto(context, eventDetail.eid.toString(), photoUrl, postBtn);
+          }
           notifyListeners();
         });
         //  image = File(pickedFile.path);
@@ -40,6 +49,11 @@ class EventGalleryPageProvider extends BaseProvider{
         //  image = File(pickedFile.path);
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
           image = value;
+          if(image != null){
+            setState(ViewState.Busy);
+          var photoUrl =  await storeFile(image!, path: StoragePath.eventPhotoGallery(eventDetail.eid.toString()));
+          await postPhoto(context, eventDetail.eid.toString(), photoUrl, postBtn);
+          }
           notifyListeners();
         });
         notifyListeners();
@@ -59,30 +73,41 @@ class EventGalleryPageProvider extends BaseProvider{
     notifyListeners();
   }
 
-  Future getPhotoAlbum(BuildContext context, String aid) async{
-    updateGetAlbum(true);
+  Future getPhotoAlbum(BuildContext context, String aid, {bool postPhoto = false, Widget? postBtn}) async{
+   postPhoto ? setState(ViewState.Busy) :  updateGetAlbum(true);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine!.getPhotoAlbum(aid).catchError((e) {
-      updateGetAlbum(false);
+      postPhoto ? setState(ViewState.Idle) : updateGetAlbum(false);
       DialogHelper.showMessage(context, e.message);
     });
 
     if(value != null){
-      updateGetAlbum(false);
+      image = null;
+      eventDetail.albumAdminId = value.adminId;
+      mmyPhotoList = value.photos;
+      galleryImagesUrl = [];
+      for(int i = 0; i < mmyPhotoList.length; i++){
+        galleryImagesUrl.add(mmyPhotoList[i].photoURL);
+      }
+     galleryImagesUrl.insert(galleryImagesUrl.length, postBtn);
+
+      postPhoto ? setState(ViewState.Busy) : updateGetAlbum(false);
     }
 
   }
 
   /// Post photo
-  Future postPhoto(BuildContext context, String aid, String photoURL) async{
+  Future postPhoto(BuildContext context, String aid, String photoURL, Widget postBtn) async{
     setState(ViewState.Busy);
 
     await mmyEngine!.postPhoto(aid, photoURL).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
+
+     await getPhotoAlbum(context, aid, postPhoto: true, postBtn: postBtn);
 
     setState(ViewState.Idle);
 }

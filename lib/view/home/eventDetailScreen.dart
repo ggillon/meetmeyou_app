@@ -213,8 +213,9 @@ class EventDetailScreen extends StatelessWidget {
                                 provider.clearMultiDateOption();
                                 Navigator.pushNamed(context,
                                         RoutesConstants.createEventScreen)
-                                    .then((value) {
+                                    .then((value) async {
                                   provider.eventDetail.eventBtnStatus = value as String? ?? "edit";
+                                  await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum");
                                   provider.updateBackValue(true);
                                 });
                               } else if (provider.eventDetail.eventBtnStatus ==

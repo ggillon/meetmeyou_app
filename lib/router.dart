@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScreen.dart';
 import 'package:meetmeyou_app/view/add_event/default_photo_page/defaultPhotoPage.dart';
@@ -229,7 +230,7 @@ class Router {
         return MaterialPageRoute(builder: (_) => EventGalleryPage(), settings: settings);
 
       case RoutesConstants.eventGalleryImageView:
-        return MaterialPageRoute(builder: (_) => EventGalleryImageView(photoUrl: settings.arguments as String), settings: settings);
+        return MaterialPageRoute(builder: (_) => EventGalleryImageView(mmyPhoto: settings.arguments as MMYPhoto), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());
