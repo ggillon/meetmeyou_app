@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
@@ -42,12 +45,15 @@ class EventGalleryImageView extends StatelessWidget {
         actions: [
           Row(
             children: [
-              // GestureDetector(
-              //     onTap: (){
-              //       _fileFromImageUrl();
-              //     },
-              //     child: Icon(Icons.save_alt, color: Colors.blue,)),
-              // SizedBox(width: scaler.getWidth(3.0)),
+              GestureDetector(
+                  onTap: (){
+                    // GallerySaver.saveImage(mmyPhoto.photoURL).then((value) {
+                    //   DialogHelper.showMessage(context, "image_saved".tr());
+                    // });
+                    _save(context, mmyPhoto.photoURL, mmyPhoto.pid);
+                  },
+                  child: Icon(Icons.save_alt, color: Colors.blue,)),
+              SizedBox(width: scaler.getWidth(3.0)),
               GestureDetector(
                 onTap: (){
                   shareImage();
@@ -105,15 +111,27 @@ class EventGalleryImageView extends StatelessWidget {
     }
   }
 
-  Future<File> _fileFromImageUrl() async {
-    final response = await get(Uri.parse(mmyPhoto.photoURL));
+  // Future<File> _fileFromImageUrl() async {
+  //   final response = await get(Uri.parse(mmyPhoto.photoURL));
+  //
+  //   final Directory documentDirectory = await getApplicationDocumentsDirectory();
+  //
+  //   final File file = File('${documentDirectory.path}/${mmyPhoto.pid}.png');
+  //
+  //   file.writeAsBytesSync(response.bodyBytes);
+  //
+  //   return file;
+  // }
 
-    final Directory documentDirectory = await getApplicationDocumentsDirectory();
-
-    final File file = File('${documentDirectory.path}/${mmyPhoto.pid}.png');
-
-    file.writeAsBytesSync(response.bodyBytes);
-
-    return file;
+  _save(BuildContext context, String photoUrl, String name) async {
+    var response = await Dio().get(photoUrl,
+        options: Options(responseType: ResponseType.bytes));
+    final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.data),
+        quality: 100,
+        name: name);
+    DialogHelper.showMessage(context, "image_saved".tr());
+   // print(result);
   }
+
 }
