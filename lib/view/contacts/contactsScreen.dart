@@ -10,6 +10,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contacts_provider.dart';
@@ -33,6 +34,23 @@ class ContactsScreen extends StatelessWidget {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<ContactsProvider>(
           onModelReady: (provider) {
+            provider.userDetail.checkContactScreen = false;
+            bool isContactScreenFirstTime = SharedPref.prefs?.getBool(SharedPref.contactScreenFirstTime) ?? true;
+            if(isContactScreenFirstTime){
+              provider.userDetail.checkContactScreen = true;
+              WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                await DialogHelper.showDialogWithTwoButtons(context, "contacts".tr(), "would_you_like_to_look_for_contacts".tr(), barrierDismissible: false, positiveButtonPress: (){
+                  provider.userDetail.checkContactScreen = false;
+                  Navigator.of(context, rootNavigator: true).pop();
+                  SharedPref.prefs!.setBool(SharedPref.contactScreenFirstTime, false);
+                  Navigator.pushNamed(context, RoutesConstants.inviteFriendsScreen);
+                }, negativeButtonLabel: "no".tr(), negativeButtonPress: (){
+                  Navigator.of(context, rootNavigator: true).pop();
+                  SharedPref.prefs!.setBool(SharedPref.contactScreenFirstTime, false);
+                  DialogHelper.showDialogWithOneButton(context, "contacts".tr(), "you_can_search_phone_contact_book".tr(), barrierDismissible: false);
+                });
+              });
+            }
             provider.getConfirmedContactsAndInvitationsList(context);
           },
           builder: (context, provider, _) {

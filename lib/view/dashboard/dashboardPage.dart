@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/models/contactInvitationNotificationEvent.dart';
 import 'package:meetmeyou_app/models/messageNotificationEvent.dart';
 import 'package:meetmeyou_app/models/push_notification.dart';
@@ -49,12 +50,12 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -62,6 +63,7 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
+        provider.userDetail.checkContactScreen ? Navigator.of(context, rootNavigator: true).pop() : Container();
         provider.onItemTapped(0);
         provider.unRespondedInvites(context);
         provider.unRespondedEvents(context);
@@ -135,7 +137,7 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
                       )
                     : Stack(
                         clipBehavior: Clip.none,
-                        alignment: Alignment.topRight,
+                          alignment: Alignment.topRight,
                         children: [
                           ImageView(
                             path: ImageConstants.home_icon,

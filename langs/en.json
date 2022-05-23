@@ -250,6 +250,9 @@
   "fetching_gallery" : "Fetching gallery.....",
   "delete_photo" : "Delete Photo",
   "sure_to_delete_photo" : "Are you sure you want to delete photo?",
-  "image_saved" : "Image Saved Successfully."
+  "image_saved" : "Image Saved Successfully.",
+  "would_you_like_to_look_for_contacts" : "Would you want to look for contacts you may know ?",
+  "you_can_search_phone_contact_book" : "You can search Phone’s contact book for friends on MeetMeYou through options in Settings",
+  "no" : "No"
 
 }

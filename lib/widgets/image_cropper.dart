@@ -111,26 +111,26 @@ class _ImageCropState extends State<ImageCrop> {
       CropAspectRatioPreset.ratio7x5,
       CropAspectRatioPreset.ratio16x9
       ],
-        // uiSettings: [
-        //   AndroidUiSettings(
-        //       toolbarTitle: 'Cropper',
-        //       toolbarColor: Colors.deepOrange,
-        //       toolbarWidgetColor: Colors.white,
-        //       initAspectRatio: CropAspectRatioPreset.original,
-        //       lockAspectRatio: false),
-        //   IOSUiSettings(
-        //     title: 'Cropper',
-        //   ),
-        // ],
-      androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Cropper',
-          toolbarColor: Colors.deepOrange,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: false),
-      iosUiSettings:IOSUiSettings(
-        title: 'Cropper',
-      )
+        uiSettings: [
+          AndroidUiSettings(
+              toolbarTitle: 'Cropper',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false),
+          IOSUiSettings(
+            title: 'Cropper',
+          ),
+        ],
+      // androidUiSettings: AndroidUiSettings(
+      //     toolbarTitle: 'Cropper',
+      //     toolbarColor: Colors.deepOrange,
+      //     toolbarWidgetColor: Colors.white,
+      //     initAspectRatio: CropAspectRatioPreset.original,
+      //     lockAspectRatio: false),
+      // iosUiSettings:IOSUiSettings(
+      //   title: 'Cropper',
+      // )
     );
     if (croppedFile != null) {
       _croppedFile = File(croppedFile.path);

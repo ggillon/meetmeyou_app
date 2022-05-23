@@ -32,6 +32,9 @@ class UserDetail {
 
   bool appleSignUpType = false;
 
+  //for checking contact screen first time
+  bool checkContactScreen = false;
+
   UserDetail(
       {this.firstName,
       this.lastName,
