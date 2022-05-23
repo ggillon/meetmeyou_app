@@ -229,6 +229,7 @@ class SettingsPage extends StatelessWidget {
       );
   }
 
+
   Widget userDetails(
       ScreenScaler scaler, BuildContext context, SettingsProvider provider) {
     return provider.state == ViewState.Busy
