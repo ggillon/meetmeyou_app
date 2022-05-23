@@ -50,12 +50,12 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -137,7 +137,7 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
                       )
                     : Stack(
                         clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
+                        alignment: Alignment.topRight,
                         children: [
                           ImageView(
                             path: ImageConstants.home_icon,

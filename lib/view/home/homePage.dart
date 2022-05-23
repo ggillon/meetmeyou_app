@@ -106,12 +106,12 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage>
                   width: double.infinity,
                   padding: scaler.getPaddingAll(10.0),
                   child: Text("click_here_to_edit".tr()).mediumText(ColorConstants.colorWhite,
-                      scaler.getTextSize(10), TextAlign.center),
+                      scaler.getTextSize(11.2), TextAlign.center),
                 ),
               ),
             ) ,
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("home".tr()).boldText(ColorConstants.colorBlack,
-                          scaler.getTextSize(16), TextAlign.left),
+                          scaler.getTextSize(17.0), TextAlign.left),
                       Row(
                         children: [
                           GestureDetector(
@@ -254,14 +254,14 @@ class _HomePageState extends State<HomePage>
                   padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
                   child: Text("my_upcoming_events".tr()).boldText(
                       ColorConstants.colorBlack,
-                      scaler.getTextSize(12),
+                      scaler.getTextSize(13),
                       TextAlign.left),
                 ),
                 SizedBox(height: scaler.getHeight(0.5)),
                 Padding(
                   padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
                   child: TabBar(
-                    labelPadding: scaler.getPadding(0.0, 1.5),
+                    labelPadding: scaler.getPadding(0.0, 2.5),
                     indicatorColor: Colors.transparent,
                     controller: widget.provider?.tabController,
                     isScrollable: true,
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage>
                           child: ClipRRect(
                         borderRadius: scaler.getBorderRadiusCircular(15.0),
                         child: Container(
-                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
                           color: provider.tabController!.index == 0
                               ? ColorConstants.primaryColor
                               : ColorConstants.colorWhitishGray,
@@ -284,7 +284,7 @@ class _HomePageState extends State<HomePage>
                               provider.tabController!.index == 0
                                   ? ColorConstants.colorWhite
                                   : ColorConstants.colorGray,
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(11.2),
                               TextAlign.left),
                         ),
                       )),
@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage>
                           child: ClipRRect(
                         borderRadius: scaler.getBorderRadiusCircular(15.0),
                         child: Container(
-                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
                           color: provider.tabController!.index == 1
                               ? ColorConstants.primaryColor
                               : ColorConstants.colorWhitishGray,
@@ -300,7 +300,7 @@ class _HomePageState extends State<HomePage>
                               provider.tabController!.index == 1
                                   ? ColorConstants.colorWhite
                                   : ColorConstants.colorGray,
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(11.2),
                               TextAlign.left),
                         ),
                       )),
@@ -308,7 +308,7 @@ class _HomePageState extends State<HomePage>
                           child: ClipRRect(
                         borderRadius: scaler.getBorderRadiusCircular(15.0),
                         child: Container(
-                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
                           color: provider.tabController!.index == 2
                               ? ColorConstants.primaryColor
                               : ColorConstants.colorWhitishGray,
@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage>
                               provider.tabController!.index == 2
                                   ? ColorConstants.colorWhite
                                   : ColorConstants.colorGray,
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(11.2),
                               TextAlign.left),
                         ),
                       )),
@@ -324,7 +324,7 @@ class _HomePageState extends State<HomePage>
                           child: ClipRRect(
                         borderRadius: scaler.getBorderRadiusCircular(15.0),
                         child: Container(
-                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
                           color: provider.tabController!.index == 3
                               ? ColorConstants.primaryColor
                               : ColorConstants.colorWhitishGray,
@@ -332,7 +332,7 @@ class _HomePageState extends State<HomePage>
                               provider.tabController!.index == 3
                                   ? ColorConstants.colorWhite
                                   : ColorConstants.colorGray,
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(11.2),
                               TextAlign.left),
                         ),
                       )),
@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage>
                           child: ClipRRect(
                             borderRadius: scaler.getBorderRadiusCircular(15.0),
                             child: Container(
-                              padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                              padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
                               color: provider.tabController!.index == 4
                                   ? ColorConstants.primaryColor
                                   : ColorConstants.colorWhitishGray,
@@ -348,7 +348,7 @@ class _HomePageState extends State<HomePage>
                                   provider.tabController!.index == 4
                                       ? ColorConstants.colorWhite
                                       : ColorConstants.colorGray,
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(11.2),
                                   TextAlign.left),
                             ),
                           )),
@@ -356,7 +356,7 @@ class _HomePageState extends State<HomePage>
                           child: ClipRRect(
                         borderRadius: scaler.getBorderRadiusCircular(15.0),
                         child: Container(
-                          padding: scaler.getPaddingLTRB(3.0, 0.5, 3.0, 0.5),
+                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
                           color: provider.tabController!.index == 5
                               ? ColorConstants.primaryColor
                               : ColorConstants.colorWhitishGray,
@@ -364,7 +364,7 @@ class _HomePageState extends State<HomePage>
                               provider.tabController!.index == 5
                                   ? ColorConstants.colorWhite
                                   : ColorConstants.colorGray,
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(11.2),
                               TextAlign.left),
                         ),
                       )),
@@ -473,12 +473,12 @@ class _HomePageState extends State<HomePage>
   Widget upcomingEventsList(ScreenScaler scaler, List<Event> eventList,
       HomePageProvider provider, DashboardProvider dashboardProvider, {bool pastEvent = false}) {
     return Padding(
-      padding: scaler.getPaddingLTRB(5.8, 0.5, 5.8, 0.0),
+      padding: scaler.getPaddingLTRB(6.8, 0.5, 6.8, 0.0),
       child: ListView.builder(
           itemCount: eventList.length,
           itemBuilder: (context, index) {
             return Padding(
-              padding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 1.0),
+              padding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 1.5),
               child: GestureDetector(
                 onTap: () {
                   provider.setEventValuesForEdit(eventList[index]);
@@ -548,14 +548,14 @@ class _HomePageState extends State<HomePage>
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: eventList[index].photoURL == null
                   ? Container(
-                      height: scaler.getHeight(21),
+                      height: scaler.getHeight(22),
                       width: double.infinity,
                       color: ColorConstants.primaryColor,
                     )
                   : ImageView(
                       path: eventList[index].photoURL,
                       fit: BoxFit.cover,
-                      height: scaler.getHeight(21),
+                      height: scaler.getHeight(22),
                       width: double.infinity,
                     ),
             ),
@@ -565,7 +565,7 @@ class _HomePageState extends State<HomePage>
                top: scaler.getHeight(1),
                left: scaler.getHeight(1.5),
                child: Container(
-                 width: scaler.getWidth(70),
+                 width: scaler.getWidth(80),
                  child: Row(
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: [
@@ -592,7 +592,7 @@ class _HomePageState extends State<HomePage>
                       width: scaler.getWidth(45),
                       child: Text(eventList[index].title).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11.5),
                           TextAlign.left,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
@@ -626,7 +626,7 @@ class _HomePageState extends State<HomePage>
                                           date: false) +
                                       "(${DateTimeHelper.convertEventDateToTimeFormat(eventList[index].end)})")
                               .regularText(ColorConstants.colorGray,
-                                  scaler.getTextSize(7.7), TextAlign.left,
+                                  scaler.getTextSize(9.0), TextAlign.left,
                                   maxLines: 1, overflow: TextOverflow.ellipsis),
                         )
                       ],
@@ -640,7 +640,7 @@ class _HomePageState extends State<HomePage>
                           width: scaler.getWidth(38),
                           child: Text(eventList[index].location).regularText(
                               ColorConstants.colorGray,
-                              scaler.getTextSize(7.7),
+                              scaler.getTextSize(9.0),
                               TextAlign.left,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis),
@@ -669,19 +669,19 @@ class _HomePageState extends State<HomePage>
           children: [
             Text(DateTimeHelper.getMonthByName(event.start)).regularText(
                 ColorConstants.colorBlack,
-                scaler.getTextSize(8.5),
+                scaler.getTextSize(9.8),
                 TextAlign.center),
             Text(event.start.day <= 9
                     ? "0" + event.start.day.toString()
                     : event.start.day.toString())
-                .boldText(ColorConstants.colorBlack, scaler.getTextSize(11),
+                .boldText(ColorConstants.colorBlack, scaler.getTextSize(12.0),
                     TextAlign.center)
           ],
         ),
         bgColor: ColorConstants.colorWhite,
         radius: scaler.getBorderRadiusCircular(8),
-        width: scaler.getWidth(10),
-        height: scaler.getHeight(4),
+        width: scaler.getWidth(11.2),
+        height: scaler.getHeight(5),
       ),
     );
   }
@@ -821,7 +821,7 @@ class _HomePageState extends State<HomePage>
                     .semiBoldText(
                         CommonEventFunction.getEventBtnColorStatus(
                             event, provider.userDetail.cid.toString()),
-                        scaler.getTextSize(9.5),
+                        scaler.getTextSize(10.5),
                         TextAlign.center)),
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.userDetail.cid.toString(),
@@ -830,7 +830,7 @@ class _HomePageState extends State<HomePage>
           Radius.circular(12),
         ),
         width: scaler.getWidth(20),
-        height: scaler.getHeight(3.5),
+        height: scaler.getHeight(4.5),
       ),
     );
   }

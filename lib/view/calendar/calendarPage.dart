@@ -39,7 +39,7 @@ class CalendarPage extends StatelessWidget {
                 key: _scaffoldKey,
                 backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
                 body: Padding(
-                  padding: scaler.getPaddingLTRB(2.8, 1.0, 2.8, 0.0),
+                  padding: scaler.getPaddingLTRB(3.8, 1.0, 3.8, 0.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -51,7 +51,7 @@ class CalendarPage extends StatelessWidget {
                               children: [
                                 Text("calendar".tr()).boldText(
                                     ColorConstants.colorBlack,
-                                    scaler.getTextSize(16),
+                                    scaler.getTextSize(16.5),
                                     TextAlign.left),
                                 GestureDetector(
                                     onTap: () {
@@ -83,7 +83,7 @@ class CalendarPage extends StatelessWidget {
                                       SizedBox(height: scaler.getHeight(1)),
                                       Text("loading_your_events".tr()).mediumText(
                                           ColorConstants.primaryColor,
-                                          scaler.getTextSize(10),
+                                          scaler.getTextSize(11),
                                           TextAlign.left),
                                     ],
                                   ),
@@ -130,7 +130,7 @@ class CalendarPage extends StatelessWidget {
                                                         ),
                                                   ).semiBoldText(
                                                       ColorConstants.colorBlack,
-                                                      scaler.getTextSize(11.0),
+                                                      scaler.getTextSize(11.5),
                                                       TextAlign.center)),
                                               Row(
                                                 mainAxisSize: MainAxisSize.max,
@@ -269,7 +269,7 @@ class CalendarPage extends StatelessWidget {
                                                           ColorConstants
                                                               .colorBlack,
                                                           scaler
-                                                              .getTextSize(11.0),
+                                                              .getTextSize(12.0),
                                                           TextAlign.center),
                                                     )),
                                               ),
@@ -301,7 +301,7 @@ class CalendarPage extends StatelessWidget {
                                                       text,
                                                     ).regularText(
                                                         ColorConstants.colorBlack,
-                                                        scaler.getTextSize(11.0),
+                                                        scaler.getTextSize(12.0),
                                                         TextAlign.center),
                                                   )),
                                             );
@@ -316,7 +316,7 @@ class CalendarPage extends StatelessWidget {
                                                           ColorConstants
                                                               .colorBlack,
                                                           scaler
-                                                              .getTextSize(11.0),
+                                                              .getTextSize(12.0),
                                                           TextAlign.center)),
                                             );
                                           }
@@ -430,7 +430,7 @@ class CalendarPage extends StatelessWidget {
                                               provider.deviceCalendarEvent[index],
                                               day,
                                               currentDay),
-                                          SizedBox(height: scaler.getHeight(1.0))
+                                          SizedBox(height: scaler.getHeight(1.5))
                                         ],
                                       );
                                     }),
@@ -450,7 +450,7 @@ class CalendarPage extends StatelessWidget {
         padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 1.0),
         child: Text(
           text,
-        ).semiBoldText(ColorConstants.colorCalender, scaler.getTextSize(8.0),
+        ).semiBoldText(ColorConstants.colorCalender, scaler.getTextSize(8.6),
             TextAlign.center));
   }
 
@@ -470,7 +470,7 @@ class CalendarPage extends StatelessWidget {
         children: [
           Text(cMonth + "  " + event.start.year.toString()).mediumText(
               ColorConstants.colorBlack,
-              scaler.getTextSize(11.0),
+              scaler.getTextSize(11.5),
               TextAlign.center),
           Divider(
               color: ColorConstants.primaryColor, thickness: 1.5, height: 10.0),
@@ -493,9 +493,9 @@ class CalendarPage extends StatelessWidget {
             children: [
               Text(DateTimeHelper.getMonthByName(date).toString().toUpperCase())
                   .mediumText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5), TextAlign.center),
+                      scaler.getTextSize(10.0), TextAlign.center),
               Text(date.day.toString()).mediumText(ColorConstants.colorBlack,
-                  scaler.getTextSize(12.0), TextAlign.center),
+                  scaler.getTextSize(12.5), TextAlign.center),
             ],
           ),
           SizedBox(width: scaler.getWidth(2.0)),

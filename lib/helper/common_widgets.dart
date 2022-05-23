@@ -288,12 +288,12 @@ class CommonWidgets {
       child: CustomShape(
         child: Center(
           child: Text(txt)
-              .mediumText(txtColor, scaler.getTextSize(10), TextAlign.center),
+              .mediumText(txtColor, scaler.getTextSize(11.0), TextAlign.center),
         ),
         bgColor: bgColor,
         radius: scaler.getBorderRadiusCircular(10),
         width: MediaQuery.of(context).size.width,
-        height: scaler.getHeight(5),
+        height: scaler.getHeight(5.8),
       ),
     );
   }
@@ -428,7 +428,7 @@ class CommonWidgets {
                             width: double.infinity,
                             child: Text(multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12.2),
                                 TextAlign.center),
                           ),
                           SizedBox(height: scaler.getHeight(0.9)),
@@ -446,7 +446,7 @@ class CommonWidgets {
                             width: double.infinity,
                             child: Text("not_going_to_event".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12.2),
                                 TextAlign.center),
                           ),
                           SizedBox(height: scaler.getHeight(0.9)),
@@ -464,7 +464,7 @@ class CommonWidgets {
                             width: double.infinity,
                             child: Text("hide_event".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12.2),
                                 TextAlign.center),
                           ),
                           SizedBox(height: scaler.getHeight(2)),
@@ -482,7 +482,7 @@ class CommonWidgets {
                        width: double.infinity,
                        child: Text("hide_event".tr()).regularText(
                            ColorConstants.primaryColor,
-                           scaler.getTextSize(11),
+                           scaler.getTextSize(12.2),
                            TextAlign.center),
                      ),
                      SizedBox(height: scaler.getHeight(2)),
@@ -497,7 +497,7 @@ class CommonWidgets {
                   child: Center(
                     child: Text("cancel".tr()).semiBoldText(
                         ColorConstants.colorRed,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12.2),
                         TextAlign.center),
                   ),
                 ),
@@ -609,17 +609,17 @@ class CommonWidgets {
             borderRadius: scaler.getBorderRadiusCircular(8.0),
           ),
           child: Padding(
-            padding: scaler.getPaddingLTRB(1.5, 1.4, 1.5, 1.4),
+            padding: scaler.getPaddingLTRB(1.5, 1.6, 1.5, 1.6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   width: scaler.getWidth(70.0),
                   child: Text(event.title).semiBoldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5), TextAlign.left,
+                      scaler.getTextSize(10.5), TextAlign.left,
                       maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
-                SizedBox(height: scaler.getHeight(0.1)),
+                SizedBox(height: scaler.getHeight(0.5)),
                 Text(
                     event.meetMeYou
                     ?
@@ -636,7 +636,7 @@ class CommonWidgets {
                     : event.start.toString().substring(0, 11)
                 )
                     .regularText(ColorConstants.colorBlack,
-                    scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(10.5), TextAlign.center),
               ],
             ),
           ),
@@ -752,7 +752,7 @@ class CommonWidgets {
         Center(child: CircularProgressIndicator()),
         SizedBox(height: scaler.getHeight(1)),
         Text("loading_event".tr()).mediumText(ColorConstants.primaryColor,
-            scaler.getTextSize(10), TextAlign.left),
+            scaler.getTextSize(11), TextAlign.left),
       ],
     );
   }
@@ -760,7 +760,7 @@ class CommonWidgets {
   static Widget noEventFoundText(ScreenScaler scaler) {
     return Center(
       child: Text("sorry_no_event_found".tr()).mediumText(
-          ColorConstants.primaryColor, scaler.getTextSize(10), TextAlign.left),
+          ColorConstants.primaryColor, scaler.getTextSize(11), TextAlign.left),
     );
   }
 }

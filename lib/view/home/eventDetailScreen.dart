@@ -123,7 +123,7 @@ class EventDetailScreen extends StatelessWidget {
                     provider.eventDetail.event!.multipleDates == true ? SizedBox(height: scaler.getHeight(1.8)) : Platform.isIOS ? SizedBox(height: scaler.getHeight(1.8)) : SizedBox(height: scaler.getHeight(3.5)),
                   SafeArea(
                     child: Padding(
-                      padding: scaler.getPaddingLTRB(3, 0.0, 3, 1.5),
+                      padding: scaler.getPaddingLTRB(4.0, 0.0, 4.0, 1.5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -235,7 +235,7 @@ class EventDetailScreen extends StatelessWidget {
                                 Container();
                               }
                             }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.5)),
                      provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? manageInvitationCardCard(context, scaler, provider)
                      : (provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider)),
                           SizedBox(height: scaler.getHeight(1)),
@@ -392,13 +392,13 @@ class EventDetailScreen extends StatelessWidget {
                           SizedBox(height: scaler.getHeight(1)),
                           Text("event_description".tr()).boldText(
                               ColorConstants.colorBlack,
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(10.8),
                               TextAlign.left),
                           SizedBox(height: scaler.getHeight(2)),
                           Text(provider.eventDetail.eventDescription ?? "")
                               .regularText(ColorConstants.colorBlack,
-                                  scaler.getTextSize(10), TextAlign.left),
-                          SizedBox(height: scaler.getHeight(2.5)),
+                                  scaler.getTextSize(10.5), TextAlign.left),
+                          SizedBox(height: scaler.getHeight(3.5)),
                           eventDiscussionCard(context, scaler),
                           provider.photoGalleryEnable == true ?  SizedBox(height: scaler.getHeight(1.5)) : Container(),
                           provider.photoGalleryEnable == true ?  photoGalleryCard(context, scaler) : Container(),
@@ -407,7 +407,7 @@ class EventDetailScreen extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(provider.eventDetail.eid.toString()).regularText(
                                 ColorConstants.colorGray,
-                                scaler.getTextSize(9.5),
+                                scaler.getTextSize(10.8),
                                 TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis),
@@ -432,7 +432,7 @@ class EventDetailScreen extends StatelessWidget {
           borderRadius: scaler.getBorderRadiusCircularLR(0.0, 0.0, 16, 16)),
       color: ColorConstants.colorLightGray,
       child: Container(
-        height: scaler.getHeight(34),
+        height: scaler.getHeight(34.5),
         width: double.infinity,
         child: Column(
           children: [
@@ -445,13 +445,13 @@ class EventDetailScreen extends StatelessWidget {
                           provider.eventDetail.photoUrlEvent == ""
                       ? Container(
                           color: ColorConstants.primaryColor,
-                          height: scaler.getHeight(34),
+                          height: scaler.getHeight(34.5),
                           width: double.infinity,
                         )
                       : ImageView(
                           path: provider.eventDetail.photoUrlEvent,
                           fit: BoxFit.cover,
-                          height: scaler.getHeight(34),
+                          height: scaler.getHeight(34.5),
                           width: double.infinity,
                         ),
                 ),
@@ -510,7 +510,7 @@ class EventDetailScreen extends StatelessWidget {
                       width: scaler.getWidth(55),
                       child: Text(provider.eventDetail.eventName ?? "")
                           .boldText(ColorConstants.colorBlack,
-                              scaler.getTextSize(10), TextAlign.left,
+                              scaler.getTextSize(11.6), TextAlign.left,
                               maxLines: 1, overflow: TextOverflow.ellipsis),
                     ),
                     SizedBox(height: scaler.getHeight(0.3)),
@@ -541,7 +541,7 @@ class EventDetailScreen extends StatelessWidget {
                                       " to " +
                                       DateTimeHelper.dateConversion(provider.eventDetail.endDateAndTime ?? DateTime.now(), date: false) +
                                       " ( ${DateTimeHelper.convertEventDateToTimeFormat(provider.eventDetail.endDateAndTime ?? DateTime.now())})")
-                              .regularText(ColorConstants.colorGray, scaler.getTextSize(9.5), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                              .regularText(ColorConstants.colorGray, scaler.getTextSize(9.8), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                         )
                       ],
                     ),
@@ -567,7 +567,7 @@ class EventDetailScreen extends StatelessWidget {
                               width: scaler.getWidth(50),
                               child: Text(provider.eventDetail.eventLocation ?? "")
                                   .regularText(ColorConstants.colorGray,
-                                  scaler.getTextSize(9.5), TextAlign.left,
+                                  scaler.getTextSize(9.8), TextAlign.left,
                                   maxLines: 1, overflow: TextOverflow.ellipsis),
                             ),
                         ],
@@ -591,19 +591,19 @@ class EventDetailScreen extends StatelessWidget {
             borderRadius: scaler.getBorderRadiusCircular(
                 8.0) // use instead of BorderRadius.all(Radius.circular(20))
             ),
-        padding: scaler.getPaddingLTRB(3.0, 0.3, 3.0, 0.3),
+        padding: scaler.getPaddingLTRB(3.0, 0.4, 3.0, 0.4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(DateTimeHelper.getMonthByName(
                     provider.eventDetail.startDateAndTime ?? DateTime.now()))
                 .regularText(ColorConstants.primaryColor,
-                    scaler.getTextSize(11), TextAlign.center),
+                    scaler.getTextSize(11.5), TextAlign.center),
             Text(provider.eventDetail.startDateAndTime!.day <= 9
                     ? "0" +
                         provider.eventDetail.startDateAndTime!.day.toString()
                     : provider.eventDetail.startDateAndTime!.day.toString())
-                .boldText(ColorConstants.primaryColor, scaler.getTextSize(14),
+                .boldText(ColorConstants.primaryColor, scaler.getTextSize(13.5),
                     TextAlign.center)
           ],
         ),
@@ -625,7 +625,7 @@ class EventDetailScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(8)),
         child: Padding(
-          padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+          padding: scaler.getPaddingLTRB(2.0, 1.2, 2.0, 1.2),
           child: Row(
             children: [
               ClipRRect(
@@ -633,16 +633,16 @@ class EventDetailScreen extends StatelessWidget {
                   child: provider.userDetail.profileUrl == null
                       ? Container(
                           color: ColorConstants.primaryColor,
-                          height: scaler.getHeight(2.8),
-                          width: scaler.getWidth(9),
+                          height: scaler.getHeight(3.5),
+                          width: scaler.getWidth(9.5),
                         )
                       : Container(
-                          height: scaler.getHeight(2.8),
-                          width: scaler.getWidth(9),
+                          height: scaler.getHeight(3.5),
+                          width: scaler.getWidth(9.5),
                           child: ImageView(
                               path: provider.userDetail.profileUrl,
-                              height: scaler.getHeight(2.8),
-                              width: scaler.getWidth(9),
+                              height: scaler.getHeight(3.5),
+                              width: scaler.getWidth(9.5),
                               fit: BoxFit.cover),
                         )),
               SizedBox(width: scaler.getWidth(2)),
@@ -653,7 +653,7 @@ class EventDetailScreen extends StatelessWidget {
                         " " +
                         "(${"organiser".tr()})")
                     .semiBoldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(9.8), TextAlign.left,
+                        scaler.getTextSize(10.8), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
               )),
               SizedBox(width: scaler.getWidth(2)),
@@ -682,7 +682,7 @@ class EventDetailScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(8)),
         child: Padding(
-          padding: scaler.getPaddingLTRB(2.0, 1.1, 2.0, 1.1),
+          padding: scaler.getPaddingLTRB(2.0, 1.6, 2.0, 1.6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -692,7 +692,7 @@ class EventDetailScreen extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text("manage_invitations".tr())
                         .semiBoldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(10.0), TextAlign.left,
+                        scaler.getTextSize(10.8), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                   )),
               SizedBox(width: scaler.getWidth(2)),
@@ -890,7 +890,7 @@ class EventDetailScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(8)),
         child: Padding(
-          padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+          padding: scaler.getPaddingLTRB(2.0, 0.8, 2.0, 0.8),
           child: Row(
             children: [
               ImageView(path: ImageConstants.event_chat_icon),
@@ -900,7 +900,7 @@ class EventDetailScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text("event_discussion".tr()).mediumText(
                     ColorConstants.colorBlack,
-                    scaler.getTextSize(9.5),
+                    scaler.getTextSize(10.8),
                     TextAlign.left,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
@@ -925,7 +925,7 @@ class EventDetailScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(8)),
         child: Padding(
-          padding: scaler.getPaddingLTRB(2.0, 0.7, 2.0, 0.7),
+          padding: scaler.getPaddingLTRB(2.0, 0.8, 2.0, 0.8),
           child: Row(
             children: [
               Icon(Icons.picture_in_picture_alt_outlined),
@@ -935,7 +935,7 @@ class EventDetailScreen extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text("photo_gallery".tr()).mediumText(
                         ColorConstants.colorBlack,
-                        scaler.getTextSize(9.5),
+                        scaler.getTextSize(10.8),
                         TextAlign.left,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
