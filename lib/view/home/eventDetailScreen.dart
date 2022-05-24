@@ -91,6 +91,7 @@ class EventDetailScreen extends StatelessWidget {
               // }
           })
               : Container();
+         // print(provider.eventDetail.eid.toString());
         },
         builder: (context, provider, _) {
           return provider.calendarDetail.fromAnotherPage == true &&
@@ -115,7 +116,7 @@ class EventDetailScreen extends StatelessWidget {
                     children: [
                       imageView(context, scaler, provider),
                       Positioned(
-                        bottom: -48,
+                        bottom: -52,
                         child: titleDateLocationCard(context, scaler, provider),
                       )
                     ],
@@ -123,7 +124,7 @@ class EventDetailScreen extends StatelessWidget {
                     provider.eventDetail.event!.multipleDates == true ? SizedBox(height: scaler.getHeight(1.8)) : Platform.isIOS ? SizedBox(height: scaler.getHeight(1.8)) : SizedBox(height: scaler.getHeight(3.5)),
                   SafeArea(
                     child: Padding(
-                      padding: scaler.getPaddingLTRB(4.0, 0.0, 4.0, 1.5),
+                      padding: scaler.getPaddingLTRB(4.5, 1.5, 4.5, 1.5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -235,10 +236,10 @@ class EventDetailScreen extends StatelessWidget {
                                 Container();
                               }
                             }),
-                          SizedBox(height: scaler.getHeight(1.5)),
+                          SizedBox(height: scaler.getHeight(2.0)),
                      provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? manageInvitationCardCard(context, scaler, provider)
                      : (provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider)),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(2)),
                           provider.eventAttendingLength == 0
                               ? Container()
                               : Container(
@@ -354,7 +355,7 @@ class EventDetailScreen extends StatelessWidget {
                                               width: scaler.getWidth(6)),
                                           Text(provider.eventDetail.event!.multipleDates == true ? "check_attendance".tr() : "attending".tr()).regularText(
                                               ColorConstants.colorGray,
-                                              scaler.getTextSize(8),
+                                              scaler.getTextSize(9),
                                               TextAlign.center),
                                         ],
                                       ),
@@ -379,17 +380,17 @@ class EventDetailScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.5)),
                           provider.eventDetail.isPastEvent == true ? Container() : provider.eventDetail.event?.multipleDates == true &&
                                   provider.eventDetail.organiserId !=
                                       provider.auth.currentUser!.uid
                               ?
-                          // provider.statusMultiDate == true
-                          //         ? MultiDateAttendDateCardShimmer()
-                          //         :
+                          provider.statusMultiDate == true
+                                  ? MultiDateAttendDateCardShimmer()
+                                  :
                           attendDateUi(context, scaler, provider)
                               : Container(),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.5)),
                           Text("event_description".tr()).boldText(
                               ColorConstants.colorBlack,
                               scaler.getTextSize(10.8),
@@ -400,9 +401,9 @@ class EventDetailScreen extends StatelessWidget {
                                   scaler.getTextSize(10.5), TextAlign.left),
                           SizedBox(height: scaler.getHeight(3.5)),
                           eventDiscussionCard(context, scaler),
-                          provider.photoGalleryEnable == true ?  SizedBox(height: scaler.getHeight(1.5)) : Container(),
+                          provider.photoGalleryEnable == true ?  SizedBox(height: scaler.getHeight(2.0)) : Container(),
                           provider.photoGalleryEnable == true ?  photoGalleryCard(context, scaler) : Container(),
-                          SizedBox(height: scaler.getHeight(5.0)),
+                          SizedBox(height: scaler.getHeight(6.0)),
                           Align(
                             alignment: Alignment.center,
                             child: Text(provider.eventDetail.eid.toString()).regularText(
@@ -490,14 +491,14 @@ class EventDetailScreen extends StatelessWidget {
   Widget titleDateLocationCard(BuildContext context,
       ScreenScaler scaler, EventDetailProvider provider) {
     return Padding(
-      padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
+      padding: scaler.getPaddingLTRB(1.0, 0.0, 1.0, 0.0),
       child: Card(
           shadowColor: ColorConstants.colorWhite,
           elevation: 5.0,
           shape: RoundedRectangleBorder(
               borderRadius: scaler.getBorderRadiusCircular(10)),
           child: Padding(
-            padding: scaler.getPaddingLTRB(2.5, 1.0, 2.0, 1.0),
+            padding: scaler.getPaddingLTRB(2.5, 1.2, 2.0, 1.2),
             child: Row(
             //  mainAxisSize: MainAxisSize.min,
               children: [
@@ -598,12 +599,12 @@ class EventDetailScreen extends StatelessWidget {
             Text(DateTimeHelper.getMonthByName(
                     provider.eventDetail.startDateAndTime ?? DateTime.now()))
                 .regularText(ColorConstants.primaryColor,
-                    scaler.getTextSize(11.5), TextAlign.center),
+                    scaler.getTextSize(11.8), TextAlign.center),
             Text(provider.eventDetail.startDateAndTime!.day <= 9
                     ? "0" +
                         provider.eventDetail.startDateAndTime!.day.toString()
                     : provider.eventDetail.startDateAndTime!.day.toString())
-                .boldText(ColorConstants.primaryColor, scaler.getTextSize(13.5),
+                .boldText(ColorConstants.primaryColor, scaler.getTextSize(13.8),
                     TextAlign.center)
           ],
         ),
@@ -714,7 +715,7 @@ class EventDetailScreen extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text("which_days_could_you_attend".tr()).boldText(
               ColorConstants.colorBlack,
-              scaler.getTextSize(11),
+              scaler.getTextSize(11.5),
               TextAlign.left),
         ),
         SizedBox(height: scaler.getHeight(2)),
@@ -822,8 +823,8 @@ class EventDetailScreen extends StatelessWidget {
           child: Container(
             margin: scaler.getMarginLTRB(0.5, 0.5, 1.0, 0.5),
             padding: scaler.getPaddingLTRB(1.5, 0.5, 1.5, 0.5),
-            width: scaler.getWidth(16.5),
-            height: scaler.getHeight(18),
+            width: scaler.getWidth(17.5),
+            height: scaler.getHeight(10),
             decoration: BoxDecoration(
                 color: ColorConstants.colorLightGray,
                 borderRadius: scaler.getBorderRadiusCircular(12.0),
@@ -834,16 +835,18 @@ class EventDetailScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(height: scaler.getHeight(0.2)),
                 Text("${DateTimeHelper.getMonthByName(provider.multipleDate[index].start)} "
                    " ${provider.multipleDate[index].start.year}")
-                   .semiBoldText(Colors.deepOrangeAccent, scaler.getTextSize(8.5), TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                   .semiBoldText(Colors.deepOrangeAccent, scaler.getTextSize(9.5), TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
                 SizedBox(height: scaler.getHeight(0.2)),
                 Text(provider.multipleDate[index].start.day.toString())
                     .boldText(ColorConstants.colorBlack, scaler.getTextSize(14.8), TextAlign.center),
                   SizedBox(height: scaler.getHeight(0.2)),
                 Text("${DateTimeHelper.convertEventDateToTimeFormat(provider.multipleDate[index].start)}")
-                      .regularText(ColorConstants.colorGray, 10, TextAlign.center,
+                      .regularText(ColorConstants.colorGray, 10.5, TextAlign.center,
                           maxLines: 1, overflow: TextOverflow.ellipsis),
+                SizedBox(height: scaler.getHeight(0.2)),
               ],
             ),
           ),
@@ -960,7 +963,7 @@ class EventDetailScreen extends StatelessWidget {
             width: double.infinity,
             child: AlertDialog(
                 title: Text("event_form_questionnaire".tr())
-                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                    .boldText(ColorConstants.colorBlack, 15.0, TextAlign.left),
                 content: Container(
                   width: scaler.getWidth(75),
                   child: Form(
@@ -973,17 +976,17 @@ class EventDetailScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("${index + 1}. ${questionsList[index]}")
-                                  .mediumText(ColorConstants.colorBlack, 12,
+                                  .mediumText(ColorConstants.colorBlack, 13,
                                       TextAlign.left,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis),
-                              SizedBox(height: scaler.getHeight(0.2)),
+                              SizedBox(height: scaler.getHeight(0.3)),
                               TextFormField(
                                 textCapitalization:
                                     TextCapitalization.sentences,
                                 controller: answerController(index),
                                 style: ViewDecoration.textFieldStyle(
-                                    scaler.getTextSize(9.5),
+                                    scaler.getTextSize(10.5),
                                     ColorConstants.colorBlack),
                                 decoration:
                                     ViewDecoration.inputDecorationWithCurve(
@@ -1038,7 +1041,7 @@ class EventDetailScreen extends StatelessWidget {
                                       scaler.getBorderRadiusCircular(10.0)),
                               child: Text('submit_answers'.tr()).semiBoldText(
                                   ColorConstants.colorWhite,
-                                  12,
+                                  13,
                                   TextAlign.left))),
                       SizedBox(height: scaler.getHeight(0.5))
                     ],

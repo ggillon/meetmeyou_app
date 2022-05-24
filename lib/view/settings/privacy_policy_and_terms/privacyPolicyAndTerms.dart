@@ -38,25 +38,25 @@ class PrivacyPolicyAndTermsPage extends StatelessWidget {
                           children: [
                             Text("privacy_policy".tr()).boldText(
                                 ColorConstants.colorBlack,
-                                scaler.getTextSize(16),
+                                scaler.getTextSize(17),
                                 TextAlign.left),
-                            SizedBox(height: scaler.getHeight(2)),
+                            SizedBox(height: scaler.getHeight(2.5)),
                             Container(
                               child: Text(getPrivacyPolicy()).regularText(
                                   ColorConstants.colorGray,
-                                  scaler.getTextSize(10),
+                                  scaler.getTextSize(11),
                                   TextAlign.left),
                             ),
-                            SizedBox(height: scaler.getHeight(1.5)),
+                            SizedBox(height: scaler.getHeight(1.8)),
                             GestureDetector(
                               onTap: () {
                                 _launchDataPolicyURL(context);
                               },
                               child: Text("our_detailed_data_policy".tr())
                                   .boldText(ColorConstants.primaryColor,
-                                      scaler.getTextSize(9.5), TextAlign.left),
+                                      scaler.getTextSize(10.5), TextAlign.left),
                             ),
-                            SizedBox(height: scaler.getHeight(1.0)),
+                            SizedBox(height: scaler.getHeight(1.5)),
                             GestureDetector(
                               onTap: () {
                                 DialogHelper.showDialogWithTwoButtons(context,
@@ -82,7 +82,7 @@ class PrivacyPolicyAndTermsPage extends StatelessWidget {
                                       "delete_all_the_data_linked_to_your_account"
                                           .tr())
                                   .boldText(ColorConstants.primaryColor,
-                                      scaler.getTextSize(9.5), TextAlign.left),
+                                      scaler.getTextSize(10.5), TextAlign.left),
                             ),
                           ],
                         ),
@@ -92,15 +92,15 @@ class PrivacyPolicyAndTermsPage extends StatelessWidget {
                         children: [
                           Text("terms_and_conditions".tr()).boldText(
                               ColorConstants.colorBlack,
-                              scaler.getTextSize(16),
+                              scaler.getTextSize(17),
                               TextAlign.left),
-                          SizedBox(height: scaler.getHeight(2)),
+                          SizedBox(height: scaler.getHeight(2.5)),
                           Expanded(
                             child: SingleChildScrollView(
                               child: Container(
                                 child: Text(getTermsCondition()).regularText(
                                     ColorConstants.colorGray,
-                                    scaler.getTextSize(10),
+                                    scaler.getTextSize(11),
                                     TextAlign.left),
                               ),
                             ),
@@ -112,7 +112,7 @@ class PrivacyPolicyAndTermsPage extends StatelessWidget {
                                     ": " +
                                     getVersion())
                                 .regularText(ColorConstants.colorGray,
-                                    scaler.getTextSize(10), TextAlign.center),
+                                    scaler.getTextSize(11), TextAlign.center),
                           ),
                           SizedBox(height: scaler.getHeight(0.5)),
                         ],

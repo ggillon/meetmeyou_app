@@ -79,21 +79,21 @@ class CustomSearchDelegate extends SearchDelegate   {
          SizedBox(height: scaler.getHeight(1)),
          Text("searching_data".tr()).mediumText(
              ColorConstants.primaryColor,
-             scaler.getTextSize(10),
+             scaler.getTextSize(11),
              TextAlign.left),
        ],
      ) : (provider.contactsList.isEmpty && provider.eventLists.isEmpty) ?  Center(
        child: Text("no_data_found".tr())
            .mediumText(
            ColorConstants.primaryColor,
-           scaler.getTextSize(10),
+           scaler.getTextSize(11),
            TextAlign.left),
      ) :  Column(
        children: [
          (provider.contactsList.isEmpty || provider.contactsList == null) ?
              Container()
              :  Padding(
-           padding: scaler.getPaddingLTRB(2.5, 1.5, 2.5, 0.0),
+           padding: scaler.getPaddingLTRB(3.0, 1.5, 3.0, 0.0),
                child: Column(
                  children: <Widget>[
                    Row(
@@ -248,14 +248,14 @@ class CustomSearchDelegate extends SearchDelegate   {
               scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: eventList.photoURL == null
                   ? Container(
-                height: scaler.getHeight(21),
+                height: scaler.getHeight(22),
                 width: double.infinity,
                 color: ColorConstants.primaryColor,
               )
                   : ImageView(
                 path: eventList.photoURL,
                 fit: BoxFit.cover,
-                height: scaler.getHeight(21),
+                height: scaler.getHeight(22),
                 width: double.infinity,
               ),
             ),
@@ -278,7 +278,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                       width: scaler.getWidth(45),
                       child: Text(eventList.title).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11.5),
                           TextAlign.left,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
@@ -312,7 +312,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                                   date: false) +
                               "(${DateTimeHelper.convertEventDateToTimeFormat(eventList.end)})")
                               .regularText(ColorConstants.colorGray,
-                              scaler.getTextSize(7.7), TextAlign.left,
+                              scaler.getTextSize(9.0), TextAlign.left,
                               maxLines: 1, overflow: TextOverflow.ellipsis),
                         )
                       ],
@@ -326,7 +326,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                           width: scaler.getWidth(38),
                           child: Text(eventList.location).regularText(
                               ColorConstants.colorGray,
-                              scaler.getTextSize(7.7),
+                              scaler.getTextSize(9.0),
                               TextAlign.left,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis),
@@ -355,19 +355,19 @@ class CustomSearchDelegate extends SearchDelegate   {
           children: [
             Text(DateTimeHelper.getMonthByName(event.start)).regularText(
                 ColorConstants.colorBlack,
-                scaler.getTextSize(8.5),
+                scaler.getTextSize(10),
                 TextAlign.center),
             Text(event.start.day <= 9
                 ? "0" + event.start.day.toString()
                 : event.start.day.toString())
-                .boldText(ColorConstants.colorBlack, scaler.getTextSize(11),
+                .boldText(ColorConstants.colorBlack, scaler.getTextSize(12.2),
                 TextAlign.center)
           ],
         ),
         bgColor: ColorConstants.colorWhite,
         radius: scaler.getBorderRadiusCircular(8),
-        width: scaler.getWidth(10),
-        height: scaler.getHeight(4),
+        width: scaler.getWidth(11.2),
+        height: scaler.getHeight(5),
       ),
     );
   }
@@ -490,7 +490,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                 .semiBoldText(
                 CommonEventFunction.getEventBtnColorStatus(
                     event, provider.auth.currentUser!.uid),
-                scaler.getTextSize(9.5),
+                scaler.getTextSize(10.5),
                 TextAlign.center)),
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.auth.currentUser!.uid,
@@ -498,8 +498,8 @@ class CustomSearchDelegate extends SearchDelegate   {
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
-        width: scaler.getWidth(20),
-        height: scaler.getHeight(3.5),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
       ),
     );
   }
@@ -517,7 +517,7 @@ class CustomSearchDelegate extends SearchDelegate   {
             width: double.infinity,
             child: AlertDialog(
                 title: Text("event_form_questionnaire".tr())
-                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                    .boldText(ColorConstants.colorBlack, 15.0, TextAlign.left),
                 content: Container(
                   width: scaler.getWidth(75),
                   child: Form(
@@ -530,7 +530,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("${index + 1}. ${questionsList[index]}")
-                                  .mediumText(ColorConstants.colorBlack, 12,
+                                  .mediumText(ColorConstants.colorBlack, 13,
                                   TextAlign.left,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis),
@@ -540,7 +540,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                                 TextCapitalization.sentences,
                                 controller: answerController(index),
                                 style: ViewDecoration.textFieldStyle(
-                                    scaler.getTextSize(9.5),
+                                    scaler.getTextSize(10.5),
                                     ColorConstants.colorBlack),
                                 decoration:
                                 ViewDecoration.inputDecorationWithCurve(
@@ -593,7 +593,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                                   scaler.getBorderRadiusCircular(10.0)),
                               child: Text('submit_answers'.tr()).semiBoldText(
                                   ColorConstants.colorWhite,
-                                  12,
+                                  13,
                                   TextAlign.left))),
                       SizedBox(height: scaler.getHeight(0.5))
                     ],

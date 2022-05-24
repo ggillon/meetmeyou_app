@@ -36,14 +36,14 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                       alignment: Alignment.centerLeft,
                       child: Text("notification_settings".tr()).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
+                          scaler.getTextSize(17),
                           TextAlign.left),
                     ),
-                    SizedBox(height: scaler.getHeight(2)),
+                    SizedBox(height: scaler.getHeight(2.5)),
                     eventNotificationToggle(context, scaler, provider),
-                    SizedBox(height: scaler.getHeight(1.5)),
+                    SizedBox(height: scaler.getHeight(2.0)),
                     contactInvitationNotificationToggle(context, scaler, provider),
-                    SizedBox(height: scaler.getHeight(1.5)),
+                    SizedBox(height: scaler.getHeight(2.0)),
                     messagesNotificationToggle(context, scaler, provider)
                   ],
                 ),
@@ -59,12 +59,12 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("receive_event_notification".tr()).regularText(
-            ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left),
+            ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(12),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
           value: provider.notificationDetail.eventNotification,
           borderRadius: 30.0,
           padding: 2.0,
@@ -83,12 +83,12 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("receive_contact_notification".tr()).regularText(
-            ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left),
+            ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(12),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
           value: provider.notificationDetail.contactInvitationNotification,
           borderRadius: 30.0,
           padding: 2.0,
@@ -107,12 +107,12 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("receive_message_notification".tr()).regularText(
-            ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left),
+            ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(12),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.2),
           value: provider.notificationDetail.messagesNotification,
           borderRadius: 30.0,
           padding: 2.0,

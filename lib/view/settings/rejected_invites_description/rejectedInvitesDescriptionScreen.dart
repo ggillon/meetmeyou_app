@@ -30,13 +30,13 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: scaler.getHeight(2)),
+                      SizedBox(height: scaler.getHeight(2.2)),
                       CommonWidgets.userDetails(scaler,
                           profilePic: userDetail.profileUrl,
                           firstName: userDetail.firstName.toString().capitalize(),
                           lastName: userDetail.lastName.toString().capitalize(),
                           email: userDetail.email),
-                      SizedBox(height: scaler.getHeight(2.5)),
+                      SizedBox(height: scaler.getHeight(2.8)),
                       CommonWidgets.phoneNoAndAddressFun(
                           scaler,
                           ImageConstants.phone_no_icon,
@@ -44,13 +44,13 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                           userDetail.phone!,
                           countryCode: true,
                           cCode: "+1"),
-                      SizedBox(height: scaler.getHeight(1.5)),
+                      SizedBox(height: scaler.getHeight(1.8)),
                       CommonWidgets.phoneNoAndAddressFun(
                           scaler,
                           ImageConstants.address_icon,
                           "address".tr(),
                           userDetail.address!),
-                      SizedBox(height: scaler.getHeight(3)),
+                      SizedBox(height: scaler.getHeight(3.5)),
                       // Text("organized_events".tr()).boldText(
                       //     ColorConstants.colorBlack,
                       //     scaler.getTextSize(10),

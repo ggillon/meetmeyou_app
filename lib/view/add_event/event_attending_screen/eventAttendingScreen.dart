@@ -40,8 +40,8 @@ class EventAttendingScreen extends StatelessWidget {
                   searchBar(context, scaler, provider),
                   SizedBox(height: scaler.getHeight(1.2)),
                   Text("attending".tr()).boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(12), TextAlign.center),
-                  SizedBox(height: scaler.getHeight(1.0)),
+                      scaler.getTextSize(13), TextAlign.center),
+                  SizedBox(height: scaler.getHeight(1.5)),
                   provider.state == ViewState.Busy
                       ? Expanded(
                           child: Column(
@@ -52,7 +52,7 @@ class EventAttendingScreen extends StatelessWidget {
                               SizedBox(height: scaler.getHeight(1)),
                               Text("loading_contacts".tr()).mediumText(
                                   ColorConstants.primaryColor,
-                                  scaler.getTextSize(10),
+                                  scaler.getTextSize(11),
                                   TextAlign.left),
                             ],
                           ),
@@ -77,7 +77,7 @@ class EventAttendingScreen extends StatelessWidget {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {},
@@ -161,18 +161,18 @@ class EventAttendingScreen extends StatelessWidget {
         builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text("remove_attendant".tr()).semiBoldText(
                   ColorConstants.colorBlack,
-                  scaler.getTextSize(9.8),
+                  scaler.getTextSize(10.8),
                   TextAlign.center),
               content: Text("remove_attendant_text".tr()).regularText(
                   ColorConstants.colorBlack,
-                  scaler.getTextSize(7.9),
+                  scaler.getTextSize(8.9),
                   TextAlign.center),
               actions: <Widget>[
                 CupertinoDialogAction(
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text("cancel".tr()).regularText(
                       ColorConstants.primaryColor,
-                      scaler.getTextSize(9.8),
+                      scaler.getTextSize(10.8),
                       TextAlign.center),
                 ),
                 CupertinoDialogAction(
@@ -183,7 +183,7 @@ class EventAttendingScreen extends StatelessWidget {
                   },
                   child: Text("remove".tr()).semiBoldText(
                       ColorConstants.primaryColor,
-                      scaler.getTextSize(9.8),
+                      scaler.getTextSize(10.8),
                       TextAlign.center),
                 )
               ],

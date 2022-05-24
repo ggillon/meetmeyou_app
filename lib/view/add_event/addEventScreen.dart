@@ -34,7 +34,7 @@ class AddEventScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("create_event".tr()).boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(16), TextAlign.left),
+                  scaler.getTextSize(17), TextAlign.left),
               SizedBox(height: scaler.getHeight(2.5)),
               dashBoardProvider.userDetail.userType == USER_TYPE_PRO ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +88,7 @@ class AddEventScreen extends StatelessWidget {
                   height: 25,
                   width: 25,
                   color: ColorConstants.colorBlack),
-              SizedBox(height: scaler.getHeight(0.7)),
+              SizedBox(height: scaler.getHeight(0.9)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -99,12 +99,12 @@ class AddEventScreen extends StatelessWidget {
                       children: [
                         Text("private_in_person_event".tr()).semiBoldText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(10),
+                            scaler.getTextSize(11),
                             TextAlign.left),
-                        SizedBox(height: scaler.getHeight(0.2)),
+                        SizedBox(height: scaler.getHeight(0.6)),
                         Text("get_together".tr()).regularText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(9.5),
+                            scaler.getTextSize(10.5),
                             TextAlign.left,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis),
@@ -157,12 +157,12 @@ class AddEventScreen extends StatelessWidget {
                        children: [
                          Text("location".tr()).semiBoldText(
                              ColorConstants.colorBlack,
-                             scaler.getTextSize(10),
+                             scaler.getTextSize(11),
                              TextAlign.left),
                          SizedBox(height: scaler.getHeight(0.2)),
                          Text("create_a_location".tr()).regularText(
                              ColorConstants.colorBlack,
-                             scaler.getTextSize(9.5),
+                             scaler.getTextSize(10.5),
                              TextAlign.left,
                              maxLines: 2,
                              overflow: TextOverflow.ellipsis),
@@ -215,12 +215,12 @@ class AddEventScreen extends StatelessWidget {
                        children: [
                          Text("public_event".tr()).semiBoldText(
                              ColorConstants.colorBlack,
-                             scaler.getTextSize(10),
+                             scaler.getTextSize(11),
                              TextAlign.left),
                          SizedBox(height: scaler.getHeight(0.2)),
                          Text("create_a_public".tr()).regularText(
                              ColorConstants.colorBlack,
-                             scaler.getTextSize(9.5),
+                             scaler.getTextSize(10.5),
                              TextAlign.left,
                              maxLines: 2,
                              overflow: TextOverflow.ellipsis),

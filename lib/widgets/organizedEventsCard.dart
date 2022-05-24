@@ -48,7 +48,7 @@ class OrganizedEventsCard extends StatelessWidget {
                       padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
                       child: Text("organized_events".tr()).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11),
                           TextAlign.left),
                     ),
                     SizedBox(height: scaler.getHeight(1.5)),
@@ -140,14 +140,14 @@ class OrganizedEventsCard extends StatelessWidget {
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: eventList.photoURL == null
                   ? Container(
-                      height: scaler.getHeight(21),
+                      height: scaler.getHeight(22),
                       width: MediaQuery.of(context).size.width / 1.2,
                       color: ColorConstants.primaryColor,
                     )
                   : ImageView(
                       path: eventList.photoURL,
                       fit: BoxFit.cover,
-                      height: scaler.getHeight(21),
+                      height: scaler.getHeight(22),
                       width: MediaQuery.of(context).size.width / 1.2,
                     ),
             ),
@@ -169,12 +169,12 @@ class OrganizedEventsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(eventList.title).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(10), TextAlign.left,
+                        scaler.getTextSize(11.5), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
-                    //  SizedBox(height: scaler.getHeight(0.1)),
+                      SizedBox(height: scaler.getHeight(0.2)),
                     Text(eventList.description).regularText(
                         ColorConstants.colorGray,
-                        scaler.getTextSize(8.5),
+                        scaler.getTextSize(10.0),
                         TextAlign.left,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -205,19 +205,19 @@ class OrganizedEventsCard extends StatelessWidget {
           children: [
             Text(DateTimeHelper.getMonthByName(event.start)).regularText(
                 ColorConstants.colorBlack,
-                scaler.getTextSize(8.5),
+                scaler.getTextSize(9.8),
                 TextAlign.center),
             Text(event.start.day <= 9
                     ? "0" + event.start.day.toString()
                     : event.start.day.toString())
-                .boldText(ColorConstants.colorBlack, scaler.getTextSize(11),
+                .boldText(ColorConstants.colorBlack, scaler.getTextSize(12.2),
                     TextAlign.center)
           ],
         ),
         bgColor: ColorConstants.colorWhite,
         radius: scaler.getBorderRadiusCircular(8),
-        width: scaler.getWidth(10),
-        height: scaler.getHeight(4),
+        width: scaler.getWidth(11.2),
+        height: scaler.getHeight(5),
       ),
     );
   }
@@ -338,7 +338,7 @@ class OrganizedEventsCard extends StatelessWidget {
                 .semiBoldText(
                     CommonEventFunction.getEventBtnColorStatus(
                         event, provider.auth.currentUser!.uid),
-                    scaler.getTextSize(9.5),
+                    scaler.getTextSize(10.5),
                     TextAlign.center)),
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.auth.currentUser!.uid,
@@ -346,8 +346,8 @@ class OrganizedEventsCard extends StatelessWidget {
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
-        width: scaler.getWidth(20),
-        height: scaler.getHeight(3.5),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
       ),
     );
   }
@@ -365,7 +365,7 @@ class OrganizedEventsCard extends StatelessWidget {
             width: double.infinity,
             child: AlertDialog(
                 title: Text("event_form_questionnaire".tr())
-                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                    .boldText(ColorConstants.colorBlack, 15.0, TextAlign.left),
                 content: Container(
                   width: scaler.getWidth(75),
                   child: Form(
@@ -378,7 +378,7 @@ class OrganizedEventsCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("${index + 1}. ${questionsList[index]}")
-                                  .mediumText(ColorConstants.colorBlack, 12,
+                                  .mediumText(ColorConstants.colorBlack, 13,
                                       TextAlign.left,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis),
@@ -388,7 +388,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                     TextCapitalization.sentences,
                                 controller: answerController(index),
                                 style: ViewDecoration.textFieldStyle(
-                                    scaler.getTextSize(9.5),
+                                    scaler.getTextSize(10.5),
                                     ColorConstants.colorBlack),
                                 decoration:
                                     ViewDecoration.inputDecorationWithCurve(
@@ -441,7 +441,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                       scaler.getBorderRadiusCircular(10.0)),
                               child: Text('submit_answers'.tr()).semiBoldText(
                                   ColorConstants.colorWhite,
-                                  12,
+                                  13,
                                   TextAlign.left))),
                       SizedBox(height: scaler.getHeight(0.5))
                     ],

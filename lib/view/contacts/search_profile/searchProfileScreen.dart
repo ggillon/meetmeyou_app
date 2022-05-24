@@ -32,18 +32,18 @@ class SearchProfileScreen extends StatelessWidget {
             builder: (builder, provider, _) {
               return SafeArea(
                 child: Padding(
-                  padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+                  padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("search_for_profile".tr()).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
+                          scaler.getTextSize(16.5),
                           TextAlign.left),
-                      SizedBox(height: scaler.getHeight(1)),
+                      SizedBox(height: scaler.getHeight(1.45)),
                       searchBar(context, scaler, provider),
-                      SizedBox(height: scaler.getHeight(0.5)),
+                      SizedBox(height: scaler.getHeight(0.8)),
                       GestureDetector(
                         onTap: () {
                           hideKeyboard(context);
@@ -56,7 +56,7 @@ class SearchProfileScreen extends StatelessWidget {
                         child: DialogHelper.btnWidget(scaler, context,
                             "search".tr(), ColorConstants.primaryColor),
                       ),
-                      SizedBox(height: scaler.getHeight(2.5)),
+                      SizedBox(height: scaler.getHeight(2.8)),
                       provider.state == ViewState.Busy
                           ? Expanded(
                               child: SingleChildScrollView(
@@ -68,7 +68,7 @@ class SearchProfileScreen extends StatelessWidget {
                                     SizedBox(height: scaler.getHeight(1)),
                                     Text("searching_profiles".tr()).mediumText(
                                         ColorConstants.primaryColor,
-                                        scaler.getTextSize(10),
+                                        scaler.getTextSize(11),
                                         TextAlign.left),
                                   ],
                                 ),
@@ -81,7 +81,7 @@ class SearchProfileScreen extends StatelessWidget {
                                     child: Text("sorry_no_profile_found".tr())
                                         .mediumText(
                                             ColorConstants.primaryColor,
-                                            scaler.getTextSize(10),
+                                            scaler.getTextSize(11),
                                             TextAlign.left),
                                   ),
                                 )
@@ -98,7 +98,7 @@ class SearchProfileScreen extends StatelessWidget {
                                                   "profiles_found".tr())
                                               .boldText(
                                                   ColorConstants.colorBlack,
-                                                  scaler.getTextSize(10),
+                                                  scaler.getTextSize(11),
                                                   TextAlign.left),
                                       SizedBox(height: scaler.getHeight(1)),
                                       searchBarController.text.isEmpty
@@ -125,7 +125,7 @@ class SearchProfileScreen extends StatelessWidget {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {

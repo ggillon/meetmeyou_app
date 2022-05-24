@@ -51,7 +51,7 @@ class CreateEditGroupScreen extends StatelessWidget {
                     child: Form(
                       key: _formKey,
                       child: Padding(
-                        padding: scaler.getPaddingLTRB(2.5, 1.0, 2.5, 1.0),
+                        padding: scaler.getPaddingLTRB(3.0, 1.0, 3.0, 1.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,38 +112,38 @@ class CreateEditGroupScreen extends StatelessWidget {
                                                       .groupPhotoUrl !=
                                                   null
                                               ? Container(
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                   child: ImageView(
                                                     path: provider.groupDetail
                                                         .groupPhotoUrl,
-                                                    width: scaler.getWidth(20),
+                                                    width: scaler.getWidth(22),
                                                     fit: BoxFit.cover,
-                                                    height: scaler.getWidth(20),
+                                                    height: scaler.getWidth(22),
                                                   ),
                                                 )
                                               : Container(
                                                   color: ColorConstants
                                                       .primaryColor,
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                 )
                                           : provider.image != null
                                               ? Container(
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                   child: ImageView(
                                                     file: provider.image,
-                                                    width: scaler.getWidth(20),
+                                                    width: scaler.getWidth(22),
                                                     fit: BoxFit.cover,
-                                                    height: scaler.getWidth(20),
+                                                    height: scaler.getWidth(22),
                                                   ),
                                                 )
                                               : Container(
                                                   color: ColorConstants
                                                       .primaryColor,
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                 ),
                                       Positioned(
                                           right: 5,
@@ -154,8 +154,8 @@ class CreateEditGroupScreen extends StatelessWidget {
                                               child: Container(
                                                 color:
                                                     ColorConstants.colorWhite,
-                                                width: scaler.getWidth(5),
-                                                height: scaler.getHeight(5),
+                                                width: scaler.getWidth(5.5),
+                                                height: scaler.getHeight(5.5),
                                                 child: Center(
                                                   child: ImageView(
                                                     color: ColorConstants
@@ -172,20 +172,20 @@ class CreateEditGroupScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: scaler.getHeight(2)),
+                            SizedBox(height: scaler.getHeight(2.5)),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text("name".tr()).boldText(Colors.black,
-                                  scaler.getTextSize(9.5), TextAlign.center),
+                                  scaler.getTextSize(10.5), TextAlign.center),
                             ),
                             SizedBox(
-                              height: scaler.getHeight(0.2),
+                              height: scaler.getHeight(0.3),
                             ),
                             TextFormField(
                               textCapitalization: TextCapitalization.sentences,
                               controller: groupNameController,
                               style: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               decoration:
                                   ViewDecoration.inputDecorationWithCurve(
@@ -207,23 +207,23 @@ class CreateEditGroupScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(
-                              height: scaler.getHeight(1),
+                              height: scaler.getHeight(1.5),
                             ),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text("description".tr()).boldText(
                                   Colors.black,
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   TextAlign.center),
                             ),
                             SizedBox(
-                              height: scaler.getHeight(0.2),
+                              height: scaler.getHeight(0.3),
                             ),
                             TextFormField(
                               textCapitalization: TextCapitalization.sentences,
                               controller: descriptionController,
                               style: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               decoration:
                                   ViewDecoration.inputDecorationWithCurve(

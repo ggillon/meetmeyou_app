@@ -478,7 +478,7 @@ class _HomePageState extends State<HomePage>
           itemCount: eventList.length,
           itemBuilder: (context, index) {
             return Padding(
-              padding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 1.5),
+              padding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 2.0),
               child: GestureDetector(
                 onTap: () {
                   provider.setEventValuesForEdit(eventList[index]);
@@ -669,12 +669,12 @@ class _HomePageState extends State<HomePage>
           children: [
             Text(DateTimeHelper.getMonthByName(event.start)).regularText(
                 ColorConstants.colorBlack,
-                scaler.getTextSize(9.8),
+                scaler.getTextSize(10),
                 TextAlign.center),
             Text(event.start.day <= 9
                     ? "0" + event.start.day.toString()
                     : event.start.day.toString())
-                .boldText(ColorConstants.colorBlack, scaler.getTextSize(12.0),
+                .boldText(ColorConstants.colorBlack, scaler.getTextSize(12.2),
                     TextAlign.center)
           ],
         ),
@@ -829,7 +829,7 @@ class _HomePageState extends State<HomePage>
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
-        width: scaler.getWidth(20),
+        width: scaler.getWidth(24),
         height: scaler.getHeight(4.5),
       ),
     );
@@ -879,14 +879,14 @@ class _HomePageState extends State<HomePage>
                 : Text(provider.auth.currentUser!.uid == event.organiserID ? "edit".tr() : "hide".tr())
                 .semiBoldText(
                 provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.colorWhite : ColorConstants.primaryColor,
-                scaler.getTextSize(9.5),
+                scaler.getTextSize(10.5),
                 TextAlign.center)),
         bgColor: provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2),
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
-        width: scaler.getWidth(20),
-        height: scaler.getHeight(3.5),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
       ),
     );
   }
@@ -905,7 +905,7 @@ class _HomePageState extends State<HomePage>
             width: double.infinity,
             child: AlertDialog(
                 title: Text("event_form_questionnaire".tr())
-                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                    .boldText(ColorConstants.colorBlack, 15.0, TextAlign.left),
                 content: Form(
                   key: _formKey,
                   child: Container(
@@ -920,7 +920,7 @@ class _HomePageState extends State<HomePage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("${index + 1}. ${questionsList[index]}")
-                                  .mediumText(ColorConstants.colorBlack, 12,
+                                  .mediumText(ColorConstants.colorBlack, 13,
                                       TextAlign.left,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis),
@@ -930,7 +930,7 @@ class _HomePageState extends State<HomePage>
                                     TextCapitalization.sentences,
                                 controller: answerController(index),
                                 style: ViewDecoration.textFieldStyle(
-                                    scaler.getTextSize(9.5),
+                                    scaler.getTextSize(10.5),
                                     ColorConstants.colorBlack),
                                 decoration:
                                     ViewDecoration.inputDecorationWithCurve(
@@ -984,7 +984,7 @@ class _HomePageState extends State<HomePage>
                                       scaler.getBorderRadiusCircular(10.0)),
                               child: Text('submit_answers'.tr()).semiBoldText(
                                   ColorConstants.colorWhite,
-                                  12,
+                                  13,
                                   TextAlign.left))),
                       SizedBox(height: scaler.getHeight(0.5))
                     ],

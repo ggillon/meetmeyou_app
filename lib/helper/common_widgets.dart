@@ -25,11 +25,11 @@ class CommonWidgets {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(field).boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(9.5), TextAlign.left),
+                  scaler.getTextSize(10.5), TextAlign.left),
               SizedBox(height: scaler.getHeight(0.3)),
               Text(countryCode ? cCode! + " " + value : value).regularText(
                   ColorConstants.colorGray,
-                  scaler.getTextSize(9.5),
+                  scaler.getTextSize(10.5),
                   TextAlign.left,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
@@ -120,7 +120,7 @@ class CommonWidgets {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               profileCardImageDesign(scaler, profileImg!),
-              SizedBox(width: scaler.getWidth(2.5)),
+              SizedBox(width: scaler.getWidth(3.0)),
               profileCardNameAndEmailDesign(scaler, contactName, email,
                   search: true, searchStatus: searchStatus),
               currentUser == true ? Container() : iconStatusCheck(scaler,
@@ -144,16 +144,16 @@ class CommonWidgets {
             child: profileImg == null
                 ? Container(
                     color: ColorConstants.primaryColor,
-                    width: scaler.getWidth(10),
-                    height: scaler.getWidth(10),
+                    width: scaler.getWidth(11.5),
+                    height: scaler.getWidth(11.5),
                   )
                 : Container(
-                    width: scaler.getWidth(10),
-                    height: scaler.getWidth(10),
+                    width: scaler.getWidth(11.5),
+                    height: scaler.getWidth(11.5),
                     child: ImageView(
                       path: profileImg,
-                      width: scaler.getWidth(10),
-                      height: scaler.getWidth(10),
+                      width: scaler.getWidth(11.5),
+                      height: scaler.getWidth(11.5),
                      // fit: BoxFit.contain,
                     ),
                   )),
@@ -173,12 +173,12 @@ class CommonWidgets {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(contactName.capitalize()).semiBoldText(ColorConstants.colorBlack,
-              scaler.getTextSize(9.8), TextAlign.left,
+              scaler.getTextSize(10.8), TextAlign.left,
               maxLines: 1, overflow: TextOverflow.ellipsis),
-          SizedBox(height: scaler.getHeight(0.2)),
+          SizedBox(height: scaler.getHeight(0.3)),
           Text(emailOrTextStatusCheck(searchStatus ?? "", email)).regularText(
               ColorConstants.colorBlackDown,
-              scaler.getTextSize(8.3),
+              scaler.getTextSize(9.3),
               TextAlign.left,
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
@@ -268,7 +268,7 @@ class CommonWidgets {
           child: Center(
             child: Text("cancel".tr()).semiBoldText(
                 color ?? ColorConstants.primaryColor,
-                scaler.getTextSize(11),
+                scaler.getTextSize(12),
                 TextAlign.center),
           ),
           bgColor: Colors.transparent,
@@ -288,7 +288,7 @@ class CommonWidgets {
       child: CustomShape(
         child: Center(
           child: Text(txt)
-              .mediumText(txtColor, scaler.getTextSize(11.0), TextAlign.center),
+              .mediumText(txtColor, scaler.getTextSize(11.2), TextAlign.center),
         ),
         bgColor: bgColor,
         radius: scaler.getBorderRadiusCircular(10),
@@ -310,7 +310,7 @@ class CommonWidgets {
             borderRadius: scaler.getBorderRadiusCircular(10)),
         child: CustomShape(
           child: Padding(
-            padding: scaler.getPaddingAll(9.0),
+            padding: scaler.getPaddingAll(9.2),
             child: Row(
               children: [
               isIcon == true ? ImageView(
@@ -320,7 +320,7 @@ class CommonWidgets {
                     color: ColorConstants.colorBlack) : Icon(Icons.person_outline, size: 30),
                 SizedBox(width: scaler.getWidth(2.5)),
                 Text(txt).mediumText(ColorConstants.colorBlack,
-                    scaler.getTextSize(9.5), TextAlign.left),
+                    scaler.getTextSize(10.5), TextAlign.left),
                 val
                     ? Expanded(
                         child: Container(
@@ -360,14 +360,14 @@ class CommonWidgets {
                   child: Center(
                       child: Text(btn1Text).mediumText(
                           ColorConstants.primaryColor,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11),
                           TextAlign.center)),
                   bgColor: ColorConstants.primaryColor.withOpacity(0.2),
                   radius: BorderRadius.all(
                     Radius.circular(12),
                   ),
                   width: scaler.getWidth(40),
-                  height: scaler.getHeight(4.5),
+                  height: scaler.getHeight(5.8),
                 ),
               ),
             ),
@@ -380,13 +380,13 @@ class CommonWidgets {
               child: CustomShape(
                 child: Center(
                     child: Text(btn2Text).mediumText(ColorConstants.colorWhite,
-                        scaler.getTextSize(10), TextAlign.center)),
+                        scaler.getTextSize(11), TextAlign.center)),
                 bgColor: ColorConstants.primaryColor,
                 radius: BorderRadius.all(
                   Radius.circular(12),
                 ),
                 width: scaler.getWidth(40),
-                height: scaler.getHeight(4.5),
+                height: scaler.getHeight(5.8),
               ),
             )),
           ],
@@ -408,12 +408,12 @@ class CommonWidgets {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.8)),
                 Container(
                   decoration: BoxDecoration(
                       color: ColorConstants.colorMediumGray,
                       borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                  height: scaler.getHeight(0.4),
+                  height: scaler.getHeight(0.5),
                   width: scaler.getWidth(12),
                 ),
                pastEvent == false ? Column(
@@ -423,7 +423,7 @@ class CommonWidgets {
                       onTap: multipleDate == true ? multiDate : going,
                       child: Column(
                         children: [
-                          SizedBox(height: scaler.getHeight(2)),
+                          SizedBox(height: scaler.getHeight(2.3)),
                           Container(
                             width: double.infinity,
                             child: Text(multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr()).regularText(
@@ -431,7 +431,7 @@ class CommonWidgets {
                                 scaler.getTextSize(12.2),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.3)),
                         ],
                       )
                     ),
@@ -441,7 +441,7 @@ class CommonWidgets {
                       onTap: notGoing,
                       child: Column(
                         children: [
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.3)),
                           Container(
                             width: double.infinity,
                             child: Text("not_going_to_event".tr()).regularText(
@@ -449,7 +449,7 @@ class CommonWidgets {
                                 scaler.getTextSize(12.2),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.3)),
                         ],
                       ),
                     ),
@@ -459,7 +459,7 @@ class CommonWidgets {
                       onTap: hide,
                       child: Column(
                         children: [
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.3)),
                           Container(
                             width: double.infinity,
                             child: Text("hide_event".tr()).regularText(
@@ -467,7 +467,7 @@ class CommonWidgets {
                                 scaler.getTextSize(12.2),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(2)),
+                          SizedBox(height: scaler.getHeight(2.4)),
                         ],
                       ),
                     ),
@@ -477,7 +477,7 @@ class CommonWidgets {
                  onTap: hide,
                  child: Column(
                    children: [
-                     SizedBox(height: scaler.getHeight(0.9)),
+                     SizedBox(height: scaler.getHeight(1.3)),
                      Container(
                        width: double.infinity,
                        child: Text("hide_event".tr()).regularText(
@@ -485,7 +485,7 @@ class CommonWidgets {
                            scaler.getTextSize(12.2),
                            TextAlign.center),
                      ),
-                     SizedBox(height: scaler.getHeight(2)),
+                     SizedBox(height: scaler.getHeight(2.4)),
                    ],
                  ),
                ),
@@ -501,7 +501,7 @@ class CommonWidgets {
                         TextAlign.center),
                   ),
                 ),
-                SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.8)),
               ],
             ),
           );
@@ -520,25 +520,25 @@ class CommonWidgets {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: scaler.getHeight(0.5)),
+              SizedBox(height: scaler.getHeight(0.8)),
               Container(
                 decoration: BoxDecoration(
                     color: ColorConstants.colorMediumGray,
                     borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                height: scaler.getHeight(0.4),
+                height: scaler.getHeight(0.5),
                 width: scaler.getWidth(12),
               ),
               Column(
                 children: [
-                  SizedBox(height: scaler.getHeight(0.9)),
+                  SizedBox(height: scaler.getHeight(1.3)),
                   GestureDetector(
                     onTap: delete,
                     child: Text("delete_event".tr()).regularText(
                         ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12),
                         TextAlign.center),
                   ),
-                  SizedBox(height: scaler.getHeight(2)),
+                  SizedBox(height: scaler.getHeight(2.4)),
                 ],
               ),
               GestureDetector(
@@ -548,11 +548,11 @@ class CommonWidgets {
                 child: Center(
                   child: Text("cancel".tr()).semiBoldText(
                       ColorConstants.colorRed,
-                      scaler.getTextSize(11),
+                      scaler.getTextSize(12),
                       TextAlign.center),
                 ),
               ),
-              SizedBox(height: scaler.getHeight(1)),
+              SizedBox(height: scaler.getHeight(1.5)),
             ],
           );
         });
@@ -574,7 +574,7 @@ class CommonWidgets {
               ),
               child: Text(count.toString()).semiBoldText(
                 count == 0 ? Colors.transparent :  ColorConstants.colorWhite,
-                scaler.getTextSize(6.8),
+                scaler.getTextSize(7.2),
                 TextAlign.center,
               ),
             ),

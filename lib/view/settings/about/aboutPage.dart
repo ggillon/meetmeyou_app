@@ -25,15 +25,15 @@ class AboutPage extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text("about".tr()).boldText(ColorConstants.colorBlack,
-                    scaler.getTextSize(16), TextAlign.left),
+                    scaler.getTextSize(17), TextAlign.left),
               ),
-              SizedBox(height: scaler.getHeight(2)),
+              SizedBox(height: scaler.getHeight(2.5)),
               Expanded(
                   child: SingleChildScrollView(
                 child: Container(
                   child: Text(getAboutText()).regularText(
                       ColorConstants.colorGray,
-                      scaler.getTextSize(10),
+                      scaler.getTextSize(11),
                       TextAlign.left),
                 ),
               )),
@@ -45,11 +45,11 @@ class AboutPage extends StatelessWidget {
                 },
                 child: Text("terms_and_conditions".tr()).regularText(
                     ColorConstants.primaryColor,
-                    scaler.getTextSize(10),
+                    scaler.getTextSize(11),
                     TextAlign.left,
                     underline: true),
               ),
-              SizedBox(height: scaler.getHeight(1)),
+              SizedBox(height: scaler.getHeight(1.2)),
               GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(
@@ -57,13 +57,13 @@ class AboutPage extends StatelessWidget {
                 },
                 child: Text("privacy_policy".tr()).regularText(
                     ColorConstants.primaryColor,
-                    scaler.getTextSize(10),
+                    scaler.getTextSize(11),
                     TextAlign.left,
                     underline: true),
               ),
               SizedBox(height: scaler.getHeight(2)),
               Text("application_version".tr() + ": " + getVersion())
-                  .regularText(ColorConstants.colorGray, scaler.getTextSize(10),
+                  .regularText(ColorConstants.colorGray, scaler.getTextSize(11),
                       TextAlign.center),
             ],
           ),

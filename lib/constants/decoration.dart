@@ -36,12 +36,12 @@ class ViewDecoration {
                   ),
         hintText: fieldName,
         hintStyle: textFieldStyle(
-            scaler.getTextSize(textSize ?? 9.5), textFiledColor ?? ColorConstants.colorGray),
+            scaler.getTextSize(textSize ?? 10.5), textFiledColor ?? ColorConstants.colorGray),
         filled: true,
         isDense: true,
         errorMaxLines: 3,
         contentPadding: icon == null
-            ? scaler.getPaddingLTRB(1, 1, 1, 1)
+            ? scaler.getPaddingLTRB(1.5, 1.5, 1.5, 1.5)
             : scaler.getPaddingLTRB(1, 0.1, 0.1, 0.1),
         fillColor: fillColor ?? ColorConstants.colorLightGray,
         enabledBorder: OutlineInputBorder(
@@ -111,7 +111,7 @@ class ViewDecoration {
             textFieldStyle(scaler.getTextSize(12), ColorConstants.colorGray),
         filled: true,
         isDense: true,
-        contentPadding: scaler.getPaddingLTRB(1, 1, 1, 1),
+        contentPadding: scaler.getPaddingLTRB(1, 1.5, 1, 1.5),
         fillColor: Colors.transparent,
         border: InputBorder.none);
   }

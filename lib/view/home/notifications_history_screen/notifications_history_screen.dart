@@ -31,12 +31,12 @@ class NotificationsHistoryScreen extends StatelessWidget {
         },
         builder: (context, provider, _){
           return Padding(
-            padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
+            padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("notifications".tr()).boldText(ColorConstants.colorBlack,
-                    scaler.getTextSize(16), TextAlign.left),
+                    scaler.getTextSize(16.5), TextAlign.left),
                 SizedBox(height: scaler.getHeight(1)),
                 provider.state == ViewState.Busy ?  Expanded(
                   child: Column(
@@ -47,16 +47,16 @@ class NotificationsHistoryScreen extends StatelessWidget {
                       SizedBox(height: scaler.getHeight(1)),
                       Text("loading_notifications".tr()).mediumText(
                           ColorConstants.primaryColor,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11),
                           TextAlign.left),
                     ],
                   ),
-                ) : (provider.notificationHistoryList.length == 0 || provider.notificationHistoryList == null) ?  Expanded(
+                ) : (provider.notificationHistoryList.length == 0 || provider.notificationHistoryList.isEmpty) ?  Expanded(
                   child: Center(
                     child: Text("no_notifications".tr())
                         .mediumText(
                         ColorConstants.primaryColor,
-                        scaler.getTextSize(10),
+                        scaler.getTextSize(11),
                         TextAlign.left),
                   ),
                 ) : notificationHistoryListView(scaler, provider)
@@ -100,13 +100,14 @@ class NotificationsHistoryScreen extends StatelessWidget {
           Container(
             padding: scaler.getPaddingLTRB(1.0, 0.5, 1.0, 1.0),
             child: Text(cHeader == DateTime.now().toString().substring(0, 11) ? "today".tr() : (cHeader == DateTime.now().subtract(Duration(days: 1)).toString().substring(0, 11)? "yesterday".tr() : DateTimeHelper.notificationDateFormat(provider.notificationHistoryList[index].timeStamp))).boldText(ColorConstants.colorBlack,
-                scaler.getTextSize(11.5), TextAlign.left),
+                scaler.getTextSize(12.5), TextAlign.left),
           ),
          // SizedBox(height: scaler.getHeight(1.0)),
           notificationType(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index])
         ],
       );
-    } else {
+    }
+    else {
       return notificationType(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index]);
     }
   }

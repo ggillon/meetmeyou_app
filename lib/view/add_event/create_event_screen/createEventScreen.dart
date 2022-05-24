@@ -107,15 +107,15 @@ class CreateEventScreen extends StatelessWidget {
                               alignment: Alignment.bottomLeft,
                               child: Text("event_name".tr()).boldText(
                                   Colors.black,
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   TextAlign.center),
                             ),
-                            SizedBox(height: scaler.getHeight(0.2)),
+                            SizedBox(height: scaler.getHeight(0.3)),
                             TextFormField(
                               textCapitalization: TextCapitalization.sentences,
                               controller: eventNameController,
                               style: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               decoration:
                                   ViewDecoration.inputDecorationWithCurve(
@@ -136,7 +136,7 @@ class CreateEventScreen extends StatelessWidget {
                                 }
                               },
                             ),
-                            SizedBox(height: scaler.getHeight(1.5)),
+                            SizedBox(height: scaler.getHeight(1.7)),
                             provider.getMultipleDate == true ||
                                     provider.finalDate == true
                                 ? MultiDateShimmer()
@@ -155,16 +155,16 @@ class CreateEventScreen extends StatelessWidget {
                                                 child: Text("date_options".tr())
                                                     .boldText(
                                                         Colors.black,
-                                                        scaler.getTextSize(9.5),
+                                                        scaler.getTextSize(10.5),
                                                         TextAlign.center),
                                               ),
                                               SizedBox(
                                                   height:
-                                                      scaler.getHeight(0.5)),
+                                                      scaler.getHeight(0.7)),
                                               optionsDesign(scaler, provider),
                                               SizedBox(
                                                   height:
-                                                      scaler.getHeight(0.5)),
+                                                      scaler.getHeight(0.7)),
                                               multipleDateCardListView(
                                                   context, scaler, provider),
                                             ],
@@ -179,15 +179,15 @@ class CreateEventScreen extends StatelessWidget {
                                                 Text("start_date_and_time".tr())
                                                     .boldText(
                                                         Colors.black,
-                                                        scaler.getTextSize(9.5),
+                                                        scaler.getTextSize(10.5),
                                                         TextAlign.center),
                                           ),
                                           SizedBox(
-                                              height: scaler.getHeight(0.2)),
+                                              height: scaler.getHeight(0.3)),
                                           startDateTimePickField(
                                               context, scaler, provider),
                                           SizedBox(
-                                              height: scaler.getHeight(1.5)),
+                                              height: scaler.getHeight(1.7)),
                                           provider.addEndDate == true
                                               ? Container()
                                               : GestureDetector(
@@ -213,7 +213,7 @@ class CreateEventScreen extends StatelessWidget {
                                                                       .primaryColor,
                                                                   scaler
                                                                       .getTextSize(
-                                                                          10),
+                                                                          10.8),
                                                                   TextAlign
                                                                       .center)
                                                         ],
@@ -229,13 +229,13 @@ class CreateEventScreen extends StatelessWidget {
                                                       .boldText(
                                                           Colors.black,
                                                           scaler
-                                                              .getTextSize(9.5),
+                                                              .getTextSize(10.5),
                                                           TextAlign.center),
                                                 )
                                               : Container(),
                                           provider.addEndDate == true
                                               ? SizedBox(
-                                                  height: scaler.getHeight(0.2))
+                                                  height: scaler.getHeight(0.3))
                                               : Container(),
                                           provider.addEndDate == true
                                               ? endDateTimePickField(
@@ -243,7 +243,7 @@ class CreateEventScreen extends StatelessWidget {
                                               : Container(),
                                         ],
                                       ),
-                            SizedBox(height: scaler.getHeight(0.7)),
+                            SizedBox(height: scaler.getHeight(0.9)),
                             provider.eventDetail.editEvent == true
                                 ? Container()
                                 : provider.addMultipleDate == true
@@ -286,7 +286,7 @@ class CreateEventScreen extends StatelessWidget {
                                                         .tr())
                                                 .mediumText(
                                                     ColorConstants.primaryColor,
-                                                    scaler.getTextSize(10),
+                                                    scaler.getTextSize(10.8),
                                                     TextAlign.center)),
                                       )
                                     : GestureDetector(
@@ -309,7 +309,7 @@ class CreateEventScreen extends StatelessWidget {
                                                     .mediumText(
                                                         ColorConstants
                                                             .primaryColor,
-                                                        scaler.getTextSize(10),
+                                                        scaler.getTextSize(10.8),
                                                         TextAlign.center)
                                               ],
                                             )),
@@ -341,23 +341,23 @@ class CreateEventScreen extends StatelessWidget {
                                         child: Text("select_final_date".tr())
                                             .mediumText(
                                                 ColorConstants.primaryColor,
-                                                scaler.getTextSize(10),
+                                                scaler.getTextSize(11),
                                                 TextAlign.center)),
                                   )
                                 : Container(),
                             (provider.eventDetail.event?.multipleDates ==
                                         true &&
                                     provider.eventDetail.editEvent == true)
-                                ? SizedBox(height: scaler.getHeight(1.5))
+                                ? SizedBox(height: scaler.getHeight(1.7))
                                 : Container(),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text("event_location".tr()).boldText(
                                   Colors.black,
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   TextAlign.center),
                             ),
-                            SizedBox(height: scaler.getHeight(0.2)),
+                            SizedBox(height: scaler.getHeight(0.3)),
                             GestureDetector(
                               onTap: () async {
                                 hideKeyboard(context);
@@ -382,7 +382,7 @@ class CreateEventScreen extends StatelessWidget {
                                 enabled: false,
                                 controller: addressController,
                                 style: ViewDecoration.textFieldStyle(
-                                    scaler.getTextSize(9.5),
+                                    scaler.getTextSize(10.5),
                                     ColorConstants.colorBlack),
                                 decoration:
                                     ViewDecoration.inputDecorationWithCurve(
@@ -408,20 +408,20 @@ class CreateEventScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            SizedBox(height: scaler.getHeight(2)),
+                            SizedBox(height: scaler.getHeight(2.2)),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text("event_description".tr()).boldText(
                                   Colors.black,
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   TextAlign.center),
                             ),
-                            SizedBox(height: scaler.getHeight(0.2)),
+                            SizedBox(height: scaler.getHeight(0.3)),
                             TextFormField(
                               textCapitalization: TextCapitalization.sentences,
                               controller: eventDescriptionController,
                               style: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(10),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               decoration: ViewDecoration.inputDecorationWithCurve(
                                   "We are celebrating birthday with Thomas and his family."
@@ -431,7 +431,7 @@ class CreateEventScreen extends StatelessWidget {
                                   "drinks and fun!",
                                   scaler,
                                   ColorConstants.primaryColor,
-                                  textSize: 10),
+                                  textSize: 10.5),
                               onFieldSubmitted: (data) {
                                 // FocusScope.of(context).requestFocus(nodes[1]);
                               },
@@ -447,29 +447,29 @@ class CreateEventScreen extends StatelessWidget {
                                 }
                               },
                             ),
-                            SizedBox(height: scaler.getHeight(1.5)),
+                            SizedBox(height: scaler.getHeight(1.7)),
                             provider.eventDetail.editEvent == true
                                 ? photoGallerySwitch(context, scaler, provider)
                                 : Container(),
                             provider.eventDetail.editEvent == true
-                                ?  SizedBox(height: scaler.getHeight(1.5))
+                                ?  SizedBox(height: scaler.getHeight(1.7))
                                 : Container(),
                             provider.eventDetail.editEvent == true
                                 ? questionAndFeedback(context, scaler, provider)
                                 : Container(),
                             provider.isSwitched == true && _fields.length > 0
-                                ? SizedBox(height: scaler.getHeight(1.5))
+                                ? SizedBox(height: scaler.getHeight(1.7))
                                 : SizedBox(height: scaler.getHeight(0.0)),
                             provider.isSwitched == true
                                 ? questionsListView(provider, scaler)
                                 : Container(),
                             provider.isSwitched == true
-                                ? SizedBox(height: scaler.getHeight(1.0))
+                                ? SizedBox(height: scaler.getHeight(1.4))
                                 : SizedBox(height: scaler.getHeight(0.0)),
                             provider.isSwitched == true
                                 ? addQuestion(context, provider, scaler)
                                 : Container(),
-                            SizedBox(height: scaler.getHeight(2.5)),
+                            SizedBox(height: scaler.getHeight(2.8)),
                             provider.eventDetail.editEvent == true
                                 ? GestureDetector(
                                     behavior: HitTestBehavior.translucent,
@@ -497,7 +497,7 @@ class CreateEventScreen extends StatelessWidget {
                                                   .boldText(
                                                       ColorConstants
                                                           .primaryColor,
-                                                      scaler.getTextSize(10.5),
+                                                      scaler.getTextSize(11.5),
                                                       TextAlign.center),
                                         ),
                                         ImageView(
@@ -508,7 +508,7 @@ class CreateEventScreen extends StatelessWidget {
                                     ),
                                   )
                                 : Container(),
-                            SizedBox(height: scaler.getHeight(3.5)),
+                            SizedBox(height: scaler.getHeight(4.0)),
                             provider.fromInviteScreen == true ||
                                     provider.eventDetail.editEvent == true
                                 ? provider.state == ViewState.Busy
@@ -551,45 +551,49 @@ class CreateEventScreen extends StatelessWidget {
                                               DialogHelper.showMessage(context,
                                                   "Please Select image.");
                                               return;
-                                            } else if (provider.startDate
-                                                .isAfter(provider.endDate)) {
-                                              DialogHelper.showMessage(context,
-                                                  "Start date cannot high than End date.");
-                                              return;
-                                            } else if (provider.startDate
-                                                    .toString()
-                                                    .substring(0, 11)
-                                                    .compareTo(provider.endDate
-                                                        .toString()
-                                                        .substring(0, 11)) ==
-                                                0) {
-                                              if (provider.startTime
-                                                      .isCompareTo(
-                                                          provider.endTime) ==
-                                                  1) {
-                                                DialogHelper.showMessage(
-                                                    context,
-                                                    "Select correct time.");
-                                              } else {
-                                                provider.updateEvent(
-                                                    context,
-                                                    eventNameController.text,
-                                                    addressController.text,
-                                                    eventDescriptionController
-                                                        .text,
-                                                    DateTimeHelper
-                                                        .dateTimeFormat(
-                                                            provider.startDate,
-                                                            provider.startTime),
-                                                    DateTimeHelper
-                                                        .dateTimeFormat(
-                                                            provider.endDate,
-                                                            provider.endTime),
-                                                    photoURL: provider
-                                                        .eventDetail
-                                                        .eventPhotoUrl);
-                                              }
-                                            } else {
+                                            }
+                                            // else if (provider.startDate
+                                            //     .isAfter(provider.endDate)) {
+                                            //   DialogHelper.showMessage(context,
+                                            //       "Start date cannot high than End date.");
+                                            //   return;
+                                            // }
+                                            // else if (provider.startDate
+                                            //         .toString()
+                                            //         .substring(0, 11)
+                                            //         .compareTo(provider.endDate
+                                            //             .toString()
+                                            //             .substring(0, 11)) ==
+                                            //     0) {
+                                            //   if (provider.startTime
+                                            //           .isCompareTo(
+                                            //               provider.endTime) ==
+                                            //       1) {
+                                            //     DialogHelper.showMessage(
+                                            //         context,
+                                            //         "Select correct time.");
+                                            //   }
+                                            //   else {
+                                            //     provider.updateEvent(
+                                            //         context,
+                                            //         eventNameController.text,
+                                            //         addressController.text,
+                                            //         eventDescriptionController
+                                            //             .text,
+                                            //         DateTimeHelper
+                                            //             .dateTimeFormat(
+                                            //                 provider.startDate,
+                                            //                 provider.startTime),
+                                            //         DateTimeHelper
+                                            //             .dateTimeFormat(
+                                            //                 provider.endDate,
+                                            //                 provider.endTime),
+                                            //         photoURL: provider
+                                            //             .eventDetail
+                                            //             .eventPhotoUrl);
+                                            //   }
+                                            // }
+                                            else {
                                               provider.updateEvent(
                                                   context,
                                                   eventNameController.text,
@@ -640,12 +644,14 @@ class CreateEventScreen extends StatelessWidget {
                                             DialogHelper.showMessage(context,
                                                 "Please Select image.");
                                             return;
-                                          } else if (provider.startDate
-                                              .isAfter(provider.endDate)) {
-                                            DialogHelper.showMessage(context,
-                                                "Start date cannot high than End date.");
-                                            return;
-                                          } else if(provider.addMultipleDate == true){
+                                          }
+                                          // else if (provider.startDate
+                                          //     .isAfter(provider.endDate)) {
+                                          //   DialogHelper.showMessage(context,
+                                          //       "Start date cannot high than End date.");
+                                          //   return;
+                                          // }
+                                          else if(provider.addMultipleDate == true){
                                             if(provider.multipleDateOption.startDate.length < 2){
                                               DialogHelper.showMessage(context,
                                                   "Please add at least two Multiple Date.");
@@ -716,14 +722,14 @@ class CreateEventScreen extends StatelessWidget {
         // }
       },
       child: Card(
-        margin: scaler.getMarginLTRB(1.0, 0.0, 1.0, 0.0),
+        margin: scaler.getMarginLTRB(1.5, 0.0, 1.5, 0.0),
         shadowColor: ColorConstants.colorWhite,
         elevation: 5.0,
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircularLR(0.0, 0.0, 16, 16)),
         color: ColorConstants.colorLightGray,
         child: Container(
-          height: scaler.getHeight(34),
+          height: scaler.getHeight(34.5),
           width: double.infinity,
           child: Column(
             children: [
@@ -737,7 +743,7 @@ class CreateEventScreen extends StatelessWidget {
                               ? ImageView(
                                   path: provider.eventDetail.eventPhotoUrl,
                                   fit: BoxFit.cover,
-                                  height: scaler.getHeight(34),
+                                  height: scaler.getHeight(34.5),
                                   width: double.infinity,
                                 )
                               : imageSelectedCard(context, scaler)
@@ -745,7 +751,7 @@ class CreateEventScreen extends StatelessWidget {
                               ? ImageView(
                                   file: provider.image,
                                   fit: BoxFit.cover,
-                                  height: scaler.getHeight(34),
+                                  height: scaler.getHeight(34.5),
                                   width: double.infinity,
                                 )
                               : imageSelectedCard(context, scaler)),
@@ -801,7 +807,7 @@ class CreateEventScreen extends StatelessWidget {
           ),
           SizedBox(height: scaler.getHeight(1)),
           Text("select_image".tr()).regularText(ColorConstants.primaryColor,
-              scaler.getTextSize(9.5), TextAlign.left),
+              scaler.getTextSize(10.5), TextAlign.left),
           SizedBox(height: scaler.getHeight(3)),
         ],
       ),
@@ -811,7 +817,7 @@ class CreateEventScreen extends StatelessWidget {
   Widget startDateTimePickField(
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
     return Container(
-      height: scaler.getHeight(4),
+      height: scaler.getHeight(5),
       width: double.infinity,
       decoration: BoxDecoration(
           color: ColorConstants.colorLightGray,
@@ -838,10 +844,10 @@ class CreateEventScreen extends StatelessWidget {
                       color: ColorConstants.colorWhite,
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
-                height: scaler.getHeight(2.5),
+                height: scaler.getHeight(3.0),
                 child: Text(DateTimeHelper.dateConversion(provider.startDate))
                     .regularText(ColorConstants.colorGray,
-                        scaler.getTextSize(9.5), TextAlign.center),
+                        scaler.getTextSize(10.5), TextAlign.center),
               ),
             ),
             GestureDetector(
@@ -858,10 +864,10 @@ class CreateEventScreen extends StatelessWidget {
                       color: ColorConstants.colorWhite,
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
-                height: scaler.getHeight(2.5),
+                height: scaler.getHeight(3.0),
                 child: Text(DateTimeHelper.timeConversion(provider.startTime))
                     .regularText(ColorConstants.colorGray,
-                        scaler.getTextSize(9.5), TextAlign.center),
+                        scaler.getTextSize(10.5), TextAlign.center),
               ),
             )
           ],
@@ -873,7 +879,7 @@ class CreateEventScreen extends StatelessWidget {
   Widget endDateTimePickField(
       BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
     return Container(
-      height: scaler.getHeight(4),
+      height: scaler.getHeight(5),
       width: double.infinity,
       decoration: BoxDecoration(
           color: ColorConstants.colorLightGray,
@@ -900,7 +906,7 @@ class CreateEventScreen extends StatelessWidget {
                       color: ColorConstants.colorWhite,
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
-                height: scaler.getHeight(2.5),
+                height: scaler.getHeight(3.0),
                 child: Text(
                         // provider.startTime.hour >= 21
                         //     ? DateTimeHelper.dateConversion(
@@ -908,7 +914,7 @@ class CreateEventScreen extends StatelessWidget {
                         //     :
                         DateTimeHelper.dateConversion(provider.endDate))
                     .regularText(ColorConstants.colorGray,
-                        scaler.getTextSize(9.5), TextAlign.center),
+                        scaler.getTextSize(10.5), TextAlign.center),
               ),
             ),
             GestureDetector(
@@ -925,10 +931,10 @@ class CreateEventScreen extends StatelessWidget {
                       color: ColorConstants.colorWhite,
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
-                height: scaler.getHeight(2.5),
+                height: scaler.getHeight(3.0),
                 child: Text(DateTimeHelper.timeConversion(provider.endTime))
                     .regularText(ColorConstants.colorGray,
-                        scaler.getTextSize(9.5), TextAlign.center),
+                        scaler.getTextSize(10.5), TextAlign.center),
               ),
             )
           ],
@@ -968,7 +974,7 @@ class CreateEventScreen extends StatelessWidget {
                     color: ColorConstants.colorWhitishGray, spreadRadius: 1)
               ]),
           child: Padding(
-            padding: scaler.getPaddingLTRB(3.5, 1.5, 3.5, 1.5),
+            padding: scaler.getPaddingLTRB(4.5, 2.0, 4.5, 2.0),
             child: Icon(Icons.add, size: 40, color: ColorConstants.colorGray),
           ),
         ),
@@ -996,7 +1002,12 @@ class CreateEventScreen extends StatelessWidget {
                     //   ?
                     Stack(
                           children: [
-                            multiDateCardDesign(scaler, provider, index),
+                            Row(
+                              children: [
+                                multiDateCardDesign(scaler, provider, index),
+                                SizedBox(width: scaler.getWidth(1.2)),
+                              ],
+                            ),
                             Positioned(
                               right: 0.0,
                               child: GestureDetector(
@@ -1070,7 +1081,7 @@ class CreateEventScreen extends StatelessWidget {
     return Container(
       margin: scaler.getMarginLTRB(0.5, 0.5, 1.0, 0.5),
       padding: scaler.getPaddingLTRB(1.5, 1.0, 1.5, 0.5),
-      width: scaler.getWidth(17.0),
+      width: scaler.getWidth(18.0),
       decoration: BoxDecoration(
           color: ColorConstants.colorLightGray,
           borderRadius: scaler.getBorderRadiusCircular(12.0),
@@ -1078,11 +1089,12 @@ class CreateEventScreen extends StatelessWidget {
             BoxShadow(color: ColorConstants.colorWhitishGray, spreadRadius: 1)
           ]),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          SizedBox(height: scaler.getHeight(0.3)),
           Text("${DateTimeHelper.getMonthByName(provider.multipleDateOption.startDate[index])} "
                   " ${provider.multipleDateOption.startDate[index].year}")
-              .semiBoldText(Colors.deepOrangeAccent, scaler.getTextSize(8.5), TextAlign.center),
+              .semiBoldText(Colors.deepOrangeAccent, scaler.getTextSize(9.0), TextAlign.center),
           SizedBox(height: scaler.getHeight(0.2)),
           Text(provider.multipleDateOption.startDate[index].day.toString())
               .boldText(ColorConstants.colorBlack, scaler.getTextSize(14.8), TextAlign.center),
@@ -1117,7 +1129,7 @@ class CreateEventScreen extends StatelessWidget {
         Icon(Icons.calendar_today),
         SizedBox(width: scaler.getWidth(1.5)),
         Text("${provider.multipleDateOption.startDate.length} ${"options".tr()}")
-            .mediumText(ColorConstants.colorBlackDown, scaler.getTextSize(9.5),
+            .mediumText(ColorConstants.colorBlackDown, scaler.getTextSize(10.2),
                 TextAlign.center),
         // Expanded(
         //     child: Container(
@@ -1140,17 +1152,17 @@ class CreateEventScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("photo_gallery".tr()).boldText(
-                Colors.black, scaler.getTextSize(9.5), TextAlign.center),
-            SizedBox(height: scaler.getHeight(0.2)),
+                Colors.black, scaler.getTextSize(10.5), TextAlign.center),
+            SizedBox(height: scaler.getHeight(0.5)),
             Text("add_a_photo_gallery".tr()).regularText(
-                Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+                Colors.black, scaler.getTextSize(10.5), TextAlign.center),
           ],
         ),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(11.5),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
           value: provider.photoGallerySwitch,
           borderRadius: 30.0,
           padding: 2.0,
@@ -1175,17 +1187,17 @@ class CreateEventScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("questionare".tr()).boldText(
-                Colors.black, scaler.getTextSize(9.5), TextAlign.center),
-            SizedBox(height: scaler.getHeight(0.2)),
+                Colors.black, scaler.getTextSize(10.5), TextAlign.center),
+            SizedBox(height: scaler.getHeight(0.5)),
             Text("ask_for_feedback".tr()).regularText(
-                Colors.black, scaler.getTextSize(9.5), TextAlign.center),
+                Colors.black, scaler.getTextSize(10.5), TextAlign.center),
           ],
         ),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(11.5),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
           value: provider.isSwitched,
           borderRadius: 30.0,
           padding: 2.0,
@@ -1223,7 +1235,7 @@ class CreateEventScreen extends StatelessWidget {
           Text(provider.isSwitched == true && _fields.length > 0
                   ? "add_another_question".tr()
                   : "add_question".tr())
-              .mediumText(ColorConstants.primaryColor, 10.0, TextAlign.left),
+              .mediumText(ColorConstants.primaryColor, 12.0, TextAlign.left),
         ],
       ),
     );
@@ -1258,12 +1270,12 @@ class CreateEventScreen extends StatelessWidget {
     final field =
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("${"question".tr()} ${_fields.length + 1}")
-          .boldText(ColorConstants.colorBlack, 9.5, TextAlign.left),
+          .boldText(ColorConstants.colorBlack, 10.5, TextAlign.left),
       SizedBox(height: scaler.getHeight(0.2)),
       Container(
         width: scaler.getWidth(78),
         child: Text(questionController.text).mediumText(
-            ColorConstants.colorBlack, 12, TextAlign.left,
+            ColorConstants.colorBlack, 13, TextAlign.left,
             maxLines: 2, overflow: TextOverflow.ellipsis),
       ),
       SizedBox(height: scaler.getHeight(0.7)),
@@ -1289,7 +1301,7 @@ class CreateEventScreen extends StatelessWidget {
             width: double.infinity,
             child: AlertDialog(
               title: Text('Add_Your_Question'.tr())
-                  .boldText(ColorConstants.colorBlack, 14, TextAlign.left),
+                  .boldText(ColorConstants.colorBlack, 15, TextAlign.left),
               content: Form(
                 key: _questionFormKey,
                 child: Container(
@@ -1298,12 +1310,12 @@ class CreateEventScreen extends StatelessWidget {
                     textCapitalization: TextCapitalization.sentences,
                     controller: questionController,
                     style: ViewDecoration.textFieldStyle(
-                        scaler.getTextSize(10), ColorConstants.colorBlack),
+                        scaler.getTextSize(11), ColorConstants.colorBlack),
                     decoration: ViewDecoration.inputDecorationWithCurve(
                         "enter_your_question".tr(),
                         scaler,
                         ColorConstants.primaryColor,
-                        textSize: 10),
+                        textSize: 11),
                     onFieldSubmitted: (data) {
                       // FocusScope.of(context).requestFocus(nodes[1]);
                     },
@@ -1339,7 +1351,7 @@ class CreateEventScreen extends StatelessWidget {
                                     scaler.getBorderRadiusCircular(10.0)),
                             child: Text('submit'.tr()).semiBoldText(
                                 ColorConstants.colorWhite,
-                                12,
+                                13,
                                 TextAlign.left))),
                     SizedBox(height: scaler.getHeight(0.5))
                   ],
@@ -1367,7 +1379,7 @@ class CreateEventScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: ColorConstants.colorMediumGray,
                     borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                height: scaler.getHeight(0.4),
+                height: scaler.getHeight(0.5),
                 width: scaler.getWidth(12),
               ),
               Column(
@@ -1385,10 +1397,10 @@ class CreateEventScreen extends StatelessWidget {
                           width: double.infinity,
                           child: Text("take_a_photo".tr()).regularText(
                               ColorConstants.primaryColor,
-                              scaler.getTextSize(11),
+                              scaler.getTextSize(12),
                               TextAlign.center),
                         ),
-                        SizedBox(height: scaler.getHeight(0.9)),
+                        SizedBox(height: scaler.getHeight(1.1)),
                       ],
                     )
                   ),
@@ -1407,10 +1419,10 @@ class CreateEventScreen extends StatelessWidget {
                           width: double.infinity,
                           child: Text("choose_photo".tr()).regularText(
                               ColorConstants.primaryColor,
-                              scaler.getTextSize(11),
+                              scaler.getTextSize(12),
                               TextAlign.center),
                         ),
-                        SizedBox(height: scaler.getHeight(0.9)),
+                        SizedBox(height: scaler.getHeight(1.1)),
                       ],
                     )
                   ),
@@ -1429,15 +1441,15 @@ class CreateEventScreen extends StatelessWidget {
                     },
                     child: Column(
                       children: [
-                        SizedBox(height: scaler.getHeight(0.9)),
+                        SizedBox(height: scaler.getHeight(1.1)),
                         Container(
                           width: double.infinity,
                           child: Text("default_photo".tr()).regularText(
                               ColorConstants.primaryColor,
-                              scaler.getTextSize(11),
+                              scaler.getTextSize(12),
                               TextAlign.center),
                         ),
-                        SizedBox(height: scaler.getHeight(2)),
+                        SizedBox(height: scaler.getHeight(2.2)),
                       ],
                     )
                   ),
@@ -1452,12 +1464,12 @@ class CreateEventScreen extends StatelessWidget {
                   child: Container(
                     child: Text("cancel".tr()).semiBoldText(
                         ColorConstants.colorRed,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12),
                         TextAlign.center),
                   )
                 ),
               ),
-              SizedBox(height: scaler.getHeight(1.5)),
+              SizedBox(height: scaler.getHeight(1.8)),
             ],
           );
         });
@@ -1495,7 +1507,7 @@ class CreateEventScreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text("select_final_date".tr()).semiBoldText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(9.5),
+                            scaler.getTextSize(10.5),
                             TextAlign.center),
                       ),
                       SizedBox(height: scaler.getHeight(1.5)),

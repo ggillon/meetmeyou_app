@@ -52,7 +52,7 @@ class DefaultPhotoPage extends StatelessWidget {
             ),
             Container(
               padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
-                child: CommonWidgets.cancelBtn(scaler, context, 5.0)),
+                child: CommonWidgets.cancelBtn(scaler, context, 5.5)),
             SizedBox(height: scaler.getHeight(0.5)),
           ],
         ),

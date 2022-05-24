@@ -41,7 +41,7 @@ class InviteFriendsScreen extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text("invite_friends".tr()).boldText(
                         ColorConstants.colorBlack,
-                        scaler.getTextSize(16),
+                        scaler.getTextSize(17),
                         TextAlign.left),
                   ),
                 //  SizedBox(height: scaler.getHeight(1)),
@@ -57,7 +57,7 @@ class InviteFriendsScreen extends StatelessWidget {
                               SizedBox(height: scaler.getHeight(1)),
                               Text("loading_contacts".tr()).mediumText(
                                   ColorConstants.primaryColor,
-                                  scaler.getTextSize(10),
+                                  scaler.getTextSize(11),
                                   TextAlign.left),
                             ],
                           ),
@@ -67,7 +67,7 @@ class InviteFriendsScreen extends StatelessWidget {
                               child: Center(
                                 child: Text("sorry_no_contacts_found".tr())
                                     .mediumText(ColorConstants.primaryColor,
-                                        scaler.getTextSize(11), TextAlign.left),
+                                        scaler.getTextSize(12), TextAlign.left),
                               ),
                             )
                           : inviteFriendList(scaler, provider),
@@ -157,7 +157,7 @@ class InviteFriendsScreen extends StatelessWidget {
         children: [
           Container(
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
-                scaler.getTextSize(9.8), TextAlign.left),
+                scaler.getTextSize(10.8), TextAlign.left),
           ),
           inviteFriendProfileCard(context, scaler, provider, index),
         ],

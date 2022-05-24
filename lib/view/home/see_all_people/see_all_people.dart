@@ -28,12 +28,12 @@ class SeeAllPeople extends StatelessWidget {
       body: BaseView<SeeAllPeopleProvider>(
         builder: (context, provider, _){
           return Padding(
-            padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
+            padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("people".tr()).boldText(ColorConstants.colorBlack,
-                    scaler.getTextSize(16), TextAlign.left),
+                    scaler.getTextSize(16.5), TextAlign.left),
                 SizedBox(height: scaler.getHeight(1)),
                 contactList(scaler, provider)
               ],

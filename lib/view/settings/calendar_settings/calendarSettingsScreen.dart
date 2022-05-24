@@ -33,12 +33,12 @@ class CalendarSettingsScreen extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text("calender_settings".tr()).boldText(
                         ColorConstants.colorBlack,
-                        scaler.getTextSize(16),
+                        scaler.getTextSize(17),
                         TextAlign.left),
                   ),
-                  SizedBox(height: scaler.getHeight(2)),
+                  SizedBox(height: scaler.getHeight(2.5)),
                   synchroniseWithLocalCalendarToggle(context, scaler, provider),
-                  SizedBox(height: scaler.getHeight(1.5)),
+                  SizedBox(height: scaler.getHeight(2.0)),
                   displayNonMeetMeYouEventToggle(context, scaler, provider),
                 ],
               ),
@@ -54,12 +54,12 @@ class CalendarSettingsScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("synchronise_with_local_calendar".tr()).regularText(
-            ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left),
+            ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(12),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
           value: provider.calendarDetail.calendarSync!,
           borderRadius: 30.0,
           padding: 2.0,
@@ -79,12 +79,12 @@ class CalendarSettingsScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("display_non_MeetMeYou_events".tr()).regularText(
-            ColorConstants.colorBlack, scaler.getTextSize(10), TextAlign.left),
+            ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left),
         FlutterSwitch(
           activeColor: ColorConstants.primaryColor,
-          width: scaler.getWidth(10.5),
-          height: scaler.getHeight(2.3),
-          toggleSize: scaler.getHeight(1.8),
+          width: scaler.getWidth(12),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
           value: provider.calendarDetail.calendarDisplay!,
           borderRadius: 30.0,
           padding: 2.0,

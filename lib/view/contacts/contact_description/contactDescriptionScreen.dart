@@ -66,7 +66,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Padding(
-                          padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+                          padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -85,7 +85,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                       : () {
                                     provider.sendingMails(context);
                                   }),
-                              SizedBox(height: scaler.getHeight(2.5)),
+                              SizedBox(height: scaler.getHeight(3.0)),
                               GestureDetector(
                                 onTap: () {
                                   provider.userDetail.checkForInvitation!
@@ -118,7 +118,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     countryCode: true,
                                     cCode: provider.userDetail.countryCode),
                               ),
-                              SizedBox(height: scaler.getHeight(1.5)),
+                              SizedBox(height: scaler.getHeight(2.0)),
                               GestureDetector(
                                 behavior: HitTestBehavior.translucent,
                                 onTap: provider.userDetail.address == "" || provider.userDetail.address == null ?  (){} : ()  async {
@@ -138,7 +138,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     "address".tr(),
                                     provider.userDetail.address ?? ""),
                               ),
-                              SizedBox(height: scaler.getHeight(3)),
+                              SizedBox(height: scaler.getHeight(3.2)),
                               // Text("organized_events".tr()).boldText(
                               //     ColorConstants.colorBlack,
                               //     scaler.getTextSize(10),

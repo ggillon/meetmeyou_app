@@ -95,20 +95,20 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                       alignment: Alignment.centerLeft,
                         child: Text("new_discussion".tr()).boldText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(16),
+                            scaler.getTextSize(17),
                             TextAlign.left)) : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("invite_friends".tr()).boldText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(16),
+                            scaler.getTextSize(17),
                             TextAlign.left),
                         ImageView(path: ImageConstants.share_icon)
                       ],
                     ),
-                    SizedBox(height: scaler.getHeight(1)),
+                    SizedBox(height: scaler.getHeight(1.2)),
                     searchBar(scaler, provider),
-                    SizedBox(height: scaler.getHeight(1)),
+                    SizedBox(height: scaler.getHeight(1.2)),
                     AnimatedToggle(
                       values: ['all'.tr(), 'groups'.tr()],
                       onToggleCallback: (value) {
@@ -139,7 +139,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                     SizedBox(height: scaler.getHeight(1)),
                                     Text("loading_contacts".tr()).mediumText(
                                         ColorConstants.primaryColor,
-                                        scaler.getTextSize(10),
+                                        scaler.getTextSize(11),
                                         TextAlign.left),
                                   ],
                                 ),
@@ -181,7 +181,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
                                     SizedBox(height: scaler.getHeight(1)),
                                     Text("loading_groups".tr()).mediumText(
                                         ColorConstants.primaryColor,
-                                        scaler.getTextSize(10),
+                                        scaler.getTextSize(11),
                                         TextAlign.left),
                                   ],
                                 ),
@@ -287,7 +287,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
@@ -337,7 +337,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> {
         children: [
           Container(
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
-                scaler.getTextSize(9.8), TextAlign.left),
+                scaler.getTextSize(10.8), TextAlign.left),
           ),
           widget.fromChatDiscussion == true ? createGroupDiscussion(context, scaler, cList, index, provider) : (widget.fromDiscussion == true ? addRemoveUserToDiscussionCard(context, scaler, cList, index, provider) : inviteContactProfileCard(context, scaler, cList, index, provider)),
         ],

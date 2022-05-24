@@ -127,7 +127,7 @@ class DialogHelper {
               ImageView(path: ImageConstants.ic_back_arrow),
               SizedBox(width: scaler.getWidth(0.8)),
               Text("back".tr()).regularText(ColorConstants.primaryColor,
-                  scaler.getTextSize(10.5), TextAlign.left),
+                  scaler.getTextSize(11.5), TextAlign.left),
             ],
           ),
         ),
@@ -145,8 +145,8 @@ class DialogHelper {
                             ? Icon(Icons.message,
                             color: ColorConstants.primaryColor, size: 28)
                             : ImageView(
-                            width: scaler.getWidth(4.5),
-                            height: scaler.getWidth(4.5),
+                            width: scaler.getWidth(6.0),
+                            height: scaler.getWidth(6.0),
                             path: ImageConstants.ic_edit),
                       ))
             : Container(),
@@ -165,12 +165,12 @@ class DialogHelper {
         child: CustomShape(
           child: Center(
             child: Text(txt).mediumText(txtColor ?? ColorConstants.colorWhite,
-                scaler.getTextSize(10), TextAlign.center),
+                scaler.getTextSize(11.2), TextAlign.center),
           ),
           bgColor: color,
           radius: scaler.getBorderRadiusCircular(10),
           width: MediaQuery.of(context).size.width,
-          height: scaler.getHeight(5),
+          height: scaler.getHeight(6.2),
         ),
       ),
     );

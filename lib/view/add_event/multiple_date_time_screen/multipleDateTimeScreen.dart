@@ -43,21 +43,21 @@ class MultipleDateTmeScreen extends StatelessWidget {
                 children: [
                   Text("choose_date_time".tr()).boldText(
                       ColorConstants.colorBlack,
-                      scaler.getTextSize(14),
+                      scaler.getTextSize(15),
                       TextAlign.left),
                   SizedBox(height: scaler.getHeight(2.5)),
                   Text("choose_start_date".tr()).boldText(
                       ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5),
+                      scaler.getTextSize(10.5),
                       TextAlign.center),
-                  SizedBox(height: scaler.getHeight(0.5)),
+                  SizedBox(height: scaler.getHeight(0.6)),
                   chooseStartDate(context, scaler, provider),
-                  SizedBox(height: scaler.getHeight(1.5)),
+                  SizedBox(height: scaler.getHeight(2.0)),
                   Text("start_time".tr()).boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5), TextAlign.center),
-                  SizedBox(height: scaler.getHeight(0.5)),
+                      scaler.getTextSize(10.5), TextAlign.center),
+                  SizedBox(height: scaler.getHeight(0.6)),
                   chooseStartTime(context, scaler, provider),
-                  SizedBox(height: scaler.getHeight(1.5)),
+                  SizedBox(height: scaler.getHeight(2.0)),
                   provider.addEndDate == true
                       ? Container()
                       : GestureDetector(
@@ -74,7 +74,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
                                       size: 16),
                                   Text("add_end_date_time".tr()).mediumText(
                                       ColorConstants.primaryColor,
-                                      scaler.getTextSize(10),
+                                      scaler.getTextSize(10.8),
                                       TextAlign.center)
                                 ],
                               )),
@@ -85,16 +85,16 @@ class MultipleDateTmeScreen extends StatelessWidget {
                           children: [
                             Text("choose_end_date".tr()).boldText(
                                 ColorConstants.colorBlack,
-                                scaler.getTextSize(9.5),
+                                scaler.getTextSize(10.5),
                                 TextAlign.center),
-                            SizedBox(height: scaler.getHeight(0.5)),
+                            SizedBox(height: scaler.getHeight(0.6)),
                             chooseEndDate(context, scaler, provider),
-                            SizedBox(height: scaler.getHeight(1.5)),
+                            SizedBox(height: scaler.getHeight(2.0)),
                             Text("end_time".tr()).boldText(
                                 ColorConstants.colorBlack,
-                                scaler.getTextSize(9.5),
+                                scaler.getTextSize(10.5),
                                 TextAlign.center),
-                            SizedBox(height: scaler.getHeight(0.5)),
+                            SizedBox(height: scaler.getHeight(0.6)),
                             chooseEndTime(context, scaler, provider),
                           ],
                         )
@@ -200,7 +200,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
         provider.pickDateDialog(context, true);
       },
       child: Container(
-          height: scaler.getHeight(4),
+          height: scaler.getHeight(5),
           width: double.infinity,
           decoration: BoxDecoration(
               color: ColorConstants.colorLightGray,
@@ -213,7 +213,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(DateTimeHelper.dateConversion(provider.startDate))
                 .regularText(ColorConstants.colorBlackDown,
-                    scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(10.5), TextAlign.center),
           )),
     );
   }
@@ -225,7 +225,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
         provider.pickDateDialog(context, false);
       },
       child: Container(
-          height: scaler.getHeight(4),
+          height: scaler.getHeight(5),
           width: double.infinity,
           decoration: BoxDecoration(
               color: ColorConstants.colorLightGray,
@@ -238,7 +238,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(DateTimeHelper.dateConversion(provider.endDate))
                 .regularText(ColorConstants.colorBlackDown,
-                    scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(10.5), TextAlign.center),
           )),
     );
   }
@@ -250,7 +250,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
         provider.selectTimeDialog(context, true);
       },
       child: Container(
-          height: scaler.getHeight(4),
+          height: scaler.getHeight(5),
           width: double.infinity,
           decoration: BoxDecoration(
               color: ColorConstants.colorLightGray,
@@ -263,7 +263,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(DateTimeHelper.timeConversion(provider.startTime))
                 .regularText(ColorConstants.colorBlackDown,
-                    scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(10.5), TextAlign.center),
           )),
     );
   }
@@ -275,7 +275,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
         provider.selectTimeDialog(context, false);
       },
       child: Container(
-          height: scaler.getHeight(4),
+          height: scaler.getHeight(5),
           width: double.infinity,
           decoration: BoxDecoration(
               color: ColorConstants.colorLightGray,
@@ -288,7 +288,7 @@ class MultipleDateTmeScreen extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(DateTimeHelper.timeConversion(provider.endTime))
                 .regularText(ColorConstants.colorBlackDown,
-                    scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(10.5), TextAlign.center),
           )),
     );
   }

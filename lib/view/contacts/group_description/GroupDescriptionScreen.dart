@@ -49,7 +49,7 @@ class GroupDescriptionScreen extends StatelessWidget {
           builder: (builder, provider, _) {
             return SafeArea(
               child: Padding(
-                padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+                padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -72,7 +72,7 @@ class GroupDescriptionScreen extends StatelessWidget {
                                 " " +
                                 "contacts_in_group".tr())
                                 .boldText(ColorConstants.colorBlack,
-                                scaler.getTextSize(10), TextAlign.left),
+                                scaler.getTextSize(11), TextAlign.left),
                           ),
                         ),
                         SizedBox(width: scaler.getWidth(1.0)),
@@ -102,7 +102,7 @@ class GroupDescriptionScreen extends StatelessWidget {
                                 SizedBox(height: scaler.getHeight(1)),
                                 Text("loading_contacts".tr()).mediumText(
                                     ColorConstants.primaryColor,
-                                    scaler.getTextSize(10),
+                                    scaler.getTextSize(11),
                                     TextAlign.left),
                               ],
                             ),
@@ -114,7 +114,7 @@ class GroupDescriptionScreen extends StatelessWidget {
                                           .tr())
                                       .mediumText(
                                           ColorConstants.primaryColor,
-                                          scaler.getTextSize(10),
+                                          scaler.getTextSize(11),
                                           TextAlign.left),
                                 ),
                               )
@@ -158,7 +158,7 @@ class GroupDescriptionScreen extends StatelessWidget {
         children: [
           Container(
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
-                scaler.getTextSize(9.8), TextAlign.left),
+                scaler.getTextSize(10.8), TextAlign.left),
           ),
           contactProfileCard(context, scaler, cList, index, provider),
         ],

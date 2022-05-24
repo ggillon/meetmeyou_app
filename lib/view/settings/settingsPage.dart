@@ -60,7 +60,7 @@ class SettingsPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                       ),
                     ),
-                    SizedBox(height: scaler.getHeight(2.5)),
+                    SizedBox(height: scaler.getHeight(3.5)),
                     Expanded(
                       child: Column(
                         children: [
@@ -72,7 +72,7 @@ class SettingsPage extends StatelessWidget {
                               false, onTapCard: () {
 
                           }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -82,7 +82,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.historyScreen);
                           }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -95,12 +95,12 @@ class SettingsPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: scaler.getHeight(1.5)),
+                    SizedBox(height: scaler.getHeight(2.0)),
                     DialogHelper.btnWidget(scaler, context, "switch_mode".tr(),
                         ColorConstants.colorRed, funOnTap: () {
                           provider.userDetail.userType == null ? Container() : switchModeBottomSheet(context, scaler);
                         }),
-                    SizedBox(height: scaler.getHeight(0.4)),
+                    SizedBox(height: scaler.getHeight(0.8)),
                     DialogHelper.btnWidget(scaler, context, "logout".tr(),
                         ColorConstants.primaryColor, funOnTap: () async {
                           auth.signOut();
@@ -116,7 +116,7 @@ class SettingsPage extends StatelessWidget {
                 ),
               ) : SingleChildScrollView(
                 child: Padding(
-                  padding: scaler.getPaddingLTRB(1.5, 3, 1.5, 0),
+                  padding: scaler.getPaddingLTRB(2.0, 3, 2.0, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -144,7 +144,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.inviteFriendsScreen);
                           }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -154,7 +154,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.rejectedInvitesScreen);
                           }, isIcon: false),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -164,7 +164,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.historyScreen);
                           }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -174,7 +174,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.calendarSettingsScreen);
                           }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -184,7 +184,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.notificationSettings);
                           }),
-                          SizedBox(height: scaler.getHeight(1)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                           CommonWidgets.settingsPageCard(
                               scaler,
                               context,
@@ -194,7 +194,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RoutesConstants.aboutPage);
                           }),
-                          SizedBox(height: scaler.getHeight(1.5)),
+                          SizedBox(height: scaler.getHeight(2.0)),
                           DialogHelper.btnWidget(scaler, context, "logout".tr(),
                               ColorConstants.primaryColor, funOnTap: () async {
                            await auth.signOut();
@@ -205,7 +205,7 @@ class SettingsPage extends StatelessWidget {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 RoutesConstants.loginOptions, (route) => false);
                           }),
-                          SizedBox(height: scaler.getHeight(0.4)),
+                          SizedBox(height: scaler.getHeight(0.8)),
                         DialogHelper.btnWidget(
                               scaler,
                               context,
@@ -249,14 +249,14 @@ class SettingsPage extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        width: scaler.getWidth(22),
-                        height: scaler.getWidth(22),
+                        width: scaler.getWidth(24),
+                        height: scaler.getWidth(24),
                         child: ClipRRect(
                           borderRadius: scaler.getBorderRadiusCircular(10.0),
                           child: ImageView(
                             path: provider.userDetail.profileUrl,
-                            width: scaler.getWidth(22),
-                            height: scaler.getWidth(22),
+                            width: scaler.getWidth(24),
+                            height: scaler.getWidth(24),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -270,12 +270,12 @@ class SettingsPage extends StatelessWidget {
                                     " " +
                                     provider.userDetail.lastName.toString())
                                 .boldText(ColorConstants.colorBlack,
-                                    scaler.getTextSize(11), TextAlign.left,
+                                    scaler.getTextSize(12), TextAlign.left,
                                     maxLines: 1, overflow: TextOverflow.ellipsis),
                             SizedBox(height: scaler.getHeight(0.2)),
                             Text(provider.userDetail.email.toString()).regularText(
                                 ColorConstants.colorGray,
-                                scaler.getTextSize(9.5),
+                                scaler.getTextSize(10.5),
                                 TextAlign.left,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis),
@@ -290,7 +290,7 @@ class SettingsPage extends StatelessWidget {
                    children: [
                      Text(provider.auth.currentUser!.uid.toString()).regularText(
                          Colors.grey[300] ?? ColorConstants.colorGray,
-                         scaler.getTextSize(9.5),
+                         scaler.getTextSize(10.5),
                          TextAlign.left,
                          maxLines: 1,
                          overflow: TextOverflow.ellipsis),
@@ -315,12 +315,12 @@ class SettingsPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.8)),
                 Container(
                   decoration: BoxDecoration(
                       color: ColorConstants.colorMediumGray,
                       borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                  height: scaler.getHeight(0.4),
+                  height: scaler.getHeight(0.5),
                   width: scaler.getWidth(12),
                 ),
                 Column(
@@ -330,15 +330,15 @@ class SettingsPage extends StatelessWidget {
                        // onTap: going,
                         child: Column(
                           children: [
-                            SizedBox(height: scaler.getHeight(2)),
+                            SizedBox(height: scaler.getHeight(2.4)),
                             Container(
                               width: double.infinity,
                               child: Text("normal_usage".tr()).regularText(
                                   ColorConstants.primaryColor,
-                                  scaler.getTextSize(11),
+                                  scaler.getTextSize(12),
                                   TextAlign.center),
                             ),
-                            SizedBox(height: scaler.getHeight(0.9)),
+                            SizedBox(height: scaler.getHeight(1.3)),
                           ],
                         )
                     ),
@@ -348,12 +348,12 @@ class SettingsPage extends StatelessWidget {
                      // onTap: notGoing,
                       child: Column(
                         children: [
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.3)),
                           Container(
                             width: double.infinity,
                             child: Text("creator_mode".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12),
                                 TextAlign.center),
                           ),
                           provider!.userDetail.userType == USER_TYPE_ADMIN ? SizedBox(height: scaler.getHeight(0.9)) : SizedBox(height: scaler.getHeight(2.0)),
@@ -366,15 +366,15 @@ class SettingsPage extends StatelessWidget {
                     //  onTap: hide,
                       child: Column(
                         children: [
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.3)),
                           Container(
                             width: double.infinity,
                             child: Text("admin_mode".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(2)),
+                          SizedBox(height: scaler.getHeight(2.4)),
                         ],
                       ),
                     ) : Container(),
@@ -388,11 +388,11 @@ class SettingsPage extends StatelessWidget {
                   child: Center(
                     child: Text("cancel".tr()).semiBoldText(
                         ColorConstants.colorRed,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12),
                         TextAlign.center),
                   ),
                 ),
-                SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.8)),
               ],
             ),
           );

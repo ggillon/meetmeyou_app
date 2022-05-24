@@ -58,7 +58,7 @@ class ContactsScreen extends StatelessWidget {
               child: Scaffold(
                 backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
                 body: Padding(
-                  padding: scaler.getPaddingLTRB(2.5, 0.7, 2.5, 2.5),
+                  padding: scaler.getPaddingLTRB(3.0, 0.7, 3.0, 2.5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -67,7 +67,7 @@ class ContactsScreen extends StatelessWidget {
                         children: [
                           Text("contacts".tr()).semiBoldText(
                               ColorConstants.colorBlack,
-                              scaler.getTextSize(16),
+                              scaler.getTextSize(16.5),
                               TextAlign.left),
                           GestureDetector(
                             behavior: HitTestBehavior.translucent,
@@ -76,7 +76,7 @@ class ContactsScreen extends StatelessWidget {
                               },
                               child: Padding(
                                 padding: scaler.getPaddingLTRB(0.0, 0.0, 1.5, 0.0),
-                                child: ImageView(path: ImageConstants.small_add_icon, height: scaler.getHeight(3.0), width: scaler.getWidth(10.0)),
+                                child: ImageView(path: ImageConstants.small_add_icon, height: scaler.getHeight(4.5), width: scaler.getWidth(10.0)),
                               )),
                         ],
                       ),
@@ -108,7 +108,7 @@ class ContactsScreen extends StatelessWidget {
                                       SizedBox(height: scaler.getHeight(1)),
                                       Text("loading_contacts".tr()).mediumText(
                                           ColorConstants.primaryColor,
-                                          scaler.getTextSize(10),
+                                          scaler.getTextSize(11),
                                           TextAlign.left),
                                     ],
                                   ),
@@ -120,7 +120,7 @@ class ContactsScreen extends StatelessWidget {
                                         child: Text("sorry_no_contacts_found".tr())
                                             .mediumText(
                                                 ColorConstants.primaryColor,
-                                                scaler.getTextSize(10),
+                                                scaler.getTextSize(11),
                                                 TextAlign.left),
                                       ),
                                     )
@@ -136,7 +136,7 @@ class ContactsScreen extends StatelessWidget {
                                                 : Text("invitations".tr())
                                                     .semiBoldText(
                                                         ColorConstants.colorBlack,
-                                                        scaler.getTextSize(9.8),
+                                                        scaler.getTextSize(10.8),
                                                         TextAlign.left),
                                             SizedBox(height: scaler.getHeight(1)),
                                             provider.invitationContactList.length ==
@@ -171,7 +171,7 @@ class ContactsScreen extends StatelessWidget {
                                       SizedBox(height: scaler.getHeight(1)),
                                       Text("loading_groups".tr()).mediumText(
                                           ColorConstants.primaryColor,
-                                          scaler.getTextSize(10),
+                                          scaler.getTextSize(11),
                                           TextAlign.left),
                                     ],
                                   ),
@@ -182,7 +182,7 @@ class ContactsScreen extends StatelessWidget {
                                         child: Text("sorry_no_group_found".tr())
                                             .mediumText(
                                                 ColorConstants.primaryColor,
-                                                scaler.getTextSize(10),
+                                                scaler.getTextSize(11),
                                                 TextAlign.left),
                                       ),
                                     )
@@ -218,7 +218,7 @@ class ContactsScreen extends StatelessWidget {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {},
@@ -289,7 +289,7 @@ class ContactsScreen extends StatelessWidget {
         children: [
           Container(
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
-                scaler.getTextSize(9.8), TextAlign.left),
+                scaler.getTextSize(10.8), TextAlign.left),
           ),
           contactProfileCard(context, scaler, cList, index, provider),
         ],
@@ -351,7 +351,7 @@ class ContactsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: ColorConstants.colorMediumGray,
                       borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                  height: scaler.getHeight(0.4),
+                  height: scaler.getHeight(0.5),
                   width: scaler.getWidth(12),
                 ),
                 Column(
@@ -374,10 +374,10 @@ class ContactsScreen extends StatelessWidget {
                             width: double.infinity,
                             child: Text("search_for_contact".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(0.9)),
+                          SizedBox(height: scaler.getHeight(1.4)),
                         ],
                       )
                     ),
@@ -394,15 +394,15 @@ class ContactsScreen extends StatelessWidget {
                       },
                       child:  Column(
                         children: [
-                          SizedBox(height: scaler.getHeight(2)),
+                          SizedBox(height: scaler.getHeight(2.4)),
                           Container(
                             width: double.infinity,
                             child: Text("create_group_of_contacts".tr()).regularText(
                                 ColorConstants.primaryColor,
-                                scaler.getTextSize(11),
+                                scaler.getTextSize(12),
                                 TextAlign.center),
                           ),
-                          SizedBox(height: scaler.getHeight(2)),
+                          SizedBox(height: scaler.getHeight(2.4)),
                         ],
                       )
                     ),
@@ -416,11 +416,11 @@ class ContactsScreen extends StatelessWidget {
                   child: Center(
                     child: Text("cancel".tr()).semiBoldText(
                         ColorConstants.colorRed,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12),
                         TextAlign.center),
                   ),
                 ),
-                SizedBox(height: scaler.getHeight(1)),
+                SizedBox(height: scaler.getHeight(1.4)),
               ],
             ),
           );
