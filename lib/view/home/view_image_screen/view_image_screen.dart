@@ -27,6 +27,7 @@ class ViewImageScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: scaler.getHeight(1.5)),
                 GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
@@ -62,7 +63,7 @@ class ViewImageScreen extends StatelessWidget {
                       SizedBox(height: scaler.getHeight(0.5)),
                       Text("sending_image".tr()).mediumText(
                           ColorConstants.primaryColor,
-                          scaler.getTextSize(8),
+                          scaler.getTextSize(9),
                           TextAlign.left),
                     ],
                   ) :

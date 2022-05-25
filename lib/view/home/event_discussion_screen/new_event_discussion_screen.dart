@@ -94,7 +94,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                     SizedBox(height: scaler.getHeight(1)),
                     Text("loading_discussion".tr()).mediumText(
                         ColorConstants.primaryColor,
-                        scaler.getTextSize(10),
+                        scaler.getTextSize(11),
                         TextAlign.left),
                   ],
                 ),
@@ -166,16 +166,16 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: scaler.getBorderRadiusCircular(100),
                               child: Container(
-                                height: scaler.getHeight(4.0),
-                                width: scaler.getWidth(10),
+                                height: scaler.getHeight(5.0),
+                                width: scaler.getWidth(11),
                                 child: ImageView(
                                   path: fromContactOrGroup == true
                                      // ? provider.discussionDetail.photoUrl
                                       ? provider.discussion!.photoURL
-                                      : provider.eventDiscussion!.photoURL,
-                                //  fit: BoxFit.cover,
-                                  height: scaler.getHeight(4.0),
-                                  width: scaler.getWidth(10),
+                                      : (provider.eventDiscussion?.photoURL == null || provider.eventDiscussion?.photoURL == "") ? provider.eventDetail.photoUrlEvent : provider.eventDiscussion!.photoURL,
+                                  fit: BoxFit.cover,
+                                  height: scaler.getHeight(5.0),
+                                  width: scaler.getWidth(11),
                                 ),
                               ),
                             ),
@@ -198,19 +198,19 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                Container(
                                  width: scaler.getWidth(45),
                                  child:  Text(fromContactOrGroup == true
-                                     ? provider.discussion!.title.toString()
-                                     : provider.eventDiscussion!.title.toString())
+                                     ? (provider.discussion?.title == "" || provider.discussion?.title == null)  ?  provider.discussionDetail.title.toString() : provider.discussion!.title
+                                     : (provider.eventDiscussion?.title == null || provider.eventDiscussion?.title == "") ? provider.eventDetail.eventName.toString() : provider.eventDiscussion!.title)
                                      .mediumText(ColorConstants.colorBlack,
-                                     scaler.getTextSize(11), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                     scaler.getTextSize(11.5), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                                ),
                                SizedBox(height: scaler.getHeight(0.2)),
                                Container(
                                  width: scaler.getWidth(45),
                                  child:  Text(provider.eventDiscussion?.type == DISCUSSION_TYPE_EVENT
                                      ? "click_to_go_to_event".tr()
-                                     : (provider.eventDiscussion!.type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : (provider.eventDiscussion!.isOrganiser == true ? "group_discussion_organiser".tr() : "group_discussion".tr())))
+                                     : (provider.eventDiscussion?.type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : (provider.eventDiscussion?.isOrganiser == true ? "group_discussion_organiser".tr() : "group_discussion".tr())))
                                      .regularText(ColorConstants.colorGray,
-                                     scaler.getTextSize(9), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                     scaler.getTextSize(9.8), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                                ),
                              ],
                            ),
@@ -365,7 +365,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
       controller: messageController,
       focusNode: messageFocusNode,
       style: ViewDecoration.textFieldStyle(
-          scaler.getTextSize(10), ColorConstants.colorBlack),
+          scaler.getTextSize(11), ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationWithCurve(
           "write_something".tr(), scaler, ColorConstants.primaryColor),
       onFieldSubmitted: (data) {
@@ -419,14 +419,14 @@ class NewEventDiscussionScreen extends StatelessWidget {
                     provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 4) == DateTime.now().toLocal().toString().substring(0, 4) ? true : false ))
                     .semiBoldText(
                     ColorConstants.colorBlackDown,
-                    scaler.getTextSize(9.5),
+                    scaler.getTextSize(10.5),
                     TextAlign.center)),
             bgColor: ColorConstants.colorNewGray,
             radius: BorderRadius.all(
               Radius.circular(12),
             ),
             width: scaler.getWidth(provider.eventDiscussionList[index].createdTimeStamp.toLocal().toString().substring(0, 4) == DateTime.now().toLocal().toString().substring(0, 4) ? 21 : 25),
-            height: scaler.getHeight(2.0),
+            height: scaler.getHeight(2.2),
           ),
           // SizedBox(height: scaler.getHeight(1.0)),
           chat(context, scaler, index)
@@ -481,7 +481,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                               .colorBlack,
                           scaler
                               .getTextSize(
-                              10),
+                              11),
                           TextAlign
                               .left,
                           isHeight:
@@ -505,7 +505,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                           .colorRed,
                       scaler
                           .getTextSize(
-                          10.0),
+                          11.0),
                       TextAlign
                           .left),
                   (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
@@ -517,7 +517,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                           .colorBlack,
                       scaler
                           .getTextSize(
-                          10),
+                          11),
                       TextAlign
                           .left,
                       isHeight:
@@ -597,7 +597,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                               .colorBlack,
                           scaler
                               .getTextSize(
-                              10),
+                              11),
                           TextAlign
                               .left,
                           isHeight:
@@ -624,7 +624,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                       ColorConstants
                           .colorWhite,
                       scaler.getTextSize(
-                          10),
+                          11),
                       TextAlign
                           .left,
                       isHeight:
@@ -732,7 +732,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
         return AlertDialog(
           contentPadding: EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 50.0),
        //   insetPadding: EdgeInsets.fromLTRB(8.0, 24.0, 8.0, 24.0),
-          title: Text("Change Group Discussion title").semiBoldText(ColorConstants.colorBlack, 15, TextAlign.center),
+          title: Text("Change Group Discussion title").semiBoldText(ColorConstants.colorBlack, 15.5, TextAlign.center),
           content: Form(
             key: _formKey,
               child: groupTitleTextField(scaler)),
@@ -757,7 +757,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
       textCapitalization: TextCapitalization.sentences,
       controller: titleController,
       style: ViewDecoration.textFieldStyle(
-          scaler.getTextSize(9.5), ColorConstants.colorBlack),
+          scaler.getTextSize(10.5), ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationWithCurve(
           "Cody", scaler, ColorConstants.primaryColor),
       onFieldSubmitted: (data) {

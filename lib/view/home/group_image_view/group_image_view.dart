@@ -27,6 +27,7 @@ class GroupImageView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: scaler.getHeight(1.5)),
                   GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () {

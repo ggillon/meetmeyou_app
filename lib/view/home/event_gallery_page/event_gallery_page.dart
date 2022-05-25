@@ -40,7 +40,7 @@ class EventGalleryPage extends StatelessWidget {
                   padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 1.0),
                   child: Text(provider.eventDetail.event!.title.toString()).boldText(
                       ColorConstants.colorBlack,
-                      scaler.getTextSize(12),
+                      scaler.getTextSize(12.5),
                       TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis),
                 ),
                 provider.getAlbum == true || provider.state == ViewState.Busy ? SizedBox(
@@ -53,7 +53,7 @@ class EventGalleryPage extends StatelessWidget {
                       SizedBox(height: scaler.getHeight(1)),
                       Text("fetching_gallery".tr()).mediumText(
                           ColorConstants.primaryColor,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11),
                           TextAlign.left),
                     ],
                   ),

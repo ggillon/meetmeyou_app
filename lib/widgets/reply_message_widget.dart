@@ -49,7 +49,7 @@ class ReplyMessageWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.0), TextAlign.left)),
+                Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.5), TextAlign.left)),
                   showCloseIcon == true ?
                   GestureDetector(
                     child: Icon(Icons.close, size: 16),
@@ -59,7 +59,7 @@ class ReplyMessageWidget extends StatelessWidget {
               ),
               Text(message)
                   .regularText(ColorConstants.colorGray,
-                      scaler.getTextSize(10), TextAlign.left,
+                      scaler.getTextSize(11), TextAlign.left,
                       isHeight: true),
             ],
           ),

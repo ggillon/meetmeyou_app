@@ -35,7 +35,7 @@ class ChatsScreen extends StatelessWidget {
         //     Text("edit".tr()).mediumText(Colors.blue, scaler.getTextSize(10.5), TextAlign.center)
         //   ],
         // )),
-        title: Text("chats".tr()).mediumText(ColorConstants.colorBlack, scaler.getTextSize(10.5), TextAlign.center),
+        title: Text("chats".tr()).mediumText(ColorConstants.colorBlack, scaler.getTextSize(11.5), TextAlign.center),
         actions: [
           GestureDetector(
             onTap: (){
@@ -69,14 +69,14 @@ class ChatsScreen extends StatelessWidget {
               SizedBox(height: scaler.getHeight(1)),
               Text("loading_chats".tr()).mediumText(
                   ColorConstants.primaryColor,
-                  scaler.getTextSize(10),
+                  scaler.getTextSize(11),
                   TextAlign.left),
             ],
           ) : (provider.userDiscussions.length == 0 || provider.userDiscussions.isEmpty) ? Center(
           child: Text("no_chats_found".tr())
               .mediumText(
           ColorConstants.primaryColor,
-          scaler.getTextSize(10),
+          scaler.getTextSize(11),
           TextAlign.left),
           ): (provider.userDiscussions.length >= 10) ? Column(
             children: [
@@ -101,7 +101,7 @@ class ChatsScreen extends StatelessWidget {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
@@ -180,12 +180,12 @@ class ChatsScreen extends StatelessWidget {
                   ClipRRect(
                     borderRadius: scaler.getBorderRadiusCircular(100.0),
                     child: Container(
-                      height: scaler.getHeight(5.0),
-                      width: scaler.getWidth(12.0),
+                      height: scaler.getHeight(6.0),
+                      width: scaler.getWidth(13.0),
                       color: ColorConstants.primaryColor,
                       child: ImageView(
-                          path: provider.userDiscussions[index].photoURL,  height: scaler.getHeight(5.0),
-                          width: scaler.getWidth(12.0), fit: BoxFit.cover
+                          path: provider.userDiscussions[index].photoURL,  height: scaler.getHeight(6.0),
+                          width: scaler.getWidth(13.0), fit: BoxFit.cover
                       ),
                     ),
                   ),
@@ -201,7 +201,7 @@ class ChatsScreen extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                 child:  Text(
-                                    provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(10.8), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                    provider.userDiscussions[index].title).boldText(ColorConstants.colorBlack, scaler.getTextSize(11.8), TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                               ),
                               SizedBox(width : scaler.getWidth(1.0)),
                               // Text(
@@ -211,7 +211,7 @@ class ChatsScreen extends StatelessWidget {
                           Padding(
                             padding: scaler.getPaddingLTRB(0.0, 0.5, 0.0, 0.0),
                             child: Text(
-                                provider.userDiscussions[index].type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : (provider.userDiscussions[index].type == DISCUSSION_TYPE_EVENT) ? DISCUSSION_TYPE_EVENT : "group_discussion".tr()).regularText(ColorConstants.colorGray, scaler.getTextSize(10.0), TextAlign.left),
+                                provider.userDiscussions[index].type == DISCUSSION_TYPE_PRIVATE ? "private_discussion".tr() : (provider.userDiscussions[index].type == DISCUSSION_TYPE_EVENT) ? DISCUSSION_TYPE_EVENT : "group_discussion".tr()).regularText(ColorConstants.colorGray, scaler.getTextSize(11.0), TextAlign.left),
                           )
                         ],
                       ),

@@ -48,11 +48,11 @@ class LoginOptions extends StatelessWidget {
                         ),
                         Text("welcome".tr()).semiBoldText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(16),
+                            scaler.getTextSize(16.5),
                             TextAlign.center),
                         Text("find_events_connect".tr()).regularText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(10),
+                            scaler.getTextSize(11),
                             TextAlign.center)
                       ],
                     ),
@@ -77,7 +77,7 @@ class LoginOptions extends StatelessWidget {
                                                 ColorConstants.colorBlack,
                                             radius: BorderRadius.all(
                                                 Radius.circular(10)),
-                                            height: scaler.getHeight(4),
+                                            height: scaler.getHeight(5),
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
@@ -85,7 +85,7 @@ class LoginOptions extends StatelessWidget {
                                         )
                                       : Container(),
                                   SizedBox(
-                                    height: scaler.getHeight(1.5),
+                                    height: scaler.getHeight(1.8),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -103,7 +103,7 @@ class LoginOptions extends StatelessWidget {
                                       strokeColor: ColorConstants.colorBlack,
                                       radius:
                                           BorderRadius.all(Radius.circular(10)),
-                                      height: scaler.getHeight(4),
+                                      height: scaler.getHeight(5),
                                       width: MediaQuery.of(context).size.width,
                                     ),
                                   ),
@@ -130,12 +130,12 @@ class LoginOptions extends StatelessWidget {
                                       strokeColor: ColorConstants.colorBlack,
                                       radius:
                                           BorderRadius.all(Radius.circular(10)),
-                                      height: scaler.getHeight(4),
+                                      height: scaler.getHeight(5),
                                       width: MediaQuery.of(context).size.width,
                                     ),
                                   ),
                                   SizedBox(
-                                    height: scaler.getHeight(1.5),
+                                    height: scaler.getHeight(1.8),
                                   ),
                                   Platform.isIOS
                                       ? GestureDetector(
@@ -155,7 +155,7 @@ class LoginOptions extends StatelessWidget {
                                                 ColorConstants.colorBlack,
                                             radius: BorderRadius.all(
                                                 Radius.circular(10)),
-                                            height: scaler.getHeight(4),
+                                            height: scaler.getHeight(5),
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
@@ -182,7 +182,7 @@ class LoginOptions extends StatelessWidget {
                                                 ColorConstants.colorBlack,
                                             radius: BorderRadius.all(
                                                 Radius.circular(10)),
-                                            height: scaler.getHeight(4),
+                                            height: scaler.getHeight(5),
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
@@ -191,7 +191,7 @@ class LoginOptions extends StatelessWidget {
                                 ],
                               ),
                         SizedBox(
-                          height: scaler.getHeight(1.5),
+                          height: scaler.getHeight(1.8),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -204,12 +204,12 @@ class LoginOptions extends StatelessWidget {
                                         : "more_options".tr())
                                     .mediumText(
                                         ColorConstants.primaryColor,
-                                        scaler.getTextSize(10),
+                                        scaler.getTextSize(11),
                                         TextAlign.center)),
                             bgColor:
                                 ColorConstants.primaryColor.withOpacity(0.2),
                             radius: BorderRadius.all(Radius.circular(10)),
-                            height: scaler.getHeight(4),
+                            height: scaler.getHeight(5.5),
                             width: MediaQuery.of(context).size.width,
                           ),
                         ),

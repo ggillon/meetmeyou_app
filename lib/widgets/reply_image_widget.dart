@@ -48,10 +48,10 @@ class ReplyImageWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.0), TextAlign.left)),
+              Expanded(child:  Text(isUserName == true ? userName : "you".tr()).boldText(ColorConstants.primaryColor, scaler.getTextSize(10.5), TextAlign.left)),
               showCloseIcon == true ?
               GestureDetector(
-                child: Icon(Icons.close, size: 16),
+                child: Icon(Icons.close, size: 17),
                 onTap: onCancelReply,
               ) : Container()
             ],

@@ -55,15 +55,15 @@ class LoginPage extends StatelessWidget {
                           Align(
                             alignment: Alignment.bottomLeft,
                             child: Text("email".tr()).boldText(Colors.black,
-                                scaler.getTextSize(9.5), TextAlign.center),
+                                scaler.getTextSize(10.5), TextAlign.center),
                           ),
                           SizedBox(
-                            height: scaler.getHeight(0.2),
+                            height: scaler.getHeight(0.3),
                           ),
                           TextFormField(
                             controller: emailController,
                             style: ViewDecoration.textFieldStyle(
-                                scaler.getTextSize(9.5),
+                                scaler.getTextSize(10.5),
                                 ColorConstants.colorBlack),
                             decoration: ViewDecoration.inputDecorationWithCurve(
                                 "sample@gmail.com",
@@ -86,20 +86,20 @@ class LoginPage extends StatelessWidget {
                             },
                           ),
                           SizedBox(
-                            height: scaler.getHeight(1),
+                            height: scaler.getHeight(1.4),
                           ),
                           Align(
                             alignment: Alignment.bottomLeft,
                             child: Text("password".tr()).boldText(Colors.black,
-                                scaler.getTextSize(9.5), TextAlign.center),
+                                scaler.getTextSize(10.5), TextAlign.center),
                           ),
                           SizedBox(
-                            height: scaler.getHeight(0.2),
+                            height: scaler.getHeight(0.3),
                           ),
                           TextFormField(
                             controller: passwordController,
                             style: ViewDecoration.textFieldStyle(
-                                scaler.getTextSize(9.5),
+                                scaler.getTextSize(10.5),
                                 ColorConstants.colorBlack),
                             decoration: ViewDecoration.inputDecorationWithCurve(
                                 "", scaler, ColorConstants.primaryColor),
@@ -133,12 +133,12 @@ class LoginPage extends StatelessWidget {
                                 children: [
                                   Text("don't_have_an_account".tr()).mediumText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                   SizedBox(width: scaler.getWidth(0.5),),
                                   Text("sign_up".tr()).semiBoldText(
                                       ColorConstants.primaryColor,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ],
                               ),
@@ -163,11 +163,11 @@ class LoginPage extends StatelessWidget {
                                 child: Center(
                                     child: Text("next".tr()).mediumText(
                                         ColorConstants.colorWhite,
-                                        scaler.getTextSize(10),
+                                        scaler.getTextSize(11),
                                         TextAlign.center)),
                                 bgColor: ColorConstants.primaryColor,
                                 radius: BorderRadius.all(Radius.circular(10)),
-                                height: scaler.getHeight(4),
+                                height: scaler.getHeight(5),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             )
@@ -190,7 +190,7 @@ class LoginPage extends StatelessWidget {
                         },
                         child: Text("sign_in_different_account".tr())
                             .semiBoldText(ColorConstants.primaryColor,
-                                scaler.getTextSize(9.5), TextAlign.center),
+                                scaler.getTextSize(10.5), TextAlign.center),
                       ),
                     ],
                   ),

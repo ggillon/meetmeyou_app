@@ -132,7 +132,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
         child:  Row(children: [
           CommonWidgets.notificationImage(scaler, notificationHistoryList.photoURL),
           SizedBox(width: scaler.getWidth(2.5)),
-          Expanded(child: Text(notificationHistoryList.text).mediumText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left,
+          Expanded(child: Text(notificationHistoryList.text).mediumText(ColorConstants.colorBlack, scaler.getTextSize(11.0), TextAlign.left,
               maxLines: 2, overflow: TextOverflow.ellipsis),),
           SizedBox(width: scaler.getWidth(2.5)),
           GestureDetector(
@@ -154,7 +154,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
         child:  Row(children: [
           CommonWidgets.notificationImage(scaler, notificationHistoryList.photoURL),
           SizedBox(width: scaler.getWidth(2.5)),
-          Expanded(child: Text(notificationHistoryList.text).mediumText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left,
+          Expanded(child: Text(notificationHistoryList.text).mediumText(ColorConstants.colorBlack, scaler.getTextSize(11.0), TextAlign.left,
               maxLines: 2, overflow: TextOverflow.ellipsis),),
           SizedBox(width: scaler.getWidth(2.5)),
           GestureDetector(
@@ -175,7 +175,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
         child:  Row(children: [
           CommonWidgets.notificationImage(scaler, notificationHistoryList.photoURL),
           SizedBox(width: scaler.getWidth(2.5)),
-          Expanded(child: Text(notificationHistoryList.text).mediumText(ColorConstants.colorBlack, scaler.getTextSize(10.0), TextAlign.left,
+          Expanded(child: Text(notificationHistoryList.text).mediumText(ColorConstants.colorBlack, scaler.getTextSize(11.0), TextAlign.left,
               maxLines: 2, overflow: TextOverflow.ellipsis),),
           SizedBox(width: scaler.getWidth(2.5)),
           GestureDetector(
@@ -196,14 +196,14 @@ class NotificationsHistoryScreen extends StatelessWidget {
           child:Text(text)
               .semiBoldText(
               ColorConstants.colorWhite,
-              scaler.getTextSize(9.5),
+              scaler.getTextSize(10.5),
               TextAlign.center)),
       bgColor: ColorConstants.primaryColor,
       radius: BorderRadius.all(
         Radius.circular(12),
       ),
       width: scaler.getWidth(20),
-      height: scaler.getHeight(3.5),
+      height: scaler.getHeight(4.0),
     );
   }
 }

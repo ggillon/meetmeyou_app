@@ -115,48 +115,48 @@ class EditProfileScreen extends StatelessWidget {
                                               ? provider.imageUrl != null
                                                   ? Container(
                                                       width:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                       height:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                       child: ImageView(
                                                         path: provider.imageUrl,
                                                         width:
-                                                            scaler.getWidth(20),
+                                                            scaler.getWidth(21),
                                                         fit: BoxFit.cover,
                                                         height:
-                                                            scaler.getWidth(20),
+                                                            scaler.getWidth(21),
                                                       ),
                                                     )
                                                   : Container(
                                                       color: ColorConstants
                                                           .primaryColor,
                                                       width:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                       height:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                     )
                                               : provider.image != null
                                                   ? Container(
                                                       width:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                       height:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                       child: ImageView(
                                                         file: provider.image,
                                                         width:
-                                                            scaler.getWidth(20),
+                                                            scaler.getWidth(21),
                                                         fit: BoxFit.cover,
                                                         height:
-                                                            scaler.getWidth(20),
+                                                            scaler.getWidth(21),
                                                       ),
                                                     )
                                                   : Container(
                                                       color: ColorConstants
                                                           .primaryColor,
                                                       width:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                       height:
-                                                          scaler.getWidth(20),
+                                                          scaler.getWidth(21),
                                                     ),
                                           Positioned(
                                               right: 5,
@@ -167,8 +167,8 @@ class EditProfileScreen extends StatelessWidget {
                                                   child: Container(
                                                     color: ColorConstants
                                                         .colorWhite,
-                                                    width: scaler.getWidth(5),
-                                                    height: scaler.getHeight(5),
+                                                    width: scaler.getWidth(5.5),
+                                                    height: scaler.getHeight(5.5),
                                                     child: Center(
                                                       child: ImageView(
                                                         color: ColorConstants
@@ -186,24 +186,24 @@ class EditProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(2),
+                                  height: scaler.getHeight(2.2),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text("first_name".tr()).boldText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(0.2),
+                                  height: scaler.getHeight(0.3),
                                 ),
                                 TextFormField(
                                   textCapitalization:
                                       TextCapitalization.sentences,
                                   controller: firstNameController,
                                   style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       ColorConstants.colorBlack),
                                   decoration:
                                       ViewDecoration.inputDecorationWithCurve(
@@ -223,24 +223,24 @@ class EditProfileScreen extends StatelessWidget {
                                   },
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(1),
+                                  height: scaler.getHeight(1.2),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text("last_name".tr()).boldText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(0.2),
+                                  height: scaler.getHeight(0.3),
                                 ),
                                 TextFormField(
                                   textCapitalization:
                                       TextCapitalization.sentences,
                                   controller: lastNameController,
                                   style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       ColorConstants.colorBlack),
                                   decoration:
                                       ViewDecoration.inputDecorationWithCurve(
@@ -260,22 +260,22 @@ class EditProfileScreen extends StatelessWidget {
                                   },
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(1),
+                                  height: scaler.getHeight(1.2),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text("email".tr()).boldText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(0.2),
+                                  height: scaler.getHeight(0.3),
                                 ),
                                 TextFormField(
                                   controller: emailController,
                                   style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       ColorConstants.colorBlack),
                                   decoration:
                                       ViewDecoration.inputDecorationWithCurve(
@@ -297,17 +297,17 @@ class EditProfileScreen extends StatelessWidget {
                                   },
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(1),
+                                  height: scaler.getHeight(1.2),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text("phone_number".tr()).boldText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(0.2),
+                                  height: scaler.getHeight(0.3),
                                 ),
                                 Container(
                                   child: TextFormField(
@@ -316,7 +316,7 @@ class EditProfileScreen extends StatelessWidget {
                                     ],
                                     controller: phoneNumberController,
                                     style: ViewDecoration.textFieldStyle(
-                                        scaler.getTextSize(9.5),
+                                        scaler.getTextSize(10.5),
                                         ColorConstants.colorBlack),
                                     decoration:
                                         ViewDecoration.inputDecorationWithCurve(
@@ -331,7 +331,7 @@ class EditProfileScreen extends StatelessWidget {
                                             0.0, 0.0, 0.0, 0.1),
                                         textStyle:
                                             ViewDecoration.textFieldStyle(
-                                                scaler.getTextSize(9.5),
+                                                scaler.getTextSize(10.5),
                                                 ColorConstants.colorBlack),
                                         initialSelection:
                                             provider.countryCode == ""
@@ -365,17 +365,17 @@ class EditProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(1),
+                                  height: scaler.getHeight(1.2),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text("address".tr()).boldText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(0.2),
+                                  height: scaler.getHeight(0.3),
                                 ),
                                 GestureDetector(
                                   onTap: () async {
@@ -400,7 +400,7 @@ class EditProfileScreen extends StatelessWidget {
                                     enabled: false,
                                     controller: addressController,
                                     style: ViewDecoration.textFieldStyle(
-                                        scaler.getTextSize(9.5),
+                                        scaler.getTextSize(10.5),
                                         ColorConstants.colorBlack),
                                     decoration:
                                         ViewDecoration.inputDecorationWithCurve(
@@ -430,7 +430,7 @@ class EditProfileScreen extends StatelessWidget {
                             showEventRespondBtn: false, showEventScreen: false
                           ),
                           provider.eventDetail.eventListLength == null ? SizedBox(height: scaler.getHeight(9)) : provider.eventDetail.eventListLength!.toInt() > 0
-                              ? SizedBox(height: scaler.getHeight(1))
+                              ? SizedBox(height: scaler.getHeight(1.5))
                               : SizedBox(height: scaler.getHeight(9)),
                           Padding(
                             padding: scaler.getPaddingLTRB(2, 0.0, 2, 1),
@@ -447,7 +447,7 @@ class EditProfileScreen extends StatelessWidget {
                                           child: Text("discard".tr())
                                               .mediumText(
                                                   ColorConstants.primaryColor,
-                                                  scaler.getTextSize(10),
+                                                  scaler.getTextSize(11),
                                                   TextAlign.center)),
                                       bgColor: ColorConstants.primaryColor
                                           .withOpacity(0.2),
@@ -455,7 +455,7 @@ class EditProfileScreen extends StatelessWidget {
                                         Radius.circular(12),
                                       ),
                                       width: scaler.getWidth(40),
-                                      height: scaler.getHeight(4.5),
+                                      height: scaler.getHeight(5.5),
                                     ),
                                   ),
                                 ),
@@ -503,7 +503,7 @@ class EditProfileScreen extends StatelessWidget {
                                                           ColorConstants
                                                               .colorWhite,
                                                           scaler
-                                                              .getTextSize(10),
+                                                              .getTextSize(11),
                                                           TextAlign.center)),
                                               bgColor:
                                                   ColorConstants.primaryColor,
@@ -511,7 +511,7 @@ class EditProfileScreen extends StatelessWidget {
                                                 Radius.circular(12),
                                               ),
                                               width: scaler.getWidth(40),
-                                              height: scaler.getHeight(4.5),
+                                              height: scaler.getHeight(5.5),
                                             ),
                                           )
                                         : Center(

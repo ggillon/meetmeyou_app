@@ -36,14 +36,14 @@ class CustomDialog extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       "choose_from".tr(),
-                    ).mediumText(ColorConstants.colorWhite, scaler.getTextSize(11), TextAlign.center)),
+                    ).mediumText(ColorConstants.colorWhite, scaler.getTextSize(12), TextAlign.center)),
               ),
             ),
             GestureDetector(
               onTap: galleryClick,
               child: Padding(
                 padding: scaler.getPaddingAll(8),
-                child: Text("phone_gallery".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(11),TextAlign.center),
+                child: Text("phone_gallery".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(12),TextAlign.center),
               ),
             ),
             Divider(
@@ -54,7 +54,7 @@ class CustomDialog extends StatelessWidget {
               onTap: cameraClick,
               child: Padding(
                 padding: scaler.getPaddingAll(8),
-                child: Text("camera".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(11),TextAlign.center),
+                child: Text("camera".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(12),TextAlign.center),
               ),
             ),
             Divider(
@@ -65,7 +65,7 @@ class CustomDialog extends StatelessWidget {
               onTap: cancelClick,
               child: Padding(
                 padding: scaler.getPaddingAll(8),
-                child: Text("cancel".tr()).regularText(ColorConstants.colorRed, scaler.getTextSize(11),TextAlign.center),
+                child: Text("cancel".tr()).regularText(ColorConstants.colorRed, scaler.getTextSize(12),TextAlign.center),
               ),
             ),
           ],

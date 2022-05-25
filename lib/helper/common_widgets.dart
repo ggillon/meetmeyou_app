@@ -729,16 +729,16 @@ class CommonWidgets {
         child: photoUrl == null || photoUrl == ""
             ? Container(
           color: ColorConstants.primaryColor,
-          width: scaler.getWidth(12.5),
-          height: scaler.getWidth(12.5),
+          width: scaler.getWidth(13.5),
+          height: scaler.getWidth(13.5),
         )
             : Container(
-          width: scaler.getWidth(12.5),
-          height: scaler.getWidth(12.5),
+          width: scaler.getWidth(13.5),
+          height: scaler.getWidth(13.5),
           child: ImageView(
             path: photoUrl,
-            width: scaler.getWidth(12.5),
-            height: scaler.getWidth(12.5),
+            width: scaler.getWidth(13.5),
+            height: scaler.getWidth(13.5),
              fit: BoxFit.cover,
           ),
         ));

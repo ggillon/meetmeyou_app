@@ -37,7 +37,7 @@ class _CustomSearchScaffoldState extends PlacesAutocompleteState {
         backgroundColor: ColorConstants.colorWhite,
         title: AppBarPlacesAutoCompleteTextField(
           textStyle: ViewDecoration.textFieldStyle(
-              scaler.getTextSize(9.5), ColorConstants.colorBlack),
+              scaler.getTextSize(10.5), ColorConstants.colorBlack),
         ));
     final body = PlacesAutocompleteResult(
       onTap: (p) {

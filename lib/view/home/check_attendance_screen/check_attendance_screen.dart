@@ -127,7 +127,7 @@ class CheckAttendanceScreen extends StatelessWidget {
         Icon(Icons.calendar_today),
         SizedBox(width: scaler.getWidth(1.5)),
         Text("${provider.multipleDate.length} ${"options".tr()}")
-            .mediumText(ColorConstants.colorBlackDown, scaler.getTextSize(9.5),
+            .mediumText(ColorConstants.colorBlackDown, scaler.getTextSize(10.5),
             TextAlign.center),
       ],
     );

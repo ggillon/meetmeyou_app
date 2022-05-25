@@ -41,7 +41,7 @@ class PublicHomePage extends StatelessWidget {
                     padding: scaler.getPaddingLTRB(2.8, 1.0, 0.0, 0),
                     child: Text("my_managed_events".tr()).boldText(
                         ColorConstants.colorBlack,
-                        scaler.getTextSize(16),
+                        scaler.getTextSize(16.5),
                         TextAlign.left),
                   ),
                   (provider.publicEvents.length == 0 && provider.locationEvents.length == 0) ? Container(
@@ -57,7 +57,7 @@ class PublicHomePage extends StatelessWidget {
                             padding: scaler.getPaddingLTRB(2.8, 0.0, 0.0, 0),
                             child: Text("public_events".tr()).boldText(
                                 ColorConstants.colorBlack,
-                                scaler.getTextSize(12),
+                                scaler.getTextSize(12.5),
                                 TextAlign.left),
                           ),
                           SizedBox(height: scaler.getHeight(1.0)),
