@@ -6,26 +6,12 @@ import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
 
-String eidGenerator() {
-  final charList = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  String eid = '';
-
-  for(int i=0; i<4; i++) {
-    int randomNumber = Random().nextInt(52);
-    eid = eid + charList.substring(randomNumber, randomNumber+1);
-  }
-  eid = eid + '-';
-  for(int i=0; i<4; i++) {
-    int randomNumber = Random().nextInt(52);
-    eid = eid + charList.substring(randomNumber, randomNumber+1);
-  }
-  return eid;
-}
+import 'idgen.dart';
 
 Event createLocalEvent(Profile organiser) {
   return Event(
     title: '',
-    eid: eidGenerator(),
+    eid: idGenerator(),
     timeStamp: DateTime.now(),
     organiserID: organiser.uid,
     organiserName: organiser.displayName,

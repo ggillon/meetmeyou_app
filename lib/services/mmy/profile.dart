@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
 
+import 'idgen.dart';
+
 
 // Use to get the user profile, if non exist will create one from user in auth.
 Future<Profile> getUserProfile(User currentUser) async {
@@ -33,7 +35,7 @@ Future<bool> isNewProfile(User currentUser) async {
 }
 
 Future<Profile> createAnonProfileFromUser(User user) async {
-  String id = eidGenerator();
+  String id = idGenerator();
   String firstName = 'Anonymous';
   String lastName = 'User-$id';
   String displayName = '$firstName $lastName';
