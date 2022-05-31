@@ -135,6 +135,8 @@ class AddEventScreen extends StatelessWidget {
      return GestureDetector(
        onTap: () {
          announcementDetail.announcementPhotoUrl = null;
+         eventDetail.contactCIDs = [];
+         announcementDetail.editAnnouncement = false;
          Navigator.of(context).pushNamed(RoutesConstants.createAnnouncementScreen).then((value) {
        //    dashboardProvider.onItemTapped(0);
          });

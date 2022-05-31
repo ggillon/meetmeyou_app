@@ -37,159 +37,198 @@ class CreateAnnouncementScreen extends StatelessWidget {
       key: _scaffoldKey,
       body: BaseView<AnnouncementProvider>(
         builder: (context, provider, _){
-          return  SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  selectedImage(context, scaler, provider),
-                  SafeArea(
-                    child: Padding(
-                      padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Text("title".tr()).boldText(
-                                Colors.black,
-                                scaler.getTextSize(10.5),
-                                TextAlign.center),
+          return  LayoutBuilder(builder: (context, constraint) {
+            return  SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraint.maxHeight),
+                child: IntrinsicHeight(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        selectedImage(context, scaler, provider),
+                        SafeArea(
+                          child: Padding(
+                            padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text("title".tr()).boldText(
+                                      Colors.black,
+                                      scaler.getTextSize(10.5),
+                                      TextAlign.center),
+                                ),
+                                SizedBox(height: scaler.getHeight(0.3)),
+                                TextFormField(
+                                  textCapitalization: TextCapitalization.sentences,
+                                  controller: titleController,
+                                  style: ViewDecoration.textFieldStyle(
+                                      scaler.getTextSize(10.5),
+                                      ColorConstants.colorBlack),
+                                  decoration:
+                                  ViewDecoration.inputDecorationWithCurve(
+                                      "Thomas Birthday Party",
+                                      scaler,
+                                      ColorConstants.primaryColor),
+                                  onFieldSubmitted: (data) {
+                                    // FocusScope.of(context).requestFocus(nodes[1]);
+                                  },
+                                  textInputAction: TextInputAction.done,
+                                  keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value!.trim().isEmpty) {
+                                      return "title_required".tr();
+                                    }
+                                    {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                                SizedBox(height: scaler.getHeight(1.8)),
+                                provider.addDateAndTime ? dateAndTimeField(context, scaler, provider) :
+                                addDateTimeAndLocationText(scaler, "add_a_date_and_time".tr(),
+                                    onTap: (){
+                                      provider.addDateAndTime = true;
+                                      provider.updateLoadingStatus(true);
+                                    }),
+                                SizedBox(height: scaler.getHeight(1.8)),
+                                provider.addLocation ? locationField(context, scaler, provider) :
+                                addDateTimeAndLocationText(scaler, "add_a_location".tr(),
+                                    onTap: (){
+                                      provider.addLocation = true;
+                                      provider.updateLoadingStatus(true);
+                                    }),
+                                SizedBox(height: scaler.getHeight(2.2)),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text("description".tr()).boldText(
+                                      Colors.black,
+                                      scaler.getTextSize(10.5),
+                                      TextAlign.center),
+                                ),
+                                SizedBox(height: scaler.getHeight(0.3)),
+                                TextFormField(
+                                  textCapitalization: TextCapitalization.sentences,
+                                  controller: descriptionController,
+                                  style: ViewDecoration.textFieldStyle(
+                                      scaler.getTextSize(10.5),
+                                      ColorConstants.colorBlack),
+                                  decoration: ViewDecoration.inputDecorationWithCurve(
+                                      "We are celebrating birthday with Thomas and his family."
+                                          " If you are coming make sure you bring good mood and "
+                                          "will to party whole night. We are going to have some "
+                                          "pinatas so be ready to smash them. Let’s have some "
+                                          "drinks and fun!",
+                                      scaler,
+                                      ColorConstants.primaryColor,
+                                      textSize: 10.5),
+                                  onFieldSubmitted: (data) {
+                                    // FocusScope.of(context).requestFocus(nodes[1]);
+                                  },
+                                  textInputAction: TextInputAction.done,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 6,
+                                  validator: (value) {
+                                    if (value!.trim().isEmpty) {
+                                      return "description_required".tr();
+                                    }
+                                    {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                                // SizedBox(height: scaler.getHeight(2.0)),
+                                // discussionSwitch(context, scaler, provider),
+                                // SizedBox(height: scaler.getHeight(2.0)),
+                                // askForInfoSwitch(context, scaler, provider),
+                                // provider.askInfoSwitch == true && _fields.length > 0
+                                //     ? SizedBox(height: scaler.getHeight(1.8))
+                                //     : SizedBox(height: scaler.getHeight(0.0)),
+                                // provider.askInfoSwitch == true
+                                //     ? questionsListView(provider, scaler)
+                                //     : Container(),
+                                // provider.askInfoSwitch == true
+                                //     ? SizedBox(height: scaler.getHeight(1.4))
+                                //     : SizedBox(height: scaler.getHeight(0.0)),
+                                // provider.askInfoSwitch == true
+                                //     ? addQuestion(context, provider, scaler)
+                                //     : Container(),
+                                // SizedBox(height: scaler.getHeight(2.0)),
+                                // photoGallerySwitch(context, scaler, provider),
+                                // SizedBox(height: scaler.getHeight(3.0)),
+                                // CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
+                                //   Navigator.pushNamed(
+                                //       context,
+                                //       RoutesConstants
+                                //           .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+                                //       .then((value) {
+                                //     //provider.fromInviteScreen = true;
+                                //     provider.updateLoadingStatus(true);
+                                //     hideKeyboard(context);
+                                //   });
+                                // }),
+                                // SizedBox(height: scaler.getHeight(5.0)),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: scaler.getHeight(0.3)),
-                          TextFormField(
-                            textCapitalization: TextCapitalization.sentences,
-                            controller: titleController,
-                            style: ViewDecoration.textFieldStyle(
-                                scaler.getTextSize(10.5),
-                                ColorConstants.colorBlack),
-                            decoration:
-                            ViewDecoration.inputDecorationWithCurve(
-                                "Thomas Birthday Party",
+                        ),
+                      provider.announcementDetail.editAnnouncement == true ?
+                      provider.state == ViewState.Busy ? CircularProgressIndicator()
+                          : Expanded(
+                        child: Container(
+                            padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 1.5),
+                            alignment: Alignment.bottomCenter,
+                            child: CommonWidgets.expandedRowButton(context, scaler, "cancel_announcement".tr(), "update_announcement".tr(),
+                              onTapBtn1: () {
+                                DialogHelper.showDialogWithTwoButtons(
+                                    context,
+                                    "cancel_event".tr(),
+                                    "sure_to_cancel_event".tr(),
+                                    negativeButtonLabel: "No",
+                                    positiveButtonPress: () {
+                                      Navigator.of(context).pop();
+                                    });
+                              },
+                              btn1: false,)),
+                      )
+                          :   Expanded(
+                          child: Container(
+                            padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 1.5),
+                            alignment: Alignment.bottomCenter,
+                            child: provider.state == ViewState.Busy ? CircularProgressIndicator()
+                                : CommonWidgets.commonBtn(
                                 scaler,
-                                ColorConstants.primaryColor),
-                            onFieldSubmitted: (data) {
-                              // FocusScope.of(context).requestFocus(nodes[1]);
-                            },
-                            textInputAction: TextInputAction.done,
-                            keyboardType: TextInputType.name,
-                            validator: (value) {
-                              if (value!.trim().isEmpty) {
-                                return "title_required".tr();
-                              }
-                              {
-                                return null;
-                              }
-                            },
-                          ),
-                          SizedBox(height: scaler.getHeight(1.8)),
-                          provider.addDateAndTime ? dateAndTimeField(context, scaler, provider) :
-                          addDateTimeAndLocationText(scaler, "add_a_date_and_time".tr(),
-                              onTap: (){
-                           provider.addDateAndTime = true;
-                           provider.updateLoadingStatus(true);
-                         }),
-                          SizedBox(height: scaler.getHeight(1.8)),
-                          provider.addLocation ? locationField(context, scaler, provider) :
-                          addDateTimeAndLocationText(scaler, "add_a_location".tr(),
-                              onTap: (){
-                                provider.addLocation = true;
-                                provider.updateLoadingStatus(true);
-                              }),
-                          SizedBox(height: scaler.getHeight(2.2)),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Text("description".tr()).boldText(
-                                Colors.black,
-                                scaler.getTextSize(10.5),
-                                TextAlign.center),
-                          ),
-                          SizedBox(height: scaler.getHeight(0.3)),
-                          TextFormField(
-                            textCapitalization: TextCapitalization.sentences,
-                            controller: descriptionController,
-                            style: ViewDecoration.textFieldStyle(
-                                scaler.getTextSize(10.5),
-                                ColorConstants.colorBlack),
-                            decoration: ViewDecoration.inputDecorationWithCurve(
-                                "We are celebrating birthday with Thomas and his family."
-                                    " If you are coming make sure you bring good mood and "
-                                    "will to party whole night. We are going to have some "
-                                    "pinatas so be ready to smash them. Let’s have some "
-                                    "drinks and fun!",
-                                scaler,
-                                ColorConstants.primaryColor,
-                                textSize: 10.5),
-                            onFieldSubmitted: (data) {
-                              // FocusScope.of(context).requestFocus(nodes[1]);
-                            },
-                            textInputAction: TextInputAction.done,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: 6,
-                            validator: (value) {
-                              if (value!.trim().isEmpty) {
-                                return "description_required".tr();
-                              }
-                              {
-                                return null;
-                              }
-                            },
-                          ),
-                          SizedBox(height: scaler.getHeight(2.0)),
-                          discussionSwitch(context, scaler, provider),
-                          SizedBox(height: scaler.getHeight(2.0)),
-                          askForInfoSwitch(context, scaler, provider),
-                          provider.askInfoSwitch == true && _fields.length > 0
-                              ? SizedBox(height: scaler.getHeight(1.8))
-                              : SizedBox(height: scaler.getHeight(0.0)),
-                          provider.askInfoSwitch == true
-                              ? questionsListView(provider, scaler)
-                              : Container(),
-                          provider.askInfoSwitch == true
-                              ? SizedBox(height: scaler.getHeight(1.4))
-                              : SizedBox(height: scaler.getHeight(0.0)),
-                          provider.askInfoSwitch == true
-                              ? addQuestion(context, provider, scaler)
-                              : Container(),
-                          SizedBox(height: scaler.getHeight(2.0)),
-                          photoGallerySwitch(context, scaler, provider),
-                          SizedBox(height: scaler.getHeight(3.0)),
-                          CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
-                            Navigator.pushNamed(
                                 context,
-                                RoutesConstants
-                                    .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-                                .then((value) {
-                              //provider.fromInviteScreen = true;
-                              provider.updateLoadingStatus(true);
-                              hideKeyboard(context);
-                            });
-                          }),
-                          SizedBox(height: scaler.getHeight(4.0)),
-                          CommonWidgets.commonBtn(
-                              scaler,
-                              context,
-                              "next".tr(),
-                              ColorConstants.primaryColor,
-                              ColorConstants.colorWhite, onTapFun: (){
-                            if (_formKey.currentState!.validate()) {
-                              if (provider.image == null &&
-                                  provider.announcementDetail.announcementPhotoUrl == null) {
-                                DialogHelper.showMessage(context,
-                                    "please_select_image".tr());
-                                return;
+                                "next".tr(),
+                                ColorConstants.primaryColor,
+                                ColorConstants.colorWhite, onTapFun: (){
+                              if (_formKey.currentState!.validate()) {
+                                if (provider.image == null &&
+                                    provider.announcementDetail.announcementPhotoUrl == null) {
+                                  DialogHelper.showMessage(context,
+                                      "please_select_image".tr());
+                                  return;
+                                } else{
+                                  provider.createAnnouncement(context, titleController.text, addressController.text, descriptionController.text,
+                                      DateTimeHelper.dateTimeFormat(
+                                      provider.startDate,
+                                      provider.startTime));
+                                }
                               }
-                            }
-                          })
-                        ],
-                      ),
+                            }),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          );
+            );
+          });
+
         },
       )
     );

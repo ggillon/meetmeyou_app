@@ -348,6 +348,9 @@ class CreateEventProvider extends BaseProvider {
         hideKeyboard(context);
         Navigator.of(context).pop();
       });
+    }else{
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "error_message".tr());
     }
   }
 
@@ -403,6 +406,9 @@ class CreateEventProvider extends BaseProvider {
       // DialogHelper.showMessage(context, "Event updated Successfully");
 
       Navigator.of(context).pop();
+    } else{
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "error_message".tr());
     }
   }
 
