@@ -471,42 +471,17 @@ class CreateEventScreen extends StatelessWidget {
                                 : Container(),
                             SizedBox(height: scaler.getHeight(2.8)),
                             provider.eventDetail.editEvent == true
-                                ? GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                              context,
-                                              RoutesConstants
-                                                  .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-                                          .then((value) {
-                                        provider.fromInviteScreen = true;
-                                        provider.updateLoadingStatus(true);
-                                        hideKeyboard(context);
-                                      });
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.bottomLeft,
-                                          child:
-                                              Text("invite_more_friends".tr())
-                                                  .boldText(
-                                                      ColorConstants
-                                                          .primaryColor,
-                                                      scaler.getTextSize(11.5),
-                                                      TextAlign.center),
-                                        ),
-                                        ImageView(
-                                            path:
-                                                ImageConstants.small_arrow_icon,
-                                            color: ColorConstants.primaryColor)
-                                      ],
-                                    ),
-                                  )
+                                ? CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
+                              Navigator.pushNamed(
+                                  context,
+                                  RoutesConstants
+                                      .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+                                  .then((value) {
+                                provider.fromInviteScreen = true;
+                                provider.updateLoadingStatus(true);
+                                hideKeyboard(context);
+                              });
+                            })
                                 : Container(),
                             SizedBox(height: scaler.getHeight(4.0)),
                             provider.fromInviteScreen == true ||
@@ -708,7 +683,22 @@ class CreateEventScreen extends StatelessWidget {
         hideKeyboard(context);
         provider.removeMultiDate = false;
         if (await Permission.storage.request().isGranted) {
-          selectImageBottomSheet(context, scaler, provider);
+          CommonWidgets.selectImageBottomSheet(context, scaler, takePhotoTap: () {
+            provider.getImage(_scaffoldKey.currentContext!, 1);
+          }, choosePhotoTap: () {
+            provider.getImage(_scaffoldKey.currentContext!, 2).catchError((e){
+              CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+            });
+          }, defaultPhotoTap: () {
+            Navigator.of(context).pop();
+            Navigator.pushNamed(
+                context, RoutesConstants.defaultPhotoPage)
+                .then((value) {
+              provider.image = null;
+              provider.eventDetail.eventPhotoUrl = value as String?;
+              provider.setState(ViewState.Idle);
+            });
+          });
         } else if(await Permission.storage.request().isDenied){
           Map<Permission, PermissionStatus> statuses = await [
             Permission.storage,
@@ -746,7 +736,7 @@ class CreateEventScreen extends StatelessWidget {
                                   height: scaler.getHeight(34.5),
                                   width: double.infinity,
                                 )
-                              : imageSelectedCard(context, scaler)
+                              : CommonWidgets.selectImageCard(context, scaler)
                           : provider.image != null
                               ? ImageView(
                                   file: provider.image,
@@ -754,7 +744,7 @@ class CreateEventScreen extends StatelessWidget {
                                   height: scaler.getHeight(34.5),
                                   width: double.infinity,
                                 )
-                              : imageSelectedCard(context, scaler)),
+                              : CommonWidgets.selectImageCard(context, scaler)),
                   provider.image == null &&
                           provider.eventDetail.eventPhotoUrl == null
                       ? Container()
@@ -777,39 +767,6 @@ class CreateEventScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget imageSelectedCard(BuildContext context, ScreenScaler scaler) {
-    return Container(
-      padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
-      width: double.infinity,
-      child: Column(
-        children: [
-          SizedBox(height: scaler.getHeight(4.5)),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Container(
-                alignment: Alignment.centerRight,
-                child: ImageView(path: ImageConstants.close_icon)),
-          ),
-          SizedBox(height: scaler.getHeight(0.5)),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              ImageView(path: ImageConstants.image_border_icon),
-              Positioned(
-                  child: ImageView(path: ImageConstants.image_frame_icon))
-            ],
-          ),
-          SizedBox(height: scaler.getHeight(1)),
-          Text("select_image".tr()).regularText(ColorConstants.primaryColor,
-              scaler.getTextSize(10.5), TextAlign.left),
-          SizedBox(height: scaler.getHeight(3)),
-        ],
       ),
     );
   }
@@ -1358,119 +1315,6 @@ class CreateEventScreen extends StatelessWidget {
                 )
               ],
             ),
-          );
-        });
-  }
-
-  selectImageBottomSheet(
-      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
-    return showModalBottomSheet(
-        useRootNavigator: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
-        ),
-        context: context,
-        builder: (BuildContext context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: scaler.getHeight(0.5)),
-              Container(
-                decoration: BoxDecoration(
-                    color: ColorConstants.colorMediumGray,
-                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                height: scaler.getHeight(0.5),
-                width: scaler.getWidth(12),
-              ),
-              Column(
-                children: [
-
-                  GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      provider.getImage(_scaffoldKey.currentContext!, 1);
-                    },
-                    child: Column(
-                      children: [
-                        SizedBox(height: scaler.getHeight(2)),
-                        Container(
-                          width: double.infinity,
-                          child: Text("take_a_photo".tr()).regularText(
-                              ColorConstants.primaryColor,
-                              scaler.getTextSize(12),
-                              TextAlign.center),
-                        ),
-                        SizedBox(height: scaler.getHeight(1.1)),
-                      ],
-                    )
-                  ),
-                  Divider(),
-                  GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      provider.getImage(_scaffoldKey.currentContext!, 2).catchError((e){
-                        CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        SizedBox(height: scaler.getHeight(0.9)),
-                        Container(
-                          width: double.infinity,
-                          child: Text("choose_photo".tr()).regularText(
-                              ColorConstants.primaryColor,
-                              scaler.getTextSize(12),
-                              TextAlign.center),
-                        ),
-                        SizedBox(height: scaler.getHeight(1.1)),
-                      ],
-                    )
-                  ),
-                  Divider(),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.pushNamed(
-                              context, RoutesConstants.defaultPhotoPage)
-                          .then((value) {
-                        provider.image = null;
-                        provider.eventDetail.eventPhotoUrl = value as String?;
-                        provider.setState(ViewState.Idle);
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        SizedBox(height: scaler.getHeight(1.1)),
-                        Container(
-                          width: double.infinity,
-                          child: Text("default_photo".tr()).regularText(
-                              ColorConstants.primaryColor,
-                              scaler.getTextSize(12),
-                              TextAlign.center),
-                        ),
-                        SizedBox(height: scaler.getHeight(2.2)),
-                      ],
-                    )
-                  ),
-                ],
-              ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Center(
-                  child: Container(
-                    child: Text("cancel".tr()).semiBoldText(
-                        ColorConstants.colorRed,
-                        scaler.getTextSize(12),
-                        TextAlign.center),
-                  )
-                ),
-              ),
-              SizedBox(height: scaler.getHeight(1.8)),
-            ],
           );
         });
   }

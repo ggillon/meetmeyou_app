@@ -763,4 +763,165 @@ class CommonWidgets {
           ColorConstants.primaryColor, scaler.getTextSize(11), TextAlign.left),
     );
   }
+
+ static Widget selectImageCard(BuildContext context, ScreenScaler scaler) {
+    return Container(
+      padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+      width: double.infinity,
+      child: Column(
+        children: [
+          SizedBox(height: scaler.getHeight(4.5)),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+                alignment: Alignment.centerRight,
+                child: ImageView(path: ImageConstants.close_icon)),
+          ),
+          SizedBox(height: scaler.getHeight(0.5)),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              ImageView(path: ImageConstants.image_border_icon),
+              Positioned(
+                  child: ImageView(path: ImageConstants.image_frame_icon))
+            ],
+          ),
+          SizedBox(height: scaler.getHeight(1)),
+          Text("select_image".tr()).regularText(ColorConstants.primaryColor,
+              scaler.getTextSize(10.5), TextAlign.left),
+          SizedBox(height: scaler.getHeight(3)),
+        ],
+      ),
+    );
+  }
+
+  static selectImageBottomSheet(
+      BuildContext context, ScreenScaler scaler,
+      {VoidCallback? takePhotoTap, VoidCallback? choosePhotoTap, VoidCallback? defaultPhotoTap}) {
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: scaler.getHeight(0.5)),
+              Container(
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorMediumGray,
+                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                height: scaler.getHeight(0.5),
+                width: scaler.getWidth(12),
+              ),
+              Column(
+                children: [
+
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: takePhotoTap,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(2)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("take_a_photo".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(1.1)),
+                        ],
+                      )
+                  ),
+                  Divider(),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: choosePhotoTap,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(0.9)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("choose_photo".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(1.1)),
+                        ],
+                      )
+                  ),
+                  Divider(),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: defaultPhotoTap,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(1.1)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("default_photo".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(2.2)),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                    child: Container(
+                      child: Text("cancel".tr()).semiBoldText(
+                          ColorConstants.colorRed,
+                          scaler.getTextSize(12),
+                          TextAlign.center),
+                    )
+                ),
+              ),
+              SizedBox(height: scaler.getHeight(1.8)),
+            ],
+          );
+        });
+  }
+
+ static Widget inviteMoreFriends(BuildContext context, ScreenScaler scaler, {VoidCallback? onTap}){
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment:
+        MainAxisAlignment.spaceBetween,
+        crossAxisAlignment:
+        CrossAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomLeft,
+            child:
+            Text("invite_more_friends".tr())
+                .boldText(
+                ColorConstants
+                    .primaryColor,
+                scaler.getTextSize(11.5),
+                TextAlign.center),
+          ),
+          ImageView(
+              path:
+              ImageConstants.small_arrow_icon,
+              color: ColorConstants.primaryColor)
+        ],
+      ),
+    );
+  }
 }

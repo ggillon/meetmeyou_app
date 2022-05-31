@@ -1,0 +1,4 @@
+class AnnouncementDetail{
+
+  String? announcementPhotoUrl;
+}

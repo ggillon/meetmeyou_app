@@ -253,6 +253,21 @@
   "image_saved" : "Image Saved Successfully.",
   "would_you_like_to_look_for_contacts" : "Would you want to look for contacts you may know ?",
   "you_can_search_phone_contact_book" : "You can search Phone’s contact book for friends on MeetMeYou through options in Settings",
-  "no" : "No"
+  "no" : "No",
+  "create_new_entry" : "Create new entry",
+  "announcement_to_list_of_contacts" : "Announcement to list of contacts",
+  "create_announcements_to_share" : "Create announcements to share a news to people and eventually collect information",
+  "title" : "Title",
+  "add_a_date_and_time" : "add a date and time",
+  "date_and_time" : "Date and time",
+  "add_a_location" : "add a location",
+  "title_required" : "Title required",
+  "description_required" : "Description can't be empty",
+  "ask_for_info" : "Ask for info",
+  "create_announcement" : "Create Announcement",
+  "update_announcement" : "Update Announcement",
+  "cancel_announcement" : "Cancel Announcement",
+  "please_select_image" : "Please Select image."
+
 
 }

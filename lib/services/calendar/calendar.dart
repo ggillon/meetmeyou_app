@@ -62,18 +62,18 @@ Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {
   var permissionsGranted;
   if (Platform.isIOS) {
     permissionsGranted = await plugin.hasPermissions();
-    if (permissionsGranted.isSuccess && !permissionsGranted.data!) {
+    if (permissionsGranted.isSuccess && !permissionsGranted.loading!) {
       permissionsGranted = await plugin.requestPermissions();
       calendarsResult = await plugin.retrieveCalendars();
-      if (!permissionsGranted.isSuccess || !permissionsGranted.data!) {
+      if (!permissionsGranted.isSuccess || !permissionsGranted.loading!) {
         CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
       }
     }
   }
-  if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && (calendarsResult.data != null) && display) {
+  if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && (calendarsResult.loading != null) && display) {
  // final calendarsResult = await plugin.retrieveCalendars();
 //  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
-    final calendars = calendarsResult.data!.toList();
+    final calendars = calendarsResult.loading!.toList();
     for(device.Calendar cal in calendars) {
       device.RetrieveEventsParams retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
       final result = await plugin.retrieveEvents(cal.id, retrieveEventsParams);
