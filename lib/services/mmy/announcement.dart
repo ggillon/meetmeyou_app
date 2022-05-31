@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -43,6 +44,8 @@ Future<Event> updateAnnouncement(User currentUser, String? eid, {String? title, 
     ..form = form ?? event.form
     ..website = website ?? event.website
     ..eventType = eventType ?? EVENT_TYPE_ANNOUNCEMENT;
+
+  event.params = EMPTY_MAP;
 
   event.params['announcementLocation'] = (event.location != '')  ? true : false;
   event.params['announcementWebsite'] = (event.website != '')  ? true : false;
