@@ -354,7 +354,7 @@ class FirestoreDB implements Database {
 
   @override
   void debugMsg(String uid, String text, Map? attachment) {
-    String did = eidGenerator();
+    String did = idGenerator();
     Map<String, dynamic> data = {
       'uid': uid, 'did': did, 'timeStamp': DateTime.now(), 'message': text, 'attachment': attachment
     };

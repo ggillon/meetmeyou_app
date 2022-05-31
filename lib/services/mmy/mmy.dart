@@ -29,6 +29,7 @@ import 'discussion.dart' as discussionLib;
 import 'search.dart' as searchLib;
 import 'notification.dart' as notificationLib;
 import 'photo_album.dart' as albumLib;
+import 'announcement.dart' as announcementLib;
 
 const USER_TYPE_NORMAL = "Normal User";
 const USER_TYPE_PRO = "Pro User";
@@ -139,6 +140,10 @@ abstract class MMYEngine {
   Future<Event> setEventParam(String eid, {required String param, required dynamic value});
   /// Get event parameter
   Future<dynamic> getEventParam(String eid, {required String param, });
+  /// Create an Announcement
+  Future<Event> createAnnouncement({required String title, String? location, required String description, required String photoURL, DateTime? start, DateTime? end,});
+  /// Update an Announcement
+  Future<Event> updateAnnouncement(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, });
 
 
   /// Add a date option to event
@@ -756,6 +761,16 @@ class MMY implements MMYEngine {
   @override
   Future<Event> setEventParam(String eid, {required String param, required value}) async {
     return await eventLib.setParam(_currentUser, eid, param, value);
+  }
+
+  @override
+  Future<Event> createAnnouncement({required String title, String? location, required String description, required String photoURL, DateTime? start, DateTime? end,}) {
+    return announcementLib.updateAnnouncement(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  }
+
+  @override
+  Future<Event> updateAnnouncement(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) {
+    return announcementLib.updateAnnouncement(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
   }
 
 }
