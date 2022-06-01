@@ -45,11 +45,9 @@ Future<Event> updateAnnouncement(User currentUser, String? eid, {String? title, 
     ..website = website ?? event.website
     ..eventType = eventType ?? EVENT_TYPE_ANNOUNCEMENT;
 
-  event.params = EMPTY_MAP;
-
-  event.params['announcementLocation'] = (event.location != '')  ? true : false;
-  event.params['announcementWebsite'] = (event.website != '')  ? true : false;
-  event.params['announcementDate'] = (event.start.difference(event.timeStamp) != Duration(days: 100))  ? true : false;
+  event.params.addAll({'announcementLocation': (event.location != '')  ? true : false});
+  event.params.addAll({'announcementWebsite': (event.website != '')  ? true : false});
+  event.params.addAll({'announcementDate': (event.start.difference(event.timeStamp) != Duration(days: 100))  ? true : false});
 
   await FirestoreDB(uid: currentUser.uid).setEvent(event);
   return event;
