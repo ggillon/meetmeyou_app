@@ -13,6 +13,7 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/announcement_detail.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
@@ -42,6 +43,7 @@ class HomePageProvider extends BaseProvider {
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
   EventBus eventBus = locator<EventBus>();
   FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
+  AnnouncementDetail announcementDetail = locator<AnnouncementDetail>();
 
   bool _value = false;
 
@@ -419,7 +421,38 @@ class HomePageProvider extends BaseProvider {
     }
   }
 
-  // for checking whether any multi date date is selected or not.
+
+  setEventValuesForAnnouncementEdit(Event event) {
+    announcementDetail.editAnnouncement = true;
+    announcementDetail.announcementId = event.eid;
+    announcementDetail.announcementPhotoUrl = event.photoURL;
+    announcementDetail.announcementTitle = event.title;
+    announcementDetail.announcementStartDateAndTime = event.start;
+    announcementDetail.announcementLocation = event.location;
+    announcementDetail.announcementDescription = event.description;
+
+    eventDetail.eid = event.eid;
+    eventDetail.event = event;
+    List<String> valuesList = [];
+    for (var value in event.invitedContacts.values) {
+      valuesList.add(value);
+    }
+    List<String> keysList = [];
+    for (var key in event.invitedContacts.keys) {
+      keysList.add(key);
+    }
+    List<String> contactsKeys = [];
+    for (int i = 0; i < keysList.length; i++) {
+      if (valuesList[i] != "Organiser") {
+        contactsKeys.add(keysList[i]);
+      }
+    }
+
+    eventDetail.contactCIDs = contactsKeys;
+  }
+
+
+// for checking whether any multi date date is selected or not.
   // bool statusMultiDate = false;
   //
   // updateStatusMultiDate(bool value) {

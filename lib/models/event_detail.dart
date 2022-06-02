@@ -37,6 +37,9 @@ class EventDetail{
 
   // past event
   bool isPastEvent = false;
+
+  // announcement
+  bool? isAnnouncement;
   
   String? albumAdminId;
 

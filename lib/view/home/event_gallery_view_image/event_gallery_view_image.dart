@@ -22,11 +22,13 @@ class EventGalleryImageView extends StatelessWidget {
  MMYPhoto mmyPhoto;
 
  EventGalleryImageViewProvider provider = EventGalleryImageViewProvider();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: ColorConstants.colorWhite,
       appBar: AppBar(
         centerTitle: true,
@@ -37,7 +39,7 @@ class EventGalleryImageView extends StatelessWidget {
             SizedBox(width: scaler.getWidth(3.0)),
             GestureDetector(
               onTap: (){
-                Navigator.of(context).pop();
+                Navigator.of(_scaffoldKey.currentContext!).pop();
               },
                 child: Icon(Icons.arrow_back_ios, color: Colors.blue))
           ],
@@ -66,8 +68,8 @@ class EventGalleryImageView extends StatelessWidget {
                       context,
                       "delete_photo".tr(),
                       "sure_to_delete_photo".tr(), positiveButtonPress: () async {
-                    Navigator.of(context).pop();
-                    await provider.deletePhoto(context, mmyPhoto.aid, mmyPhoto.pid);
+                    Navigator.of(_scaffoldKey.currentContext!).pop();
+                    await provider.deletePhoto(_scaffoldKey.currentContext!, mmyPhoto.aid, mmyPhoto.pid);
                   });
                 },
                   child: Icon(Icons.delete_outline, color: Colors.blue,)) : Container(),

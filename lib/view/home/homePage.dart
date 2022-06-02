@@ -483,8 +483,11 @@ class _HomePageState extends State<HomePage>
                 onTap: () {
                   provider.setEventValuesForEdit(eventList[index]);
                   provider.eventDetail.eventBtnStatus =
-                      CommonEventFunction.getEventBtnStatus(
-                          eventList[index], provider.userDetail.cid.toString());
+                  eventList[index].eventType == EVENT_TYPE_PRIVATE
+                      ? CommonEventFunction.getEventBtnStatus(
+                          eventList[index], provider.userDetail.cid.toString())
+                      : CommonEventFunction.getAnnouncementBtnStatus(
+                      eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.textColor =
                       CommonEventFunction.getEventBtnColorStatus(
                           eventList[index], provider.userDetail.cid.toString());
@@ -501,6 +504,7 @@ class _HomePageState extends State<HomePage>
                   provider.calendarDetail.fromAnotherPage = false;
                   // past event
                   provider.eventDetail.isPastEvent = pastEvent;
+
                   Navigator.pushNamed(
                           context, RoutesConstants.eventDetailScreen)
                       .then((value) {
@@ -632,7 +636,8 @@ class _HomePageState extends State<HomePage>
                       ],
                     ),
                     SizedBox(height: scaler.getHeight(0.2)),
-                    Row(
+                    (eventList[index].location == "" || eventList[index].location == null) ? SizedBox(height: scaler.getHeight(1.0))
+                     : Row(
                       children: [
                         Icon(Icons.map, size: 17),
                         SizedBox(width: scaler.getWidth(1)),
@@ -651,7 +656,9 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               SizedBox(width: scaler.getWidth(1)),
-           pastEvent == false ? eventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index) : pastEventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, pastEvent)
+              pastEvent == false ? (eventList[index].eventType == EVENT_TYPE_PRIVATE ? eventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index)
+               : announcementRespondBtn(scaler, eventList[index], provider, dashboardProvider, index))
+               : pastEventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, pastEvent)
             ],
           ),
         )
@@ -859,13 +866,12 @@ class _HomePageState extends State<HomePage>
                 .then((value) {
               provider.getPastEvents(context);
             });
-
         } else {
           CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
             Navigator.of(context).pop();
             dashboardProvider.updateEventNotificationCount();
             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
-          }, pastEvent: pastEvent);
+          }, pastEventOrAnnouncement: pastEvent);
         }
       },
       child: CustomShape(
@@ -882,6 +888,63 @@ class _HomePageState extends State<HomePage>
                 scaler.getTextSize(10.5),
                 TextAlign.center)),
         bgColor: provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2),
+        radius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
+      ),
+    );
+  }
+
+  Widget announcementRespondBtn(
+      ScreenScaler scaler,
+      Event event,
+      HomePageProvider provider,
+      DashboardProvider dashboardProvider,
+      int index) {
+    return GestureDetector(
+      onTap: () {
+        if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.userDetail.cid.toString()) == "edit"){
+          if (provider.auth.currentUser!.uid == event.organiserID) {
+            provider.setEventValuesForAnnouncementEdit(event);
+            Navigator.pushNamed(
+                context, RoutesConstants.createAnnouncementScreen)
+                .then((value) {
+              provider.getIndexChanging(context);
+            });
+          }
+        } else if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.userDetail.cid.toString()) == "cancelled"){
+          if (provider.userDetail.cid == event.organiserID) {
+            CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+              Navigator.of(context).pop();
+              provider.deleteEvent(context, event.eid);
+            });
+          } else {
+            Container();
+          }
+        }
+        else {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+            Navigator.of(context).pop();
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+          }, pastEventOrAnnouncement : true);
+        }
+      },
+      child: CustomShape(
+        child: Center(
+            child: Text(CommonEventFunction.getAnnouncementBtnStatus(
+                event, provider.userDetail.cid.toString())
+                .toString()
+                .tr())
+                .semiBoldText(
+                CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.userDetail.cid.toString()),
+                scaler.getTextSize(10.5),
+                TextAlign.center)),
+        bgColor: CommonEventFunction.getEventBtnColorStatus(
+            event, provider.userDetail.cid.toString(),
+            textColor: false),
         radius: BorderRadius.all(
           Radius.circular(12),
         ),

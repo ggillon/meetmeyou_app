@@ -36,6 +36,38 @@ class CreateAnnouncementScreen extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       body: BaseView<AnnouncementProvider>(
+        onModelReady: (provider){
+          if(provider.announcementDetail.editAnnouncement == true){
+            provider.getEventParam(context, provider.announcementDetail.announcementId.toString(), "photoAlbum", false);
+            provider.getEventParam(context, provider.announcementDetail.announcementId.toString(), "discussion", true);
+            titleController.text = provider.announcementDetail.announcementTitle.toString();
+            descriptionController.text = provider.announcementDetail.announcementDescription.toString();
+            if(provider.announcementDetail.announcementStartDateAndTime != null){
+              provider.addDateAndTime = true;
+              provider.startDate = provider.announcementDetail.announcementStartDateAndTime!;
+              provider.startTime = TimeOfDay.fromDateTime(
+                  provider.announcementDetail.announcementStartDateAndTime!);
+            }
+            if(provider.announcementDetail.announcementLocation != null){
+              provider.addLocation = true;
+              addressController.text = provider.announcementDetail.announcementLocation.toString();
+            }
+
+            // getting questions from map form.
+            if (provider.eventDetail.event!.form.isNotEmpty) {
+              List<String> questionsList = [];
+              for (var value in provider.eventDetail.event!.form.values) {
+                questionsList.add(value);
+                questionController.text = value;
+                questionnaireText(context, provider, scaler, addQue: false);
+              }
+
+              if (questionsList.length > 0) {
+                provider.askInfoSwitch = true;
+              }
+            }
+          }
+        },
         builder: (context, provider, _){
           return  LayoutBuilder(builder: (context, constraint) {
             return  SingleChildScrollView(
@@ -140,43 +172,56 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                     }
                                   },
                                 ),
-                                // SizedBox(height: scaler.getHeight(2.0)),
-                                // discussionSwitch(context, scaler, provider),
-                                // SizedBox(height: scaler.getHeight(2.0)),
-                                // askForInfoSwitch(context, scaler, provider),
-                                // provider.askInfoSwitch == true && _fields.length > 0
-                                //     ? SizedBox(height: scaler.getHeight(1.8))
-                                //     : SizedBox(height: scaler.getHeight(0.0)),
-                                // provider.askInfoSwitch == true
-                                //     ? questionsListView(provider, scaler)
-                                //     : Container(),
-                                // provider.askInfoSwitch == true
-                                //     ? SizedBox(height: scaler.getHeight(1.4))
-                                //     : SizedBox(height: scaler.getHeight(0.0)),
-                                // provider.askInfoSwitch == true
-                                //     ? addQuestion(context, provider, scaler)
-                                //     : Container(),
-                                // SizedBox(height: scaler.getHeight(2.0)),
-                                // photoGallerySwitch(context, scaler, provider),
-                                // SizedBox(height: scaler.getHeight(3.0)),
-                                // CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
-                                //   Navigator.pushNamed(
-                                //       context,
-                                //       RoutesConstants
-                                //           .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-                                //       .then((value) {
-                                //     //provider.fromInviteScreen = true;
-                                //     provider.updateLoadingStatus(true);
-                                //     hideKeyboard(context);
-                                //   });
-                                // }),
-                                // SizedBox(height: scaler.getHeight(5.0)),
+                             provider.announcementDetail.editAnnouncement ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: scaler.getHeight(2.0)),
+                                    discussionSwitch(context, scaler, provider),
+                                    SizedBox(height: scaler.getHeight(2.0)),
+                                    askForInfoSwitch(context, scaler, provider),
+                                    provider.askInfoSwitch == true && _fields.length > 0
+                                        ? SizedBox(height: scaler.getHeight(1.8))
+                                        : SizedBox(height: scaler.getHeight(0.0)),
+                                    provider.askInfoSwitch == true
+                                        ? questionsListView(provider, scaler)
+                                        : Container(),
+                                    // provider.askInfoSwitch == true
+                                    //     ? SizedBox(height: scaler.getHeight(1.4))
+                                    //     : SizedBox(height: scaler.getHeight(0.0)),
+                                    provider.askInfoSwitch == true
+                                        ? addQuestion(context, provider, scaler)
+                                        : Container(),
+                                    SizedBox(height: scaler.getHeight(2.0)),
+                                    photoGallerySwitch(context, scaler, provider),
+                                    SizedBox(height: scaler.getHeight(3.0)),
+                                    CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
+                                      Navigator.pushNamed(
+                                          context,
+                                          RoutesConstants
+                                              .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+                                          .then((value) {
+                                        //provider.fromInviteScreen = true;
+                                        provider.updateLoadingStatus(true);
+                                        hideKeyboard(context);
+                                      });
+                                    }),
+                                    SizedBox(height: scaler.getHeight(5.0)),
+                                  ],
+                                ) : Container(),
                               ],
                             ),
                           ),
                         ),
                       provider.announcementDetail.editAnnouncement == true ?
-                      provider.state == ViewState.Busy ? CircularProgressIndicator()
+                      provider.state == ViewState.Busy ? Center(
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(
+                                height: scaler.getHeight(1.5)),
+                          ],
+                        ),
+                      )
                           : Expanded(
                         child: Container(
                             padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 1.5),
@@ -185,14 +230,21 @@ class CreateAnnouncementScreen extends StatelessWidget {
                               onTapBtn1: () {
                                 DialogHelper.showDialogWithTwoButtons(
                                     context,
-                                    "cancel_event".tr(),
-                                    "sure_to_cancel_event".tr(),
+                                    "cancel_announcement".tr(),
+                                    "sure_to_cancel_announcement".tr(),
                                     negativeButtonLabel: "No",
                                     positiveButtonPress: () {
                                       Navigator.of(context).pop();
+                                      provider.cancelAnnouncement(context);
                                     });
                               },
-                              btn1: false,)),
+                              btn1: false,
+                            onTapBtn2: (){
+                              provider.updateAnnouncement(context, titleController.text, addressController.text, descriptionController.text,
+                                  provider.addDateAndTime ? DateTimeHelper.dateTimeFormat(
+                                      provider.startDate,
+                                      provider.startTime) : null);
+                            })),
                       )
                           :   Expanded(
                           child: Container(
@@ -213,9 +265,9 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                   return;
                                 } else{
                                   provider.createAnnouncement(context, titleController.text, addressController.text, descriptionController.text,
-                                      DateTimeHelper.dateTimeFormat(
+                                    provider.addDateAndTime ? DateTimeHelper.dateTimeFormat(
                                       provider.startDate,
-                                      provider.startTime));
+                                      provider.startTime) : null);
                                 }
                               }
                             }),
@@ -495,6 +547,8 @@ class CreateAnnouncementScreen extends StatelessWidget {
           onToggle: (val) async {
             hideKeyboard(context);
             provider.photoGallerySwitch = val;
+            await provider.createEventAlbum(context, provider.announcementDetail.announcementId.toString(), val);
+            provider.updateLoadingStatus(true);
           },
         ),
       ],
@@ -520,6 +574,8 @@ class CreateAnnouncementScreen extends StatelessWidget {
           onToggle: (val) async {
             hideKeyboard(context);
             provider.discussionSwitch = val;
+             provider.setEventParam(context, provider.announcementDetail.announcementId.toString(), "discussion", provider.discussionSwitch);
+            provider.updateLoadingStatus(true);
           },
         ),
       ],
@@ -589,24 +645,28 @@ class CreateAnnouncementScreen extends StatelessWidget {
   }
 
   Widget questionsListView(AnnouncementProvider provider, ScreenScaler scaler) {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: _fields.length,
-      itemBuilder: (context, index) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _fields[index],
-            GestureDetector(
-                onTap: () {
-                  _fields.removeAt(index);
-                  provider.updateLoadingStatus(true);
-                },
-                child: Icon(Icons.close))
-          ],
-        );
-      },
+    return SizedBox(
+      height: scaler.getHeight(10),
+      width: double.infinity,
+      child: ListView.builder(
+      //  physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: _fields.length,
+        itemBuilder: (context, index) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _fields[index],
+              GestureDetector(
+                  onTap: () {
+                    _fields.removeAt(index);
+                    provider.updateLoadingStatus(true);
+                  },
+                  child: Icon(Icons.close))
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -631,10 +691,10 @@ class CreateAnnouncementScreen extends StatelessWidget {
 
     _fields.add(field);
     // questionsList.add(questionController.text);
-    // addQue
-    //     ? provider.addQuestionToEvent(context, provider.eventDetail.event!,
-    //     _fields.length, questionController.text)
-    //     : Container();
+    addQue
+        ? provider.addQuestionToEvent(context, provider.eventDetail.event!,
+        _fields.length, questionController.text)
+        : Container();
     provider.updateLoadingStatus(true);
   }
 

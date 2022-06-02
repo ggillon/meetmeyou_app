@@ -83,7 +83,7 @@ class EventGalleryPage extends StatelessWidget {
             return(index+1) == provider.galleryImagesUrl.length ? provider.galleryImagesUrl[index] :  GestureDetector(
               onTap: (){
                 Navigator.pushNamed(context, RoutesConstants.eventGalleryImageView, arguments: provider.mmyPhotoList[index]).then((value) {
-                  provider.getPhotoAlbum(context, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(context, scaler, provider));
+                  provider.getPhotoAlbum(_scaffoldKey.currentContext!, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(_scaffoldKey.currentContext!, scaler, provider));
                 });
               },
                 child: Card(child: ImageView(path: provider.galleryImagesUrl[index], fit: BoxFit.cover,)));
@@ -121,7 +121,7 @@ class EventGalleryPage extends StatelessWidget {
           ].request();
 
         } else if(await Permission.storage.request().isPermanentlyDenied){
-          CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+          CommonWidgets.errorDialog(_scaffoldKey.currentContext!, "enable_storage_permission".tr());
         }
       },
       child: Card(

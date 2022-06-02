@@ -16,6 +16,8 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/storage/storage.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 
+import '../models/event.dart';
+
 class AnnouncementProvider extends BaseProvider{
 
   MMYEngine? mmyEngine;
@@ -43,10 +45,6 @@ class AnnouncementProvider extends BaseProvider{
     if (type == 1) {
       final pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: 85, maxHeight: 1440);
-      // image = File(pickedFile!.path);
-      // if (image != null) {
-      //   announcementDetail.announcementPhotoUrl = "";
-      // }
       if (pickedFile != null) {
         announcementDetail.announcementPhotoUrl = "";
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
@@ -58,11 +56,6 @@ class AnnouncementProvider extends BaseProvider{
     } else {
       final pickedFile = await picker.pickImage(
           source: ImageSource.gallery, imageQuality: 85, maxHeight: 1440);
-      // image = File(pickedFile!.path);
-      // if (image != null) {
-      //   announcementDetail.announcementPhotoUrl = "";
-      // }
-
       if (pickedFile != null) {
         announcementDetail.announcementPhotoUrl = "";
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
@@ -106,6 +99,7 @@ class AnnouncementProvider extends BaseProvider{
     notifyListeners();
   }
 
+  /// For creating an announcement
 
   Future createAnnouncement(BuildContext context, String title, String location, String description, DateTime startDateTime) async {
     setState(ViewState.Busy);
@@ -142,7 +136,7 @@ class AnnouncementProvider extends BaseProvider{
     }
   }
 
-
+/// for update an announcement
   Future updateAnnouncement(BuildContext context, String title, String location,
       String description, DateTime startDateTime) async {
     setState(ViewState.Busy);
@@ -163,7 +157,7 @@ class AnnouncementProvider extends BaseProvider{
       setState(ViewState.Idle);
       announcementDetail.announcementPhotoUrl = value.photoURL;
       announcementDetail.announcementTitle = value.title;
-      announcementDetail.announcementStartDateAndTine = value.start;
+      announcementDetail.announcementStartDateAndTime = value.start;
       announcementDetail.announcementLocation = value.location;
       announcementDetail.announcementDescription = value.description;
       List<String> valuesList = [];
@@ -183,6 +177,14 @@ class AnnouncementProvider extends BaseProvider{
 
       eventDetail.contactCIDs = contactsKeys;
 
+      // these variables are used for set value in common screen event detail
+      eventDetail.photoUrlEvent = value.photoURL;
+      eventDetail.eventName = value.title;
+      eventDetail.startDateAndTime = value.start;
+      eventDetail.eventLocation = value.location;
+      eventDetail.eventDescription = value.description;
+      eventDetail.event = value;
+
       Navigator.of(context).pop();
     }else{
       setState(ViewState.Idle);
@@ -190,12 +192,12 @@ class AnnouncementProvider extends BaseProvider{
     }
   }
 
+  /// for cancel an announcement
   Future cancelAnnouncement(BuildContext context) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!
-        .cancelEvent(announcementDetail.announcementId.toString())
+    var value = await mmyEngine!.cancelEvent(announcementDetail.announcementId.toString())
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
@@ -212,5 +214,111 @@ class AnnouncementProvider extends BaseProvider{
 
       Navigator.of(context).pop("cancelled");
     }
+  }
+
+  /// add questions to announcement
+  bool addQuestion = false;
+
+  void updateAddQuestionStatus(bool value) {
+    addQuestion = value;
+    notifyListeners();
+  }
+
+  Future addQuestionToEvent(
+      BuildContext context, Event event, int queNo, String queText) async {
+    updateAddQuestionStatus(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!
+        .addQuestionToEvent(event, questionNum: queNo, text: queText)
+        .catchError((e) {
+      updateAddQuestionStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      updateAddQuestionStatus(false);
+    }
+  }
+
+  /// Create an album for announcement
+
+  bool album = false;
+
+  updateAlbum(bool val){
+    album = val;
+    notifyListeners();
+  }
+
+  Future createEventAlbum(BuildContext context, String eid, bool switchValue) async{
+    updateAlbum(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value =  await mmyEngine!.createEventAlbum(eid).catchError((e) {
+      updateAlbum(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    await setEventParam(context, eid, "photoAlbum", switchValue);
+
+    if(value != null){
+      updateAlbum(false);
+    }
+
+  }
+
+  /// Get announcement parameter
+  // this fun is used to check toggle switch whether on or off.
+  bool getParam = false;
+
+  updateGetParam(bool val){
+    getParam = val;
+    notifyListeners();
+  }
+
+  Future getEventParam(BuildContext context, String eid, String param, bool discussionSwitch) async{
+    updateGetParam(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value =  await mmyEngine!.getEventParam(eid, param: param).catchError((e) {
+      updateGetParam(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      if(discussionSwitch){
+        this.discussionSwitch = value;
+      } else{
+        photoGallerySwitch = value;
+      }
+      updateGetParam(false);
+    }
+
+  }
+
+  /// Set announcement parameter
+// this fun is used to set toggle switch on or off.
+
+  bool setParam = false;
+
+  updateSetParam(bool val){
+    setParam = val;
+    notifyListeners();
+  }
+
+  Future setEventParam(BuildContext context, String eid, String param, dynamic switchValue) async{
+    updateSetParam(true);
+
+    var value =  await mmyEngine!.setEventParam(eid, param: param, value: switchValue).catchError((e) {
+      updateSetParam(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      updateSetParam(false);
+    }
+
   }
 }

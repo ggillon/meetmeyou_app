@@ -396,7 +396,7 @@ class CommonWidgets {
   }
 
   static respondToEventBottomSheet(BuildContext context, ScreenScaler scaler,
-      {bool? multipleDate, VoidCallback? multiDate, VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide, bool pastEvent = false}) {
+      {bool? multipleDate, VoidCallback? multiDate, VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide, bool pastEventOrAnnouncement = false}) {
     return showModalBottomSheet(
         useRootNavigator: true,
         shape: RoundedRectangleBorder(
@@ -416,7 +416,7 @@ class CommonWidgets {
                   height: scaler.getHeight(0.5),
                   width: scaler.getWidth(12),
                 ),
-               pastEvent == false ? Column(
+               (pastEventOrAnnouncement == false) ? Column(
                   children: [
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,

@@ -267,7 +267,6 @@
   "create_announcement" : "Create Announcement",
   "update_announcement" : "Update Announcement",
   "cancel_announcement" : "Cancel Announcement",
-  "please_select_image" : "Please Select image."
-
-
+  "please_select_image" : "Please Select image.",
+  "sure_to_cancel_announcement" : "Are you sure you want to cancel announcement?"
 }

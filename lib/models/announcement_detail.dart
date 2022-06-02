@@ -6,7 +6,7 @@ class AnnouncementDetail{
 
   // this value are used in edit or update announcement
   String? announcementTitle;
-  DateTime? announcementStartDateAndTine;
+  DateTime? announcementStartDateAndTime;
   String? announcementLocation;
   String? announcementDescription;
 

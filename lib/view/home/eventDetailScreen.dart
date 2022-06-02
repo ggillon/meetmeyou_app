@@ -54,7 +54,9 @@ class EventDetailScreen extends StatelessWidget {
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) async {
          // provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
-         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum");
+         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum", true);
+         provider.eventDetail.event!.eventType == EVENT_TYPE_PRIVATE ? Container() :
+         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "discussion", false);
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
@@ -141,7 +143,7 @@ class EventDetailScreen extends StatelessWidget {
                                   context,
                                   provider.eventDetail.eid!,
                                   EVENT_NOT_INTERESTED);
-                            }, pastEvent: true);
+                            }, pastEventOrAnnouncement: true);
                           }
                           )  : (provider.eventDetail.event!.multipleDates == true &&
                                  provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid) ? Container() : CommonWidgets.commonBtn(
@@ -211,14 +213,26 @@ class EventDetailScreen extends StatelessWidget {
                               } else if (provider.eventDetail.eventBtnStatus ==
                                   "edit") {
                                 // provider.setEventValuesForEdit(event);
-                                provider.clearMultiDateOption();
-                                Navigator.pushNamed(context,
-                                        RoutesConstants.createEventScreen)
-                                    .then((value) async {
-                                  provider.eventDetail.eventBtnStatus = value as String? ?? "edit";
-                                  await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum");
-                                  provider.updateBackValue(true);
-                                });
+                                if(provider.eventDetail.event!.eventType.toString() == EVENT_TYPE_ANNOUNCEMENT){
+                                  provider.setEventValuesForAnnouncementEdit(provider.eventDetail.event!);
+                                  Navigator.pushNamed(
+                                      context, RoutesConstants.createAnnouncementScreen)
+                                      .then((value) async {
+                                    provider.eventDetail.eventBtnStatus = value as String? ?? "edit";
+                                    await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum", true);
+                                    await provider.getEventParam(context, provider.eventDetail.eid.toString(), "discussion", false);
+                                    provider.updateBackValue(true);
+                                  });
+                                } else{
+                                  provider.clearMultiDateOption();
+                                  Navigator.pushNamed(context,
+                                      RoutesConstants.createEventScreen)
+                                      .then((value) async {
+                                    provider.eventDetail.eventBtnStatus = value as String? ?? "edit";
+                                    await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum", true);
+                                    provider.updateBackValue(true);
+                                  });
+                                }
                               } else if (provider.eventDetail.eventBtnStatus ==
                                   "cancelled") {
                                 if (provider.auth.currentUser!.uid ==
@@ -232,7 +246,17 @@ class EventDetailScreen extends StatelessWidget {
                                 } else {
                                   Container();
                                 }
-                              } else {
+                              } else if (provider.eventDetail.eventBtnStatus == "hide") {
+                                CommonWidgets.respondToEventBottomSheet(
+                                    context, scaler, hide: () {
+                                  Navigator.of(context).pop();
+                                  provider.replyToEvent(
+                                      context,
+                                      provider.eventDetail.eid!,
+                                      EVENT_NOT_INTERESTED);
+                                }, pastEventOrAnnouncement: true);
+                              }
+                              else {
                                 Container();
                               }
                             }),
@@ -400,7 +424,8 @@ class EventDetailScreen extends StatelessWidget {
                               .regularText(ColorConstants.colorBlack,
                                   scaler.getTextSize(10.5), TextAlign.left),
                           SizedBox(height: scaler.getHeight(3.5)),
-                          eventDiscussionCard(context, scaler),
+                          provider.eventDetail.event!.eventType == EVENT_TYPE_PRIVATE ? eventDiscussionCard(context, scaler) :
+                          (provider.discussionEnable == true ?  eventDiscussionCard(context, scaler) : Container()),
                           provider.photoGalleryEnable == true ?  SizedBox(height: scaler.getHeight(2.0)) : Container(),
                           provider.photoGalleryEnable == true ?  photoGalleryCard(context, scaler) : Container(),
                           SizedBox(height: scaler.getHeight(6.0)),

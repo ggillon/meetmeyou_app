@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/announcement_detail.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -36,6 +37,7 @@ class EventDetailProvider extends BaseProvider {
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
   DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  AnnouncementDetail announcementDetail = locator<AnnouncementDetail>();
 
   bool backValue = false;
 
@@ -453,8 +455,9 @@ class EventDetailProvider extends BaseProvider {
   }
 
   /// Get event parameter
-  // this fun is used to check photo gallery switch whether on or off.
+  // this fun is used to check photo gallery or discussion switch whether on or off.
   bool photoGalleryEnable = false;
+  bool discussionEnable = false;
   bool getParam = false;
 
   updateGetParam(bool val){
@@ -462,7 +465,7 @@ class EventDetailProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getEventParam(BuildContext context, String eid, String param) async{
+  Future getEventParam(BuildContext context, String eid, String param, bool photoGallery) async{
     updateGetParam(true);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
@@ -473,9 +476,24 @@ class EventDetailProvider extends BaseProvider {
     });
 
     if(value != null){
-      photoGalleryEnable = value;
+      if(photoGallery){
+        photoGalleryEnable = value;
+      } else{
+        discussionEnable = value;
+      }
       updateGetParam(false);
     }
 
   }
+
+
+  setEventValuesForAnnouncementEdit(Event event) {
+    announcementDetail.editAnnouncement = true;
+    announcementDetail.announcementId = event.eid;
+    announcementDetail.announcementPhotoUrl = event.photoURL;
+    announcementDetail.announcementTitle = event.title;
+    announcementDetail.announcementStartDateAndTime = event.start;
+    announcementDetail.announcementLocation = event.location;
+    announcementDetail.announcementDescription = event.description;
+}
 }
