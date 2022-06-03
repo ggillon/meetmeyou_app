@@ -83,10 +83,11 @@ class SeeAllEvents extends StatelessWidget {
                     provider.homePageProvider
                         .setEventValuesForEdit(
                         eventLists[index]);
-                    provider.eventDetail.eventBtnStatus =
-                        CommonEventFunction.getEventBtnStatus(
-                            eventLists[index],
-                            provider.auth.currentUser!.uid.toString());
+                    provider.eventDetail.eventBtnStatus =  (eventLists[index].eventType == EVENT_TYPE_PRIVATE
+                        ?  CommonEventFunction.getEventBtnStatus(
+                        eventLists[index], provider.auth.currentUser!.uid.toString())
+                        : CommonEventFunction.getAnnouncementBtnStatus(
+                        eventLists[index], provider.auth.currentUser!.uid.toString()));
                     provider.eventDetail.textColor =
                         CommonEventFunction
                             .getEventBtnColorStatus(
@@ -213,7 +214,8 @@ class SeeAllEvents extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: scaler.getHeight(0.2)),
-                    Row(
+                    (eventList.location == "" || eventList.location == null) ? SizedBox(height: scaler.getHeight(0.5))
+                        :  Row(
                       children: [
                         Icon(Icons.map, size: 17),
                         SizedBox(width: scaler.getWidth(1)),
@@ -232,7 +234,9 @@ class SeeAllEvents extends StatelessWidget {
                 ),
               ),
               SizedBox(width: scaler.getWidth(1)),
+              eventList.eventType == EVENT_TYPE_PRIVATE ?
               eventRespondBtn(context, scaler, eventList, provider, index)
+                  : announcementRespondBtn(context, scaler, eventList, provider, index)
             ],
           ),
         )
@@ -413,7 +417,64 @@ class SeeAllEvents extends StatelessWidget {
     );
   }
 
-  alertForQuestionnaireAnswers(
+   Widget announcementRespondBtn(BuildContext context,
+       ScreenScaler scaler,
+       Event event,
+       CustomSearchDelegateProvider provider,
+       int index) {
+     return GestureDetector(
+       onTap: () {
+         if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.uid.toString()) == "edit"){
+           if (provider.auth.currentUser!.uid == event.organiserID) {
+             provider.homePageProvider.setEventValuesForAnnouncementEdit(event);
+             Navigator.pushNamed(
+                 context, RoutesConstants.createAnnouncementScreen)
+                 .then((value) {
+               provider.search(context, query);
+             });
+           }
+         } else if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.uid.toString()) == "cancelled"){
+           if (provider.auth.currentUser!.uid == event.organiserID) {
+             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+               Navigator.of(context).pop();
+               provider.deleteEvent(context, event.eid);
+             });
+           } else {
+             Container();
+           }
+         }
+         else {
+           CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+             Navigator.of(context).pop();
+             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, query);
+           }, pastEventOrAnnouncement : true);
+         }
+       },
+       child: CustomShape(
+         child: Center(
+             child: Text(CommonEventFunction.getAnnouncementBtnStatus(
+                 event, provider.auth.currentUser!.uid.toString())
+                 .toString()
+                 .tr())
+                 .semiBoldText(
+                 CommonEventFunction.getEventBtnColorStatus(
+                     event, provider.auth.currentUser!.uid.toString()),
+                 scaler.getTextSize(10.5),
+                 TextAlign.center)),
+         bgColor: CommonEventFunction.getEventBtnColorStatus(
+             event, provider.auth.currentUser!.uid.toString(),
+             textColor: false),
+         radius: BorderRadius.all(
+           Radius.circular(12),
+         ),
+         width: scaler.getWidth(24),
+         height: scaler.getHeight(4.5),
+       ),
+     );
+   }
+
+
+   alertForQuestionnaireAnswers(
       BuildContext context,
       ScreenScaler scaler,
       Event event,

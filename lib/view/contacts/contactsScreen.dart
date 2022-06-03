@@ -58,7 +58,7 @@ class ContactsScreen extends StatelessWidget {
               child: Scaffold(
                 backgroundColor: provider.userDetail.userType == USER_TYPE_PRO ? ColorConstants.colorLightCyan : (provider.userDetail.userType == USER_TYPE_ADMIN ? ColorConstants.colorLightRed :ColorConstants.colorWhite),
                 body: Padding(
-                  padding: scaler.getPaddingLTRB(3.0, 0.7, 3.0, 2.5),
+                  padding: scaler.getPaddingLTRB(3.5, 0.7, 3.5, 2.5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

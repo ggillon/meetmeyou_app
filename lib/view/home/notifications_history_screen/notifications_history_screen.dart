@@ -103,7 +103,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
                 scaler.getTextSize(12.5), TextAlign.left),
           ),
          // SizedBox(height: scaler.getHeight(1.0)),
-          notificationType(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index])
+         notificationType(context, provider.notificationHistoryList[index].type, scaler, provider, provider.notificationHistoryList[index])
         ],
       );
     }
@@ -116,6 +116,12 @@ class NotificationsHistoryScreen extends StatelessWidget {
   notificationType(BuildContext context, String type, ScreenScaler scaler, NotificationsHistoryProvider provider, MMYNotification notificationHistoryList){
     switch(type){
       case NOTIFICATION_EVENT_INVITE:
+        return eventNotification(context, scaler, provider, notificationHistoryList);
+
+      case NOTIFICATION_EVENT_UPDATE:
+        return eventNotification(context, scaler, provider, notificationHistoryList);
+
+      case NOTIFICATION_EVENT_CANCEL:
         return eventNotification(context, scaler, provider, notificationHistoryList);
 
       case NOTIFICATION_MESSAGE_NEW:

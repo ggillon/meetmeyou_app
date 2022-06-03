@@ -148,7 +148,7 @@
   "fetching_event" : "Fetching event.....",
   "discussion" : "Discussion",
   "write_something" : "Write something",
-  "error_message" : "ERROR! something wrong.",
+  "error_message" : "ERROR! something wrong, please try again....",
   "loading_discussion" : "Loading Discussion.....",
   "question" : "Question",
   "an_answer_field_for_question" : "An answer field for question.",
@@ -268,5 +268,6 @@
   "update_announcement" : "Update Announcement",
   "cancel_announcement" : "Cancel Announcement",
   "please_select_image" : "Please Select image.",
-  "sure_to_cancel_announcement" : "Are you sure you want to cancel announcement?"
+  "sure_to_cancel_announcement" : "Are you sure you want to cancel announcement?",
+  "event_deleted" : "Something Went Wrong.... This event is being deleted by organiser"
 }

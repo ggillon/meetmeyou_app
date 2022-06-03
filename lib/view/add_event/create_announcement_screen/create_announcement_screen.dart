@@ -224,7 +224,7 @@ class CreateAnnouncementScreen extends StatelessWidget {
                       )
                           : Expanded(
                         child: Container(
-                            padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 1.5),
+                            padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 2.5),
                             alignment: Alignment.bottomCenter,
                             child: CommonWidgets.expandedRowButton(context, scaler, "cancel_announcement".tr(), "update_announcement".tr(),
                               onTapBtn1: () {
@@ -248,7 +248,7 @@ class CreateAnnouncementScreen extends StatelessWidget {
                       )
                           :   Expanded(
                           child: Container(
-                            padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 1.5),
+                            padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 2.5),
                             alignment: Alignment.bottomCenter,
                             child: provider.state == ViewState.Busy ? CircularProgressIndicator()
                                 : CommonWidgets.commonBtn(

@@ -30,7 +30,7 @@ class DefaultPhotoPage extends StatelessWidget {
           children: [
             Container(
               height: scaler.getHeight(75),
-              padding: scaler.getPaddingLTRB(3.0, 7.0, 3.0, 2.0),
+              padding: scaler.getPaddingLTRB(3.5, 7.0, 3.5, 2.0),
               child: GridView.builder(
                 itemCount: defaultImages.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -52,7 +52,7 @@ class DefaultPhotoPage extends StatelessWidget {
             ),
             Container(
               padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0.0),
-                child: CommonWidgets.cancelBtn(scaler, context, 5.5)),
+                child: CommonWidgets.cancelBtn(scaler, context, 6.0)),
             SizedBox(height: scaler.getHeight(0.5)),
           ],
         ),

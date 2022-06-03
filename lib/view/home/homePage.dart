@@ -552,14 +552,14 @@ class _HomePageState extends State<HomePage>
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: eventList[index].photoURL == null
                   ? Container(
-                      height: scaler.getHeight(22),
+                      height: scaler.getHeight(25),
                       width: double.infinity,
                       color: ColorConstants.primaryColor,
                     )
                   : ImageView(
                       path: eventList[index].photoURL,
                       fit: BoxFit.cover,
-                      height: scaler.getHeight(22),
+                      height: scaler.getHeight(25),
                       width: double.infinity,
                     ),
             ),
@@ -636,7 +636,7 @@ class _HomePageState extends State<HomePage>
                       ],
                     ),
                     SizedBox(height: scaler.getHeight(0.2)),
-                    (eventList[index].location == "" || eventList[index].location == null) ? SizedBox(height: scaler.getHeight(1.0))
+                    (eventList[index].location == "" || eventList[index].location == null) ? SizedBox(height: scaler.getHeight(0.5))
                      : Row(
                       children: [
                         Icon(Icons.map, size: 17),

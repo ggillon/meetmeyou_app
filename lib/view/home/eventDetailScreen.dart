@@ -54,9 +54,13 @@ class EventDetailScreen extends StatelessWidget {
       body: BaseView<EventDetailProvider>(
         onModelReady: (provider) async {
          // provider.getPhotoAlbum(context, provider.eventDetail.eid.toString());
-         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum", true);
-         provider.eventDetail.event!.eventType == EVENT_TYPE_PRIVATE ? Container() :
-         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "discussion", false);
+          provider.calendarDetail.fromAnotherPage == true
+              ? Container()
+              : await provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum", true);
+           provider.calendarDetail.fromAnotherPage == true
+               ? Container()
+               : (provider.eventDetail.event!.eventType == EVENT_TYPE_PRIVATE ? Container() :
+         await provider.getEventParam(context, provider.eventDetail.eid.toString(), "discussion", false));
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
@@ -73,7 +77,7 @@ class EventDetailScreen extends StatelessWidget {
               : provider.getOrganiserProfileUrl(
                   context, provider.eventDetail.organiserId!);
           provider.calendarDetail.fromAnotherPage == true
-              ? provider.getEvent(context, provider.eventDetail.eid!)
+              ? await provider.getEvent(context, provider.eventDetail.eid!)
               : Container();
           provider.eventDetail.event?.multipleDates == true
               ? provider.getMultipleDateOptionsFromEvent(
@@ -94,10 +98,17 @@ class EventDetailScreen extends StatelessWidget {
           })
               : Container();
          // print(provider.eventDetail.eid.toString());
+
+          // If event is deleted or event value is null on get event api.
+          if(provider.mayBeEventDeleted == true){
+            Future.delayed(Duration(seconds: 5)).then((_) {
+              Navigator.of(context).pop();
+            });
+          }
         },
         builder: (context, provider, _) {
-          return provider.calendarDetail.fromAnotherPage == true &&
-                  provider.eventValue == true
+          return (provider.calendarDetail.fromAnotherPage == true &&
+                  provider.eventValue == true)
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,6 +121,22 @@ class EventDetailScreen extends StatelessWidget {
                         TextAlign.left),
                   ],
                 )
+              : (provider.calendarDetail.fromAnotherPage == true && provider.mayBeEventDeleted == true) ?
+          Padding(
+            padding: scaler.getPaddingAll(15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: scaler.getHeight(18)),
+                ImageView(path: ImageConstants.splash, color: ColorConstants.primaryColor,),
+                SizedBox(height: scaler.getHeight(5)),
+                Text("event_deleted".tr()).boldText(
+                    ColorConstants.primaryColor,
+                    scaler.getTextSize(12.5),
+                    TextAlign.left),
+              ],
+            ),
+          )
               : SingleChildScrollView(
                   child: Column(children: [
                     Stack2(
@@ -118,7 +145,7 @@ class EventDetailScreen extends StatelessWidget {
                     children: [
                       imageView(context, scaler, provider),
                       Positioned(
-                        bottom: -52,
+                        bottom: -scaler.getHeight(6.5),
                         child: titleDateLocationCard(context, scaler, provider),
                       )
                     ],
@@ -126,7 +153,7 @@ class EventDetailScreen extends StatelessWidget {
                     provider.eventDetail.event!.multipleDates == true ? SizedBox(height: scaler.getHeight(1.8)) : Platform.isIOS ? SizedBox(height: scaler.getHeight(1.8)) : SizedBox(height: scaler.getHeight(3.5)),
                   SafeArea(
                     child: Padding(
-                      padding: scaler.getPaddingLTRB(4.5, 1.5, 4.5, 1.5),
+                      padding: scaler.getPaddingLTRB(4.5, 2.5, 4.5, 1.5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -546,12 +573,10 @@ class EventDetailScreen extends StatelessWidget {
                         SizedBox(width: scaler.getWidth(1)),
                         Container(
                           width: scaler.getWidth(50),
-                          child: Text(provider.eventDetail.startDateAndTime
+                          child: Text((provider.eventDetail.startDateAndTime.toString().substring(0, 11)) ==
+                                      (provider.eventDetail.endDateAndTime
                                           .toString()
-                                          .substring(0, 11) ==
-                                      provider.eventDetail.endDateAndTime
-                                          .toString()
-                                          .substring(0, 11)
+                                          .substring(0, 11))
                                   ? DateTimeHelper.getWeekDay(provider.eventDetail.startDateAndTime ?? DateTime.now()) +
                                       " - " +
                                       DateTimeHelper.convertEventDateToTimeFormat(
@@ -572,7 +597,7 @@ class EventDetailScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: scaler.getHeight(0.3)),
-                    GestureDetector(
+                    provider.eventDetail.eventLocation == "" || provider.eventDetail.eventLocation == null ? SizedBox() :  GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: provider.eventDetail.eventLocation == "" || provider.eventDetail.eventLocation == null ?  (){} : () async {
                         try{
@@ -625,10 +650,10 @@ class EventDetailScreen extends StatelessWidget {
                     provider.eventDetail.startDateAndTime ?? DateTime.now()))
                 .regularText(ColorConstants.primaryColor,
                     scaler.getTextSize(11.8), TextAlign.center),
-            Text(provider.eventDetail.startDateAndTime!.day <= 9
+            Text((provider.eventDetail.startDateAndTime?.day  ?? DateTime.now().day) <= 9
                     ? "0" +
-                        provider.eventDetail.startDateAndTime!.day.toString()
-                    : provider.eventDetail.startDateAndTime!.day.toString())
+                        (provider.eventDetail.startDateAndTime?.day.toString() ?? DateTime.now().day.toString())
+                    : (provider.eventDetail.startDateAndTime?.day.toString() ?? DateTime.now().day.toString()))
                 .boldText(ColorConstants.primaryColor, scaler.getTextSize(13.8),
                     TextAlign.center)
           ],

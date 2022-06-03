@@ -138,7 +138,7 @@ class AddEventScreen extends StatelessWidget {
          eventDetail.contactCIDs = [];
          announcementDetail.editAnnouncement = false;
          Navigator.of(context).pushNamed(RoutesConstants.createAnnouncementScreen).then((value) {
-       //    dashboardProvider.onItemTapped(0);
+           dashboardProvider.onItemTapped(0);
          });
        },
        child: Card(

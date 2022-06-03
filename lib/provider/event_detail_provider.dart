@@ -168,6 +168,8 @@ class EventDetailProvider extends BaseProvider {
     notifyListeners();
   }
 
+  bool mayBeEventDeleted = false;
+
   Future getEvent(BuildContext context, String eid) async {
     updateEventValue(true);
 
@@ -175,14 +177,16 @@ class EventDetailProvider extends BaseProvider {
 
     var value = await mmyEngine!.getEvent(eid).catchError((e) {
       updateEventValue(false);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showMessage(context, "error_message".tr());
     });
 
     if (value != null) {
       event = value;
-      updateEventValue(false);
-      eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(
-          event!, auth.currentUser!.uid);
+      eventDetail.eventBtnStatus = (event!.eventType == EVENT_TYPE_PRIVATE
+          ? CommonEventFunction.getEventBtnStatus(
+          event!, auth.currentUser!.uid)
+          : CommonEventFunction.getAnnouncementBtnStatus(
+          event!, auth.currentUser!.uid));
       eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
           event!, auth.currentUser!.uid);
       eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(
@@ -195,6 +199,8 @@ class EventDetailProvider extends BaseProvider {
       getOrganiserProfileUrl(context, eventDetail.organiserId!);
       getUsersProfileUrl(context);
       setEventValuesForEdit(event!);
+      await getEventParam(context, eventDetail.eid.toString(), "discussion", false);
+      await getEventParam(context, eventDetail.eid.toString(), "photoAlbum", true);
       eventDetail.organiserId == auth.currentUser?.uid ? Container() : getContact(context);
 
         eventDetail.event = event!;
@@ -212,9 +218,11 @@ class EventDetailProvider extends BaseProvider {
           eventDetail.btnBGColor = ColorConstants.primaryColor;
           eventDetail.textColor = ColorConstants.colorWhite;
         }
+    updateEventValue(false);
     } else {
       updateEventValue(false);
-      DialogHelper.showMessage(context, "ERROR! something wrong.");
+      mayBeEventDeleted = true;
+      DialogHelper.showMessage(context, "error_message".tr());
     }
   }
 

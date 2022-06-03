@@ -65,9 +65,13 @@ class OrganizedEventsCard extends StatelessWidget {
                                         .setEventValuesForEdit(
                                             provider.eventLists[index]);
                                     provider.eventDetail.eventBtnStatus =
-                                        CommonEventFunction.getEventBtnStatus(
-                                            provider.eventLists[index],
-                                            provider.auth.currentUser!.uid.toString());
+                                    provider.eventLists[index].eventType == EVENT_TYPE_PRIVATE
+                                        ?   CommonEventFunction.getEventBtnStatus(
+                                        provider.eventLists[index],
+                                        provider.auth.currentUser!.uid.toString())
+                                        :  CommonEventFunction.getEventBtnStatus(
+                                        provider.eventLists[index],
+                                        provider.auth.currentUser!.uid.toString());
                                     provider.eventDetail.textColor =
                                         CommonEventFunction
                                             .getEventBtnColorStatus(
@@ -115,7 +119,7 @@ class OrganizedEventsCard extends StatelessWidget {
                           );
                         },
                         options: CarouselOptions(
-                          height: scaler.getHeight(30.5),
+                          height: scaler.getHeight(32.5),
                           enableInfiniteScroll: false,
                           // aspectRatio: 1.5,
                           viewportFraction: 0.9,
@@ -140,14 +144,14 @@ class OrganizedEventsCard extends StatelessWidget {
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: eventList.photoURL == null
                   ? Container(
-                      height: scaler.getHeight(22),
+                      height: scaler.getHeight(24),
                       width: MediaQuery.of(context).size.width / 1.2,
                       color: ColorConstants.primaryColor,
                     )
                   : ImageView(
                       path: eventList.photoURL,
                       fit: BoxFit.cover,
-                      height: scaler.getHeight(22),
+                      height: scaler.getHeight(24),
                       width: MediaQuery.of(context).size.width / 1.2,
                     ),
             ),
@@ -186,7 +190,8 @@ class OrganizedEventsCard extends StatelessWidget {
                   ? SizedBox(width: scaler.getWidth(1))
                   : SizedBox(width: scaler.getWidth(0)),
               showEventRespondBtn && showEventScreen
-                  ? eventRespondBtn(context, scaler, eventList, provider, index)
+                  ? (eventList.eventType == EVENT_TYPE_PRIVATE ?
+                      eventRespondBtn(context, scaler, eventList, provider, index) : announcementRespondBtn(context, scaler, eventList, provider, index))
                   : Container()
             ],
           ),
@@ -342,6 +347,62 @@ class OrganizedEventsCard extends StatelessWidget {
                     TextAlign.center)),
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.auth.currentUser!.uid,
+            textColor: false),
+        radius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
+      ),
+    );
+  }
+
+  Widget announcementRespondBtn(BuildContext context,
+      ScreenScaler scaler,
+      Event event,
+      OrganizeEventCardProvider provider,
+      int index) {
+    return GestureDetector(
+      onTap: () {
+        if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.toString()) == "edit"){
+          if (provider.auth.currentUser!.uid == event.organiserID) {
+            provider.homePageProvider.setEventValuesForAnnouncementEdit(event);
+            Navigator.pushNamed(
+                context, RoutesConstants.createAnnouncementScreen)
+                .then((value) {
+              provider.getUserEvents(context);
+            });
+          }
+        } else if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.toString()) == "cancelled"){
+          if (provider.auth.currentUser!.uid == event.organiserID) {
+            CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+              Navigator.of(context).pop();
+              provider.deleteEvent(context, event.eid);
+            });
+          } else {
+            Container();
+          }
+        }
+        else {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+            Navigator.of(context).pop();
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+          }, pastEventOrAnnouncement : true);
+        }
+      },
+      child: CustomShape(
+        child: Center(
+            child: Text(CommonEventFunction.getAnnouncementBtnStatus(
+                event, provider.auth.currentUser!.uid.toString())
+                .toString()
+                .tr())
+                .semiBoldText(
+                CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.auth.currentUser!.uid.toString()),
+                scaler.getTextSize(10.5),
+                TextAlign.center)),
+        bgColor: CommonEventFunction.getEventBtnColorStatus(
+            event, provider.auth.currentUser!.uid.toString(),
             textColor: false),
         radius: BorderRadius.all(
           Radius.circular(12),
