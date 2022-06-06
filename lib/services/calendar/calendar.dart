@@ -49,6 +49,7 @@ void updateEvent(Event event) async {
   
 }
 
+
 Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) async {
   List<CalendarEvent> returnList = [];
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
