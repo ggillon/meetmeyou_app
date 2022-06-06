@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
+import 'package:meetmeyou_app/helper/deep_linking.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -44,6 +45,7 @@ class DashboardProvider extends BaseProvider {
   EventBus eventBus = locator<EventBus>();
   FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
   CreatorMode creatorModel = locator<CreatorMode>();
+  DeepLinking deepLinking = locator<DeepLinking>();
   int _selectedIndex = 0;
 
   var unRespondedInvite = 0;

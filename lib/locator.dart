@@ -1,6 +1,7 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:meetmeyou_app/helper/deep_linking.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/models/announcement_detail.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
@@ -75,6 +76,7 @@ void setupLocator() {
   locator.registerLazySingleton<EventBus>(() => EventBus());
   locator.registerLazySingleton<CreatorMode>(() => CreatorMode());
   locator.registerLazySingleton<AnnouncementDetail>(() => AnnouncementDetail());
+  locator.registerLazySingleton<DeepLinking>(() => DeepLinking());
   locator.registerFactoryParam<MMYEngine,User,String>((param1, param2) => MMY(param1));
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<LoginOptionProvider>(() => LoginOptionProvider());

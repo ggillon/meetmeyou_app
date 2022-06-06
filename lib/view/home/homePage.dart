@@ -850,29 +850,33 @@ class _HomePageState extends State<HomePage>
       int index, bool pastEvent) {
     return GestureDetector(
       onTap: () {
-       if (provider.auth.currentUser!.uid == event.organiserID) {
-            provider.eventDetail.isPastEvent = pastEvent;
-            provider.setEventValuesForEdit(event);
-            provider.eventDetail.eventMapData =
-                event.invitedContacts;
-            provider.eventDetail.eid = event.eid;
-            provider.eventDetail.organiserId =
-                event.organiserID;
-            provider.eventDetail.organiserName =
-                event.organiserName;
-            provider.calendarDetail.fromAnotherPage = false;
-            Navigator.pushNamed(
-                context, RoutesConstants.eventDetailScreen)
-                .then((value) {
-              provider.getPastEvents(context);
-            });
-        } else {
-          CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
-            Navigator.of(context).pop();
-            dashboardProvider.updateEventNotificationCount();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
-          }, pastEventOrAnnouncement: pastEvent);
-        }
+       // if (provider.auth.currentUser!.uid == event.organiserID) {
+       //      provider.eventDetail.isPastEvent = pastEvent;
+       //      provider.setEventValuesForEdit(event);
+       //      provider.eventDetail.eventMapData =
+       //          event.invitedContacts;
+       //      provider.eventDetail.eid = event.eid;
+       //      provider.eventDetail.organiserId =
+       //          event.organiserID;
+       //      provider.eventDetail.organiserName =
+       //          event.organiserName;
+       //      provider.calendarDetail.fromAnotherPage = false;
+       //      Navigator.pushNamed(
+       //          context, RoutesConstants.eventDetailScreen)
+       //          .then((value) {
+       //        provider.getPastEvents(context);
+       //      });
+       //  } else {
+       //    CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+       //      Navigator.of(context).pop();
+       //      dashboardProvider.updateEventNotificationCount();
+       //      provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+       //    }, pastEventOrAnnouncement: pastEvent);
+       //  }
+        CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+          Navigator.of(context).pop();
+          provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+        }, pastEventOrAnnouncement: pastEvent);
       },
       child: CustomShape(
         child: Center(
@@ -882,12 +886,12 @@ class _HomePageState extends State<HomePage>
                 width: scaler.getWidth(3.0),
                 child: CircularProgressIndicator(
                     color: ColorConstants.colorWhite))
-                : Text(provider.auth.currentUser!.uid == event.organiserID ? "edit".tr() : "hide".tr())
+                : Text("hide".tr())
                 .semiBoldText(
-                provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.colorWhite : ColorConstants.primaryColor,
+                ColorConstants.colorWhite,
                 scaler.getTextSize(10.5),
                 TextAlign.center)),
-        bgColor: provider.auth.currentUser!.uid == event.organiserID ? ColorConstants.primaryColor : ColorConstants.primaryColor.withOpacity(0.2),
+        bgColor: ColorConstants.primaryColor,
         radius: BorderRadius.all(
           Radius.circular(12),
         ),

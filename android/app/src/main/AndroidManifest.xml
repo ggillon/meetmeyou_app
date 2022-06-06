@@ -53,13 +53,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-<!--            &lt;!&ndash; Deep linking &ndash;&gt;-->
-<!--            <intent-filter android:autoVerify="true">-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--                <data android:scheme="http" android:host="event.meetmeyou.com" />-->
-<!--            </intent-filter>-->
+            <!-- Deep linking -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" android:host="18.130.225.164"/>
+            </intent-filter>
+
 
         </activity>
 
