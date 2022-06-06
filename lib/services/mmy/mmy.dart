@@ -631,7 +631,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> getEventDiscussion(String eid) async {
-    return discussionLib.getDiscussion(_currentUser, eid);
+    return discussionLib.getDiscussion(_currentUser, eid, isEvent: true);
   }
 
   @override
