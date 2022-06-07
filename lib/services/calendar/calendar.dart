@@ -54,6 +54,7 @@ Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) a
   List<CalendarEvent> returnList = [];
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
   final calendarsResult = await plugin.retrieveCalendars();
+  if(display==null) display=true;
   if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
     final calendars = calendarsResult.data!.toList();
     for(device.Calendar cal in calendars) {
