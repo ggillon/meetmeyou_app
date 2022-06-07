@@ -40,16 +40,16 @@ Future<Event> updateEvent(User currentUser, String? eid, {String? title, String?
     event = createLocalEvent(await getUserProfile(currentUser));
 
   event
-  ..title = title ?? event.title
-  ..location = location ?? event.location
-  ..description = description ?? event.description
-  ..photoURL = photoURL ?? event.photoURL
-  ..start = start ?? event.start
-  ..end = end ?? event.end
-  ..formText = formText ?? event.formText
-  ..form = form ?? event.form
-  ..website = website ?? event.website
-  ..eventType = eventType ?? EVENT_TYPE_PRIVATE;
+    ..title = title ?? event.title
+    ..location = location ?? event.location
+    ..description = description ?? event.description
+    ..photoURL = photoURL ?? event.photoURL
+    ..start = start ?? event.start
+    ..end = end ?? event.end
+    ..formText = formText ?? event.formText
+    ..form = form ?? event.form
+    ..website = website ?? event.website
+    ..eventType = eventType ?? EVENT_TYPE_PRIVATE;
 
 
   await FirestoreDB(uid: currentUser.uid).setEvent(event);
@@ -102,6 +102,7 @@ Map<String, dynamic> Invitations({String? CID, List<String>? CIDs, required Stri
   return newList;
 }
 
+// need to clean it up
 Future<List<Event>> getUserEvents(User currentUser,{List<String>? filters}) async {
   List<Event> eventList = [];
   if(filters == null)
@@ -110,13 +111,20 @@ Future<List<Event>> getUserEvents(User currentUser,{List<String>? filters}) asyn
     if(filters.contains(event.invitedContacts[currentUser.uid]) && event.start.isAfter(DateTime.now().subtract(Duration(hours: 24))))
       eventList.add(event);
   }
+  if(filters.contains(EVENT_NOT_INTERESTED)) {
+    for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(currentUser.uid)) {
+      if(filters.contains(event.invitedContacts[currentUser.uid]))
+        eventList.add(event);
+    }
+  }
   return eventList;
 }
 
 Future<List<Event>> getPastEvents(User currentUser,) async {
   List<Event> eventList = [];
   for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(currentUser.uid)) {
-    if(event.start.isBefore(DateTime.now().subtract(Duration(hours: 24))))
+    if(event.start.isBefore(DateTime.now().subtract(Duration(hours: 24)))
+        && event.invitedContacts[currentUser.uid] != EVENT_NOT_INTERESTED)
       eventList.add(event);
   }
   return eventList;

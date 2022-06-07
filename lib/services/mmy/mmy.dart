@@ -544,7 +544,8 @@ class MMY implements MMYEngine {
   @override
   Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
     Profile profile = await getUserProfile();
-    return calendarLib.getCalendarEvents(context, _currentUser.uid, display: profile.parameters['calendar_display'] == null ? true : profile.parameters['calendar_display']);
+    return calendarLib.getCalendarEvents(_currentUser.uid, display: profile.parameters['calendar_display']);
+   // return calendarLib.getCalendarEvents(context, _currentUser.uid, display: profile.parameters['calendar_display'] == null ? true : profile.parameters['calendar_display']);
   }
 
   @override
@@ -632,7 +633,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Discussion> getEventDiscussion(String eid) async {
-    return discussionLib.getDiscussion(_currentUser, eid);
+    return discussionLib.getDiscussion(_currentUser, eid, isEvent: true);
   }
 
   @override

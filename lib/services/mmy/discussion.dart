@@ -120,9 +120,22 @@ Future<Discussion> startGroupDiscussion(User currentUser, {required CIDs}) async
 }
 
 
-Future<Discussion> getDiscussion(User currentUser, String did) async {
+Future<Discussion> getDiscussion(User currentUser, String did, {bool isEvent=false}) async {
   final db = FirestoreDB(uid: currentUser.uid);
-  Discussion discussion = await db.getDiscussion(did);
+  Discussion discussion;
+
+  if(isEvent) {
+    try{
+      discussion = await db.getDiscussion(did);
+    } catch (e) {
+      discussion = await startEventDiscussion(currentUser, eid: did);
+    }
+  }
+  else {
+    discussion = await db.getDiscussion(did);
+  }
+
+
   discussion.participants[currentUser.uid] = MESSAGES_READ;
 
   // Adapt discussion to user
