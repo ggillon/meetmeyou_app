@@ -55,66 +55,13 @@ void updateEvent(Event event) async {
 }
 
 
-Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) async {
-  List<CalendarEvent> returnList = [];
-  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
-  final calendarsResult = await plugin.retrieveCalendars();
-  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
-    final calendars = calendarsResult.data!.toList();
-    for(device.Calendar cal in calendars) {
-      device.RetrieveEventsParams retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
-      final result = await plugin.retrieveEvents(cal.id, retrieveEventsParams);
-      if (result.isSuccess && result.data != null) {
-        final events = result.data!.toList();
-        for(device.Event e in events){
-          CalendarEvent entry = CalendarEvent(
-            title: e.title ?? 'Untitled Event',
-            start: DateTime.fromMicrosecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
-            end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
-            meetMeYou: (cal!.name == 'MeetMeYou'),
-            description: e.description ?? '',
-          );
-          returnList.add(entry);
-        }
-      }
-    }
-  }
-  // Code for MeetMeYou Events (to be adapted)
-  List<Event> events = await FirestoreDB(uid: uid).getUserEvents(uid);
-  for (Event e in events) {
-    CalendarEvent entry = CalendarEvent(
-        title: e.title,
-        start: e.start,
-        end: e.end,
-        meetMeYou: true,
-        eid: e.eid,
-        eventStatus: e.invitedContacts[uid],
-        description: e.description);
-    returnList.add(entry);
-  }
-  return returnList;
-}
-
-// Future<List<CalendarEvent>> getCalendarEvents1(BuildContext context,String uid, {bool display = true}) async {
+// Future<List<CalendarEvent>> getCalendarEvents1(String uid, {bool display=true}) async {
 //   List<CalendarEvent> returnList = [];
-//   var calendarsResult;
 //   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
-//   calendarsResult = await plugin.retrieveCalendars();
-//   var permissionsGranted;
-//   if (Platform.isIOS) {
-//     permissionsGranted = await plugin.hasPermissions();
-//     if (permissionsGranted.isSuccess && !permissionsGranted.loading!) {
-//       permissionsGranted = await plugin.requestPermissions();
-//       calendarsResult = await plugin.retrieveCalendars();
-//       if (!permissionsGranted.isSuccess || !permissionsGranted.loading!) {
-//         CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
-//       }
-//     }
-//   }
-//   if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && (calendarsResult.loading != null) && display) {
-//     // final calendarsResult = await plugin.retrieveCalendars();
-// //  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
-//     final calendars = calendarsResult.loading!.toList();
+//   final calendarsResult = await plugin.retrieveCalendars();
+//   if(display==null) display=true;
+//   if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
+//     final calendars = calendarsResult.data!.toList();
 //     for(device.Calendar cal in calendars) {
 //       device.RetrieveEventsParams retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
 //       final result = await plugin.retrieveEvents(cal.id, retrieveEventsParams);
@@ -125,7 +72,7 @@ Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) a
 //             title: e.title ?? 'Untitled Event',
 //             start: DateTime.fromMillisecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
 //             end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
-//             meetMeYou: (cal.name == 'MeetMeYou'),
+//             meetMeYou: (cal!.name == 'MeetMeYou'),
 //             description: e.description ?? '',
 //           );
 //           returnList.add(entry);
@@ -148,3 +95,57 @@ Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) a
 //   }
 //   return returnList;
 // }
+
+Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {bool display = true}) async {
+  List<CalendarEvent> returnList = [];
+  var calendarsResult;
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  calendarsResult = await plugin.retrieveCalendars();
+  var permissionsGranted;
+  if (Platform.isIOS) {
+    permissionsGranted = await plugin.hasPermissions();
+    if (permissionsGranted.isSuccess && !permissionsGranted.loading!) {
+      permissionsGranted = await plugin.requestPermissions();
+      calendarsResult = await plugin.retrieveCalendars();
+      if (!permissionsGranted.isSuccess || !permissionsGranted.loading!) {
+        CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
+      }
+    }
+  }
+  if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && (calendarsResult.data != null) && display) {
+    // final calendarsResult = await plugin.retrieveCalendars();
+//  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
+    final calendars = calendarsResult.data!.toList();
+    for(device.Calendar cal in calendars) {
+      device.RetrieveEventsParams retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
+      final result = await plugin.retrieveEvents(cal.id, retrieveEventsParams);
+      if (result.isSuccess && result.data != null) {
+        final events = result.data!.toList();
+        for(device.Event e in events){
+          CalendarEvent entry = CalendarEvent(
+            title: e.title ?? 'Untitled Event',
+            start: DateTime.fromMillisecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
+            end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
+            meetMeYou: (cal.name == 'MeetMeYou'),
+            description: e.description ?? '',
+          );
+          returnList.add(entry);
+        }
+      }
+    }
+  }
+  // Code for MeetMeYou Events (to be adapted)
+  List<Event> events = await FirestoreDB(uid: uid).getUserEvents(uid);
+  for (Event e in events) {
+    CalendarEvent entry = CalendarEvent(
+        title: e.title,
+        start: e.start,
+        end: e.end,
+        meetMeYou: true,
+        eid: e.eid,
+        eventStatus: e.invitedContacts[uid],
+        description: e.description);
+    returnList.add(entry);
+  }
+  return returnList;
+}
