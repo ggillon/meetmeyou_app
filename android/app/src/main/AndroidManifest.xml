@@ -74,7 +74,7 @@
                 <data android:scheme="https" />
 
                 <!-- Include one or more domains that should be verified. -->
-                <data android:host="www.meetmeyou.com" />
+                <data android:host="meetmeyou.com" />
             </intent-filter>
 
 

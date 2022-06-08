@@ -201,7 +201,7 @@ class EventDetailProvider extends BaseProvider {
       setEventValuesForEdit(event!);
       await getEventParam(context, eventDetail.eid.toString(), "discussion", false);
       await getEventParam(context, eventDetail.eid.toString(), "photoAlbum", true);
-      eventDetail.organiserId == auth.currentUser?.uid ? Container() : getContact(context);
+      eventDetail.organiserId == auth.currentUser?.uid ? Container() : getOrganiserContact(context);
 
         eventDetail.event = event!;
         eventDetail.event?.multipleDates == true
@@ -433,10 +433,10 @@ class EventDetailProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getContact(BuildContext context) async{
+  Future getOrganiserContact(BuildContext context) async{
     updateGetContact(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-  var value =  await mmyEngine!.getContact(eventDetail.organiserId.toString()).catchError((e){
+  var value =  await mmyEngine!.getContactFromProfile(eventDetail.organiserId.toString()).catchError((e){
       updateGetContact(false);
       DialogHelper.showMessage(context, "Organiser fetching error!");
     });

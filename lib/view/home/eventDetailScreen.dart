@@ -63,9 +63,9 @@ class EventDetailScreen extends StatelessWidget {
          await provider.getEventParam(context, provider.eventDetail.eid.toString(), "discussion", false));
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
-              :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getContact(context);
-          provider.calendarDetail.fromDeepLink == false
-              ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
+              :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getOrganiserContact(context);
+          // provider.calendarDetail.fromDeepLink == false
+          //     ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               : provider.eventGoingLength();
@@ -423,8 +423,9 @@ class EventDetailScreen extends StatelessWidget {
                                               await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
                                                 String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
                                                 String fid = shareLink.split("https://meetmeyou.page.link/")[1];
-                                                Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${provider.eventDetail.eid!}&fid=${fid}");
+                                                //Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${provider.eventDetail.eid!}&fid=${fid}");
                                                 //    Share.share("Please find link to the event I’m organising: ${shareLink}");
+                                                Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${provider.eventDetail.eid!}");
                                               });
                                             },
                                             child: ImageView(path: ImageConstants.share_icon)))) : Container()
@@ -666,11 +667,16 @@ class EventDetailScreen extends StatelessWidget {
   Widget organiserCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return GestureDetector(
       onTap: (){
-        provider.setContactsValue();
-        provider.discussionDetail.userId = provider.eventDetail.organiserId;
-        Navigator.pushNamed(
-            context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
-        );
+        if(provider.organiserContact != null){
+          provider.setContactsValue();
+          provider.discussionDetail.userId = provider.eventDetail.organiserId;
+          Navigator.pushNamed(
+              context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
+          );
+        } else{
+          DialogHelper.showMessage(context, "error_message".tr());
+        }
+
       },
       child: Card(
         shape: RoundedRectangleBorder(

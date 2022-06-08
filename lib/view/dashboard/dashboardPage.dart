@@ -85,7 +85,7 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
        await provider.getUserType(context);
         //  if(widget.isFromLogin == null){
       //  provider.dynamicLinksApi.handleDynamicLink(context);
-        provider.deepLinking.initUniLinks1();
+        provider.deepLinking.initUniLinks(context);
         //  }
         provider.onItemTapped(0);
         provider.unRespondedInvites(context);
