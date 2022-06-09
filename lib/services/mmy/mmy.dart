@@ -93,6 +93,8 @@ abstract class MMYEngine {
   Future<List<Contact>> searchProfiles(String searchText);
   /// Import phone Contacts
   Future<List<Contact>> getPhoneContacts();
+  /// Get phone Contacts for invite
+  Future<List<Contact>> getInvitePhoneContacts();
   /// Invite phone Contacts
   Future<void> invitePhoneContacts(List<Contact> contacts);
 
@@ -400,6 +402,11 @@ class MMY implements MMYEngine {
   Future<List<Contact>> getPhoneContacts() async {
     List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
     return searchLib.matchContactsToDBProfiles(_currentUser, phoneContacts);
+  }
+
+  @override
+  Future<List<Contact>> getInvitePhoneContacts() async {
+    return await contactLib.getInvitePhoneContacts(_currentUser);
   }
 
   @override

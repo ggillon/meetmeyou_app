@@ -338,3 +338,39 @@ Future<List<Contact>> getPhoneContacts(User currentUser) async {
   }
   return phoneContactList;
 }
+
+Future<List<Contact>> getInvitePhoneContacts(User currentUser) async {
+  //print('importing');
+  List<Contact> phoneContactList = [];
+  Iterable<Phone.Contact> phoneContacts;
+  Profile profile = await getUserProfile(currentUser);
+
+  if (await Permission.contacts.request().isGranted) {
+    // Get all contacts on device
+    phoneContacts = await Phone.ContactsService.getContacts();
+
+    for (Phone.Contact phoneContact in phoneContacts) {
+      if(phoneContact.displayName != null) {
+        Contact contact = createLocalContact(currentUser);
+        contact.other.addAll({'whatsapp': ''});
+        contact.displayName = phoneContact.displayName!;
+        if(phoneContact.emails != null && phoneContact.emails!.length>0)
+          contact.email = phoneContact.emails!.first.value ?? '';
+        if(phoneContact.phones != null && phoneContact.phones!.length>0) {
+          contact.phoneNumber = phoneContact.phones!.first.value ?? '';
+          if(contact.phoneNumber.substring(0,1)=='+' || contact.phoneNumber.substring(0,2) == '00')
+            contact.other['whatsapp'] = contact.phoneNumber;
+          else
+            contact.other['whatsapp'] = '+' + profile.countryCode + contact.phoneNumber.substring(1);
+        }
+        phoneContactList.add(contact);
+      }
+    }
+  } else {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.contacts,
+    ].request();
+    //throw('No access to phone contacts');
+  }
+  return phoneContactList;
+}
