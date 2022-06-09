@@ -64,8 +64,8 @@ class EventDetailScreen extends StatelessWidget {
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getOrganiserContact(context);
-          // provider.calendarDetail.fromDeepLink == false
-          //     ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
+          provider.calendarDetail.fromDeepLink == false
+              ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               : provider.eventGoingLength();

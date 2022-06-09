@@ -104,7 +104,7 @@ Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {
   var permissionsGranted;
   if (Platform.isIOS) {
     permissionsGranted = await plugin.hasPermissions();
-    if (permissionsGranted.isSuccess && !permissionsGranted.loading!) {
+    if (permissionsGranted.isSuccess && !permissionsGranted.data!) {
       permissionsGranted = await plugin.requestPermissions();
       calendarsResult = await plugin.retrieveCalendars();
       if (!permissionsGranted.isSuccess || !permissionsGranted.loading!) {

@@ -46,7 +46,7 @@ class CalendarProvider extends BaseProvider {
 
     var value = await mmyEngine!.getCalendarEvents(context).catchError((e) {
       setState(ViewState.Idle);
-       // DialogHelper.showMessage(context, "error_message".tr());
+      //  DialogHelper.showMessage(context, "error_message".tr());
       CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
     });
     if (value != null) {

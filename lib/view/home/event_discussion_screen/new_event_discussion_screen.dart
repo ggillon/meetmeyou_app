@@ -225,7 +225,9 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             onTap: () {
                           provider.eventDetail.contactCIDs = provider.eventDetail.attendingProfileKeys!;
                           Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: true, discussionId: fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid), fromChatDiscussion: false)).then((value) {
-                            fromChatScreen == true ?  provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : provider.startContactDiscussion(context);
+                           // fromChatScreen == true ?  provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen) : provider.startContactDiscussion(context);
+                            //here we set fromchatscreen to true to load data on back
+                            provider.getDiscussion(context, fromChatScreen == true ? chatDid : (fromContactOrGroup == true ? provider.discussion!.did : provider.eventDetail.eid.toString()), fromChatScreen: true);
                           });
                             },
                         child: Icon(Icons.people))

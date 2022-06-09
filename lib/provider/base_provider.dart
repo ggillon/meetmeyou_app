@@ -29,11 +29,15 @@ class BaseProvider extends ChangeNotifier {
   // this is used for deep link
   StreamSubscription? sub;
 
+  // this is when user comes from deeplink
+  StreamSubscription? eventInviteFromLink;
+
   @override
   void dispose() {
     eventsNotifyEvent?.cancel();
     messageNotifyEvent?.cancel();
     ContactInvitationNotifyEvent?.cancel();
+    eventInviteFromLink?.cancel();
     sub?.cancel();
     _disposed = true;
     super.dispose();

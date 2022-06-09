@@ -13,6 +13,7 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
+import 'package:meetmeyou_app/helper/deep_linking.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -170,6 +171,13 @@ class _HomePageState extends State<HomePage>
             }
           });
 
+          // this event will fire when user comes from link and when gets back from event detail
+          //this event is fire so that we can refresh status of events in home screen.
+        provider.eventInviteFromLink =  provider.eventBus.on<InviteEventFromLink>().listen((event) {
+          provider.getIndexChanging(context);
+          provider.unRespondedEvents(context, dashBoardProvider);
+          provider.unRespondedEventsApi(context);
+        });
       },
       builder: (context, provider, _) {
         return SafeArea(

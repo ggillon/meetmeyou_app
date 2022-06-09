@@ -134,21 +134,19 @@
  	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 
-	<key>FlutterDeepLinkingEnabled</key>
-    <true/>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>flutterbooksample.com</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-        <string>http</string>
-        </array>
-        </dict>
-    </array>
+	<key>CFBundleURLTypes</key>
+      <array>
+          <dict>
+              <key>CFBundleTypeRole</key>
+              <string>Editor</string>
+              <key>CFBundleURLName</key>
+              <string>meetmeyou.com</string>
+              <key>CFBundleURLSchemes</key>
+              <array>
+                  <string>meetmeyou</string>
+              </array>
+          </dict>
+      </array>
 
 </dict>
 </plist>
