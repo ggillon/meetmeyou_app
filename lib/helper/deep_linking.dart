@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:uni_links/uni_links.dart';
@@ -20,6 +21,7 @@ class DeepLinking extends BaseProvider{
   EventDetail eventDetail = locator<EventDetail>();
   MMYEngine? mmyEngine;
   EventBus eventBus = locator<EventBus>();
+  UserDetail userDetail = locator<UserDetail>();
 
   Future<void> initUniLinks(BuildContext context) async {
     // ... check initialLink
@@ -49,6 +51,32 @@ class DeepLinking extends BaseProvider{
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
 
+
+  Future<void> initUniLinks1(BuildContext context) async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      final initialLink = await getInitialLink();
+      if(initialLink != null){
+        userDetail.loginAfterDeepLink = false;
+        linkEid = initialLink.toString().split("=");
+        calendarDetail.fromAnotherPage = true;
+        calendarDetail.fromDeepLink = true;
+        eventDetail.eid = linkEid[1].toString();
+        Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+          calendarDetail.fromDeepLink = false;
+          unRespondedEventsApi(context);
+          eventBus.fire(InviteEventFromLink(true));
+        });
+      }
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+      return DialogHelper.showMessage(context, "error_message".tr());
+    }
+  }
+
   bool val = false;
 
   updateValue(bool value) {
@@ -70,29 +98,6 @@ class DeepLinking extends BaseProvider{
     updateValue(false);
   }
 
-  Future<void> initUniLinks1(BuildContext context) async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      final initialLink = await getInitialLink();
-      if(initialLink != null){
-        linkEid = initialLink.toString().split("=");
-        calendarDetail.fromAnotherPage = true;
-        calendarDetail.fromDeepLink = true;
-        eventDetail.eid = linkEid[1].toString();
-        Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
-          calendarDetail.fromDeepLink = false;
-          unRespondedEventsApi(context);
-          eventBus.fire(InviteEventFromLink(true));
-        });
-      }
-      // Parse the link and warn the user, if it is not correct,
-      // but keep in mind it could be `null`.
-    } on PlatformException {
-      // Handle exception by warning the user their action did not succeed
-      // return?
-      return DialogHelper.showMessage(context, "error_message".tr());
-    }
-  }
 }
 
 class InviteEventFromLink{

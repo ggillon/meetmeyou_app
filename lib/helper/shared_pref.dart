@@ -9,7 +9,6 @@ class SharedPref {
   static SharedPreferences? prefs;
 
 
-
   static clearSharePref() async {
    prefs!.setBool(IS_USER_LOGIN, false);
   }

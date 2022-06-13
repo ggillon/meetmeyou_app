@@ -704,14 +704,15 @@ class _HomePageState extends State<HomePage>
   Widget shareCard(ScreenScaler scaler, Event event){
     return GestureDetector(
       onTap: () async{
-        String eventLink = provider.mmyEngine!.getEventLink(event.eid);
-        await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
-          String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
-          String fid = shareLink.split("https://meetmeyou.page.link/")[1];
-       //   Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}&fid=${fid}");
-         // Share.share("Please find link to the event I’m organising: ${shareLink}");
-          Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}");
-        });
+       //  String eventLink = provider.mmyEngine!.getEventLink(event.eid);
+       //  await provider.dynamicLinksApi.createLink(context, eventLink).then((value) {
+       //    String shareLink = provider.dynamicLinksApi.dynamicUrl.toString();
+       //    String fid = shareLink.split("https://meetmeyou.page.link/")[1];
+       // //   Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}&fid=${fid}");
+       //   // Share.share("Please find link to the event I’m organising: ${shareLink}");
+       //    Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}");
+       //  });
+        Share.share("Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${event.eid}");
       },
       child: Card(
         shape: RoundedRectangleBorder(

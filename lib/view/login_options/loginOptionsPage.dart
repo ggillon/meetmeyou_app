@@ -64,6 +64,7 @@ class LoginOptions extends StatelessWidget {
                                   Platform.isIOS
                                       ? GestureDetector(
                                           onTap: () {
+                                            provider.userDetail.loginAfterDeepLink = false;
                                             provider.signInWithFb(context);
                                           },
                                           child: CustomShape(
@@ -89,6 +90,7 @@ class LoginOptions extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
+                                      provider.userDetail.loginAfterDeepLink = false;
                                       Navigator.pushNamed(
                                           context, RoutesConstants.login);
                                     },
@@ -113,6 +115,7 @@ class LoginOptions extends StatelessWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
+                                      provider.userDetail.loginAfterDeepLink = false;
                                       provider.state == ViewState.Busy
                                           ? Center(
                                               child:
@@ -140,6 +143,7 @@ class LoginOptions extends StatelessWidget {
                                   Platform.isIOS
                                       ? GestureDetector(
                                           onTap: () {
+                                            provider.userDetail.loginAfterDeepLink = false;
                                             signInWithApple(context, provider);
                                           },
                                           child: CustomShape(
@@ -163,6 +167,7 @@ class LoginOptions extends StatelessWidget {
                                         )
                                       : GestureDetector(
                                           onTap: () {
+                                            provider.userDetail.loginAfterDeepLink = false;
                                             provider.state == ViewState.Busy
                                                 ? Center(
                                                     child:
@@ -195,6 +200,7 @@ class LoginOptions extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
+                            provider.userDetail.loginAfterDeepLink = false;
                             provider.updateMoreOptions(!provider.moreOption);
                           },
                           child: CustomShape(

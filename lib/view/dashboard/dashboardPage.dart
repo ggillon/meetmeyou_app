@@ -89,7 +89,9 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
         // this function will handle data when user is in background state
         provider.deepLinking.initUniLinks(context);
         // this function will handle data when user is in terminated state
-        provider.deepLinking.initUniLinks1(context);
+        if(provider.userDetail.loginAfterDeepLink){
+          provider.deepLinking.initUniLinks1(context);
+        }
         //  }
         provider.onItemTapped(0);
         provider.unRespondedInvites(context);

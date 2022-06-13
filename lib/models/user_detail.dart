@@ -35,6 +35,10 @@ class UserDetail {
   //for checking contact screen first time
   bool checkContactScreen = false;
 
+  // this is used in deep link , when user logout and login again
+  // to handle if user comes from deep link event not fetches again
+  bool loginAfterDeepLink = true;
+
   UserDetail(
       {this.firstName,
       this.lastName,
