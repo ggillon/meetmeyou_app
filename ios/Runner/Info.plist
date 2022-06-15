@@ -23,16 +23,6 @@
 			<dict>
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
-				<key>CFBundleURLName</key>
-				<string>meetmeyou.com</string>
-				<key>CFBundleURLSchemes</key>
-				<array>
-					<string>meetmeyou</string>
-				</array>
-			</dict>
-			<dict>
-				<key>CFBundleTypeRole</key>
-				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>com.googleusercontent.apps.119476151911-qk5pqbaggb3655ge1cs25kft1odekuva</string>

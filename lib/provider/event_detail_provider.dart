@@ -122,7 +122,7 @@ class EventDetailProvider extends BaseProvider {
     });
 
     idle == true ? updateValue(false) : updateValue(true);
-    idle == true ? Navigator.of(context).pop() : Container();
+    idle == true ?  (calendarDetail.fromDeepLink == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop()) : Container();
   }
 
   imageStackLength(int length) {

@@ -582,7 +582,7 @@ class _HomePageState extends State<HomePage>
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: [
                      dateCard(scaler, eventList[index]),
-                    pastEvent == true ? Container() : shareCard(scaler, eventList[index])
+                    pastEvent == true ? Container() : (eventList[index].eventType == EVENT_TYPE_PRIVATE ? shareCard(scaler, eventList[index]) : Container())
                    ],
                  ),
                )) :  Positioned(
