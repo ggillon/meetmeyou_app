@@ -14,6 +14,7 @@ import 'package:contacts_service/contacts_service.dart' as phone;
 
 class InviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+  TabController? tabController;
 
   List<Contact> _contactList = [];
 
@@ -45,6 +46,18 @@ class InviteFriendsProvider extends BaseProvider {
   setCheckBoxValue(bool value, int index) {
     _isChecked[index] = value;
     notifyListeners();
+  }
+
+  tabChangeEvent(BuildContext context) {
+    tabController?.addListener(() {
+      if(tabController!.index == 0){
+        getPhoneContacts(context);
+      } else{
+        getInvitePhoneContacts(context);
+      }
+
+      notifyListeners();
+    });
   }
 
   //String errorMsg = "Please allow contacts access";
@@ -93,5 +106,44 @@ class InviteFriendsProvider extends BaseProvider {
   //  Navigator.of(context).pop();
     DialogHelper.showMessage(context, "Invitation send Successfully");
 
+  }
+
+  List<Contact> allContactList = [];
+  Future<void> getInvitePhoneContacts(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value = await mmyEngine!.getInvitePhoneContacts().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    });
+    if (await Permission.contacts.request().isDenied) {
+      setState(ViewState.Idle);
+      return CommonWidgets.errorDialog(context, 'allow_contact_access'.tr());
+    } else if (await Permission.contacts.request().isPermanentlyDenied) {
+      setState(ViewState.Idle);
+      return CommonWidgets.errorDialog(
+          context,
+          'enable_contact_access_permission'.tr());
+    } else if (value != null) {
+      setState(ViewState.Idle);
+      value.sort((a, b) {
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
+      });
+      allContactList = value;
+      isChecked = List<bool>.filled(contactList.length, false);
+    } else {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    }
+  }
+
+  bool loading = true;
+
+  updateLoadingStatus(bool val){
+    loading = val;
+    notifyListeners();
   }
 }

@@ -269,5 +269,7 @@
   "cancel_announcement" : "Cancel Announcement",
   "please_select_image" : "Please Select image.",
   "sure_to_cancel_announcement" : "Are you sure you want to cancel announcement?",
-  "event_deleted" : "Something Went Wrong.... This event is being deleted by organiser"
+  "event_deleted" : "Something Went Wrong.... This event is being deleted by organiser",
+  "phone_contacts" : "Phone Contacts",
+  "mmy_contacts" : "MMY Contacts"
 }

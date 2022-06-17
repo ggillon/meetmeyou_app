@@ -13,9 +13,14 @@ import 'package:meetmeyou_app/provider/invite_friends_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 
-class InviteFriendsScreen extends StatelessWidget {
-  InviteFriendsScreen({Key? key}) : super(key: key);
+class InviteFriendsScreen extends StatefulWidget {
+  const InviteFriendsScreen({Key? key}) : super(key: key);
 
+  @override
+  _InviteFriendsScreenState createState() => _InviteFriendsScreenState();
+}
+
+class _InviteFriendsScreenState extends State<InviteFriendsScreen>  with TickerProviderStateMixin<InviteFriendsScreen> {
   final searchBarController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -23,98 +28,128 @@ class InviteFriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: ColorConstants.colorWhite,
-      appBar: DialogHelper.appBarWithBack(scaler, context),
-      body: BaseView<InviteFriendsProvider>(
-        onModelReady: (provider) {
-          provider.getPhoneContacts(_scaffoldKey.currentContext!);
-        },
-        builder: (context, provider, _) {
-          return SafeArea(
-            child: Padding(
-              padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("invite_friends".tr()).boldText(
+    key: _scaffoldKey,
+    backgroundColor: ColorConstants.colorWhite,
+    appBar: DialogHelper.appBarWithBack(scaler, context),
+    body: BaseView<InviteFriendsProvider>(
+      onModelReady: (provider) {
+        provider.tabController = TabController(length: 2, vsync: this);
+        provider.getPhoneContacts(_scaffoldKey.currentContext!);
+        provider.tabChangeEvent(context);
+      },
+      builder: (context, provider, _) {
+        return SafeArea(
+          child: Padding(
+            padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 0),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("invite_friends".tr()).boldText(
+                      ColorConstants.colorBlack,
+                      scaler.getTextSize(17),
+                      TextAlign.left),
+                ),
+                SizedBox(height: scaler.getHeight(3.0)),
+                TabBar(
+                  controller: provider.tabController,
+                  tabs: [
+                    Text("mmy_contacts".tr()).boldText(
                         ColorConstants.colorBlack,
-                        scaler.getTextSize(17),
+                        scaler.getTextSize(12),
                         TextAlign.left),
+                    Text("phone_contacts".tr()).boldText(
+                        ColorConstants.colorBlack,
+                        scaler.getTextSize(12),
+                        TextAlign.left)
+                  ],
+                  labelPadding: scaler.getPaddingLTRB(0.0, 0.0, 0.0, 1.0),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: provider.tabController,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                           SizedBox(height: scaler.getHeight(1)),
+                           searchBar(scaler, provider),
+                          SizedBox(height: scaler.getHeight(1)),
+                          provider.state == ViewState.Busy
+                              ? Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Center(child: CircularProgressIndicator()),
+                                SizedBox(height: scaler.getHeight(1)),
+                                Text("loading_contacts".tr()).mediumText(
+                                    ColorConstants.primaryColor,
+                                    scaler.getTextSize(11),
+                                    TextAlign.left),
+                              ],
+                            ),
+                          )
+                              : provider.contactList.length == 0
+                              ? Expanded(
+                            child: Center(
+                              child: Text("sorry_no_contacts_found".tr())
+                                  .mediumText(ColorConstants.primaryColor,
+                                  scaler.getTextSize(12), TextAlign.left),
+                            ),
+                          )
+                              : inviteFriendList(scaler, provider),
+                          Container(
+                            child: DialogHelper.btnWidget(
+                                scaler,
+                                context,
+                                "save_event".tr(),
+                                ColorConstants.primaryColor, funOnTap: () {
+                              if (provider.checkedContactList.length != 0) {
+                               // provider.onTapInviteBtn(context);
+                              }
+                            }),
+                          )
+                        ],
+                      ),
+                     Container()
+                    ],
                   ),
-                //  SizedBox(height: scaler.getHeight(1)),
-                //  searchBar(scaler, provider),
-                  SizedBox(height: scaler.getHeight(1)),
-                  provider.state == ViewState.Busy
-                      ? Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(child: CircularProgressIndicator()),
-                              SizedBox(height: scaler.getHeight(1)),
-                              Text("loading_contacts".tr()).mediumText(
-                                  ColorConstants.primaryColor,
-                                  scaler.getTextSize(11),
-                                  TextAlign.left),
-                            ],
-                          ),
-                        )
-                      : provider.contactList.length == 0
-                          ? Expanded(
-                              child: Center(
-                                child: Text("sorry_no_contacts_found".tr())
-                                    .mediumText(ColorConstants.primaryColor,
-                                        scaler.getTextSize(12), TextAlign.left),
-                              ),
-                            )
-                          : inviteFriendList(scaler, provider),
-                  // Container(
-                  //   child: DialogHelper.btnWidget(
-                  //       scaler,
-                  //       context,
-                  //       "invite".tr(),
-                  //       ColorConstants.primaryColor, funOnTap: () {
-                  //     if (provider.checkedContactList.length != 0) {
-                  //       provider.onTapInviteBtn(context);
-                  //     }
-                  //   }),
-                  // )
-                ],
-              ),
+                ),
+
+              ],
             ),
-          );
+          ),
+        );
+      },
+    ),
+    );
+  }
+
+  Widget searchBar(ScreenScaler scaler, InviteFriendsProvider provider) {
+    return Card(
+      color: ColorConstants.colorWhite,
+      elevation: 3.0,
+      shadowColor: ColorConstants.colorWhite,
+      shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircular(11)),
+      child: TextFormField(
+        controller: searchBarController,
+        style: ViewDecoration.textFieldStyle(
+            scaler.getTextSize(12.5), ColorConstants.colorBlack),
+        decoration: ViewDecoration.inputDecorationForSearchBox(
+            "search_field_name".tr(), scaler),
+        onFieldSubmitted: (data) {
+          // FocusScope.of(context).requestFocus(nodes[1]);
+        },
+        textInputAction: TextInputAction.search,
+        keyboardType: TextInputType.name,
+        onChanged: (value) {
+          provider.updateValue(true);
         },
       ),
     );
   }
-
-  // Widget searchBar(ScreenScaler scaler, InviteFriendsProvider provider) {
-  //   return Card(
-  //     color: ColorConstants.colorWhite,
-  //     elevation: 3.0,
-  //     shadowColor: ColorConstants.colorWhite,
-  //     shape: RoundedRectangleBorder(
-  //         borderRadius: scaler.getBorderRadiusCircular(11)),
-  //     child: TextFormField(
-  //       controller: searchBarController,
-  //       style: ViewDecoration.textFieldStyle(
-  //           scaler.getTextSize(12), ColorConstants.colorBlack),
-  //       decoration: ViewDecoration.inputDecorationForSearchBox(
-  //           "search_field_name".tr(), scaler),
-  //       onFieldSubmitted: (data) {
-  //         // FocusScope.of(context).requestFocus(nodes[1]);
-  //       },
-  //       textInputAction: TextInputAction.search,
-  //       keyboardType: TextInputType.name,
-  //       onChanged: (value) {
-  //         provider.updateValue(true);
-  //       },
-  //     ),
-  //   );
-  // }
 
   Widget inviteFriendList(ScreenScaler scaler, InviteFriendsProvider provider) {
     return Expanded(
