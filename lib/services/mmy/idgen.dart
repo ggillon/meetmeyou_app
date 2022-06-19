@@ -15,3 +15,10 @@ String idGenerator() {
   }
   return eid;
 }
+
+Map addFieldToMap(Map map, String field) {
+  Map temp = {};
+  temp.addAll(map);
+  temp.addAll({field: null});
+  return temp;
+}
