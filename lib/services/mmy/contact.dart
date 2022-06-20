@@ -4,6 +4,7 @@ import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/database/id_gen.dart';
+import 'package:meetmeyou_app/services/mmy/idgen.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
 import 'package:contacts_service/contacts_service.dart' as Phone;
 import 'package:permission_handler/permission_handler.dart';
@@ -340,7 +341,6 @@ Future<List<Contact>> getPhoneContacts(User currentUser) async {
 }
 
 Future<List<Contact>> getInvitePhoneContacts(User currentUser) async {
-  //print('importing');
   List<Contact> phoneContactList = [];
   Iterable<Phone.Contact> phoneContacts;
   Profile profile = await getUserProfile(currentUser);
@@ -348,29 +348,45 @@ Future<List<Contact>> getInvitePhoneContacts(User currentUser) async {
   if (await Permission.contacts.request().isGranted) {
     // Get all contacts on device
     phoneContacts = await Phone.ContactsService.getContacts();
-
-    for (Phone.Contact phoneContact in phoneContacts) {
-      if(phoneContact.displayName != null) {
-        Contact contact = createLocalContact(currentUser);
-        contact.other.addAll({'whatsapp': ''});
-        contact.displayName = phoneContact.displayName!;
-        if(phoneContact.emails != null && phoneContact.emails!.length>0)
-          contact.email = phoneContact.emails!.first.value ?? '';
-        if(phoneContact.phones != null && phoneContact.phones!.length>0) {
-          contact.phoneNumber = phoneContact.phones!.first.value ?? '';
-          if(contact.phoneNumber.substring(0,1)=='+' || contact.phoneNumber.substring(0,2) == '00')
-            contact.other['whatsapp'] = contact.phoneNumber;
-          else
-            contact.other['whatsapp'] = '+' + profile.countryCode + contact.phoneNumber.substring(1);
+    try {
+      for (Phone.Contact phoneContact in phoneContacts) {
+        if (phoneContact.displayName != null) {
+          Contact contact = createLocalContact(currentUser);
+          contact.other = addFieldToMap(contact.other, 'whatsapp');
+          /*Map other = {};
+          other.addAll(contact.other);
+          other.addAll(<String, dynamic>{'whatsapp': ''});
+          contact.other = other;*/
+          contact.displayName = phoneContact.displayName!;
+          if (phoneContact.emails != null && phoneContact.emails!.length > 0)
+            contact.email = phoneContact.emails!.first.value ?? '';
+          if (phoneContact.phones != null && phoneContact.phones!.length > 0) {
+            contact.phoneNumber = cleanNumber(phoneContact.phones!.first.value ?? '');
+            if (contact.phoneNumber.substring(0, 1) == '+' ||
+                contact.phoneNumber.substring(0, 2) == '00')
+              contact.other['whatsapp'] = contact.phoneNumber;
+            else
+              contact.other['whatsapp'] = profile.countryCode +
+                  ((contact.phoneNumber.substring(0, 1) == '0') ? contact.phoneNumber.substring(1) : contact.phoneNumber);
+          }
+          phoneContactList.add(contact);
         }
-        phoneContactList.add(contact);
       }
-    }
+    } catch(e) {print(e);}
   } else {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.contacts,
     ].request();
     //throw('No access to phone contacts');
   }
+  //print(phoneContactList.first.other['whatsapp']);
   return phoneContactList;
+}
+
+String cleanNumber(String number) {
+  //print(number);
+  String out=number;
+  out = out.replaceAll(RegExp(r'[^0-9||+]'), '');
+  //print(out);
+  return out;
 }
