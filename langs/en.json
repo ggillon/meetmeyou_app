@@ -271,5 +271,7 @@
   "sure_to_cancel_announcement" : "Are you sure you want to cancel announcement?",
   "event_deleted" : "Something Went Wrong.... This event is being deleted by organiser",
   "phone_contacts" : "Phone Contacts",
-  "mmy_contacts" : "MMY Contacts"
+  "mmy_contacts" : "MMY Contacts",
+  "event_link" : "Event Link:",
+  "copy_to_clipboard" : "Copy to clipboard"
 }

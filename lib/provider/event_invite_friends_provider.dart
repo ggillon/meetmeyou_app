@@ -1,7 +1,9 @@
 import 'package:collection/src/list_extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
@@ -9,6 +11,7 @@ import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class EventInviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -396,4 +399,52 @@ class EventInviteFriendsProvider extends BaseProvider {
   }
 
   }
+
+  //tab bar for mmy contacts and phone contacts
+  TabController? tabController;
+
+  tabChangeEvent(BuildContext context) {
+    tabController?.addListener(() {
+      if(tabController!.index == 0){
+        getConfirmedContactsList(context);
+        contactsKeys.addAll(eventDetail.contactCIDs);
+      } else{
+       // getInvitePhoneContacts(context);
+      }
+
+      notifyListeners();
+    });
+  }
+
+  List<Contact> allContactList = [];
+  Future<void> getInvitePhoneContacts(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value = await mmyEngine!.getInvitePhoneContacts().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    });
+    if (await Permission.contacts.request().isDenied) {
+      setState(ViewState.Idle);
+      return CommonWidgets.errorDialog(context, 'allow_contact_access'.tr());
+    } else if (await Permission.contacts.request().isPermanentlyDenied) {
+      setState(ViewState.Idle);
+      return CommonWidgets.errorDialog(
+          context,
+          'enable_contact_access_permission'.tr());
+    } else if (value != null) {
+      setState(ViewState.Idle);
+      value.sort((a, b) {
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
+      });
+      allContactList = value;
+    } else {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    }
+  }
+
 }
