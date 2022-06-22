@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:collection/src/list_extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventInviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -409,14 +412,14 @@ class EventInviteFriendsProvider extends BaseProvider {
         getConfirmedContactsList(context);
         contactsKeys.addAll(eventDetail.contactCIDs);
       } else{
-       // getInvitePhoneContacts(context);
+        getInvitePhoneContacts(context);
       }
 
       notifyListeners();
     });
   }
 
-  List<Contact> allContactList = [];
+  List<Contact> allPhoneContactList = [];
   Future<void> getInvitePhoneContacts(BuildContext context) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
@@ -440,10 +443,61 @@ class EventInviteFriendsProvider extends BaseProvider {
             .toLowerCase()
             .compareTo(b.displayName.toString().toLowerCase());
       });
-      allContactList = value;
+      allPhoneContactList = value;
     } else {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    }
+  }
+
+  Future<void> eventMessage(BuildContext context, String phoneNumber, String msgBody) async {
+    final Uri launchUri = Uri(
+      scheme: 'sms',
+      path: phoneNumber,
+        queryParameters: {"body" : msgBody}
+    );
+
+    if (Platform.isAndroid) {
+      final uri = 'sms:$phoneNumber?body=$msgBody';
+      await launchUrl(Uri.parse(uri)).catchError((e){
+        DialogHelper.showMessage(context, "error_message".tr());
+      });
+    } else if (Platform.isIOS) {
+      // iOS
+      final uri = 'sms:$phoneNumber&body=$msgBody';
+      await launchUrl(Uri.parse(uri)).catchError((e){
+        DialogHelper.showMessage(context, "error_message".tr());
+      });
+    }
+  }
+
+  Future<void> eventMail(BuildContext context, String email, String emailBody) async {
+    final Uri launchUri = Uri(
+        scheme: 'mailto',
+        path: email,
+        query: 'subject=Event Invitation&body=${emailBody.toString()}',
+    //  queryParameters: {'subject': "Event Invitation", "body" : emailSubject}
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else{
+      DialogHelper.showMessage(context, "error_message".tr());
+    }
+  }
+
+  Future<void> eventWhatsApp(BuildContext context, phone, String message) async {
+    var whatsApp = phone;
+    var whatsAppURlAndroid =
+        "whatsapp://send?phone=" + whatsApp + "&text=$message";
+    var whatsAppURLIos = "https://wa.me/$phone/?text=${message}";
+    if(Platform.isIOS){
+      await launchUrl(Uri.parse(whatsAppURLIos)).catchError((e){
+        DialogHelper.showMessage(context, "whatsapp_not_installed".tr());
+      });
+    } else{
+      await launchUrl(Uri.parse(whatsAppURlAndroid)).catchError((e){
+        DialogHelper.showMessage(context, "whatsapp_not_installed".tr());
+      });
     }
   }
 

@@ -18,6 +18,7 @@ import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discus
 import 'package:meetmeyou_app/widgets/animated_toggle.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventInviteFriendsScreen extends StatefulWidget {
   EventInviteFriendsScreen({Key? key, required this.fromDiscussion, this.discussionId, required this.fromChatDiscussion}) : super(key: key);
@@ -284,7 +285,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> wit
                              child: DialogHelper.btnWidget(
                                  scaler,
                                  context,
-                                 "invite_friends".tr(),
+                                 "save_event".tr(),
                                  ColorConstants.primaryColor, funOnTap: () {
                                if (provider.eventDetail.contactCIDs.isNotEmpty ||
                                    provider.eventDetail.groupIndexList.isNotEmpty) {
@@ -300,7 +301,62 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> wit
                        ),
                        Column(
                          children: [
-                           eventShareLinkRow(scaler)
+                           eventShareLinkRow(scaler),
+                           SizedBox(height: scaler.getHeight(1.5)),
+                           searchBar(scaler, provider),
+                           SizedBox(height: scaler.getHeight(1)),
+                           provider.state == ViewState.Busy
+                               ? Expanded(
+                             child: Column(
+                               mainAxisAlignment: MainAxisAlignment.center,
+                               crossAxisAlignment: CrossAxisAlignment.center,
+                               children: [
+                                 Center(child: CircularProgressIndicator()),
+                                 SizedBox(height: scaler.getHeight(1)),
+                                 Text("loading_contacts".tr()).mediumText(
+                                     ColorConstants.primaryColor,
+                                     scaler.getTextSize(11),
+                                     TextAlign.left),
+                               ],
+                             ),
+                           )
+                               : provider.allPhoneContactList.length == 0
+                               ? Expanded(
+                             child: Center(
+                               child: Text("sorry_no_contacts_found".tr())
+                                   .mediumText(
+                                   ColorConstants.primaryColor,
+                                   scaler.getTextSize(11),
+                                   TextAlign.left),
+                             ),
+                           )
+                               : Expanded(
+                             child: SingleChildScrollView(
+                               child: Column(
+                                 crossAxisAlignment:
+                                 CrossAxisAlignment.start,
+                                 children: [
+                                   SizedBox(height: scaler.getHeight(1)),
+                                   provider.allPhoneContactList.length == 0
+                                       ? Container()
+                                       : phoneContactList(
+                                       scaler,
+                                       provider.allPhoneContactList,
+                                       provider)
+                                 ],
+                               ),
+                             ),
+                           ),
+                           SizedBox(height: scaler.getHeight(1)),
+                           Container(
+                             child: DialogHelper.btnWidget(
+                                 scaler,
+                                 context,
+                                 "save_event".tr(),
+                                 ColorConstants.primaryColor, funOnTap: () {
+                               Navigator.of(context).pop();
+                             }),
+                           ),
                          ],
                        )
                       ]),
@@ -628,6 +684,8 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> wit
     );
   }
 
+
+  // phone contacts tab bar ui~~~~~~~~~~~~~~~~~~~~~
   Widget eventShareLinkRow(ScreenScaler scaler){
     return Row(
       children: [
@@ -667,5 +725,114 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> wit
             child: ImageView(path: ImageConstants.share_icon))
       ],
     );
+  }
+
+
+  Widget phoneContactList(ScreenScaler scaler, List<Contact> cList,
+      EventInviteFriendsProvider provider) {
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: cList.length,
+        itemBuilder: (context, index) {
+          String currentHeader =
+          cList[index].displayName.capitalize().substring(0, 1);
+          String header = index == 0
+              ? cList[index].displayName.capitalize().substring(0, 1)
+              : cList[index - 1].displayName.capitalize().substring(0, 1);
+          if (searchBarController.text.isEmpty) {
+            return phoneContactsHeader(
+                context, currentHeader, header, index, scaler, cList, provider);
+          } else if (cList[index]
+              .displayName
+              .toLowerCase()
+              .contains(searchBarController.text)) {
+           return phoneContactsCard(context, scaler, cList, index, provider);
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  phoneContactsHeader(BuildContext context, String cHeader, String header, int index,
+      scaler, List<Contact> cList, EventInviteFriendsProvider provider) {
+    if (index == 0 ? true : (header != cHeader)) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
+                scaler.getTextSize(10.8), TextAlign.left),
+          ),
+          phoneContactsCard(context, scaler, cList, index, provider)
+        ],
+      );
+    } else {
+      return phoneContactsCard(context, scaler, cList, index, provider);
+    }
+  }
+
+  Widget phoneContactsCard( BuildContext context,
+      ScreenScaler scaler,
+      List<Contact> contactList,
+      int index,
+      EventInviteFriendsProvider provider){
+    return Column(
+      children: [
+        Card(
+          elevation: 3.0,
+          shadowColor: ColorConstants.colorWhite,
+          shape: RoundedRectangleBorder(
+              borderRadius: scaler.getBorderRadiusCircular(12)),
+          child: Padding(
+            padding: scaler.getPaddingAll(10.0),
+            child: Row(
+              children: [
+                CommonWidgets.profileCardImageDesign(
+                    scaler, contactList[index].photoURL),
+                SizedBox(width: scaler.getWidth(2.5)),
+                CommonWidgets.profileCardNameAndEmailDesign(
+                    scaler,
+                  contactList[index].displayName,
+                  contactList[index].email),
+                SizedBox(width: scaler.getWidth(1.0)),
+                Column(
+                  children: [
+                    SizedBox(height: scaler.getHeight(2.5)),
+                    Row(
+                      children: [
+                        contactList[index].email == "" ? Container() : phoneContactIconView(Icons.email_outlined, onTapFun: (){
+                          provider.eventMail(context, contactList[index].email,
+                              "Please find link to the event I’m organising: https://meetmeyou.com/event?eid%3D${provider.eventDetail.eid}");
+                        }),
+                        contactList[index].email == "" ? Container() : SizedBox(width: scaler.getWidth(1.5)),
+                        contactList[index].phoneNumber == "" ? Container() : phoneContactIconView(Icons.message_sharp, onTapFun: (){
+                          provider.eventMessage(context, contactList[index].phoneNumber,
+                              "Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${provider.eventDetail.eid}");
+                        }),
+                        contactList[index].phoneNumber == "" ? Container() : SizedBox(width: scaler.getWidth(1.5)),
+                        contactList[index].other.containsValue("") ? Container() :  phoneContactIconView(Icons.whatsapp, onTapFun: (){
+                          provider.eventWhatsApp(context, contactList[index].other['whatsapp'],
+                              "Please find link to the event I’m organising: https://meetmeyou.com/event?eid=${provider.eventDetail.eid}");
+                        }),
+                        contactList[index].other.containsValue("") ? Container() : SizedBox(width: scaler.getWidth(1.5)),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: scaler.getHeight(0.5)),
+      ],
+    );
+  }
+
+  Widget phoneContactIconView(icon, {VoidCallback? onTapFun}){
+   return GestureDetector(
+     onTap: onTapFun,
+     child: Icon(icon),
+   );
   }
 }

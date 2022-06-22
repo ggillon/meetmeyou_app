@@ -273,5 +273,6 @@
   "phone_contacts" : "Phone Contacts",
   "mmy_contacts" : "MMY Contacts",
   "event_link" : "Event Link:",
-  "copy_to_clipboard" : "Copy to clipboard"
+  "copy_to_clipboard" : "Copy to clipboard",
+  "whatsapp_not_installed" : "Whatsapp not installed"
 }

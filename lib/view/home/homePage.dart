@@ -185,7 +185,10 @@ class _HomePageState extends State<HomePage>
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
             floatingActionButton: (provider.checkAppleLoginFilledProfile == true || provider.checkAppleLoginFilledProfile == null) ? Container() : GestureDetector(
               onTap: (){
-                Navigator.pushNamed(context, RoutesConstants.editProfileScreen);
+                Navigator.pushNamed(context, RoutesConstants.editProfileScreen).then((value) {
+                  provider.getIndexChanging(context);
+                  provider.checkFilledProfile(context);
+                });
               },
               child: Card(
                 color: Colors.orange,

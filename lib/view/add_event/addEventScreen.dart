@@ -51,7 +51,7 @@ class AddEventScreen extends StatelessWidget {
                 children: [
                   privateEventCard(context, scaler, dashBoardProvider),
                   SizedBox(height: scaler.getHeight(2.5)),
-                  announcementEventCard(context, scaler, dashBoardProvider),
+                //  announcementEventCard(context, scaler, dashBoardProvider),
                 ],
               )
             ],
