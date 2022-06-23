@@ -78,7 +78,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> wit
             DialogHelper.showDialogWithTwoButtons(context, "un_invite_users".tr(), "un_invite_all_users".tr());
           }
         } : (){
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         } ),
         body: BaseView<EventInviteFriendsProvider>(
           onModelReady: (provider) {

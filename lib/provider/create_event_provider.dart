@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
@@ -11,6 +12,7 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
 import 'package:meetmeyou_app/helper/date_time_helper.dart';
+import 'package:meetmeyou_app/helper/deep_linking.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -19,6 +21,7 @@ import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
+import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/storage/storage.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
@@ -29,6 +32,8 @@ class CreateEventProvider extends BaseProvider {
   EventDetail eventDetail = locator<EventDetail>();
   UserDetail userDetail = locator<UserDetail>();
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
+  DashboardProvider dashboardProvider = locator<DashboardProvider>();
+  EventBus eventBus = locator<EventBus>();
 
   File? image;
 
@@ -106,10 +111,10 @@ class CreateEventProvider extends BaseProvider {
           source: ImageSource.camera, imageQuality: 85, maxHeight: 1440);
      // image = File(pickedFile!.path);
       if (image != null) {
-        eventDetail.eventPhotoUrl = "";
+        eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
       }
       if (pickedFile != null) {
-        eventDetail.eventPhotoUrl = "";
+        eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
           image = value;
           notifyListeners();
@@ -121,11 +126,11 @@ class CreateEventProvider extends BaseProvider {
           source: ImageSource.gallery, imageQuality: 85, maxHeight: 1440);
      // image = File(pickedFile!.path);
       if (image != null) {
-        eventDetail.eventPhotoUrl = "";
+        eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
       }
 
       if (pickedFile != null) {
-        eventDetail.eventPhotoUrl = "";
+        eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
           image = value;
           notifyListeners();
@@ -302,16 +307,17 @@ class CreateEventProvider extends BaseProvider {
   Future createEvent(BuildContext context, String title, String location,
       String description, DateTime startDateTime, DateTime endDateTime,
       {String? photoURL, File? photoFile}) async {
+    hideKeyboard(context);
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value = await mmyEngine!
         .createEvent(
             title: title,
-            location: location,
+            location: (location == "" || location == null) ? "not_specified".tr() : location,
             description: description,
            // photoFile: photoFile ?? null,
-            photoURL: photoURL ?? "",
+            photoURL: (photoURL == "" || photoURL == null) ? DEFAULT_EVENT_PHOTO_URL : photoURL,
             start: addMultipleDate == true ? null : startDateTime,
             end: addMultipleDate == true ? null : endDateTime,
             startDateOptions: addMultipleDate == true
@@ -332,22 +338,27 @@ class CreateEventProvider extends BaseProvider {
           setState(ViewState.Idle);
           DialogHelper.showMessage(context, e.message);
         });
-        await updateEvent(context, title, location, description, startDateTime, endDateTime, photoURL: eventDetail.eventPhotoUrl);
+        await updateEvent(context, title, location, description, startDateTime, endDateTime, photoURL: eventDetail.eventPhotoUrl, isCreateEvent: true);
+        Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+            .then((value) {
+          Navigator.of(context).pop();
+          // this is done because home screen not refreshes on pop when user choose or click a photo.
+          eventBus.fire(InviteEventFromLink(true));
+        });
       } else{
         setState(ViewState.Idle);
         eventDetail.eventPhotoUrl = value.photoURL;
+        clearMultiDateOption();
+        Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+            .then((value) {
+          // fromInviteScreen = true;
+          // updateLoadingStatus(true);
+          Navigator.of(context).pop();
+        });
       }
     //  eventDetail.eventPhotoUrl = value.photoURL;
 
-      clearMultiDateOption();
-      //   DialogHelper.showMessage(context, "Event created Successfully");
-      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-          .then((value) {
-        // fromInviteScreen = true;
-        // updateLoadingStatus(true);
-        hideKeyboard(context);
-        Navigator.of(context).pop();
-      });
+
     }else{
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "error_message".tr());
@@ -356,7 +367,7 @@ class CreateEventProvider extends BaseProvider {
 
   Future updateEvent(BuildContext context, String title, String location,
       String description, DateTime startDateTime, DateTime endDateTime,
-      {String? photoURL, File? photoFile}) async {
+      {String? photoURL, File? photoFile, bool isCreateEvent = false}) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     if(image != null){
@@ -368,9 +379,9 @@ class CreateEventProvider extends BaseProvider {
     var value = await mmyEngine!
         .updateEvent(eventDetail.eid.toString(),
             title: title,
-            location: location,
+            location: (location == "" || location == null) ? "not_specified".tr() : location,
             description: description,
-            photoURL: eventDetail.eventPhotoUrl ?? "",
+            photoURL: eventDetail.eventPhotoUrl ?? DEFAULT_EVENT_PHOTO_URL,
          //   photoFile: eventDetail.eventPhotoUrl == "" ? image ?? null : null,
             start: startDateTime,
             end: endDateTime)
@@ -405,7 +416,7 @@ class CreateEventProvider extends BaseProvider {
       clearMultiDateOption();
       // DialogHelper.showMessage(context, "Event updated Successfully");
 
-      Navigator.of(context).pop();
+     isCreateEvent ? Container() : Navigator.of(context).pop();
     } else{
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "error_message".tr());

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:meetmeyou_app/constants/color_constants.dart';
 
 class ImageCrop extends StatefulWidget {
   const ImageCrop({Key? key, required this.image}) : super(key: key);
@@ -60,7 +61,7 @@ class _ImageCropState extends State<ImageCrop> {
           tooltip: 'Delete',
           child: const Icon(Icons.delete),
         ),
-        _croppedFile == null ?
+     //   _croppedFile == null ?
           Padding(
             padding: const EdgeInsets.only(left: 32.0),
             child: FloatingActionButton(
@@ -72,15 +73,16 @@ class _ImageCropState extends State<ImageCrop> {
               tooltip: 'Crop',
               child: const Icon(Icons.crop),
             ),
-          ) :
+          ),
+            //:
         Padding(
           padding: const EdgeInsets.only(left: 32.0),
           child: FloatingActionButton(
             heroTag: "done",
             onPressed: () {
-              Navigator.of(context).pop(_croppedFile);
+              Navigator.of(context).pop(_croppedFile ?? widget.image);
             },
-            backgroundColor: const Color(0xFFBC764A),
+            backgroundColor: ColorConstants.primaryColor,
             tooltip: 'Done',
             child: const Icon(Icons.done),
           ),

@@ -802,14 +802,12 @@ class _HomePageState extends State<HomePage>
             dashboardProvider.updateEventNotificationCount();
             provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
           });
-        } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
-            "edit") {
+        } else if (CommonEventFunction.getEventBtnStatus(event, provider.userDetail.cid.toString()) == "edit") {
             provider.setEventValuesForEdit(event);
             provider.clearMultiDateOption();
             Navigator.pushNamed(context, RoutesConstants.createEventScreen)
-                .then((value) {
-              provider.getIndexChanging(context);
+                .then((value) async {
+             await provider.getIndexChanging(context);
             });
         } else if (CommonEventFunction.getEventBtnStatus(
                 event, provider.userDetail.cid.toString()) ==

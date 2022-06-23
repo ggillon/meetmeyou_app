@@ -865,7 +865,7 @@ class CommonWidgets {
                           SizedBox(height: scaler.getHeight(1.1)),
                           Container(
                             width: double.infinity,
-                            child: Text("default_photo".tr()).regularText(
+                            child: Text("sample_photos".tr()).regularText(
                                 ColorConstants.primaryColor,
                                 scaler.getTextSize(12),
                                 TextAlign.center),

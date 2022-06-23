@@ -137,38 +137,49 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.7)),
-                            provider.getMultipleDate == true ||
-                                    provider.finalDate == true
+                            (provider.getMultipleDate == true ||
+                                    provider.finalDate == true)
                                 ? MultiDateShimmer()
                                 : provider.addMultipleDate == true
-                                    ? provider.multipleDateOption.startDate
+                                    ? (provider.multipleDateOption.startDate
                                                     .length ==
                                                 0 ||
                                             provider.multipleDateOption
                                                     .startDate.length ==
-                                                null
+                                                null)
                                         ? addDateCard(context, scaler, provider)
-                                        : Column(
-                                            children: [
-                                              Align(
-                                                alignment: Alignment.bottomLeft,
-                                                child: Text("date_options".tr())
-                                                    .boldText(
-                                                        Colors.black,
-                                                        scaler.getTextSize(10.5),
-                                                        TextAlign.center),
-                                              ),
-                                              SizedBox(
-                                                  height:
-                                                      scaler.getHeight(0.7)),
-                                              optionsDesign(scaler, provider),
-                                              SizedBox(
-                                                  height:
-                                                      scaler.getHeight(0.7)),
-                                              multipleDateCardListView(
-                                                  context, scaler, provider),
-                                            ],
-                                          )
+                                        : Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            SizedBox(
+                                              width : scaler.getWidth(72),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Align(
+                                                      alignment: Alignment.bottomLeft,
+                                                      child: Text("date_options".tr())
+                                                          .boldText(
+                                                              Colors.black,
+                                                              scaler.getTextSize(10.5),
+                                                              TextAlign.center),
+                                                    ),
+                                                    SizedBox(
+                                                        height:
+                                                            scaler.getHeight(0.7)),
+                                                    optionsDesign(scaler, provider),
+                                                    SizedBox(
+                                                        height:
+                                                            scaler.getHeight(0.7)),
+                                                    multipleDateCardListView(
+                                                        context, scaler, provider),
+                                                  ],
+                                                ),
+                                            ),
+                                            SizedBox(width: scaler.getWidth(1.5)),
+                                            addDateCard(context, scaler, provider)
+                                          ],
+                                        )
                                     : Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -399,12 +410,12 @@ class CreateEventScreen extends StatelessWidget {
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.streetAddress,
                                 validator: (value) {
-                                  if (value!.trim().isEmpty) {
-                                    return "event_location_required".tr();
-                                  }
-                                  {
-                                    return null;
-                                  }
+                                  // if (value!.trim().isEmpty) {
+                                  //   return "event_location_required".tr();
+                                  // }
+                                  // {
+                                  //   return null;
+                                  // }
                                 },
                               ),
                             ),
@@ -439,12 +450,12 @@ class CreateEventScreen extends StatelessWidget {
                               keyboardType: TextInputType.multiline,
                               maxLines: 6,
                               validator: (value) {
-                                if (value!.trim().isEmpty) {
-                                  return "event_description_required".tr();
-                                }
-                                {
-                                  return null;
-                                }
+                                // if (value!.trim().isEmpty) {
+                                //   return "event_description_required".tr();
+                                // }
+                                // {
+                                //   return null;
+                                // }
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.7)),
@@ -519,14 +530,14 @@ class CreateEventScreen extends StatelessWidget {
                                               [];
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            if (provider.image == null &&
-                                                provider.eventDetail
-                                                        .eventPhotoUrl ==
-                                                    null) {
-                                              DialogHelper.showMessage(context,
-                                                  "Please Select image.");
-                                              return;
-                                            }
+                                            // if (provider.image == null &&
+                                            //     provider.eventDetail
+                                            //             .eventPhotoUrl ==
+                                            //         null) {
+                                            //   DialogHelper.showMessage(context,
+                                            //       "Please Select image.");
+                                            //   return;
+                                            // }
                                             // else if (provider.startDate
                                             //     .isAfter(provider.endDate)) {
                                             //   DialogHelper.showMessage(context,
@@ -568,9 +579,9 @@ class CreateEventScreen extends StatelessWidget {
                                             //             .eventPhotoUrl);
                                             //   }
                                             // }
-                                            else {
+                                           // else {
                                               provider.updateEvent(
-                                                  context,
+                                                  _scaffoldKey.currentContext!,
                                                   eventNameController.text,
                                                   addressController.text,
                                                   eventDescriptionController
@@ -584,7 +595,7 @@ class CreateEventScreen extends StatelessWidget {
                                                   photoURL: provider.eventDetail
                                                       .eventPhotoUrl);
                                             }
-                                          }
+                                        //  }
                                         })
                                 : provider.state == ViewState.Busy
                                     ? Center(
@@ -612,27 +623,28 @@ class CreateEventScreen extends StatelessWidget {
                                         //   provider.updateLoadingStatus(true);
                                         // });
                                         if (_formKey.currentState!.validate()) {
-                                          if (provider.image == null &&
-                                              provider.eventDetail
-                                                      .eventPhotoUrl ==
-                                                  null) {
-                                            DialogHelper.showMessage(context,
-                                                "Please Select image.");
-                                            return;
-                                          }
+                                          // if (provider.image == null &&
+                                          //     provider.eventDetail
+                                          //             .eventPhotoUrl ==
+                                          //         null) {
+                                          //   DialogHelper.showMessage(context,
+                                          //       "Please Select image.");
+                                          //   return;
+                                          // }
                                           // else if (provider.startDate
                                           //     .isAfter(provider.endDate)) {
                                           //   DialogHelper.showMessage(context,
                                           //       "Start date cannot high than End date.");
                                           //   return;
                                           // }
-                                          else if(provider.addMultipleDate == true){
+
+                                            if(provider.addMultipleDate == true){
                                             if(provider.multipleDateOption.startDate.length < 2){
                                               DialogHelper.showMessage(context,
                                                   "Please add at least two Multiple Date.");
                                             } else{
                                               provider.createEvent(
-                                                  context,
+                                                  _scaffoldKey.currentContext!,
                                                   eventNameController.text,
                                                   addressController.text,
                                                   eventDescriptionController.text,
@@ -648,7 +660,7 @@ class CreateEventScreen extends StatelessWidget {
                                             }
                                           } else {
                                             provider.createEvent(
-                                                context,
+                                                _scaffoldKey.currentContext!,
                                                 eventNameController.text,
                                                 addressController.text,
                                                 eventDescriptionController.text,
@@ -1025,9 +1037,9 @@ class CreateEventScreen extends StatelessWidget {
           // provider.eventDetail.editEvent == true
           //     ? Container()
           //     :
-          Container(
-                  margin: scaler.getMarginLTRB(0.0, 0.5, 0.5, 0.5),
-                  child: addDateCard(context, scaler, provider))
+          // Container(
+          //         margin: scaler.getMarginLTRB(0.0, 0.5, 0.5, 0.5),
+          //         child: addDateCard(context, scaler, provider))
         ],
       ),
     );
