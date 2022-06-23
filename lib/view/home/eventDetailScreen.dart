@@ -81,8 +81,7 @@ class EventDetailScreen extends StatelessWidget {
               : Container();
           provider.eventDetail.event?.multipleDates == true
               ? provider.getMultipleDateOptionsFromEvent(
-                  context, provider.eventDetail.eid!,
-                  onBtnClick: false)
+                  context, provider.eventDetail.eid!)
               : Container();
           provider.eventDetail.event?.multipleDates == true
               ? provider.listOfDateSelected(context, provider.eventDetail.eid!).then((value) {
@@ -162,9 +161,8 @@ class EventDetailScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                         if (provider.value == true ||
-                                provider.getMultipleDate == true)
-                              Center(child: CircularProgressIndicator())
+                         if (provider.value == true || provider.getMultipleDate == true)
+                              Center(child: Container())
                             else
                             provider.eventDetail.isPastEvent == true ? CommonWidgets.commonBtn(scaler, context, "hide".tr(), ColorConstants.primaryColor, ColorConstants.colorWhite,
                             onTapFun: (){
@@ -293,7 +291,8 @@ class EventDetailScreen extends StatelessWidget {
                                 }
                               }),
                             SizedBox(height: scaler.getHeight(2.0)),
-                       provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? manageInvitationCard(context, scaler, provider)
+                       provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? ((provider.eventDetail.eventBtnStatus ==
+                           "cancelled" ? Container() : manageInvitationCard(context, scaler, provider)))
                        : (provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider)),
                             SizedBox(height: scaler.getHeight(2)),
                             provider.eventAttendingLength == 0
@@ -443,7 +442,7 @@ class EventDetailScreen extends StatelessWidget {
                                     provider.eventDetail.organiserId !=
                                         provider.auth.currentUser!.uid
                                 ?
-                            provider.statusMultiDate == true
+                            provider.getMultipleDate == true
                                     ? MultiDateAttendDateCardShimmer()
                                     :
                             multiAttendDateUi(context, scaler, provider)
@@ -870,11 +869,23 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
+
   Widget multiAttendDateCard(BuildContext context, ScreenScaler scaler,
       EventDetailProvider provider, int index) {
     return Row(
       children: [
         GestureDetector(
+          onTap: (){
+            provider.selectedMultiDateIndex = index;
+            if(provider.multiDateDidsList.contains(provider.multipleDate[index].did)){
+              provider.multiDateDidsList.remove(provider.multipleDate[index].did);
+              provider.didsOfMultiDateSelected.add(provider.multipleDate[index].did);
+            } else{
+              provider.multiDateDidsList.add(provider.multipleDate[index].did);
+              provider.didsOfMultiDateSelected.remove(provider.multipleDate[index].did);
+            }
+            provider.notifyListeners();
+          },
           // onTap: () {
           //   if (provider.didsOfMultiDateSelected
           //       .contains(provider.multipleDate[index].did)) {
@@ -941,7 +952,8 @@ class EventDetailScreen extends StatelessWidget {
                 color: ColorConstants.colorLightGray,
                 borderRadius: scaler.getBorderRadiusCircular(12.0),
                 boxShadow: [
-                  BoxShadow(color: provider.didsOfMultiDateSelected.contains(provider.multipleDate[index].did)
+                  BoxShadow(color:
+                  provider.multiDateDidsList.contains(provider.multipleDate[index].did)
                             ? ColorConstants.primaryColor : ColorConstants.colorWhitishGray, spreadRadius: 1)
                 ]),
             child: Column(
@@ -999,50 +1011,50 @@ class EventDetailScreen extends StatelessWidget {
   Widget submitMultiDateBtn(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: (){
-
-          // if (provider.didsOfMultiDateSelected
-          //     .contains(provider.multipleDate[index].did)) {
-          //   provider
-          //       .answerMultiDateOption(
-          //       context,
-          //       provider.multipleDate[index].eid,
-          //       provider.multipleDate[index].did,
-          //       false)
-          //       .then((value) {
-          //     //  Navigator.of(context).pop();
-          //     provider.getMultipleDateOptionsFromEvent(
-          //         context, provider.eventDetail.eid!,
-          //         onBtnClick: false);
-          //     provider.listOfDateSelected(
-          //         context, provider.eventDetail.eid!);
-          //   });
-          // } else {
-          //   provider
-          //       .answerMultiDateOption(
-          //       context,
-          //       provider.multipleDate[index].eid,
-          //       provider.multipleDate[index].did,
-          //       true)
-          //       .then((value) {
-          //     //   Navigator.of(context).pop();
-          //     provider.getMultipleDateOptionsFromEvent(
-          //         context, provider.eventDetail.eid!,
-          //         onBtnClick: false);
-          //     provider.listOfDateSelected(
-          //         context, provider.eventDetail.eid!);
-          //   });
-          // }
+      onTap: provider.answerMultiDate == true ? (){} : (){
+          if(provider.multiDateDidsList.isNotEmpty){
+            provider
+                .answerMultiDateOption(
+                context,
+                provider.eventDetail.eid.toString(),
+                provider.multiDateDidsList,
+                true)
+                .then((value) {
+              //  Navigator.of(context).pop();
+              provider.getMultipleDateOptionsFromEvent(
+                  context, provider.eventDetail.eid!,
+                  onBtnClick: false);
+              provider.listOfDateSelected(
+                  context, provider.eventDetail.eid!,  onBtnClick: false);
+            });
+          }
+          if(provider.didsOfMultiDateSelected.isNotEmpty){
+            provider
+                .answerMultiDateOption(
+                context,
+                provider.eventDetail.eid.toString(),
+                provider.didsOfMultiDateSelected,
+                false)
+                .then((value) {
+              //  Navigator.of(context).pop();
+              provider.getMultipleDateOptionsFromEvent(
+                  context, provider.eventDetail.eid!,
+                  onBtnClick: false);
+              provider.listOfDateSelected(
+                  context, provider.eventDetail.eid!,  onBtnClick: false);
+            });
+        }
       },
       child: Card(
+        color: provider.answerMultiDate == true ? ColorConstants.colorNewGray : ColorConstants.colorWhite,
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(8)),
         child: Padding(
           padding: scaler.getPaddingLTRB(2.0, 1.6, 2.0, 1.6),
           child: Container(
             alignment: Alignment.center,
-            child: Text("submit".tr())
-                .semiBoldText(ColorConstants.primaryColor,
+            child: Text(provider.answerMultiDate == true ?  "submitted".tr() : "submit".tr())
+                .semiBoldText(provider.answerMultiDate == true ? ColorConstants.colorGray : ColorConstants.primaryColor,
                 scaler.getTextSize(11.0), TextAlign.left,
                 maxLines: 1, overflow: TextOverflow.ellipsis),
           )

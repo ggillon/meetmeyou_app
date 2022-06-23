@@ -287,7 +287,7 @@ class EventDetailProvider extends BaseProvider {
       {bool onBtnClick = true}) async {
     onBtnClick ? updateGetMultipleDate(true) : updateStatusMultiDate(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    onBtnClick ? Navigator.of(context).pop() : Container();
+ // onBtnClick ? Navigator.of(context).pop() : Container();
     var value = await mmyEngine!.getDateOptionsFromEvent(eid).catchError((e) {
       onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
       DialogHelper.showMessage(context, e.message);
@@ -296,6 +296,29 @@ class EventDetailProvider extends BaseProvider {
     if (value != null) {
       multipleDate = value;
       //  addMultiDateTimeValue(multipleDate);
+      onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
+    }
+  }
+
+  bool statusMultiDate = false;
+
+  updateStatusMultiDate(bool value) {
+    statusMultiDate = value;
+    notifyListeners();
+  }
+
+  Future listOfDateSelected(BuildContext context, String eid, {bool onBtnClick = true}) async {
+    onBtnClick ? updateGetMultipleDate(true) : updateStatusMultiDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.listDateSelected(eid).catchError((e) {
+      onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      //  didsOfMultiDateSelected = value;
+      multiDateDidsList = value;
       onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
     }
   }
@@ -316,7 +339,10 @@ class EventDetailProvider extends BaseProvider {
   bool attendDateBtnColor = false;
   String? selectedAttendDateDid;
   String? selectedAttendDateEid;
-  int? selectedMultiDateIndex;
+  int selectedMultiDateIndex = 0;
+  List<String> multiDateDidsList = [];
+  // this list used for attend = false
+  List<String> didsOfMultiDateSelected = [];
 
   bool answerMultiDate = false;
 
@@ -326,11 +352,11 @@ class EventDetailProvider extends BaseProvider {
   }
 
   Future answerMultiDateOption(
-      BuildContext context, String eid, String did, bool attend) async {
+      BuildContext context, String eid, List<String> did, bool attend) async {
     updateMultiDate(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!.answerDateOption(eid, did, attend).catchError((e) {
+    await mmyEngine!.answerDatesOption(eid, did, attend).catchError((e) {
       updateMultiDate(false);
       DialogHelper.showMessage(context, e.message);
     });
@@ -338,43 +364,19 @@ class EventDetailProvider extends BaseProvider {
     updateMultiDate(false);
   }
 
-  bool statusMultiDate = false;
-
-  updateStatusMultiDate(bool value) {
-    statusMultiDate = value;
-    notifyListeners();
-  }
-
-  Future dateOptionStatus(BuildContext context, String eid, String did) async {
-    updateStatusMultiDate(true);
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    var value = await mmyEngine!.dateOptionStatus(eid, did).catchError((e) {
-      updateStatusMultiDate(false);
-      DialogHelper.showMessage(context, e.message);
-    });
-
-    print(value);
-
-    updateStatusMultiDate(false);
-  }
-
-  List<String> didsOfMultiDateSelected = [];
-
-  Future listOfDateSelected(BuildContext context, String eid) async {
-    updateStatusMultiDate(true);
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    var value = await mmyEngine!.listDateSelected(eid).catchError((e) {
-      updateStatusMultiDate(false);
-      DialogHelper.showMessage(context, e.message);
-    });
-
-    if (value != null) {
-      didsOfMultiDateSelected = value;
-      updateStatusMultiDate(false);
-    }
-  }
+  // Future dateOptionStatus(BuildContext context, String eid, String did) async {
+  //   updateStatusMultiDate(true);
+  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   var value = await mmyEngine!.dateOptionStatus(eid, did).catchError((e) {
+  //     updateStatusMultiDate(false);
+  //     DialogHelper.showMessage(context, e.message);
+  //   });
+  //
+  //   print(value);
+  //
+  //   updateStatusMultiDate(false);
+  // }
 
 
   bool deepLink = false;

@@ -278,5 +278,6 @@
   "sample_photos" : "Sample Photos",
   "not_specified" : "Not Specified",
   "check_availabilities" : "Check availabilities",
-  "submitted" : "Submitted"
+  "submitted" : "Submitted",
+  "select_date_first" : "Please select date first."
 }
