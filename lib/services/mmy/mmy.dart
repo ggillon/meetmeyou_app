@@ -155,6 +155,8 @@ abstract class MMYEngine {
   Future<List<DateOption>> getDateOptionsFromEvent(String eid);
   /// Answer a date attendance for an event
   Future<Event> answerDateOption(String eid, String did, bool attend);
+  /// Answer dates attendance for an event
+  Future<Event> answerDatesOption(String eid, List<String> DIDs, bool attend);
   /// Get status of dateOption for an event date
   Future<bool> dateOptionStatus(String eid, String did);
   /// Get list of dates selected
@@ -603,6 +605,13 @@ class MMY implements MMYEngine {
   @override
   Future<Event> answerDateOption(String eid, String did, bool attend) async {
     await dateLib.answerDateOption(_currentUser, eid, did, attend);
+    return await dateLib.updateEventStatus(_currentUser, eid,);
+  }
+
+  @override
+  Future<Event> answerDatesOption(String eid, List<String> DIDs, bool attend) async {
+    for(String did in DIDs)
+      await dateLib.answerDateOption(_currentUser, eid, did, attend);
     return await dateLib.updateEventStatus(_currentUser, eid,);
   }
 
