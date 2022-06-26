@@ -628,7 +628,7 @@ class MMY implements MMYEngine {
     for(String did in DIDs)
       await dateLib.answerDateOption(_currentUser, eid, did, attend);
     for(DateOption date in dates) {
-      if(DIDs.contains(date.did))
+      if(!DIDs.contains(date.did))
         await dateLib.answerDateOption(_currentUser, eid, date.did, !attend);
     }
     return await dateLib.updateEventStatus(_currentUser, eid,);
