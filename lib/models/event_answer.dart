@@ -20,7 +20,7 @@ class EventAnswer {
     final String email = data['email'];
     final String attend = data['attend'];
     final Map fields = data['fields'];
-    final Map answers = data['fields'];
+    final Map answers = data['answers'];
     final DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(
         timeStampMillisec);
 
@@ -36,7 +36,7 @@ class EventAnswer {
     final String email = data['email'];
     final String attend = data['attend'];
     final Map fields = data['fields'];
-    final Map answers = data['fields'];
+    final Map answers = data['answers'];
     final DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(
         timeStampMillisec);
 
