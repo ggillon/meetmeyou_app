@@ -744,14 +744,14 @@ class CommonWidgets {
         ));
   }
 
- static Widget loading(ScreenScaler scaler) {
+ static Widget loading(ScreenScaler scaler, {String? txt}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(child: CircularProgressIndicator()),
         SizedBox(height: scaler.getHeight(1)),
-        Text("loading_event".tr()).mediumText(ColorConstants.primaryColor,
+        Text(txt ?? "loading_event".tr()).mediumText(ColorConstants.primaryColor,
             scaler.getTextSize(11), TextAlign.left),
       ],
     );

@@ -110,7 +110,7 @@ class DialogHelper {
 
   static PreferredSizeWidget appBarWithBack(
       ScreenScaler scaler, BuildContext context,
-      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick, bool back = true, VoidCallback? backIconClick}) {
+      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick, bool back = true, VoidCallback? backIconClick, bool email = false, VoidCallback? onTapEmail}) {
     return AppBar(
       elevation: 0,
       backgroundColor: ColorConstants.colorWhite,
@@ -133,7 +133,13 @@ class DialogHelper {
         ),
       ),
       actions: [
-        showEdit
+      email == true ?  GestureDetector(
+        onTap: onTapEmail,
+        child: Padding(
+            padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+            child: Icon(Icons.email_rounded,
+                color: ColorConstants.primaryColor, size: 28)),
+      ) : (showEdit
             ? GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: message == true
@@ -149,7 +155,7 @@ class DialogHelper {
                             height: scaler.getWidth(6.0),
                             path: ImageConstants.ic_edit),
                       ))
-            : Container(),
+            : Container())
       ],
     );
   }

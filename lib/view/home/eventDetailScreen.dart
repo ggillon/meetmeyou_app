@@ -96,6 +96,12 @@ class EventDetailScreen extends StatelessWidget {
               // }
           })
               : Container();
+          if(provider.eventDetail.eventBtnStatus == "going"){
+            if (provider
+                .eventDetail.event!.form.isNotEmpty) {
+              provider.getAnswerEventForm(context, provider.eventDetail.eid.toString(), provider.auth.currentUser!.uid.toString());
+            }
+          }
          // print(provider.eventDetail.eid.toString());
 
           // If event is deleted or event value is null on get event api.
@@ -294,6 +300,10 @@ class EventDetailScreen extends StatelessWidget {
                        provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? ((provider.eventDetail.eventBtnStatus ==
                            "cancelled" ? Container() : manageInvitationCard(context, scaler, provider)))
                        : (provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider)),
+                            provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?
+                            SizedBox(height: scaler.getHeight(2)) : Container(),
+                            provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?
+                            viewRepliesToFormCard(context, scaler, provider) : Container(),
                             SizedBox(height: scaler.getHeight(2)),
                             provider.eventAttendingLength == 0
                                 ? Container()
@@ -754,6 +764,39 @@ class EventDetailScreen extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: Text("manage_invitations".tr())
+                        .semiBoldText(ColorConstants.colorBlack,
+                        scaler.getTextSize(10.8), TextAlign.left,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                  )),
+              SizedBox(width: scaler.getWidth(2)),
+              ImageView(
+                path: ImageConstants.event_arrow_icon,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget viewRepliesToFormCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
+    return GestureDetector(
+      onTap:(){
+        Navigator.pushNamed(context, RoutesConstants.viewRepliesToFormScreen);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: scaler.getBorderRadiusCircular(8)),
+        child: Padding(
+          padding: scaler.getPaddingLTRB(2.0, 1.6, 2.0, 1.6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(width: scaler.getWidth(2)),
+              Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("View_replies_to_form".tr())
                         .semiBoldText(ColorConstants.colorBlack,
                         scaler.getTextSize(10.8), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),

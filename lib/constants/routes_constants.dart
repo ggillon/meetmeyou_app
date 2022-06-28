@@ -45,4 +45,5 @@ class RoutesConstants {
   static const eventGalleryPage = "eventGalleryPage";
   static const eventGalleryImageView = "eventGalleryImageView";
   static const createAnnouncementScreen = "createAnnouncementScreen";
+  static const viewRepliesToFormScreen = "viewRepliesToFormScreen";
 }

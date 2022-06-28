@@ -39,6 +39,7 @@ import 'package:meetmeyou_app/view/home/public_home_page/public_home_page.dart';
 import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
+import 'package:meetmeyou_app/view/home/view_replies_to_form_screen/view_replies_to_form_screen.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
 import 'package:meetmeyou_app/view/login/loginPage.dart';
@@ -235,6 +236,9 @@ class Router {
 
       case RoutesConstants.createAnnouncementScreen:
         return MaterialPageRoute(builder: (_) => CreateAnnouncementScreen(), settings: settings);
+
+      case RoutesConstants.viewRepliesToFormScreen:
+        return MaterialPageRoute(builder: (_) => ViewRepliesToFormScreen(), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

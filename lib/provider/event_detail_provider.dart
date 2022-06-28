@@ -506,4 +506,28 @@ class EventDetailProvider extends BaseProvider {
     announcementDetail.announcementLocation = event.location;
     announcementDetail.announcementDescription = event.description;
 }
+
+
+ bool getAnswerForm = false;
+
+  updateAnswerForm(bool val){
+    getAnswerForm = val;
+    notifyListeners();
+  }
+
+  Future getAnswerEventForm(BuildContext context, String eid, String uid) async{
+    updateAnswerForm(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value =  await mmyEngine!.getAnswerEventForm(eid, uid).catchError((e){
+      updateAnswerForm(false);
+      DialogHelper.showMessage(context, "error_in_getting_answer_form".tr());
+    });
+
+    if(value != null){
+      updateAnswerForm(false);
+    } else{
+      DialogHelper.showMessage(context, "error_in_getting_answer_form".tr());
+    }
+
+  }
 }
