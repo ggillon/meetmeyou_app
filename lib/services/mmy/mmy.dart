@@ -171,6 +171,10 @@ abstract class MMYEngine {
   Future<Event> addQuestionToEvent(Event event, {required questionNum, required String text});
   ///  Reply to form to an event
   Future<EventAnswer> answerEventForm(String eid, {required Map answers});
+  ///  Get reply to form to an event
+  Future<EventAnswer> getAnswerEventForm(String eid, String uid);
+  ///  Get reply to form to an event
+  Future<List<EventAnswer>> getAnswersEventForm(String eid);
   ///  List answers to form
   Future<List<EventAnswer>> emailEventAnswers(String eid);
 
@@ -588,8 +592,18 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<EventAnswer> getAnswerEventForm(String eid, String uid) async {
+    return answerLib.getAnswerEventForm(_currentUser, eid, uid);
+  }
+
+  @override
   Future<List<EventAnswer>> emailEventAnswers(String eid) async {
     return answerLib.emailEventAnswers(eid, _currentUser,);
+  }
+
+  @override
+  Future<List<EventAnswer>> getAnswersEventForm(String eid) {
+    return answerLib.getAnswersEventForm(_currentUser, eid);
   }
 
   @override
@@ -612,8 +626,13 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> answerDatesOption(String eid, List<String> DIDs, bool attend) async {
+    List<DateOption> dates = await getDateOptionsFromEvent(eid);
     for(String did in DIDs)
       await dateLib.answerDateOption(_currentUser, eid, did, attend);
+    for(DateOption date in dates) {
+      if(!DIDs.contains(date.did))
+        await dateLib.answerDateOption(_currentUser, eid, date.did, !attend);
+    }
     return await dateLib.updateEventStatus(_currentUser, eid,);
   }
 
