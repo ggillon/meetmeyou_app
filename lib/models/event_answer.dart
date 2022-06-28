@@ -51,7 +51,7 @@ class EventAnswer {
       'attend': attend,
       'fields': fields,
       'answers': answers,
-      'timeStamp': timeStamp,
+      'timeStamp': timeStamp.millisecondsSinceEpoch,
     };
   }
 
