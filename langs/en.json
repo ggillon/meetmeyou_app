@@ -283,5 +283,6 @@
   "error_in_getting_answer_form" : "Error in getting Event answer form",
   "View_replies_to_form" : "View replies to form",
   "getting_replies" : "Getting replies....",
-  "no_replies_received_yet" : "No replies received yet."
+  "no_replies_received_yet" : "No replies received yet.",
+  "answers" : "Answers"
 }

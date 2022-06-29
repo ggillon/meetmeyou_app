@@ -99,7 +99,13 @@ class EventDetailScreen extends StatelessWidget {
           if(provider.eventDetail.eventBtnStatus == "going"){
             if (provider
                 .eventDetail.event!.form.isNotEmpty) {
-              provider.getAnswerEventForm(context, provider.eventDetail.eid.toString(), provider.auth.currentUser!.uid.toString());
+              provider.getAnswerEventForm(context, provider.eventDetail.eid.toString(), provider.auth.currentUser!.uid.toString()).then((value) {
+                answer1Controller.text = provider.eventAnswer!["1. text"];
+                answer2Controller.text = provider.eventAnswer!["2. text"];
+                answer3Controller.text = provider.eventAnswer!["3. text"];
+                answer4Controller.text = provider.eventAnswer!["4. text"];
+                answer5Controller.text = provider.eventAnswer!["5. text"];
+              });
             }
           }
          // print(provider.eventDetail.eid.toString());
@@ -212,8 +218,7 @@ class EventDetailScreen extends StatelessWidget {
                                     //   });
                                     // } else
                                     //   {
-                                    if (provider
-                                        .eventDetail.event!.form.isNotEmpty) {
+                                    if (provider.eventDetail.event!.form.isNotEmpty) {
                                       List<String> questionsList = [];
                                       for (var value in provider
                                           .eventDetail.event!.form.values) {
@@ -245,7 +250,8 @@ class EventDetailScreen extends StatelessWidget {
                                         context,
                                         provider.eventDetail.eid!,
                                         EVENT_NOT_INTERESTED);
-                                  });
+                                  }, eventDetailMultiDate: (provider.eventDetail.eventBtnStatus ==
+                                      "going" && provider.eventDetail.event!.form.isNotEmpty) ? true : false);
                                 } else if (provider.eventDetail.eventBtnStatus ==
                                     "edit") {
                                   // provider.setEventValuesForEdit(event);
@@ -295,14 +301,14 @@ class EventDetailScreen extends StatelessWidget {
                                 else {
                                   Container();
                                 }
-                              }),
+                              },),
                             SizedBox(height: scaler.getHeight(2.0)),
                        provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? ((provider.eventDetail.eventBtnStatus ==
                            "cancelled" ? Container() : manageInvitationCard(context, scaler, provider)))
                        : (provider.contact == true ? Center(child: CircularProgressIndicator()) : organiserCard(context, scaler, provider)),
-                            provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?
+                            (provider.eventDetail.organiserId == provider.auth.currentUser?.uid && provider.eventDetail.event!.form.isNotEmpty) ?
                             SizedBox(height: scaler.getHeight(2)) : Container(),
-                            provider.eventDetail.organiserId == provider.auth.currentUser?.uid ?
+                            (provider.eventDetail.organiserId == provider.auth.currentUser?.uid && provider.eventDetail.event!.form.isNotEmpty)?
                             viewRepliesToFormCard(context, scaler, provider) : Container(),
                             SizedBox(height: scaler.getHeight(2)),
                             provider.eventAttendingLength == 0

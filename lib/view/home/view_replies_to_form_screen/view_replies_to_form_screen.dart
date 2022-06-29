@@ -10,8 +10,9 @@ import 'package:meetmeyou_app/provider/view_replies_to_form_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 
 class ViewRepliesToFormScreen extends StatelessWidget {
-  const ViewRepliesToFormScreen({Key? key}) : super(key: key);
+  ViewRepliesToFormScreen({Key? key}) : super(key: key);
 
+  List<String> questionsList = [];
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
@@ -21,6 +22,10 @@ class ViewRepliesToFormScreen extends StatelessWidget {
       body: BaseView<ViewReplyToFormProvider>(
         onModelReady: (provider){
           provider.getAnswersEventForm(context);
+          for (var value in provider
+              .eventDetail.event!.form.values) {
+            questionsList.add(value);
+          }
         },
         builder: (context, provider, _){
           return provider.state == ViewState.Busy ?
@@ -31,13 +36,74 @@ class ViewRepliesToFormScreen extends StatelessWidget {
                ColorConstants.primaryColor,
                scaler.getTextSize(11),
                TextAlign.left),
-         ) : Column(
-            children: [
-
-            ],
-          );
+         ) : SingleChildScrollView(
+           child: Padding(
+             padding: scaler.getPaddingLTRB(3.5, 1.0, 3.5, 1.0),
+             child: Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(provider.eventDetail.eventName.toString())
+                      .boldText(
+                      ColorConstants.colorBlack,
+                      scaler.getTextSize(13.8),
+                      TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  SizedBox(height: scaler.getHeight(1.0)),
+                  questionsListView(scaler),
+                  SizedBox(height: scaler.getHeight(2.0)),
+                  Text("${provider.eventDetail.eventName.toString()} ${"answers".tr()}")
+                      .boldText(
+                      ColorConstants.colorBlack,
+                      scaler.getTextSize(12.5),
+                      TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  SizedBox(height: scaler.getHeight(2.0)),
+                ],
+              ),
+           ),
+         );
         },
       ),
     );
+  }
+
+  Widget questionsListView(ScreenScaler scaler){
+    return ListView.builder(
+      shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: questionsList.length,
+        itemBuilder: (context, index){
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("${index + 1}.  ${questionsList[index]}")
+                .mediumText(ColorConstants.colorBlack, 13,
+                TextAlign.left,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
+            SizedBox(height: scaler.getHeight(0.2)),
+          ],
+        );
+    });
+  }
+
+  Widget answersListView(ViewReplyToFormProvider provider, ScreenScaler scaler){
+    return ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: provider.answersList.length,
+        itemBuilder: (context, index){
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("${provider.eventDetail.eventName.toString()} ${"answers".tr()}")
+                  .boldText(
+                  ColorConstants.colorBlack,
+                  scaler.getTextSize(12.5),
+                  TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
+              SizedBox(height: scaler.getHeight(0.2)),
+            ],
+          );
+        });
   }
 }

@@ -1255,8 +1255,7 @@ class CreateEventScreen extends StatelessWidget {
     _fields.add(field);
     // questionsList.add(questionController.text);
     addQue
-        ? provider.addQuestionToEvent(context, provider.eventDetail.event!,
-            _fields.length, questionController.text)
+        ? provider.addQuestionToEvent(context, provider.eventDetail.event!, _fields.length, questionController.text)
         : Container();
     provider.updateQuestionStatus(true);
   }

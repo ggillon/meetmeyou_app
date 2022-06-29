@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -507,7 +508,7 @@ class EventDetailProvider extends BaseProvider {
     announcementDetail.announcementDescription = event.description;
 }
 
-
+  Map? eventAnswer;
  bool getAnswerForm = false;
 
   updateAnswerForm(bool val){
@@ -524,9 +525,8 @@ class EventDetailProvider extends BaseProvider {
     });
 
     if(value != null){
+      eventAnswer = value.answers;
       updateAnswerForm(false);
-    } else{
-      DialogHelper.showMessage(context, "error_in_getting_answer_form".tr());
     }
 
   }

@@ -12,7 +12,7 @@ class EventAnswer {
 
   factory EventAnswer.fromMap(Map<String, dynamic> data) {
 
-    //final int timeStampMillisec = data['timeStamp'];
+    final int timeStampMillisec = data['timeStamp'];
 
     final String eid= data['eid'];
     final String uid= data['uid'];
@@ -21,7 +21,7 @@ class EventAnswer {
     final String attend = data['attend'];
     final Map fields = data['fields'];
     final Map answers = data['fields'];
-    final DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(1);
+    final DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(timeStampMillisec);
 
     return EventAnswer(eid: eid, uid: uid, displayName: displayName, email: email, attend: attend, fields: fields, answers: answers, timeStamp: timeStamp);
   }

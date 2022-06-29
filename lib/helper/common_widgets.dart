@@ -396,7 +396,7 @@ class CommonWidgets {
   }
 
   static respondToEventBottomSheet(BuildContext context, ScreenScaler scaler,
-      {bool? multipleDate, VoidCallback? multiDate, VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide, bool pastEventOrAnnouncement = false}) {
+      {bool? multipleDate, VoidCallback? multiDate, VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide, bool pastEventOrAnnouncement = false, bool eventDetailMultiDate = false}) {
     return showModalBottomSheet(
         useRootNavigator: true,
         shape: RoundedRectangleBorder(
@@ -426,7 +426,7 @@ class CommonWidgets {
                           SizedBox(height: scaler.getHeight(2.3)),
                           Container(
                             width: double.infinity,
-                            child: Text(multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr()).regularText(
+                            child: Text(eventDetailMultiDate ? "View_replies_to_form".tr() : (multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr())).regularText(
                                 ColorConstants.primaryColor,
                                 scaler.getTextSize(12.2),
                                 TextAlign.center),
