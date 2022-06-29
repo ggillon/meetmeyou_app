@@ -19,7 +19,7 @@ class ViewRepliesToFormScreen extends StatelessWidget {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
       backgroundColor: ColorConstants.colorWhite,
-      appBar: DialogHelper.appBarWithBack(scaler, context, email: provider.state == ViewState.Busy ? false : true, onTapEmail: (){
+      appBar: DialogHelper.appBarWithBack(scaler, context, email: true, onTapEmail: (){
         provider.emailEventAnswers(context);
       }),
       body: BaseView<ViewReplyToFormProvider>(

@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage>
                 SizedBox(height: scaler.getHeight(2.0)),
                 Padding(
                   padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
-                  child: Text("my_upcoming_events".tr()).boldText(
+                  child: Text("events".tr()).boldText(
                       ColorConstants.colorBlack,
                       scaler.getTextSize(13),
                       TextAlign.left),

@@ -42,6 +42,7 @@ class EventDetailScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
+  List<String> questionnaireKeysList = [];
   EventDetailScreen({Key? key}) : super(key: key);
 
   @override
@@ -96,15 +97,20 @@ class EventDetailScreen extends StatelessWidget {
               // }
           })
               : Container();
+          if (provider.eventDetail.event!.form.isNotEmpty) {
+            for (var key in provider.eventDetail.event!.form.keys) {
+              questionnaireKeysList.add(key);
+            }
+          }
           if(provider.eventDetail.eventBtnStatus == "going"){
             if (provider
                 .eventDetail.event!.form.isNotEmpty) {
               provider.getAnswerEventForm(context, provider.eventDetail.eid.toString(), provider.auth.currentUser!.uid.toString()).then((value) {
-                answer1Controller.text = provider.eventAnswer!["1. text"];
-                answer2Controller.text = provider.eventAnswer!["2. text"];
-                answer3Controller.text = provider.eventAnswer!["3. text"];
-                answer4Controller.text = provider.eventAnswer!["4. text"];
-                answer5Controller.text = provider.eventAnswer!["5. text"];
+                answer1Controller.text = provider.eventAnswer![questionnaireKeysList[0]];
+                answer2Controller.text = provider.eventAnswer![questionnaireKeysList[1]];
+                answer3Controller.text = provider.eventAnswer![questionnaireKeysList[2]];
+                answer4Controller.text = provider.eventAnswer![questionnaireKeysList[3]];
+                answer5Controller.text = provider.eventAnswer![questionnaireKeysList[4]];
               });
             }
           }
@@ -1249,11 +1255,11 @@ class EventDetailScreen extends StatelessWidget {
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
                               final Map<String, dynamic> answersMap = {
-                                "1. text": answer1Controller.text,
-                                "2. text": answer2Controller.text,
-                                "3. text": answer3Controller.text,
-                                "4. text": answer4Controller.text,
-                                "5. text": answer5Controller.text
+                                questionnaireKeysList[0]: answer1Controller.text,
+                                questionnaireKeysList[1]: answer2Controller.text,
+                                questionnaireKeysList[2]: answer3Controller.text,
+                                questionnaireKeysList[3]: answer4Controller.text,
+                                questionnaireKeysList[4]: answer5Controller.text
                               };
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
