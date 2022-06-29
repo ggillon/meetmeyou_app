@@ -12,7 +12,7 @@ class ViewReplyToFormProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   List<EventAnswer> eventAnswersList = [];
-  List<List<String>> answersList = [];
+  List<ViewReplyFormData> answersList = [];
 
   Future getAnswersEventForm(BuildContext context) async {
     setState(ViewState.Busy);
@@ -28,16 +28,29 @@ class ViewReplyToFormProvider extends BaseProvider {
       eventAnswersList = value;
 
       for (var element in eventAnswersList) {
-        List<String> answerList = [];
         ViewReplyFormData viewReplyFormData = ViewReplyFormData();
         viewReplyFormData.displayName = element.displayName;
         for (var value in element.answers.values) {
           viewReplyFormData.answersList?.add(value);
-        //  answerList.add(value);
         }
-        answersList.add(answerList);
+        answersList.add(viewReplyFormData);
       }
-      print(answersList);
+      setState(ViewState.Idle);
+    }
+  }
+
+  Future emailEventAnswers(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value = await mmyEngine!
+        .emailEventAnswers(eventDetail.eid.toString())
+        .catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "error_in_sending_email_answers".tr());
+    });
+
+    if (value != null) {
+      Navigator.of(context).pop();
       setState(ViewState.Idle);
     }
   }

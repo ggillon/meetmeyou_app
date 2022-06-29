@@ -284,5 +284,6 @@
   "View_replies_to_form" : "View replies to form",
   "getting_replies" : "Getting replies....",
   "no_replies_received_yet" : "No replies received yet.",
-  "answers" : "Answers"
+  "answers" : "Answers",
+  "error_in_sending_email_answers" : "Error in sending email answers"
 }

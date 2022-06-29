@@ -13,14 +13,18 @@ class ViewRepliesToFormScreen extends StatelessWidget {
   ViewRepliesToFormScreen({Key? key}) : super(key: key);
 
   List<String> questionsList = [];
+  ViewReplyToFormProvider provider = ViewReplyToFormProvider();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
       backgroundColor: ColorConstants.colorWhite,
-      appBar: DialogHelper.appBarWithBack(scaler, context, email: true),
+      appBar: DialogHelper.appBarWithBack(scaler, context, email: provider.state == ViewState.Busy ? false : true, onTapEmail: (){
+        provider.emailEventAnswers(context);
+      }),
       body: BaseView<ViewReplyToFormProvider>(
         onModelReady: (provider){
+          this.provider = provider;
           provider.getAnswersEventForm(context);
           for (var value in provider
               .eventDetail.event!.form.values) {
@@ -56,6 +60,7 @@ class ViewRepliesToFormScreen extends StatelessWidget {
                       scaler.getTextSize(12.5),
                       TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis),
                   SizedBox(height: scaler.getHeight(2.0)),
+                  answersListView(provider, scaler),
                 ],
               ),
            ),
@@ -78,7 +83,7 @@ class ViewRepliesToFormScreen extends StatelessWidget {
             Text("${index + 1}.  ${questionsList[index]}")
                 .mediumText(ColorConstants.colorBlack, 13,
                 TextAlign.left,
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis),
             SizedBox(height: scaler.getHeight(0.2)),
           ],
@@ -96,12 +101,31 @@ class ViewRepliesToFormScreen extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("${provider.eventDetail.eventName.toString()} ${"answers".tr()}")
+              Text(provider.answersList[index].displayName.toString())
                   .boldText(
                   ColorConstants.colorBlack,
-                  scaler.getTextSize(12.5),
+                  scaler.getTextSize(12.0),
                   TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
               SizedBox(height: scaler.getHeight(0.2)),
+              ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: provider.answersList[index].answersList?.length ?? 0,
+                  itemBuilder: (context, i){
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${i + 1}.  ${provider.answersList[index].answersList![i]}")
+                            .mediumText(ColorConstants.colorBlack, 13,
+                            TextAlign.left,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis),
+                        SizedBox(height: scaler.getHeight(0.2)),
+                      ],
+                    );
+                  }),
+              SizedBox(height: scaler.getHeight(2.0)),
             ],
           );
         });

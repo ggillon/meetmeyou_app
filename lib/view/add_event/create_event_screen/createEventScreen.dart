@@ -1220,12 +1220,12 @@ class CreateEventScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _fields[index],
-            GestureDetector(
-                onTap: () {
-                  _fields.removeAt(index);
-                  provider.updateQuestionStatus(true);
-                },
-                child: Icon(Icons.close))
+            // GestureDetector(
+            //     onTap: () {
+            //       _fields.removeAt(index);
+            //       provider.updateQuestionStatus(true);
+            //     },
+            //     child: Icon(Icons.close))
           ],
         );
       },
