@@ -89,13 +89,13 @@
         <string>MeetMeYou Need This Permission for getting photos</string>
 
         <key>NSCameraUsageDescription</key>
-        <string>MeetMeYou Need This Permission for use camera</string>
+        <string>MeetMeYou needs this permission for use camera to define pictures for events, profiles or chats</string>
 
         <key>NSMicrophoneUsageDescription</key>
 	    <string>Used to capture audio for image picker plugin</string>
 
-        <key>NSPhotoLibraryAddUsageDescription</key>
-	    <string></string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>MeetMeYou needs this Permission for getting photos to define pictures for events, profiles or chats</string>
 
         <key>LSApplicationQueriesSchemes</key>
         <array>
