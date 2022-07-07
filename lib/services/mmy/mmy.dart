@@ -749,7 +749,11 @@ class MMY implements MMYEngine {
 
   @override
   Future<String> getUserType() async {
-    String? userType = await getUserParameter('UserType');
+    return USER_TYPE_NORMAL; /// For this release only NORMAL USERS are needed
+    String userType = USER_TYPE_NORMAL;
+    try {
+      userType = (await getUserParameter('UserType')) ?? userType;
+    } catch(e) {}
     if(userType == null)
       userType = USER_TYPE_NORMAL;
     return userType;
