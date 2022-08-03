@@ -114,7 +114,7 @@ Future<void> notifyDiscussionMessage(User currentUser, String did,) async {
   Discussion discussion = await db.getDiscussion(did);
   for(String uid in discussion.participants.keys) {
     String token = await db.getUserToken(uid);
-    if (token != '') {
+    if (token != '' && uid!=currentUser.uid) {
       MMYNotification notification = MMYNotification(
           nid: idGenerator(),
           type: NOTIFICATION_MESSAGE_NEW,
