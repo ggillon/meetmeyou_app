@@ -28,38 +28,93 @@ class EventAttendingScreen extends StatelessWidget {
         appBar: DialogHelper.appBarWithBack(scaler, context),
         backgroundColor: ColorConstants.colorWhite,
         body: BaseView<EventAttendingProvider>(
-          onModelReady: (provider) {
+          onModelReady: (provider) async {
             provider.getContactsFromProfile(context);
+            await provider.getEventParam(context, provider.eventDetail.eid.toString(), "AttendanceVisibility");
           },
           builder: (context, provider, _) {
-            return Padding(
-              padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  searchBar(context, scaler, provider),
-                  SizedBox(height: scaler.getHeight(1.2)),
-                  Text("attending".tr()).boldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(13), TextAlign.center),
-                  SizedBox(height: scaler.getHeight(1.5)),
-                  provider.state == ViewState.Busy
-                      ? Expanded(
+            return SafeArea(
+              child: Padding(
+                padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    searchBar(context, scaler, provider),
+                    SizedBox(height: scaler.getHeight(1.2)),
+                    provider.state == ViewState.Busy
+                        ? Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Center(child: CircularProgressIndicator()),
+                                SizedBox(height: scaler.getHeight(1)),
+                                Text("loading_contacts".tr()).mediumText(
+                                    ColorConstants.primaryColor,
+                                    scaler.getTextSize(11),
+                                    TextAlign.left),
+                              ],
+                            ),
+                          )
+                        : (provider.eventAttendingLists.isEmpty && provider.eventNotAttendingLists.isEmpty && provider.eventInvitedLists.isEmpty) ?
+                    Expanded(
+                      child: Center(
+                        child: Text("sorry_no_contacts_found".tr()).mediumText(
+                            ColorConstants.primaryColor,
+                            scaler.getTextSize(11),
+                            TextAlign.left)
+                      ),
+                    )
+                        :  Expanded(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Center(child: CircularProgressIndicator()),
-                              SizedBox(height: scaler.getHeight(1)),
-                              Text("loading_contacts".tr()).mediumText(
-                                  ColorConstants.primaryColor,
-                                  scaler.getTextSize(11),
-                                  TextAlign.left),
+                              provider.eventAttendingLists.isEmpty ? Container() :   Expanded(
+                                child:  Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("attending".tr()).boldText(ColorConstants.colorBlack,
+                                        scaler.getTextSize(13), TextAlign.center),
+                                    SizedBox(height: scaler.getHeight(1.5)),
+                                    eventAttendingList(context, scaler,
+                                        provider.eventAttendingLists, provider),
+                                  ],
+                                ),
+                              ),
+                             (provider.allowNonAttendingOrInvited || provider.eventDetail.organiserId.toString() == provider.auth.currentUser!.uid.toString()) ?
+                             (provider.eventNotAttendingLists.isEmpty ? Container() :  SizedBox(height: scaler.getHeight(1.0))) : Container(),
+                              (provider.allowNonAttendingOrInvited || provider.eventDetail.organiserId.toString() == provider.auth.currentUser!.uid.toString()) ?
+                              (provider.eventNotAttendingLists.isEmpty ? Container() : Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("not_attending".tr()).boldText(ColorConstants.colorBlack,
+                                        scaler.getTextSize(13), TextAlign.center),
+                                    SizedBox(height: scaler.getHeight(1.5)),
+                                    eventAttendingList(context, scaler,
+                                        provider.eventNotAttendingLists, provider),
+                                  ],
+                                ),
+                              )) : Container(),
+                              (provider.allowNonAttendingOrInvited || provider.eventDetail.organiserId.toString() == provider.auth.currentUser!.uid.toString())
+                                  ?  (provider.eventNotAttendingLists.isEmpty ? Container() : SizedBox(height: scaler.getHeight(1.0))) : Container(),
+                              (provider.allowNonAttendingOrInvited || provider.eventDetail.organiserId.toString() == provider.auth.currentUser!.uid.toString())
+                                  ? (provider.eventInvitedLists.isEmpty ? Container() :  Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("invited".tr()).boldText(ColorConstants.colorBlack,
+                                        scaler.getTextSize(13), TextAlign.center),
+                                    SizedBox(height: scaler.getHeight(1.5)),
+                                    eventAttendingList(context, scaler,
+                                        provider.eventInvitedLists, provider)
+                                  ],
+                                ),
+                              )) : Container(),
                             ],
                           ),
                         )
-                      : eventAttendingList(context, scaler,
-                          provider.eventAttendingLists, provider)
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -93,27 +148,24 @@ class EventAttendingScreen extends StatelessWidget {
   Widget eventAttendingList(BuildContext context, ScreenScaler scaler,
       List<Contact> cList, EventAttendingProvider provider) {
     return Expanded(
-      child: SingleChildScrollView(
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: cList.length,
-            itemBuilder: (context, index) {
-              bool currentUser = cList[index].uid == provider.auth.currentUser?.uid;
-              if (searchBarController.text.isEmpty) {
-                return contactProfileCard(
-                    context, scaler, cList, index, provider, currentUser);
-              } else if (cList[index]
-                  .displayName
-                  .toLowerCase()
-                  .contains(searchBarController.text)) {
-                return contactProfileCard(
-                    context, scaler, cList, index, provider, currentUser);
-              } else {
-                return Container();
-              }
-            }),
-      ),
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: cList.length,
+          itemBuilder: (context, index) {
+            bool currentUser = cList[index].uid == provider.auth.currentUser?.uid;
+            if (searchBarController.text.isEmpty) {
+              return contactProfileCard(
+                  context, scaler, cList, index, provider, currentUser);
+            } else if (cList[index]
+                .displayName
+                .toLowerCase()
+                .contains(searchBarController.text)) {
+              return contactProfileCard(
+                  context, scaler, cList, index, provider, currentUser);
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 

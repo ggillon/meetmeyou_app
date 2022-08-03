@@ -44,6 +44,7 @@ class CreateEventScreen extends StatelessWidget {
           onModelReady: (provider) {
             if (provider.eventDetail.editEvent == true) {
               provider.getEventParam(context, provider.eventDetail.eid.toString(), "photoAlbum");
+              provider.getEventParam(context, provider.eventDetail.eid.toString(), "AttendanceVisibility", photoGallery: false);
               provider.eventDetail.eventPhotoUrl =
                   provider.eventDetail.photoUrlEvent;
               eventNameController.text = provider.eventDetail.eventName ?? "";
@@ -459,6 +460,12 @@ class CreateEventScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(height: scaler.getHeight(1.7)),
+                            provider.eventDetail.editEvent == true
+                                ? allowUserToSeeNOnAttendingAndInvitedSwitch(context, scaler, provider)
+                                : Container(),
+                            provider.eventDetail.editEvent == true
+                                ?  SizedBox(height: scaler.getHeight(1.7))
+                                : Container(),
                             provider.eventDetail.editEvent == true
                                 ? photoGallerySwitch(context, scaler, provider)
                                 : Container(),
@@ -1140,6 +1147,41 @@ class CreateEventScreen extends StatelessWidget {
             hideKeyboard(context);
             provider.photoGallerySwitch = val;
             await provider.createEventAlbum(context, provider.eventDetail.eid.toString(), val);
+            provider.updateLoadingStatus(true);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget allowUserToSeeNOnAttendingAndInvitedSwitch(
+      BuildContext context, ScreenScaler scaler, CreateEventProvider provider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("allow_non_attending_and_invited".tr()).boldText(
+                Colors.black, scaler.getTextSize(10.5), TextAlign.center),
+            SizedBox(height: scaler.getHeight(0.5)),
+            Text("allow_user_to_see_non_attending_and_invited".tr()).regularText(
+                Colors.black, scaler.getTextSize(10.5), TextAlign.center),
+          ],
+        ),
+        FlutterSwitch(
+          activeColor: ColorConstants.primaryColor,
+          width: scaler.getWidth(11.5),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
+          value: provider.allowNonAttendingAndInvited,
+          borderRadius: 30.0,
+          padding: 2.0,
+          showOnOff: false,
+          onToggle: (val) async {
+            hideKeyboard(context);
+            provider.allowNonAttendingAndInvited = val;
+            provider.setEventParam(context, provider.eventDetail.eid.toString(), "AttendanceVisibility", provider.allowNonAttendingAndInvited);
             provider.updateLoadingStatus(true);
           },
         ),

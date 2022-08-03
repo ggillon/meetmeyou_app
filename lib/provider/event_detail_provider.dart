@@ -67,13 +67,20 @@ class EventDetailProvider extends BaseProvider {
       valuesList.add(value);
     }
 
+    eventDetail.nonAttendingProfileKeys = [];
+    eventDetail.invitedProfileKeys = [];
     for (int i = 0; i < keysList.length; i++) {
       if (valuesList[i] == "Attending") {
         eventAttendingLength = eventAttendingLength + 1;
         eventAttendingKeysList.add(keysList[i]);
       } else if (valuesList[i] == "Organiser") {
         organiserKey = keysList[i];
+      } else if (valuesList[i] == "Not Attending") {
+        eventDetail.nonAttendingProfileKeys.add(keysList[i]);
+      } else if (valuesList[i] == "Invited") {
+        eventDetail.invitedProfileKeys.add(keysList[i]);
       }
+
     }
     return eventAttendingLength;
   }
@@ -521,7 +528,7 @@ class EventDetailProvider extends BaseProvider {
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     var value =  await mmyEngine!.getAnswerEventForm(eid, uid).catchError((e){
       updateAnswerForm(false);
-      DialogHelper.showMessage(context, "error_in_getting_answer_form".tr());
+     // DialogHelper.showMessage(context, "error_in_getting_answer_form".tr());
     });
 
     if(value != null){

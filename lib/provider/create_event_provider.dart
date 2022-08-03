@@ -49,6 +49,7 @@ class CreateEventProvider extends BaseProvider {
   int? selectedIndex;
   bool addEndDate = false;
   bool photoGallerySwitch = false;
+  bool allowNonAttendingAndInvited = false;
 
   bool _isLoading = false;
 
@@ -669,7 +670,7 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getEventParam(BuildContext context, String eid, String param) async{
+  Future getEventParam(BuildContext context, String eid, String param, {bool photoGallery = true}) async{
     updateGetParam(true);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
@@ -680,7 +681,11 @@ class CreateEventProvider extends BaseProvider {
     });
 
     if(value != null){
-      photoGallerySwitch = value;
+      if(photoGallery){
+        photoGallerySwitch = value;
+      } else{
+        allowNonAttendingAndInvited = value;
+      }
       updateGetParam(false);
     }
 
@@ -696,10 +701,10 @@ class CreateEventProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future setEventParam(BuildContext context, String eid, String param, dynamic value) async{
+  Future setEventParam(BuildContext context, String eid, String param, bool switchValue) async{
     updateSetParam(true);
 
-    var value =  await mmyEngine!.setEventParam(eid, param: param, value: photoGallerySwitch).catchError((e) {
+    var value =  await mmyEngine!.setEventParam(eid, param: param, value: switchValue).catchError((e) {
       updateSetParam(false);
       DialogHelper.showMessage(context, e.message);
     });

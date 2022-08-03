@@ -36,14 +36,16 @@ class EventAttendingProvider extends BaseProvider {
   }
 
   List<Contact> eventAttendingLists = [];
+  List<Contact> eventNotAttendingLists = [];
+  List<Contact> eventInvitedLists = [];
 
   Future getContactsFromProfile(BuildContext context) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    for (int i = 0; i < (eventDetail.attendingProfileKeys?.length ?? 0); i++) {
+    for(var element in eventDetail.attendingProfileKeys!){
       var value = await mmyEngine!
-          .getContactFromProfile(eventDetail.attendingProfileKeys![i])
+          .getContactFromProfile(element)
           .catchError((e) async {
         setState(ViewState.Idle);
         DialogHelper.showMessage(context, e.message);
@@ -51,6 +53,37 @@ class EventAttendingProvider extends BaseProvider {
       if (value != null) {
         eventAttendingLists.add(value);
       }
+    }
+    for(var element in eventDetail.nonAttendingProfileKeys){
+      var value = await mmyEngine!
+          .getContactFromProfile(element)
+          .catchError((e) async {
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
+      });
+      if (value != null) {
+        eventNotAttendingLists.add(value);
+      }
+    }
+    for(var element in eventDetail.invitedProfileKeys){
+      var value = await mmyEngine!
+          .getContactFromProfile(element)
+          .catchError((e) async {
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
+      });
+      if (value != null) {
+        eventInvitedLists.add(value);
+      }
+    }
+    var value = await mmyEngine!
+        .getContactFromProfile(eventDetail.organiserId.toString())
+        .catchError((e) async {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+    if (value != null) {
+      eventAttendingLists.add(value);
     }
     setState(ViewState.Idle);
   }
@@ -98,5 +131,30 @@ class EventAttendingProvider extends BaseProvider {
     userDetail.address = contact.addresses['Home'];
     userDetail.checkForInvitation = value;
  //   userDetail.cid = cid;
+  }
+
+  bool allowNonAttendingOrInvited = false;
+  bool getParam = false;
+
+  updateGetParam(bool val){
+    getParam = val;
+    notifyListeners();
+  }
+
+  Future getEventParam(BuildContext context, String eid, String param) async{
+    updateGetParam(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value =  await mmyEngine!.getEventParam(eid, param: param).catchError((e) {
+      updateGetParam(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      allowNonAttendingOrInvited = value;
+      updateGetParam(false);
+    }
+
   }
 }

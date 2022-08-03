@@ -106,11 +106,13 @@ class EventDetailScreen extends StatelessWidget {
             if (provider
                 .eventDetail.event!.form.isNotEmpty) {
               provider.getAnswerEventForm(context, provider.eventDetail.eid.toString(), provider.auth.currentUser!.uid.toString()).then((value) {
-                answer1Controller.text = provider.eventAnswer![questionnaireKeysList[0]];
-                answer2Controller.text = provider.eventAnswer![questionnaireKeysList[1]];
-                answer3Controller.text = provider.eventAnswer![questionnaireKeysList[2]];
-                answer4Controller.text = provider.eventAnswer![questionnaireKeysList[3]];
-                answer5Controller.text = provider.eventAnswer![questionnaireKeysList[4]];
+                if(provider.eventAnswer != null){
+                  answer1Controller.text = provider.eventAnswer![questionnaireKeysList[0]];
+                  answer2Controller.text = provider.eventAnswer!.length >=2 ? provider.eventAnswer![questionnaireKeysList[1]] : "";
+                  answer3Controller.text = provider.eventAnswer!.length >=3 ? provider.eventAnswer![questionnaireKeysList[2]] : "";
+                  answer4Controller.text = provider.eventAnswer!.length >=4 ? provider.eventAnswer![questionnaireKeysList[3]] : "";
+                  answer5Controller.text = provider.eventAnswer!.length >=5 ? provider.eventAnswer![questionnaireKeysList[4]] : "";
+                }
               });
             }
           }
@@ -317,9 +319,7 @@ class EventDetailScreen extends StatelessWidget {
                             (provider.eventDetail.organiserId == provider.auth.currentUser?.uid && provider.eventDetail.event!.form.isNotEmpty)?
                             viewRepliesToFormCard(context, scaler, provider) : Container(),
                             SizedBox(height: scaler.getHeight(2)),
-                            provider.eventAttendingLength == 0
-                                ? Container()
-                                : checkAvailabilitiesCard(context, scaler, provider),
+                           checkAvailabilitiesCard(context, scaler, provider),
                             // Container(
                             //       width: double.infinity,
                             //       child: Row(
@@ -855,7 +855,7 @@ class EventDetailScreen extends StatelessWidget {
               Expanded(
                   child: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("check_availabilities".tr())
+                    child: Text("check_event_responses".tr())
                         .semiBoldText(ColorConstants.colorBlack,
                         scaler.getTextSize(10.8), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -1255,12 +1255,35 @@ class EventDetailScreen extends StatelessWidget {
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
                               final Map<String, dynamic> answersMap = {
-                                questionnaireKeysList[0]: answer1Controller.text,
-                                questionnaireKeysList[1]: answer2Controller.text,
-                                questionnaireKeysList[2]: answer3Controller.text,
-                                questionnaireKeysList[3]: answer4Controller.text,
-                                questionnaireKeysList[4]: answer5Controller.text
+                                // questionnaireKeysList[0]: answer1Controller.text,
+                                // questionnaireKeysList[1]:  questionnaireKeysList.length >=2 ?  answer2Controller.text : "",
+                                // questionnaireKeysList[2]:  questionnaireKeysList.length >=3 ?  answer3Controller.text : "",
+                                // questionnaireKeysList[3]:  questionnaireKeysList.length >=4 ?  answer4Controller.text : "",
+                                // questionnaireKeysList[4]:  questionnaireKeysList.length >=5 ?  answer5Controller.text : ""
                               };
+                              for(int i = 0; i < questionnaireKeysList.length; i++){
+                                if(i == 0){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer1Controller.text
+                                  });
+                                } else if(i == 1){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer2Controller.text
+                                  });
+                                } else if(i == 2){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer3Controller.text
+                                  });
+                                } else if(i == 3){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer4Controller.text
+                                  });
+                                } else if(i == 4){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer5Controller.text
+                                  });
+                                }
+                              }
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
                                   _scaffoldkey.currentContext!,
