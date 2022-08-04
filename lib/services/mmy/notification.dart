@@ -30,7 +30,7 @@ Future<void> notifyEventInvite(User currentUser, String eid, String uid) async {
   final db = FirestoreDB(uid: currentUser.uid);
   String token = await db.getUserToken(uid);
   Event event = await db.getEvent(eid);
-  if(token != '') {
+  if(token != '' && uid!=currentUser.uid) {
     MMYNotification notification = MMYNotification(
         nid: idGenerator(),
         type: NOTIFICATION_EVENT_INVITE,
@@ -51,7 +51,7 @@ Future<void> notifyEventModified(User currentUser, String eid) async {
 
   for(String uid in event.invitedContacts.keys) {
     String token = await db.getUserToken(uid);
-    if(token != '') {
+    if(token != '' && uid!=currentUser.uid ) {
       MMYNotification notification = MMYNotification(
           nid: idGenerator(),
           type: NOTIFICATION_EVENT_UPDATE,
@@ -73,7 +73,7 @@ Future<void> notifyEventCanceled(User currentUser, String eid) async {
   Event event = await db.getEvent(eid);
   for(String uid in event.invitedContacts.keys) {
     String token = await db.getUserToken(uid);
-    if (token != '') {
+    if (token != '' && uid!=currentUser.uid ) {
       MMYNotification notification = MMYNotification(
           nid: idGenerator(),
           type: NOTIFICATION_EVENT_CANCEL,
@@ -94,7 +94,7 @@ Future<void> notifyContactInvite(User currentUser, String uid) async {
   final db = FirestoreDB(uid: currentUser.uid);
   String token = await db.getUserToken(uid);
   Profile profile = (await db.getProfile(currentUser.uid))!;
-  if(token != '') {
+  if(token != '' && uid!=currentUser.uid) {
     MMYNotification notification = MMYNotification(
         nid: idGenerator(),
         type: NOTIFICATION_USER_INVITE,

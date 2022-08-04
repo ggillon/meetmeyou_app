@@ -97,6 +97,8 @@ abstract class MMYEngine {
   Future<List<Contact>> getInvitePhoneContacts();
   /// Invite phone Contacts
   Future<void> invitePhoneContacts(List<Contact> contacts);
+  /// Add to favourites
+  Future<void> addToFavourites(String cid);
 
   /// EVENT ///
 
@@ -811,6 +813,13 @@ class MMY implements MMYEngine {
   @override
   Future<Event> updateAnnouncement(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) {
     return announcementLib.updateAnnouncement(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  }
+
+  @override
+  Future<void> addToFavourites(String cid) async {
+    if((await contactLib.getContact(_currentUser, cid: cid)).status == CONTACT_GROUP) {
+      profileLib.addGroupToFavourites(_currentUser, cid);
+    } else {profileLib.addUserToFavourites(_currentUser, cid);}
   }
 
 }
