@@ -16,6 +16,7 @@ class ContactDescriptionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  bool favouriteSwitch = false;
 
   makePhoneCall(BuildContext context) async {
     var url = 'tel://${userDetail.phone}';

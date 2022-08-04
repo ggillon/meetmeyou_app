@@ -14,6 +14,7 @@ class GroupDescriptionProvider extends BaseProvider {
   GroupDetail groupDetail = locator<GroupDetail>();
   UserDetail userDetail = locator<UserDetail>();
   DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  bool favouriteSwitch = false;
 
   // confirm contact list
   List<Contact> _groupContactList = [];

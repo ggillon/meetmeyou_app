@@ -290,5 +290,6 @@
   "allow_user_to_see_non_attending_and_invited" : "Allow user to see Non-Attending and Invited",
   "check_event_responses" : "Check event responses",
   "not_attending" : "Not attending",
-  "invited" : "Invited"
+  "invited" : "Invited",
+  "add_to_favourite" : "Add to favourite"
 }

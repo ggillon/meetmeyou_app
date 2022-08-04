@@ -1213,7 +1213,6 @@ class CreateEventScreen extends StatelessWidget {
             hideKeyboard(context);
             provider.isSwitched = val;
             val == true ? Container() : _fields.clear();
-            ;
             provider.updateLoadingStatus(true);
           },
         ),

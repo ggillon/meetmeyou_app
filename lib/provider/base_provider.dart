@@ -49,5 +49,12 @@ class BaseProvider extends ChangeNotifier {
       super.notifyListeners();
     }
   }
+
+  bool loading = false;
+
+  updateLoadingStatus(bool val){
+    loading = val;
+    notifyListeners();
+  }
 }
 

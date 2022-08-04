@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
@@ -138,7 +139,8 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     "address".tr(),
                                     provider.userDetail.address ?? ""),
                               ),
-                              SizedBox(height: scaler.getHeight(3.2)),
+                              SizedBox(height: scaler.getHeight(2.2)),
+                              addToFavourite(scaler),
                               // Text("organized_events".tr()).boldText(
                               //     ColorConstants.colorBlack,
                               //     scaler.getTextSize(10),
@@ -147,6 +149,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                             ],
                           ),
                         ),
+                        SizedBox(height: scaler.getHeight(3.2)),
                         OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: showEventScreen),
                         provider.userDetail.checkForInvitation!
                             ? provider.state == ViewState.Busy
@@ -184,6 +187,32 @@ class ContactDescriptionScreen extends StatelessWidget {
             }),
           );
         });
+  }
+
+  Widget addToFavourite(ScreenScaler scaler){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("add_to_favourite".tr()).semiBoldText(
+            ColorConstants.primaryColor,
+            scaler.getTextSize(11.5),
+            TextAlign.center),
+        FlutterSwitch(
+          activeColor: ColorConstants.primaryColor,
+          width: scaler.getWidth(11.5),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
+          value: provider.favouriteSwitch,
+          borderRadius: 30.0,
+          padding: 2.0,
+          showOnOff: false,
+          onToggle: (val) {
+            provider.favouriteSwitch = val;
+            provider.updateLoadingStatus(true);
+          },
+        ),
+      ],
+    );
   }
 
    bottomDesign(BuildContext context, ScreenScaler scaler,

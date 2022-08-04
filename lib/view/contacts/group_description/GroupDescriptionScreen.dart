@@ -1,6 +1,7 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
@@ -59,7 +60,9 @@ class GroupDescriptionScreen extends StatelessWidget {
                         firstName: provider.groupName,
                         lastName: "",
                         email: provider.groupDetail.about),
-                    SizedBox(height: scaler.getHeight(1.5)),
+                    SizedBox(height: scaler.getHeight(2.0)),
+                    addToFavourite(scaler),
+                    SizedBox(height: scaler.getHeight(2.5)),
                     provider.membersLength == 0.toString() ||
                             provider.membersLength == null
                         ? Container()
@@ -176,4 +179,31 @@ class GroupDescriptionScreen extends StatelessWidget {
             scaler, cList[index].email, cList[index].displayName,
             profileImg: cList[index].photoURL));
   }
+
+  Widget addToFavourite(ScreenScaler scaler){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("add_to_favourite".tr()).semiBoldText(
+            ColorConstants.primaryColor,
+            scaler.getTextSize(11.5),
+            TextAlign.center),
+        FlutterSwitch(
+          activeColor: ColorConstants.primaryColor,
+          width: scaler.getWidth(11.5),
+          height: scaler.getHeight(3.2),
+          toggleSize: scaler.getHeight(2.4),
+          value: provider.favouriteSwitch,
+          borderRadius: 30.0,
+          padding: 2.0,
+          showOnOff: false,
+          onToggle: (val) {
+            provider.favouriteSwitch = val;
+            provider.updateLoadingStatus(true);
+          },
+        ),
+      ],
+    );
+  }
+
 }
