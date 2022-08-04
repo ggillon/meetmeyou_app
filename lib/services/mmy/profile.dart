@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
 
+import '../../models/contact.dart';
 import 'idgen.dart';
 
 
@@ -124,6 +125,76 @@ Future<Profile> createProfile(User currentUser, {String? displayName, String? fi
   return profile;
 }
 
+Future<Profile> addUserToFavourites(User currentUser, String uid) async {
+
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Profile profile = (await db.getProfile(currentUser.uid))!;
+  if(!profile.other.containsKey('Favourites')) {
+    profile.other = addFieldToMap(profile.other, 'Favourites');
+  }
+  List<String> favourites = profile.other['Favourites'];
+  favourites.add(uid);
+  profile.other['Favourites'] = favourites;
+  db.setProfile(profile);
+
+  Contact contact = (await db.getContact(currentUser.uid, uid));
+  if(contact.other.containsKey('Favourite')) {
+    contact.other['Favourite'] = true;
+  } else {
+    contact.other = addFieldToMap(contact.other, 'Favourite');
+    contact.other['Favourite'] = true;
+  }
+  db.setContact(currentUser.uid, contact);
+
+  return profile;
+}
+
+Future<Profile> removeUserFromFavourites(User currentUser, String uid) async {
+
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Profile profile = (await db.getProfile(currentUser.uid))!;
+  List<String> favourites = profile.other['Favourites'];
+  favourites.remove(uid);
+  profile.other['Favourites'] = favourites;
+  db.setProfile(profile);
+
+  Contact contact = (await db.getContact(currentUser.uid, uid));
+  contact.other['Favourite'] = false;
+  db.setContact(currentUser.uid, contact);
+
+  return profile;
+}
+
+Future<Profile> addGroupToFavourites(User currentUser, String gid) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Profile profile = (await db.getProfile(currentUser.uid))!;
+  Contact group = (await db.getContact(currentUser.uid, gid));
+  for(String id in group.group.keys) {
+    profile = await addUserToFavourites(currentUser, id);
+  }
+  return profile;
+}
+
+Future<bool> isFavourite(User currentUser, String uid) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Profile profile = (await db.getProfile(currentUser.uid))!;
+  if(!profile.other.containsKey('Favourites')) {
+    return false;
+  } else {
+    List<String> favourites = profile.other['Favourites'];
+    return favourites.contains(uid);
+  }
+}
+
+Future<List<String>> getFavouriteIDs(User currentUser) async {
+  List<String> favourites = [];
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Profile profile = (await db.getProfile(currentUser.uid))!;
+  if(profile.other.containsKey('Favourites')) {
+    favourites = profile.other['Favourites'];
+  }
+  return favourites;
+}
 
 // Update whatever fields are not null
 Future<Profile> updateProfile(User currentUser, {String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {

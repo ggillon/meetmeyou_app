@@ -32,6 +32,12 @@ class Contact {
   String status;
   Map group;
 
+  bool get isFavourite {
+    if(other.containsKey('favourite')) {
+      return other['favourite'];
+    } else {return false;}
+  }
+
   factory Contact.fromMap(Map<String, dynamic> data) {
     final String cid= data['cid'] ?? '';
     final String uid= data['uid'] ?? '';
