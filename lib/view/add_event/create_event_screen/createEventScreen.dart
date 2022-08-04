@@ -469,12 +469,8 @@ class CreateEventScreen extends StatelessWidget {
                             provider.eventDetail.editEvent == true
                                 ? photoGallerySwitch(context, scaler, provider)
                                 : Container(),
-                            provider.eventDetail.editEvent == true
-                                ?  SizedBox(height: scaler.getHeight(1.7))
-                                : Container(),
-                            provider.eventDetail.editEvent == true
-                                ? questionAndFeedback(context, scaler, provider)
-                                : Container(),
+                            SizedBox(height: scaler.getHeight(1.7)),
+                            questionAndFeedback(context, scaler, provider),
                             provider.isSwitched == true && _fields.length > 0
                                 ? SizedBox(height: scaler.getHeight(1.7))
                                 : SizedBox(height: scaler.getHeight(0.0)),
@@ -1258,16 +1254,24 @@ class CreateEventScreen extends StatelessWidget {
       shrinkWrap: true,
       itemCount: _fields.length,
       itemBuilder: (context, index) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _fields[index],
-            // GestureDetector(
-            //     onTap: () {
-            //       _fields.removeAt(index);
-            //       provider.updateQuestionStatus(true);
-            //     },
-            //     child: Icon(Icons.close))
+            Text("${"question".tr()} ${index + 1}")
+                .boldText(ColorConstants.colorBlack, 10.5, TextAlign.left),
+            SizedBox(height: scaler.getHeight(0.2)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _fields[index],
+              provider.eventDetail.editEvent == true ? Container() : GestureDetector(
+                    onTap: () {
+                      _fields.removeAt(index);
+                      provider.updateQuestionStatus(true);
+                    },
+                    child: Icon(Icons.close))
+              ],
+            ),
           ],
         );
       },
@@ -1280,9 +1284,6 @@ class CreateEventScreen extends StatelessWidget {
     // final controller = TextEditingController();
     final field =
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text("${"question".tr()} ${_fields.length + 1}")
-          .boldText(ColorConstants.colorBlack, 10.5, TextAlign.left),
-      SizedBox(height: scaler.getHeight(0.2)),
       Container(
         width: scaler.getWidth(78),
         child: Text(questionController.text).mediumText(
@@ -1296,9 +1297,11 @@ class CreateEventScreen extends StatelessWidget {
 
     _fields.add(field);
     // questionsList.add(questionController.text);
-    addQue
-        ? provider.addQuestionToEvent(context, provider.eventDetail.event!, _fields.length, questionController.text)
-        : Container();
+    if(provider.eventDetail.editEvent == true){
+      addQue
+          ? provider.addQuestionToEvent(context, provider.eventDetail.event!, _fields.length, questionController.text)
+          : Container();
+    }
     provider.updateQuestionStatus(true);
   }
 
@@ -1349,6 +1352,9 @@ class CreateEventScreen extends StatelessWidget {
                     GestureDetector(
                         onTap: () {
                           if (_questionFormKey.currentState!.validate()) {
+                            if(provider.eventDetail.editEvent != true){
+                              provider.questionsList.add(questionController.text);
+                            }
                             questionnaireText(context, provider, scaler);
                             Navigator.of(context).pop();
                           }

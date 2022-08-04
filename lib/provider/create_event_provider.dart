@@ -51,6 +51,9 @@ class CreateEventProvider extends BaseProvider {
   bool photoGallerySwitch = false;
   bool allowNonAttendingAndInvited = false;
 
+  // this list is used at time of event creation for sending questions in add question api.
+  List<String> questionsList = [];
+
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
@@ -332,13 +335,22 @@ class CreateEventProvider extends BaseProvider {
     });
     if (value != null) {
     //  setState(ViewState.Idle);
+      value.form = <String, dynamic>{};
       eventDetail.eid = value.eid;
+
      // photoFile = null;
       if(image != null){
         eventDetail.eventPhotoUrl =  await storeFile(image!, path: StoragePath.eventPhoto(value.eid)).catchError((e) {
           setState(ViewState.Idle);
           DialogHelper.showMessage(context, e.message);
         });
+        if(eventDetail.editEvent != true){
+          if(questionsList.isNotEmpty){
+            for(int i = 0; i < questionsList.length; i++){
+              await addQuestionToEvent(context, value, (i+1), questionsList[i]);
+            }
+          }
+        }
         await updateEvent(context, title, location, description, startDateTime, endDateTime, photoURL: eventDetail.eventPhotoUrl, isCreateEvent: true);
         Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
             .then((value) {
@@ -350,6 +362,15 @@ class CreateEventProvider extends BaseProvider {
         setState(ViewState.Idle);
         eventDetail.eventPhotoUrl = value.photoURL;
         clearMultiDateOption();
+
+          if(eventDetail.editEvent != true){
+            if(questionsList.isNotEmpty){
+              for(int i = 0; i < questionsList.length; i++){
+              await addQuestionToEvent(context, value, (i+1), questionsList[i]);
+              }
+            }
+          }
+
         Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
             .then((value) {
           // fromInviteScreen = true;
@@ -473,8 +494,7 @@ class CreateEventProvider extends BaseProvider {
     updateAddQuestionStatus(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!
-        .addQuestionToEvent(event, questionNum: queNo, text: queText)
+    var value = await mmyEngine!.addQuestionToEvent(event, questionNum: queNo, text: queText)
         .catchError((e) {
       updateAddQuestionStatus(false);
       DialogHelper.showMessage(context, e.message);

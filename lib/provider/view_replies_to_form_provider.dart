@@ -31,9 +31,12 @@ class ViewReplyToFormProvider extends BaseProvider {
         ViewReplyFormData viewReplyFormData = ViewReplyFormData();
         viewReplyFormData.displayName = element.displayName;
         for (var value in element.answers.values) {
-          viewReplyFormData.answersList?.add(value);
+          if(value != ""){
+            viewReplyFormData.answersList?.add(value);
+          }
         }
-        answersList.add(viewReplyFormData);
+          answersList.add(viewReplyFormData);
+
       }
       print(answersList);
       setState(ViewState.Idle);
