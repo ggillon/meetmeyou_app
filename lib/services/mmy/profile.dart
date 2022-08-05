@@ -254,6 +254,7 @@ Future<Profile> updateProfile(User currentUser,
 
   await db.setProfile(profile);
   await setProfileParameter(currentUser, param: 'Anon', value: false);
+  await setProfileParameter(currentUser, param: 'New', value: false);
 
   return profile;
 }
