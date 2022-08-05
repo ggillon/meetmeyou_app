@@ -727,6 +727,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  List<String> questionnaireKeysList = [];
   Widget eventRespondBtn(
       ScreenScaler scaler,
       Event event,
@@ -783,6 +784,9 @@ class _HomePageState extends State<HomePage>
               List<String> questionsList = [];
               for (var value in event.form.values) {
                 questionsList.add(value);
+              }
+              for (var key in event.form.keys) {
+                questionnaireKeysList.add(key);
               }
               Navigator.of(context).pop();
               alertForQuestionnaireAnswers(context, scaler, event,
@@ -1043,12 +1047,35 @@ class _HomePageState extends State<HomePage>
                             if (_formKey.currentState!.validate()) {
                               dashboardProvider.updateEventNotificationCount();
                               final Map<String, dynamic> answersMap = {
-                                "1. text": answer1Controller.text,
-                                "2. text": answer2Controller.text,
-                                "3. text": answer3Controller.text,
-                                "4. text": answer4Controller.text,
-                                "5. text": answer5Controller.text
+                                // "1. text": answer1Controller.text,
+                                // "2. text": answer2Controller.text,
+                                // "3. text": answer3Controller.text,
+                                // "4. text": answer4Controller.text,
+                                // "5. text": answer5Controller.text
                               };
+                              for(int i = 0; i < questionnaireKeysList.length; i++){
+                                if(i == 0){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer1Controller.text
+                                  });
+                                } else if(i == 1){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer2Controller.text
+                                  });
+                                } else if(i == 2){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer3Controller.text
+                                  });
+                                } else if(i == 3){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer4Controller.text
+                                  });
+                                } else if(i == 4){
+                                  answersMap.addAll({
+                                    questionnaireKeysList[i]: answer5Controller.text
+                                  });
+                                }
+                              }
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
                                   context, event.eid, answersMap);

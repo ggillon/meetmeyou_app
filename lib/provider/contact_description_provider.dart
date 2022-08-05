@@ -131,4 +131,25 @@ class ContactDescriptionProvider extends BaseProvider {
     userDetail.checkForInvitation = value;
     userDetail.cid = contact.cid;
   }
+
+  bool favourite = false;
+
+  updateFavouriteStatus(bool val){
+    favourite = val;
+    notifyListeners();
+  }
+
+  Future addContactToFavourite(BuildContext context, String contactId) async{
+    updateFavouriteStatus(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.addToFavourites(contactId).catchError((e){
+      updateFavouriteStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+      updateFavouriteStatus(false);
+
+  }
 }

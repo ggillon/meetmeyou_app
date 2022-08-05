@@ -110,7 +110,8 @@ class DialogHelper {
 
   static PreferredSizeWidget appBarWithBack(
       ScreenScaler scaler, BuildContext context,
-      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick, bool back = true, VoidCallback? backIconClick, bool email = false, VoidCallback? onTapEmail}) {
+      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick, bool back = true, VoidCallback? backIconClick, bool email = false, VoidCallback? onTapEmail,
+      VoidCallback? onTapEvent}) {
     return AppBar(
       elevation: 0,
       backgroundColor: ColorConstants.colorWhite,
@@ -140,21 +141,35 @@ class DialogHelper {
             child: Icon(Icons.email_rounded,
                 color: ColorConstants.primaryColor, size: 28)),
       ) : (showEdit
-            ? GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: message == true
-                    ? messageIconClick!
-                    : editClick!,
-            child: Padding(
+            ? Padding(
                         padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
                         child: message == true
-                            ? Icon(Icons.message,
-                            color: ColorConstants.primaryColor, size: 28)
-                            : ImageView(
-                            width: scaler.getWidth(6.0),
-                            height: scaler.getWidth(6.0),
-                            path: ImageConstants.ic_edit),
-                      ))
+                            ? Row(
+                              children: [
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: onTapEvent,
+                                  child: Icon(Icons.event,
+                                      color: ColorConstants.primaryColor, size: 28),
+                                ),
+                                SizedBox(width: scaler.getWidth(4.5)),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: messageIconClick,
+                                  child: Icon(Icons.message,
+                                  color: ColorConstants.primaryColor, size: 28),
+                                ),
+                              ],
+                            )
+                            : GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                              onTap: editClick,
+                              child: ImageView(
+                              width: scaler.getWidth(6.0),
+                              height: scaler.getWidth(6.0),
+                              path: ImageConstants.ic_edit),
+                            ),
+                      )
             : Container())
       ],
     );

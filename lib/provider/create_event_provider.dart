@@ -352,14 +352,18 @@ class CreateEventProvider extends BaseProvider {
           }
         }
         await updateEvent(context, title, location, description, startDateTime, endDateTime, photoURL: eventDetail.eventPhotoUrl, isCreateEvent: true);
-        Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-            .then((value) {
-          Navigator.of(context).pop();
-          // this is done because home screen not refreshes on pop when user choose or click a photo.
-          eventBus.fire(InviteEventFromLink(true));
-        });
-      } else{
+        if(!eventDetail.isFromContactOrGroupDescription){
+          Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+              .then((value) {
+            Navigator.of(context).pop();
+            // this is done because home screen not refreshes on pop when user choose or click a photo.
+            eventBus.fire(InviteEventFromLink(true));
+          });
+        } else{
+          await inviteContactToEvent(context, eventDetail.contactIdsForEventCreation);
+      }
         setState(ViewState.Idle);
+      } else{
         eventDetail.eventPhotoUrl = value.photoURL;
         clearMultiDateOption();
 
@@ -371,12 +375,18 @@ class CreateEventProvider extends BaseProvider {
             }
           }
 
-        Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-            .then((value) {
-          // fromInviteScreen = true;
-          // updateLoadingStatus(true);
-          Navigator.of(context).pop();
-        });
+          if(!eventDetail.isFromContactOrGroupDescription){
+            Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
+                .then((value) {
+              // fromInviteScreen = true;
+              // updateLoadingStatus(true);
+              Navigator.of(context).pop();
+            });
+          } else{
+           await inviteContactToEvent(context, eventDetail.contactIdsForEventCreation);
+          }
+
+        setState(ViewState.Idle);
       }
     //  eventDetail.eventPhotoUrl = value.photoURL;
 
@@ -735,4 +745,19 @@ class CreateEventProvider extends BaseProvider {
 
   }
 
+
+  /// this function is used when we are creating event with contact or group.
+  inviteContactToEvent(BuildContext context, List<String> CID) async {
+   setState(ViewState.Busy);
+
+    await mmyEngine!.inviteContactsToEvent(eventDetail.eid.toString(),
+        CIDs: CID.length > 1 ? CID : [CID[0]]).catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+   Navigator.of(context).pop();
+
+   setState(ViewState.Idle);
+  }
 }

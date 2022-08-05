@@ -12,6 +12,8 @@ import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/contact_description_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
@@ -28,10 +30,11 @@ class ContactDescriptionScreen extends StatelessWidget {
   bool isFromNotification;
   String contactId;
   ContactDescriptionProvider provider = ContactDescriptionProvider();
+  EventDetail eventDetail = locator<EventDetail>();
+  MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
-
     return  BaseView<ContactDescriptionProvider>(
       onModelReady: (provider) async {
         this.provider = provider;
@@ -58,6 +61,28 @@ class ContactDescriptionScreen extends StatelessWidget {
               provider.discussionDetail.photoUrl = provider.userDetail.profileUrl;
               Navigator.pushNamed(
                   context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
+            }, onTapEvent: (){
+              eventDetail.eventPhotoUrl = null;
+              eventDetail.editEvent = false;
+              eventDetail.contactCIDs = [];
+              // clear multi date and time lists
+              multipleDateOption.startDate.clear();
+              multipleDateOption.endDate.clear();
+              multipleDateOption.startTime.clear();
+              multipleDateOption.endTime.clear();
+              multipleDateOption.startDateTime.clear();
+              multipleDateOption.endDateTime.clear();
+              multipleDateOption.invitedContacts.clear();
+              multipleDateOption.eventAttendingPhotoUrlLists.clear();
+              multipleDateOption.eventAttendingKeysList.clear();
+              multipleDateOption.multiStartTime = TimeOfDay(hour: 19, minute: 0);
+              multipleDateOption.multiEndTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
+
+              eventDetail.isFromContactOrGroupDescription = true;
+              eventDetail.contactIdsForEventCreation.add(provider.discussionDetail.userId.toString());
+              Navigator.pushNamed(context, RoutesConstants.createEventScreen).then((value) {
+                Navigator.of(context).pop(true);
+              });
             }),
             body: LayoutBuilder(builder: (context, constraint) {
               return SingleChildScrollView(
@@ -140,7 +165,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     provider.userDetail.address ?? ""),
                               ),
                               SizedBox(height: scaler.getHeight(2.2)),
-                              addToFavourite(scaler),
+                              addToFavourite(context, scaler),
                               // Text("organized_events".tr()).boldText(
                               //     ColorConstants.colorBlack,
                               //     scaler.getTextSize(10),
@@ -189,7 +214,7 @@ class ContactDescriptionScreen extends StatelessWidget {
         });
   }
 
-  Widget addToFavourite(ScreenScaler scaler){
+  Widget addToFavourite(BuildContext context, ScreenScaler scaler){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -208,6 +233,7 @@ class ContactDescriptionScreen extends StatelessWidget {
           showOnOff: false,
           onToggle: (val) {
             provider.favouriteSwitch = val;
+            provider.addContactToFavourite(context, provider.discussionDetail.userId.toString());
             provider.updateLoadingStatus(true);
           },
         ),

@@ -11,6 +11,8 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/event_detail.dart';
+import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/group_description_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
@@ -20,7 +22,8 @@ class GroupDescriptionScreen extends StatelessWidget {
   GroupDescriptionScreen({Key? key}) : super(key: key);
 
    GroupDescriptionProvider provider = locator<GroupDescriptionProvider>();
-
+  EventDetail eventDetail = locator<EventDetail>();
+  MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
@@ -79,18 +82,51 @@ class GroupDescriptionScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: scaler.getWidth(1.0)),
-                        GestureDetector(
-                          onTap: (){
-                            provider.discussionDetail.userId = provider.groupDetail.groupCid;
-                            provider.discussionDetail.title = provider.groupDetail.groupName;
-                            provider.discussionDetail.photoUrl = provider.groupDetail.groupPhotoUrl;
-                            Navigator.pushNamed(
-                                context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
-                          },
-                          child: Padding(
-                            padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
-                            child: Icon(Icons.message,
-                                color: ColorConstants.primaryColor, size: 28)),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                eventDetail.eventPhotoUrl = null;
+                                eventDetail.editEvent = false;
+                                eventDetail.contactCIDs = [];
+                                // clear multi date and time lists
+                                multipleDateOption.startDate.clear();
+                                multipleDateOption.endDate.clear();
+                                multipleDateOption.startTime.clear();
+                                multipleDateOption.endTime.clear();
+                                multipleDateOption.startDateTime.clear();
+                                multipleDateOption.endDateTime.clear();
+                                multipleDateOption.invitedContacts.clear();
+                                multipleDateOption.eventAttendingPhotoUrlLists.clear();
+                                multipleDateOption.eventAttendingKeysList.clear();
+                                multipleDateOption.multiStartTime = TimeOfDay(hour: 19, minute: 0);
+                                multipleDateOption.multiEndTime = TimeOfDay(hour: 19, minute: 0).addHour(3);
+
+                                eventDetail.isFromContactOrGroupDescription = true;
+                                eventDetail.contactIdsForEventCreation.addAll(provider.keysList);
+                                Navigator.pushNamed(context, RoutesConstants.createEventScreen).then((value) {
+                                  Navigator.of(context).pop(true);
+                                });
+                              },
+                              child: Padding(
+                                  padding: scaler.getPaddingLTRB(0.0, 0.0, 3.5, 0.0),
+                                  child: Icon(Icons.event,
+                                      color: ColorConstants.primaryColor, size: 28)),
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                provider.discussionDetail.userId = provider.groupDetail.groupCid;
+                                provider.discussionDetail.title = provider.groupDetail.groupName;
+                                provider.discussionDetail.photoUrl = provider.groupDetail.groupPhotoUrl;
+                                Navigator.pushNamed(
+                                    context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: true, fromChatScreen: false, chatDid: ""));
+                              },
+                              child: Padding(
+                                padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+                                child: Icon(Icons.message,
+                                    color: ColorConstants.primaryColor, size: 28)),
+                            ),
+                          ],
                         )
                       ],
                     ),

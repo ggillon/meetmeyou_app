@@ -156,7 +156,7 @@ class ContactsScreen extends StatelessWidget {
                                                 : confirmContactGroupList(
                                                     scaler,
                                                     provider.confirmContactList,
-                                                    provider)
+                                                    provider, dashBoardProvider)
                                           ],
                                         ),
                                       ),
@@ -194,7 +194,7 @@ class ContactsScreen extends StatelessWidget {
                                           children: [
                                             SizedBox(height: scaler.getHeight(1)),
                                             confirmContactGroupList(scaler,
-                                                provider.groupList, provider),
+                                                provider.groupList, provider, dashBoardProvider),
                                           ],
                                         ),
                                       ),
@@ -256,7 +256,7 @@ class ContactsScreen extends StatelessWidget {
   }
 
   Widget confirmContactGroupList(
-      ScreenScaler scaler, List<Contact> cList, ContactsProvider provider) {
+      ScreenScaler scaler, List<Contact> cList, ContactsProvider provider, DashboardProvider dashboardProvider) {
     return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -269,12 +269,12 @@ class ContactsScreen extends StatelessWidget {
               : cList[index - 1].displayName.capitalize().substring(0, 1);
           if (searchBarController.text.isEmpty) {
             return aToZHeader(
-                context, currentHeader, header, index, scaler, cList, provider);
+                context, currentHeader, header, index, scaler, cList, provider, dashboardProvider);
           } else if (cList[index]
               .displayName
               .toLowerCase()
               .contains(searchBarController.text)) {
-            return contactProfileCard(context, scaler, cList, index, provider);
+            return contactProfileCard(context, scaler, cList, index, provider, dashboardProvider);
           } else {
             return Container();
           }
@@ -282,7 +282,7 @@ class ContactsScreen extends StatelessWidget {
   }
 
   aToZHeader(BuildContext context, String cHeader, String header, int index,
-      scaler, List<Contact> cList, ContactsProvider provider) {
+      scaler, List<Contact> cList, ContactsProvider provider, DashboardProvider dashboardProvider) {
     if (index == 0 ? true : (header != cHeader)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,16 +291,16 @@ class ContactsScreen extends StatelessWidget {
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
                 scaler.getTextSize(10.8), TextAlign.left),
           ),
-          contactProfileCard(context, scaler, cList, index, provider),
+          contactProfileCard(context, scaler, cList, index, provider, dashboardProvider),
         ],
       );
     } else {
-      return contactProfileCard(context, scaler, cList, index, provider);
+      return contactProfileCard(context, scaler, cList, index, provider, dashboardProvider);
     }
   }
 
   Widget contactProfileCard(BuildContext context, ScreenScaler scaler,
-      List<Contact> cList, int index, ContactsProvider provider) {
+      List<Contact> cList, int index, ContactsProvider provider, DashboardProvider dashboardProvider) {
     return provider.toggle == 0
         ? GestureDetector(
             onTap: () {
@@ -310,7 +310,11 @@ class ContactsScreen extends StatelessWidget {
                 context,
                 RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "")
               ).then((value) {
-                provider.getConfirmedContactsAndInvitationsList(context);
+                if(value == true){
+                  dashboardProvider.onItemTapped(0);
+                } else{
+                  provider.getConfirmedContactsAndInvitationsList(context);
+                }
               });
             },
             child: CommonWidgets.userContactCard(
@@ -323,7 +327,11 @@ class ContactsScreen extends StatelessWidget {
                 context,
                 RoutesConstants.groupDescriptionScreen,
               ).then((value) {
-                provider.getGroupList(context);
+                if(value == true){
+                  dashboardProvider.onItemTapped(0);
+                } else{
+                  provider.getGroupList(context);
+                }
               });
             },
             child: CommonWidgets.userContactCard(
