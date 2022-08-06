@@ -98,11 +98,13 @@ abstract class MMYEngine {
   Future<void> invitePhoneContacts(List<Contact> contacts);
   /// Add to favourites
   Future<void> addToFavourites(String cid);
+  /// Get all favourite IDs
+  Future<List<String>> getAllFavourites();
 
   /// EVENT ///
 
   /// Get all Events where user is invited or organiser
-  Future<List<Event>> getUserEvents({List<String>? filters});
+  Future<List<Event>> getUserEvents({List<String>? filters, List<String>? selector});
   /// Get all past Event where user was invited
   Future<List<Event>> getPastEvents();
   /// Get all Events where user is organiser
@@ -147,6 +149,10 @@ abstract class MMYEngine {
   Future<Event> createAnnouncement({required String title, String? location, required String description, required String photoURL, DateTime? start, DateTime? end,});
   /// Update an Announcement
   Future<Event> updateAnnouncement(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, });
+  /// Event invite all contacts
+  Future<Event> inviteAllContacts(String eid);
+  /// Event invite all favourite contacts
+  Future<Event> inviteAllFavourites(String eid);
 
 
   /// Add a date option to event
@@ -422,8 +428,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<Event>> getUserEvents({List<String>? filters}) {
-    return eventLib.getUserEvents(_currentUser, filters: filters);
+  Future<List<Event>> getUserEvents({List<String>? filters, List<String>? selector}) {
+    return eventLib.getUserEvents(_currentUser, filters: filters, selector: selector);
   }
 
   @override
@@ -818,6 +824,23 @@ class MMY implements MMYEngine {
     if((await contactLib.getContact(_currentUser, cid: cid)).status == CONTACT_GROUP) {
       profileLib.addGroupToFavourites(_currentUser, cid);
     } else {profileLib.addUserToFavourites(_currentUser, cid);}
+  }
+
+  @override
+  Future<List<String>> getAllFavourites() async {
+    return profileLib.getFavouriteIDs(_currentUser);
+  }
+
+  @override
+  Future<Event> inviteAllContacts(String eid) async {
+    List<String> CIDs = await contactLib.getContactsCIDs(_currentUser);
+    return await inviteContactsToEvent(eid, CIDs: CIDs);
+  }
+
+  @override
+  Future<Event> inviteAllFavourites(String eid) async {
+    List<String> CIDs = await profileLib.getFavouriteIDs(_currentUser);
+    return await inviteContactsToEvent(eid, CIDs: CIDs);
   }
 
 }
