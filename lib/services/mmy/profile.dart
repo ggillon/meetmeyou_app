@@ -150,6 +150,7 @@ Future<Profile> addUserToFavourites(User currentUser, String uid) async {
   Profile profile = (await db.getProfile(currentUser.uid))!;
   if(!profile.other.containsKey('Favourites')) {
     profile.other = addFieldToMap(profile.other, 'Favourites');
+    profile.other['Favourites'] = <String>[];
   }
   List<String> favourites = profile.other['Favourites'];
   favourites.add(uid);
@@ -191,6 +192,13 @@ Future<Profile> addGroupToFavourites(User currentUser, String gid) async {
   for(String id in group.group.keys) {
     profile = await addUserToFavourites(currentUser, id);
   }
+  if(group.other.containsKey('Favourite')) {
+    group.other['Favourite'] = true;
+  } else {
+    group.other = addFieldToMap(group.other, 'Favourite');
+    group.other['Favourite'] = true;
+  }
+  db.setContact(currentUser.uid, group);
   return profile;
 }
 
