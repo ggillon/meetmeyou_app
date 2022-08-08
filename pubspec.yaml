@@ -102,6 +102,8 @@ dependency_overrides:
     cloud_functions_platform_interface: 5.0.21
     firebase_dynamic_links_platform_interface: 0.2.0+5
 
+  async: ^2.8.2
+  timezone: ^0.8.0
 
 
 dev_dependencies:

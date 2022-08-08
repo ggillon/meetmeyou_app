@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/models/discussion.dart';
 import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
+import 'package:meetmeyou_app/models/mmy_calendar.dart';
 import 'package:meetmeyou_app/models/mmy_notification.dart';
 import 'package:meetmeyou_app/models/photo_album.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
@@ -86,6 +87,10 @@ abstract class Database {
   Future<void> setPhoto(MMYPhoto photo);
   Future<void> deletePhoto(String aid, String pid);
 
+  // MMYCalendar
+  Future<void> setCalendar(MMYCalendar calendar);
+  Future<MMYCalendar> getCalendar(String uid);
+  Future<void> deleteCalendar(String uid);
 }
 
 class FirestoreDB implements Database {
@@ -388,6 +393,21 @@ class FirestoreDB implements Database {
   @override
   Future<void> setPhotoAlbum(MMYPhotoAlbum album) async {
     _service.setData(path: APIPath.photoAlbum(album.aid), data: album.toMap());
+  }
+
+  @override
+  Future<void> deleteCalendar(String uid) async {
+    _service.deleteData(path: APIPath.calendar(uid));
+  }
+
+  @override
+  Future<MMYCalendar> getCalendar(String uid) async {
+    return _service.getData(path: APIPath.calendar(uid), builder: (data) {return MMYCalendar.fromMap(data);});
+  }
+
+  @override
+  Future<void> setCalendar(MMYCalendar calendar) async {
+    _service.setData(path: APIPath.calendar(uid), data: calendar.toMap());
   }
 
 }
