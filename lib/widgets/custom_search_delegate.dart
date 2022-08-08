@@ -158,7 +158,8 @@ class CustomSearchDelegate extends SearchDelegate   {
               provider.setContactsValue(provider.contactsList[index]);
               provider.discussionDetail.userId = provider.contactsList[index].cid;
                     Navigator.pushNamed(
-                        context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
+                        context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "",
+                    isFavouriteContact: provider.contactsList[index].other['Favourite'])
                     );
                   },
             child: CommonWidgets.userContactCard(

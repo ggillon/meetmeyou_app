@@ -222,7 +222,9 @@ class EventDetailProvider extends BaseProvider {
         })
             : Container();
         if(calendarDetail.fromDeepLink == true){
-          eventDetail.eventBtnStatus = "respond";
+          eventDetail.eventBtnStatus =
+          (calendarDetail.fromDeepLink == true && calendarDetail.fromAnotherPage == true && auth.currentUser!.uid.toString() == event!.organiserID)
+              ? "edit" : "respond";
           eventDetail.btnBGColor = ColorConstants.primaryColor;
           eventDetail.textColor = ColorConstants.colorWhite;
         }

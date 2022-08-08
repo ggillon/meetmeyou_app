@@ -243,7 +243,7 @@ class ContactsScreen extends StatelessWidget {
                 provider.setContactsValue(iList[index], true, iList[index].cid);
                 Navigator.pushNamed(
                   context,
-                  RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "")
+                  RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "", isFavouriteContact: false)
                 ).then((value) {
                   provider.getConfirmedContactsAndInvitationsList(context);
                   provider.unRespondedInvites(context, dashboardProvider);
@@ -308,7 +308,7 @@ class ContactsScreen extends StatelessWidget {
               provider.discussionDetail.userId = cList[index].cid;
               Navigator.pushNamed(
                 context,
-                RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "")
+                RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: true, isFromNotification: false, contactId: "", isFavouriteContact: cList[index].other['Favourite'])
               ).then((value) {
                 if(value == true){
                   dashboardProvider.onItemTapped(0);
@@ -319,13 +319,13 @@ class ContactsScreen extends StatelessWidget {
             },
             child: CommonWidgets.userContactCard(
                 scaler, cList[index].email, cList[index].displayName,
-                profileImg: cList[index].photoURL))
+                profileImg: cList[index].photoURL, isFavouriteContact: cList[index].other['Favourite']))
         : GestureDetector(
             onTap: () {
               provider.setGroupValue(cList[index]);
               Navigator.pushNamed(
                 context,
-                RoutesConstants.groupDescriptionScreen,
+                RoutesConstants.groupDescriptionScreen, arguments: cList[index].other['Favourite']
               ).then((value) {
                 if(value == true){
                   dashboardProvider.onItemTapped(0);
@@ -338,7 +338,7 @@ class ContactsScreen extends StatelessWidget {
                 scaler,
                 cList[index].group.length.toString() + " " + "members".tr(),
                 cList[index].displayName,
-                profileImg: cList[index].photoURL));
+                profileImg: cList[index].photoURL, isFavouriteContact: cList[index].other['Favourite']));
   }
 
   bottomSheet(

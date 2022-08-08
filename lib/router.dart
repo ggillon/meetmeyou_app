@@ -135,7 +135,8 @@ class Router {
       case RoutesConstants.contactDescription:
         final args = settings.arguments as ContactDescriptionScreen;
         return MaterialPageRoute(
-            builder: (_) => ContactDescriptionScreen(showEventScreen: args.showEventScreen, isFromNotification: args.isFromNotification, contactId: args.contactId),
+            builder: (_) => ContactDescriptionScreen(showEventScreen: args.showEventScreen, isFromNotification: args.isFromNotification, contactId: args.contactId,
+            isFavouriteContact: args.isFavouriteContact),
             settings: settings);
 
       case RoutesConstants.editContactScreen:
@@ -156,7 +157,7 @@ class Router {
 
       case RoutesConstants.groupDescriptionScreen:
         return MaterialPageRoute(
-            builder: (_) => GroupDescriptionScreen(), settings: settings);
+            builder: (_) => GroupDescriptionScreen(isGroupFavourite: settings.arguments as bool,), settings: settings);
 
       case RoutesConstants.createEditGroupScreen:
         return MaterialPageRoute(

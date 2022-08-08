@@ -65,8 +65,6 @@ class EventDetailScreen extends StatelessWidget {
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               :  provider.eventDetail.organiserId == provider.auth.currentUser?.uid ? Container() : provider.getOrganiserContact(context);
-          provider.calendarDetail.fromDeepLink == false
-              ? Container() : provider.inviteUrl(context, provider.eventDetail.eid!);
           provider.calendarDetail.fromAnotherPage == true
               ? Container()
               : provider.eventGoingLength();
@@ -80,8 +78,11 @@ class EventDetailScreen extends StatelessWidget {
           provider.calendarDetail.fromAnotherPage == true
               ? await provider.getEvent(context, provider.eventDetail.eid!)
               : Container();
+          provider.calendarDetail.fromDeepLink == false
+              ? Container() : (provider.eventDetail.organiserId == provider.auth.currentUser!.uid.toString() ? Container() :
+          await provider.inviteUrl(context, provider.eventDetail.eid!));
           provider.eventDetail.event?.multipleDates == true
-              ? provider.getMultipleDateOptionsFromEvent(
+              ? await provider.getMultipleDateOptionsFromEvent(
                   context, provider.eventDetail.eid!)
               : Container();
           provider.eventDetail.event?.multipleDates == true
@@ -199,7 +200,7 @@ class EventDetailScreen extends StatelessWidget {
                                    provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid) ? Container() : CommonWidgets.commonBtn(
                                   scaler,
                                   context,
-                                   provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
+                                  provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
                                    provider.eventDetail.btnBGColor ?? ColorConstants.primaryColor,
                                    provider.eventDetail.textColor ?? ColorConstants.colorWhite, onTapFun: () {
                                 if (provider.eventDetail.eventBtnStatus ==
@@ -699,7 +700,8 @@ class EventDetailScreen extends StatelessWidget {
           provider.setContactsValue();
           provider.discussionDetail.userId = provider.eventDetail.organiserId;
           Navigator.pushNamed(
-              context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
+              context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "",
+          isFavouriteContact: provider.organiserContact!.other['Favourite'],)
           );
         } else{
           DialogHelper.showMessage(context, "error_message".tr());

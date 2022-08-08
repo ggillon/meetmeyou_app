@@ -104,7 +104,7 @@ class CommonWidgets {
       bool search = false,
       VoidCallback? addIconTapAction,
       VoidCallback? deleteIconTapAction,
-      bool invitation = false, bool currentUser = false}) {
+      bool invitation = false, bool currentUser = false, bool? isFavouriteContact}) {
     return Column(children: [
       Card(
         color: invitation
@@ -122,11 +122,12 @@ class CommonWidgets {
               profileCardImageDesign(scaler, profileImg!),
               SizedBox(width: scaler.getWidth(3.0)),
               profileCardNameAndEmailDesign(scaler, contactName, email,
-                  search: true, searchStatus: searchStatus),
+                  search: true, searchStatus: searchStatus, isFavouriteContact: isFavouriteContact),
               currentUser == true ? Container() : iconStatusCheck(scaler,
                   searchStatus: search ? searchStatus : "",
                   addIconTap: search ? addIconTapAction : () {},
-                  deleteIconTap: search ? deleteIconTapAction ?? () {} : () {})
+                  deleteIconTap: search ? deleteIconTapAction ?? () {} : () {}
+              )
             ],
           ),
         ),
@@ -167,14 +168,19 @@ class CommonWidgets {
 
   static Widget profileCardNameAndEmailDesign(
       ScreenScaler scaler, String contactName, String email,
-      {bool search = false, String? searchStatus}) {
+      {bool search = false, String? searchStatus, bool? isFavouriteContact}) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(contactName.capitalize()).semiBoldText(ColorConstants.colorBlack,
-              scaler.getTextSize(10.8), TextAlign.left,
-              maxLines: 1, overflow: TextOverflow.ellipsis),
+          Row(
+            children: [
+              Text(contactName.capitalize()).semiBoldText(ColorConstants.colorBlack,
+                  scaler.getTextSize(10.8), TextAlign.left,
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+              isFavouriteContact == true ?  Icon(Icons.star, color: ColorConstants.primaryColor, size: 20,) : Container()
+            ],
+          ),
           SizedBox(height: scaler.getHeight(0.3)),
           Text(emailOrTextStatusCheck(searchStatus ?? "", email)).regularText(
               ColorConstants.colorBlackDown,

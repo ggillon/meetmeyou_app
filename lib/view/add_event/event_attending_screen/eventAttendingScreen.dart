@@ -179,7 +179,8 @@ class EventAttendingScreen extends StatelessWidget {
           provider.discussionDetail.userId = cList[index].cid;
           provider.setContactsValue(cList[index], false);
                 Navigator.pushNamed(
-                    context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
+                    context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "",
+                isFavouriteContact: cList[index].other['Favourite'],)
                 ).then((value) {
                   // provider.eventAttendingLists.clear();
                   // provider.eventDetail.attendingProfileKeys = provider.eventAttendingKeysList;

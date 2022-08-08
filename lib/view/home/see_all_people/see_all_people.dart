@@ -62,7 +62,8 @@ class SeeAllPeople extends StatelessWidget {
                    provider.setContactsValue(contactsList[index]);
                    provider.discussionDetail.userId = contactsList[index].cid;
                    Navigator.pushNamed(
-                     context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "")
+                     context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: false, contactId: "",
+                   isFavouriteContact: contactsList[index].other['Favourite'],)
                    );
                  },
                  child: Column(

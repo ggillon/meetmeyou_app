@@ -186,7 +186,7 @@ class NotificationsHistoryScreen extends StatelessWidget {
           SizedBox(width: scaler.getWidth(2.5)),
           GestureDetector(
               onTap: (){
-                Navigator.pushNamed(context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: true, contactId: notificationHistoryList.id)).then((value) {
+                Navigator.pushNamed(context, RoutesConstants.contactDescription, arguments: ContactDescriptionScreen(showEventScreen: false, isFromNotification: true, contactId: notificationHistoryList.id, isFavouriteContact: false,)).then((value) {
                   provider.getUserNotificationHistory(context);
                 });
               },

@@ -19,8 +19,8 @@ import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
 
 class GroupDescriptionScreen extends StatelessWidget {
-  GroupDescriptionScreen({Key? key}) : super(key: key);
-
+  GroupDescriptionScreen({Key? key, required this.isGroupFavourite}) : super(key: key);
+  bool? isGroupFavourite;
    GroupDescriptionProvider provider = locator<GroupDescriptionProvider>();
   EventDetail eventDetail = locator<EventDetail>();
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
@@ -45,6 +45,11 @@ class GroupDescriptionScreen extends StatelessWidget {
         body: BaseView<GroupDescriptionProvider>(
           onModelReady: (provider) {
             this.provider = provider;
+            if(isGroupFavourite == true){
+              provider.favouriteSwitch = true;
+            } else{
+              provider.favouriteSwitch = false;
+            }
             provider.getGroupContactsList(
                 context, provider.groupDetail.group!);
             provider.getGroupDetail();
@@ -64,7 +69,7 @@ class GroupDescriptionScreen extends StatelessWidget {
                         lastName: "",
                         email: provider.groupDetail.about),
                     SizedBox(height: scaler.getHeight(2.0)),
-                    addToFavourite(scaler),
+                    addToFavourite(context, scaler),
                     SizedBox(height: scaler.getHeight(2.5)),
                     provider.membersLength == 0.toString() ||
                             provider.membersLength == null
@@ -216,7 +221,7 @@ class GroupDescriptionScreen extends StatelessWidget {
             profileImg: cList[index].photoURL));
   }
 
-  Widget addToFavourite(ScreenScaler scaler){
+  Widget addToFavourite(BuildContext context, ScreenScaler scaler){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -235,6 +240,7 @@ class GroupDescriptionScreen extends StatelessWidget {
           showOnOff: false,
           onToggle: (val) {
             provider.favouriteSwitch = val;
+            provider.addGroupToFavourite(context, provider.groupDetail.groupCid.toString());
             provider.updateLoadingStatus(true);
           },
         ),

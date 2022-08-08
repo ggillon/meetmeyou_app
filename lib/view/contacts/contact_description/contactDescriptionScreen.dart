@@ -24,11 +24,12 @@ import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 import 'package:provider/provider.dart';
 
 class ContactDescriptionScreen extends StatelessWidget {
-  ContactDescriptionScreen({Key? key, required this.showEventScreen, required this.isFromNotification, required this.contactId}) : super(key: key);
+  ContactDescriptionScreen({Key? key, required this.showEventScreen, required this.isFromNotification, required this.contactId, required this.isFavouriteContact}) : super(key: key);
 
   bool showEventScreen;
   bool isFromNotification;
   String contactId;
+  bool? isFavouriteContact;
   ContactDescriptionProvider provider = ContactDescriptionProvider();
   EventDetail eventDetail = locator<EventDetail>();
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
@@ -38,7 +39,22 @@ class ContactDescriptionScreen extends StatelessWidget {
     return  BaseView<ContactDescriptionProvider>(
       onModelReady: (provider) async {
         this.provider = provider;
-        isFromNotification == true ? await provider.getContact(context, contactId) : Container();
+        if(isFromNotification == false){
+          if(isFavouriteContact == true){
+            provider.favouriteSwitch = true;
+          } else{
+            provider.favouriteSwitch = false;
+          }
+        }
+        isFromNotification == true ? await provider.getContact(context, contactId).then((value) {
+          if(value == true){
+            if(provider.contactFromInvitation!.other['Favourite'] == true){
+              provider.favouriteSwitch = true;
+            } else{
+              provider.favouriteSwitch = false;
+            }
+          }
+        }) : Container();
       },
         builder: (builder, provider, _) {
           return provider.contact == true ?  Scaffold(
@@ -165,7 +181,8 @@ class ContactDescriptionScreen extends StatelessWidget {
                                     provider.userDetail.address ?? ""),
                               ),
                               SizedBox(height: scaler.getHeight(2.2)),
-                              addToFavourite(context, scaler),
+                              provider.userDetail.checkForInvitation == true
+                                  ? Container() : addToFavourite(context, scaler),
                               // Text("organized_events".tr()).boldText(
                               //     ColorConstants.colorBlack,
                               //     scaler.getTextSize(10),
