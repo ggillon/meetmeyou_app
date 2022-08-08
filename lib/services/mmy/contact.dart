@@ -59,10 +59,12 @@ Contact createLocalContact(User currentUser, {String? displayName, String? first
 
 // Get a particular contact
 Future<Contact> getContact(User currentUser, {required String cid}) async {
-  Contact contact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
-  if(contact.status == CONTACT_CONFIRMED) {
+  Contact oldContact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
+  Contact contact = oldContact;
+  if(oldContact.status == CONTACT_CONFIRMED) {
     contact = (await getContactFromProfile(currentUser, uid: cid))!;
     contact.status = CONTACT_CONFIRMED;
+    contact.other = oldContact.other;
     await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
   }
   return contact;
@@ -101,14 +103,17 @@ Future<void> deleteContact(User currentUser, {required String cid}) async {
 Future<List<Contact>> getContacts(User currentUser,) async {
   List<Contact> contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
   for(Contact contact in contacts) {
+    Contact oldContact = contact;
     if(contact.status == CONTACT_CONFIRMED) {
       getContactFromProfile(currentUser, uid: contact.cid).then((value) {
         value!.status = CONTACT_CONFIRMED;
+        value!.other = oldContact.other;
         FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, value);
       });
       ;
     }
   }
+  contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
   return contacts;
 }
 
