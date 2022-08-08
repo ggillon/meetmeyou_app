@@ -128,6 +128,28 @@ Future<List<Event>> getUserEvents(User currentUser, {List<String>? selector, Lis
   return eventList;
 }
 
+Future<List<Event>> getContactEvents(User currentUser, String cid, {List<String>? selector, List<String>? filters}) async {
+  List<Event> eventList = [];
+
+  if(selector == null) selector = [SELECTOR_PRIVATE_EVENTS, SELECTOR_ANNOUNCEMENT];
+  if(filters == null) filters = [EVENT_ORGANISER, EVENT_INVITED, EVENT_ATTENDING, EVENT_NOT_ATTENDING, EVENT_CANCELED];
+
+  for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(cid)) {
+    if(filters.contains(event.invitedContacts[cid])
+        && selector.contains(event.eventType)
+        && event.start.isAfter(DateTime.now().subtract(Duration(hours: 24)))
+    )
+      eventList.add(event);
+  }
+  if(filters.contains(EVENT_NOT_INTERESTED)) {
+    for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(cid)) {
+      if(filters.contains(event.invitedContacts[cid]))
+        eventList.add(event);
+    }
+  }
+  return eventList;
+}
+
 Future<List<Event>> getPastEvents(User currentUser,) async {
   List<Event> eventList = [];
   for (Event event in await FirestoreDB(uid: currentUser.uid).getUserEvents(currentUser.uid)) {

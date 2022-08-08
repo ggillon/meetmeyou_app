@@ -109,6 +109,8 @@ abstract class MMYEngine {
   Future<List<Event>> getPastEvents();
   /// Get all Events where user is organiser
   Future<List<Event>> getOrganisedEvents();
+  /// Get all Events where user is organiser
+  Future<List<Event>> getContactOrganisedEvents(String cid);
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
@@ -440,6 +442,11 @@ class MMY implements MMYEngine {
   @override
   Future<List<Event>> getOrganisedEvents() {
     return eventLib.getUserEvents(_currentUser, filters: [EVENT_ORGANISER]);
+  }
+
+  @override
+  Future<List<Event>> getContactOrganisedEvents(String cid) {
+    return eventLib.getContactEvents(_currentUser, cid, filters: [EVENT_ORGANISER]);
   }
 
   @override
