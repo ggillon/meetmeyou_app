@@ -173,7 +173,7 @@ Future<Profile> removeUserFromFavourites(User currentUser, String uid) async {
 
   Database db = FirestoreDB(uid: currentUser.uid);
   Profile profile = (await db.getProfile(currentUser.uid))!;
-  List<String> favourites = profile.other['Favourites'];
+  List<dynamic> favourites = profile.other['Favourites'];
   favourites.remove(uid);
   profile.other['Favourites'] = favourites;
   db.setProfile(profile);
