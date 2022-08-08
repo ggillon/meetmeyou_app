@@ -291,5 +291,6 @@
   "check_event_responses" : "Check event responses",
   "not_attending" : "Not attending",
   "invited" : "Invited",
-  "add_to_favourite" : "Add to favourite"
+  "add_to_favourite" : "Add to favourite",
+  "show_everyone_invited" : "Show everyone invited"
 }

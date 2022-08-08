@@ -69,8 +69,8 @@ void updateCalendarEvent(Event event) async {
   final result = await plugin.createOrUpdateEvent(deviceEvent);
 }
 
-Future<void> storeCalendar(String uid, Database db) async {
-  final entries = await getCalendarEvents(uid);
+Future<void> storeCalendar(BuildContext context, String uid, Database db) async {
+  final entries = await getCalendarEvents(context, uid);
   MMYCalendar serverCalendar = MMYCalendar(uid: uid, name: uid, timeStamp: DateTime.now());
   for(CalendarEvent entry in entries) {
     serverCalendar.addEvent(entry.title, entry.start, entry.end);
