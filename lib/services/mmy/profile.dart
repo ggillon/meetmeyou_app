@@ -143,6 +143,7 @@ Future<Profile> addUserToFavourites(User currentUser, String uid) async {
     contact.other['Favourite'] = true;
   } else {
     contact.other = addFieldToMap(contact.other, 'Favourite');
+    profile.other['Favourite'] = <String>[];
     contact.other['Favourite'] = true;
   }
   db.setContact(currentUser.uid, contact);
