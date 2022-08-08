@@ -1,7 +1,9 @@
 import 'package:device_calendar/device_calendar.dart' as device;
 import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/mmy_calendar.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
+import 'package:timezone/timezone.dart';
 
 Future<bool> checkCalendar() async {
   bool result=false;
@@ -45,8 +47,30 @@ Future<String?> getCaldendarID() async {
   }
 }
 
-void updateEvent(Event event) async {
-  
+void updateCalendarEvent(Event event) async {
+  Location _location = TZDateTime.local(2000).location;
+  String? deviceCalID = await getCaldendarID();
+  if(deviceCalID == null) return null;
+  device.Event deviceEvent = device.Event(deviceCalID);
+
+  deviceEvent.eventId = event.eid;
+  deviceEvent.title = event.title;
+  deviceEvent.start = TZDateTime.fromMillisecondsSinceEpoch(_location, event.start.millisecondsSinceEpoch);
+  deviceEvent.end = TZDateTime.fromMillisecondsSinceEpoch(_location, event.end.millisecondsSinceEpoch);
+  deviceEvent.location = event.location;
+  deviceEvent.description = event.description;
+
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  final result = await plugin.createOrUpdateEvent(deviceEvent);
+}
+
+Future<void> storeCalendar(String uid, Database db) async {
+  final entries = await getCalendarEvents(uid);
+  MMYCalendar serverCalendar = MMYCalendar(uid: uid, name: uid, timeStamp: DateTime.now());
+  for(CalendarEvent entry in entries) {
+    serverCalendar.addEvent(entry.title, entry.start, entry.end);
+  }
+  await db.setCalendar(serverCalendar);
 }
 
 

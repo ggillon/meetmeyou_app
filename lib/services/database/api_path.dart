@@ -47,4 +47,5 @@ class APIPath {
   static String photo(String aid, String pid) => '/photoAlbums/$aid/photos/$pid';
   static String photos(String aid,) => '/photoAlbums/$aid/photos/';
 
+  static String calendar(String uid) => '/calendars/$uid';
 }
