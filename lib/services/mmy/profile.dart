@@ -90,18 +90,18 @@ Future<Profile> createProfileFromUser(User user) async {
   }
 
   Profile profile = Profile(
-      uid: user.uid,
-      displayName: user.displayName ?? '',
-      firstName: firstName,
-      lastName: lastName,
-      email: user.email ?? '',
-      countryCode: '',
-      phoneNumber: '',
-      photoURL: user.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-      addresses: <String, dynamic>{},
-      about: '',
-      other: <String, dynamic>{},
-      parameters: <String, dynamic>{'New': true, 'Anon': false},
+    uid: user.uid,
+    displayName: user.displayName ?? '',
+    firstName: firstName,
+    lastName: lastName,
+    email: user.email ?? '',
+    countryCode: '',
+    phoneNumber: '',
+    photoURL: user.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    addresses: <String, dynamic>{},
+    about: '',
+    other: <String, dynamic>{},
+    parameters: <String, dynamic>{'New': true, 'Anon': false},
   );
 
   FirestoreDB(uid: user.uid).setProfile(profile);
@@ -162,10 +162,9 @@ Future<Profile> addUserToFavourites(User currentUser, String uid) async {
     contact.other['Favourite'] = true;
   } else {
     contact.other = addFieldToMap(contact.other, 'Favourite');
-    profile.other['Favourite'] = <String>[];
     contact.other['Favourite'] = true;
   }
-  db.setContact(currentUser.uid, contact);
+  await db.setContact(currentUser.uid, contact);
 
   return profile;
 }
@@ -227,15 +226,15 @@ Future<List<String>> getFavouriteIDs(User currentUser) async {
 // Update whatever fields are not null
 Future<Profile> updateProfile(User currentUser,
     {String? firstName,
-    String? lastName,
-    String? email,
-    String? countryCode,
-    String? phoneNumber,
-    String? photoUrl,
-    String? homeAddress,
-    String? about,
-    Map? other,
-    Map? parameters}) async {
+      String? lastName,
+      String? email,
+      String? countryCode,
+      String? phoneNumber,
+      String? photoUrl,
+      String? homeAddress,
+      String? about,
+      Map? other,
+      Map? parameters}) async {
   Database db = FirestoreDB(uid: currentUser.uid);
 
   final oldProfile = (await db.getProfile(currentUser.uid))!;

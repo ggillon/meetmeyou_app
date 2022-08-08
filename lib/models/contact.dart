@@ -33,8 +33,8 @@ class Contact {
   Map group;
 
   bool get isFavourite {
-    if(other.containsKey('favourite')) {
-      return other['favourite'];
+    if(other.containsKey('Favourite')) {
+      return other['Favourite'];
     } else {return false;}
   }
 
