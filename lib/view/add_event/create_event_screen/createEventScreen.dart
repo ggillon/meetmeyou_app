@@ -1158,7 +1158,7 @@ class CreateEventScreen extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("allow_non_attending_and_invited".tr()).boldText(
+            Text("show_everyone_invited".tr()).boldText(
                 Colors.black, scaler.getTextSize(10.5), TextAlign.center),
             SizedBox(height: scaler.getHeight(0.5)),
             Text("allow_user_to_see_non_attending_and_invited".tr()).regularText(

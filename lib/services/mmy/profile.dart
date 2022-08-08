@@ -152,7 +152,7 @@ Future<Profile> addUserToFavourites(User currentUser, String uid) async {
     profile.other = addFieldToMap(profile.other, 'Favourites');
     profile.other['Favourites'] = <String>[];
   }
-  List<String> favourites = profile.other['Favourites'];
+  List<dynamic> favourites = profile.other['Favourites'];
   favourites.add(uid);
   profile.other['Favourites'] = favourites;
   db.setProfile(profile);
