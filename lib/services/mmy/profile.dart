@@ -23,8 +23,8 @@ Future<Profile> getUserProfile(User currentUser,
 // Check if profile exists
 Future<bool> isNewProfile(User currentUser) async {
   try {
-    final profile =
-        await FirestoreDB(uid: currentUser.uid).getProfile(currentUser.uid);
+    final profile = await FirestoreDB(uid: currentUser.uid).getProfile(
+        currentUser.uid);
     if (profile == null) {
       return true;
     } else {
@@ -90,18 +90,18 @@ Future<Profile> createProfileFromUser(User user) async {
   }
 
   Profile profile = Profile(
-    uid: user.uid,
-    displayName: user.displayName ?? '',
-    firstName: firstName,
-    lastName: lastName,
-    email: user.email ?? '',
-    countryCode: '',
-    phoneNumber: '',
-    photoURL: user.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
-    addresses: <String, dynamic>{},
-    about: '',
-    other: <String, dynamic>{},
-    parameters: <String, dynamic>{'New': true, 'Anon': false},
+      uid: user.uid,
+      displayName: user.displayName ?? '',
+      firstName: firstName,
+      lastName: lastName,
+      email: user.email ?? '',
+      countryCode: '',
+      phoneNumber: '',
+      photoURL: user.photoURL ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+      addresses: <String, dynamic>{},
+      about: '',
+      other: <String, dynamic>{},
+      parameters: <String, dynamic>{'New': true, 'Anon': false},
   );
 
   FirestoreDB(uid: user.uid).setProfile(profile);
@@ -111,18 +111,7 @@ Future<Profile> createProfileFromUser(User user) async {
 
 
 // Create Profile from fields, if fields are null they will be set to default value
-Future<Profile> createProfile(
-  User currentUser, {
-  String? displayName,
-  String? firstName,
-  String? lastName,
-  String? email,
-  String? countryCode,
-  String? phoneNumber,
-  String? photoUrl,
-  String? homeAddress,
-  String? about,
-}) async {
+Future<Profile> createProfile(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
   Profile profile = Profile(
     uid: currentUser.uid,
     displayName: displayName ?? '',
@@ -131,8 +120,7 @@ Future<Profile> createProfile(
     email: email ?? '',
     countryCode: countryCode ?? '',
     phoneNumber: phoneNumber ?? '',
-    photoURL: photoUrl ??
-        'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    photoURL: photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
     about: about ?? '',
     other: <String, dynamic>{},
@@ -152,7 +140,7 @@ Future<Profile> addUserToFavourites(User currentUser, String uid) async {
     profile.other = addFieldToMap(profile.other, 'Favourites');
     profile.other['Favourites'] = <String>[];
   }
-  List<dynamic> favourites = profile.other['Favourites'];
+  List<String> favourites = profile.other['Favourites'];
   favourites.add(uid);
   profile.other['Favourites'] = favourites;
   db.setProfile(profile);
@@ -162,9 +150,10 @@ Future<Profile> addUserToFavourites(User currentUser, String uid) async {
     contact.other['Favourite'] = true;
   } else {
     contact.other = addFieldToMap(contact.other, 'Favourite');
+    profile.other['Favourite'] = <String>[];
     contact.other['Favourite'] = true;
   }
-  await db.setContact(currentUser.uid, contact);
+  db.setContact(currentUser.uid, contact);
 
   return profile;
 }
@@ -224,24 +213,13 @@ Future<List<String>> getFavouriteIDs(User currentUser) async {
 }
 
 // Update whatever fields are not null
-Future<Profile> updateProfile(User currentUser,
-    {String? firstName,
-      String? lastName,
-      String? email,
-      String? countryCode,
-      String? phoneNumber,
-      String? photoUrl,
-      String? homeAddress,
-      String? about,
-      Map? other,
-      Map? parameters}) async {
+Future<Profile> updateProfile(User currentUser, {String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about, Map? other, Map? parameters}) async {
+
   Database db = FirestoreDB(uid: currentUser.uid);
 
   final oldProfile = (await db.getProfile(currentUser.uid))!;
 
-  String displayName = (firstName ?? oldProfile.firstName) +
-      ' ' +
-      (lastName ?? oldProfile.lastName);
+  String displayName = (firstName ?? oldProfile.firstName) + ' ' + (lastName ?? oldProfile.lastName);
 
   Profile profile = Profile(
     uid: currentUser.uid,
@@ -252,9 +230,7 @@ Future<Profile> updateProfile(User currentUser,
     countryCode: countryCode ?? oldProfile.countryCode,
     phoneNumber: phoneNumber ?? oldProfile.phoneNumber,
     photoURL: photoUrl ?? oldProfile.photoURL,
-    addresses: homeAddress != null
-        ? <String, dynamic>{'Home': homeAddress}
-        : oldProfile.addresses,
+    addresses: homeAddress!=null?<String, dynamic>{'Home': homeAddress}:oldProfile.addresses,
     about: about ?? oldProfile.about,
     other: other ?? oldProfile.other,
     parameters: parameters ?? oldProfile.parameters,
@@ -267,8 +243,7 @@ Future<Profile> updateProfile(User currentUser,
   return profile;
 }
 
-Future<Profile> setProfileParameter(User currentUser,
-    {required String param, required dynamic value}) async {
+Future<Profile> setProfileParameter(User currentUser, {required String param, required dynamic value}) async {
   Database db = FirestoreDB(uid: currentUser.uid);
   final profile = (await db.getProfile(currentUser.uid))!;
   profile.parameters[param] = value;
@@ -287,18 +262,11 @@ Future<void> deleteProfile(User currentUser) async {
 }
 
 // searches for Profiles in the database
-Future<List<Profile>> searchProfiles(User currentUser,
-    {required String searchText}) async {
+Future<List<Profile>> searchProfiles(User currentUser, {required String searchText}) async {
   List<Profile> results = [];
   Database db = await FirestoreDB(uid: currentUser.uid);
   final searchWords = searchText.split(" ");
-  List<String> searchFields = [
-    'displayName',
-    'firstName',
-    'lastName',
-    'email',
-    'phoneNumber'
-  ];
+  List<String> searchFields = ['displayName', 'firstName', 'lastName', 'email', 'phoneNumber'];
   for (String field in searchFields) {
     for (var value in searchWords) {
       if (value.isNotEmpty) {
@@ -312,18 +280,8 @@ Future<List<Profile>> searchProfiles(User currentUser,
 
 
 // Create Profile from fields without storing it for tests purposes
-Profile createLocalProfile({
-  required String uid,
-  String? displayName,
-  String? firstName,
-  String? lastName,
-  String? email,
-  String? countryCode,
-  String? phoneNumber,
-  String? photoUrl,
-  String? homeAddress,
-  String? about,
-}) {
+Profile createLocalProfile({required String uid, String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) {
+
   Profile profile = Profile(
     uid: uid,
     displayName: displayName ?? '',
@@ -332,8 +290,7 @@ Profile createLocalProfile({
     email: email ?? '',
     countryCode: countryCode ?? '',
     phoneNumber: phoneNumber ?? '',
-    photoURL: photoUrl ??
-        'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
+    photoURL: photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media',
     addresses: <String, dynamic>{'Home': homeAddress ?? ''},
     about: about ?? '',
     other: <String, dynamic>{},
