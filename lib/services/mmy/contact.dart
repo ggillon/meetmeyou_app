@@ -57,15 +57,22 @@ Contact createLocalContact(User currentUser, {String? displayName, String? first
   return contact;
 }
 
+Future<Contact> syncContact(User currentUser, {required String cid}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Contact oldContact = await db.getContact(currentUser.uid, cid);
+  Contact contact = (await getContactFromProfile(currentUser, uid: cid))!;
+  // Now deal with specifics stored
+  contact.status = CONTACT_CONFIRMED;
+  contact.other = oldContact.other;
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
+  return contact;
+}
+
 // Get a particular contact
 Future<Contact> getContact(User currentUser, {required String cid}) async {
-  Contact oldContact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
-  Contact contact = oldContact;
-  if(oldContact.status == CONTACT_CONFIRMED) {
-    contact = (await getContactFromProfile(currentUser, uid: cid))!;
-    contact.status = CONTACT_CONFIRMED;
-    contact.other = oldContact.other;
-    await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
+  Contact contact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
+  if(contact.status == CONTACT_CONFIRMED) {
+    contact = await syncContact(currentUser, cid: cid);
   }
   return contact;
 }
@@ -103,14 +110,8 @@ Future<void> deleteContact(User currentUser, {required String cid}) async {
 Future<List<Contact>> getContacts(User currentUser,) async {
   List<Contact> contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
   for(Contact contact in contacts) {
-    Contact oldContact = contact;
     if(contact.status == CONTACT_CONFIRMED) {
-      getContactFromProfile(currentUser, uid: contact.cid).then((value) {
-        value!.status = CONTACT_CONFIRMED;
-        value!.other = oldContact.other;
-        FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, value);
-      });
-      ;
+      contact = await syncContact(currentUser, cid: contact.cid);
     }
   }
   contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
