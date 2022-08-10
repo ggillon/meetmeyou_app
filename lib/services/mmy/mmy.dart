@@ -406,7 +406,7 @@ class MMY implements MMYEngine {
     for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
       if(profile.uid != _currentUser.uid) {
         Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
-        if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
+        if (contactListID.contains(contact.cid)) contact = await contactLib.getContact(_currentUser, cid: contact.cid);
         if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
         searchList.add(contact);
       }

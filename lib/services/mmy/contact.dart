@@ -90,14 +90,19 @@ Future<Contact?> getContactFromProfile(User currentUser, {required String uid}) 
   if(contact != null) {
     status = contact.status;
   }
+  if(profile != null && contact != null) {
+    profile.other.addAll(contact.other);
+  }
 
   if(profile != null) {
+
     return Contact(
         cid: profile.uid, uid: profile.uid,
         displayName: profile.displayName, firstName: profile.firstName, lastName: profile.lastName,
         email: profile.email, countryCode: profile.countryCode, phoneNumber: profile.phoneNumber,
         photoURL: profile.photoURL, addresses: profile.addresses,
-        about: profile.about, other: profile.other, group: EMPTY_MAP, status: status);
+        about: profile.about, other: profile.other, group: EMPTY_MAP, status: status,
+        );
   }
 }
 
