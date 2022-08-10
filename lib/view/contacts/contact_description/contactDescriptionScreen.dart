@@ -192,7 +192,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: scaler.getHeight(3.2)),
-                        OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: showEventScreen),
+                        OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: showEventScreen, contactId: provider.discussionDetail.userId.toString()),
                         provider.userDetail.checkForInvitation!
                             ? provider.state == ViewState.Busy
                             ? Expanded(

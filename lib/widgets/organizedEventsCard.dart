@@ -22,6 +22,7 @@ import 'package:meetmeyou_app/widgets/shimmer/organizedEventCardShimmer.dart';
 class OrganizedEventsCard extends StatelessWidget {
   final bool showEventRespondBtn;
   final bool showEventScreen;
+  final String contactId;
   final answer1Controller = TextEditingController();
   final answer2Controller = TextEditingController();
   final answer3Controller = TextEditingController();
@@ -29,14 +30,14 @@ class OrganizedEventsCard extends StatelessWidget {
   final answer5Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  OrganizedEventsCard({Key? key, required this.showEventRespondBtn, required this.showEventScreen})
+  OrganizedEventsCard({Key? key, required this.showEventRespondBtn, required this.showEventScreen, required this.contactId})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<OrganizeEventCardProvider>(onModelReady: (provider) {
-      provider.getUserEvents(context);
+      provider.getUserEvents(context, contactId);
     }, builder: (context, provider, _) {
       return provider.state == ViewState.Busy
           ? OrganizedEventCardShimmer(showEventRespondBtn: showEventRespondBtn)
@@ -97,7 +98,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                     Navigator.pushNamed(context,
                                             RoutesConstants.eventDetailScreen)
                                         .then((value) {
-                                      provider.getUserEvents(context);
+                                      provider.getUserEvents(context, contactId);
                                       provider.unRespondedEventsApi(context);
                                     });
                                   }
@@ -271,7 +272,7 @@ class OrganizedEventsCard extends StatelessWidget {
             Navigator.pushNamed(context,
                 RoutesConstants.eventDetailScreen)
                 .then((value) {
-              provider.getUserEvents(context);
+              provider.getUserEvents(context, contactId);
               provider.unRespondedEventsApi(context);
             });
           },going: () {
@@ -294,15 +295,15 @@ class OrganizedEventsCard extends StatelessWidget {
                     context, scaler, event, questionsList, provider);
               } else {
                 Navigator.of(context).pop();
-                provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+                provider.replyToEvent(context, event.eid, EVENT_ATTENDING, contactId);
               }
          //   }
           }, notGoing: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING, contactId);
           }, hide: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, contactId);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
                 event, provider.auth.currentUser!.uid.toString()) ==
@@ -311,7 +312,7 @@ class OrganizedEventsCard extends StatelessWidget {
           provider.homePageProvider.clearMultiDateOption();
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
               .then((value) {
-            provider.getUserEvents(context);
+            provider.getUserEvents(context, contactId);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
                 event, provider.auth.currentUser!.uid.toString()) ==
@@ -319,7 +320,7 @@ class OrganizedEventsCard extends StatelessWidget {
           if (provider.auth.currentUser!.uid.toString() == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
               Navigator.of(context).pop();
-              provider.deleteEvent(context, event.eid);
+              provider.deleteEvent(context, event.eid, contactId);
             });
           } else {
             Container();
@@ -370,14 +371,14 @@ class OrganizedEventsCard extends StatelessWidget {
             Navigator.pushNamed(
                 context, RoutesConstants.createAnnouncementScreen)
                 .then((value) {
-              provider.getUserEvents(context);
+              provider.getUserEvents(context, contactId);
             });
           }
         } else if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.toString()) == "cancelled"){
           if (provider.auth.currentUser!.uid == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
               Navigator.of(context).pop();
-              provider.deleteEvent(context, event.eid);
+              provider.deleteEvent(context, event.eid, contactId);
             });
           } else {
             Container();
@@ -386,7 +387,7 @@ class OrganizedEventsCard extends StatelessWidget {
         else {
           CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, contactId);
           }, pastEventOrAnnouncement : true);
         }
       },
@@ -491,7 +492,7 @@ class OrganizedEventsCard extends StatelessWidget {
                               };
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
-                                  context, event.eid, answersMap);
+                                  context, event.eid, answersMap, contactId);
                             }
                           },
                           child: Container(

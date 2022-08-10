@@ -292,7 +292,7 @@ class _EventInviteFriendsScreenState extends State<EventInviteFriendsScreen> wit
                                  Navigator.of(context).pop();
                                } else {
                                  DialogHelper.showMessage(
-                                     context, "Please select contacts to Invite");
+                                     context, "please_select_contacts_to_Invite".tr());
                                }
                              }),
                            ),

@@ -137,7 +137,7 @@ class AddEventScreen extends StatelessWidget {
      return GestureDetector(
        onTap: () {
          announcementDetail.announcementPhotoUrl = null;
-         eventDetail.contactCIDs = [];
+         announcementDetail.contactCIDs = [];
          announcementDetail.editAnnouncement = false;
          Navigator.of(context).pushNamed(RoutesConstants.createAnnouncementScreen).then((value) {
            dashboardProvider.onItemTapped(0);
@@ -153,11 +153,12 @@ class AddEventScreen extends StatelessWidget {
            child: Column(
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
-               ImageView(
-                   path: ImageConstants.calendar_icon,
-                   height: 25,
-                   width: 25,
-                   color: ColorConstants.colorBlack),
+               // ImageView(
+               //     path: ImageConstants.calendar_icon,
+               //     height: 25,
+               //     width: 25,
+               //     color: ColorConstants.colorBlack),
+               Icon(Icons.post_add, size: 25),
                SizedBox(height: scaler.getHeight(0.9)),
                Row(
                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,16 +168,16 @@ class AddEventScreen extends StatelessWidget {
                      child: Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
-                         Text("announcement_to_list_of_contacts".tr()).semiBoldText(
+                         Text("publication_to_list_of_contact".tr()).semiBoldText(
                              ColorConstants.colorBlack,
                              scaler.getTextSize(11),
                              TextAlign.left),
                          SizedBox(height: scaler.getHeight(0.6)),
-                         Text("create_announcements_to_share".tr()).regularText(
+                         Text("create_a_publication".tr()).regularText(
                              ColorConstants.colorBlack,
                              scaler.getTextSize(10.5),
                              TextAlign.left,
-                             maxLines: 2,
+                             maxLines: 5,
                              overflow: TextOverflow.ellipsis),
                        ],
                      ),

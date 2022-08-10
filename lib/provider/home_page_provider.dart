@@ -433,6 +433,7 @@ class HomePageProvider extends BaseProvider {
 
     eventDetail.eid = event.eid;
     eventDetail.event = event;
+    announcementDetail.publication = event;
     List<String> valuesList = [];
     for (var value in event.invitedContacts.values) {
       valuesList.add(value);
@@ -448,7 +449,7 @@ class HomePageProvider extends BaseProvider {
       }
     }
 
-    eventDetail.contactCIDs = contactsKeys;
+    announcementDetail.contactCIDs = contactsKeys;
   }
 
 

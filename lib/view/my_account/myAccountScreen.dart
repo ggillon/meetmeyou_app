@@ -83,7 +83,7 @@ class MyAccountScreen extends StatelessWidget {
                   ),
                 ),
                 OrganizedEventsCard(
-                  showEventRespondBtn: true, showEventScreen: true
+                  showEventRespondBtn: true, showEventScreen: true, contactId: provider.auth.currentUser!.uid.toString(),
                 ),
               ],
             ),

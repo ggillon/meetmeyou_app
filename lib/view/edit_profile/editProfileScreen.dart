@@ -427,7 +427,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                           ),
                           OrganizedEventsCard(
-                            showEventRespondBtn: false, showEventScreen: false
+                            showEventRespondBtn: false, showEventScreen: false, contactId: provider.auth.currentUser!.uid.toString(),
                           ),
                           provider.eventDetail.eventListLength == null ? SizedBox(height: scaler.getHeight(9)) : provider.eventDetail.eventListLength!.toInt() > 0
                               ? SizedBox(height: scaler.getHeight(1.5))

@@ -292,5 +292,18 @@
   "not_attending" : "Not attending",
   "invited" : "Invited",
   "add_to_favourite" : "Add to favourite",
-  "show_everyone_invited" : "Show everyone invited"
+  "show_everyone_invited" : "Show everyone invited",
+  "publication" : "Publication",
+  "publication_to_list_of_contact" : "Publication to list of contact",
+  "create_a_publication" : "Create a publication that will be displayed to all or part of your contacts. Use this for announcements or sharing content. You can also add photo gallery and collect information through forms.",
+  "display_until" : "Display until",
+  "publication_visibility" : "Publication visibility",
+  "all_contacts" : "All contacts",
+  "favourite_contacts" : "Favourite contacts",
+  "manually_select" : "Manually select",
+  "visibility" : "Visibility",
+  "save_publication" : "Save Publication",
+  "please_select_contacts_to_Invite" : "Please select contacts to Invite",
+  "manage_visibility" : "Manage Visibility",
+  "publication_discussion" : "Publication Discussion"
 }

@@ -26,11 +26,16 @@ class AnnouncementProvider extends BaseProvider{
   File? image;
   DateTime startDate = DateTime.now().add(Duration(days: 7));
   TimeOfDay startTime = TimeOfDay(hour: 19, minute: 0);
+  DateTime endDate = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day + 7);
+  TimeOfDay endTime = TimeOfDay(hour: 19, minute: 0);
   bool addDateAndTime = false;
   bool addLocation = false;
   bool photoGallerySwitch = false;
   bool discussionSwitch = false;
   bool askInfoSwitch = false;
+
+  // to be used when creating publication
+  List<String> questionsList = [];
 
   bool loading = false;
   updateLoadingStatus(bool val){
@@ -72,7 +77,7 @@ class AnnouncementProvider extends BaseProvider{
   void pickDateDialog(BuildContext context) {
     showDatePicker(
         context: context,
-        initialDate: startDate,
+        initialDate: endDate,
         firstDate: DateTime.now(),
         lastDate: DateTime(2100))
         .then((pickedDate) {
@@ -80,7 +85,7 @@ class AnnouncementProvider extends BaseProvider{
         return;
       }
       //for rebuilding the ui
-      startDate = pickedDate;
+      endDate = pickedDate;
       notifyListeners();
     });
   }
@@ -89,27 +94,29 @@ class AnnouncementProvider extends BaseProvider{
       BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: startTime,
+      initialTime: endTime,
     );
     if (pickedTime == null) {
       return;
     }
-    startTime = pickedTime;
+    endTime = pickedTime;
 
     notifyListeners();
   }
 
   /// For creating an announcement
 
-  Future createAnnouncement(BuildContext context, String title, String location, String description, DateTime startDateTime) async {
+  Future createAnnouncement(BuildContext context, String title, String location, String description, DateTime startDateTime, DateTime endDateTime) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!.createAnnouncement(title: title, description: description, photoURL:  announcementDetail.announcementPhotoUrl ?? "", location: location, start: startDateTime).catchError((e) {
+    var value = await mmyEngine!.createAnnouncement(title: title, description: description, photoURL: announcementDetail.announcementPhotoUrl ?? DEFAULT_EVENT_PHOTO_URL,
+        location: location, start: startDateTime, end: endDateTime).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
     if (value != null) {
+      value.form = <String, dynamic>{};
       announcementDetail.announcementId = value.eid;
       eventDetail.eid = value.eid;
 
@@ -119,14 +126,43 @@ class AnnouncementProvider extends BaseProvider{
           DialogHelper.showMessage(context, e.message);
         });
         image = null;
-        await updateAnnouncement(context, title, location, description, startDateTime);
+        if(!announcementDetail.editAnnouncement){
+          if(askInfoSwitch){
+            if(questionsList.isNotEmpty){
+              for(int i = 0 ; i < questionsList.length; i++){
+                await addQuestionToEvent(context, value, (i+1), questionsList[i]);
+              }
+            }
+          }
+          if(discussionSwitch){
+            await setEventParam(context, value.eid, "discussion", discussionSwitch);
+          }
+          if(photoGallerySwitch){
+            await createEventAlbum(context, value.eid, photoGallerySwitch);
+          }
+        }
+        await updateAnnouncement(context, title, location, description, startDateTime, endDateTime);
       } else{
-        setState(ViewState.Idle);
         announcementDetail.announcementPhotoUrl = value.photoURL;
+        if(!announcementDetail.editAnnouncement){
+          if(askInfoSwitch){
+            if(questionsList.isNotEmpty){
+              for(int i = 0 ; i < questionsList.length; i++){
+                await addQuestionToEvent(context, value, (i+1), questionsList[i]);
+              }
+            }
+          }
+          if(discussionSwitch){
+            await setEventParam(context, value.eid, "discussion", discussionSwitch);
+          }
+          if(photoGallerySwitch){
+            await createEventAlbum(context, value.eid, photoGallerySwitch);
+          }
+        }
+        setState(ViewState.Idle);
       }
 
-      Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-          .then((value) {
+      Navigator.pushNamed(context, RoutesConstants.publicationVisibility).then((value) {
         hideKeyboard(context);
         Navigator.of(context).pop();
       });
@@ -138,7 +174,7 @@ class AnnouncementProvider extends BaseProvider{
 
 /// for update an announcement
   Future updateAnnouncement(BuildContext context, String title, String location,
-      String description, DateTime startDateTime) async {
+      String description, DateTime startDateTime, DateTime endDateTime) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     if(image != null){
@@ -148,7 +184,8 @@ class AnnouncementProvider extends BaseProvider{
       });
     }
     var value = await mmyEngine!
-        . updateAnnouncement(announcementDetail.announcementId.toString(), title: title, location: location, description: description, photoURL: announcementDetail.announcementPhotoUrl, start: startDateTime)
+        . updateAnnouncement(announcementDetail.announcementId.toString(), title: title, location: location, description: description,
+        photoURL: announcementDetail.announcementPhotoUrl, start: startDateTime, end: endDateTime)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());

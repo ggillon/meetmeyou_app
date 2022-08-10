@@ -8,13 +8,14 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/widgets/organizedEventsCard.dart';
 
 class RejectedInvitesDescriptionScreen extends StatelessWidget {
    RejectedInvitesDescriptionScreen({Key? key}) : super(key: key);
 
   UserDetail userDetail = locator<UserDetail>();
-
+   BaseProvider baseProvider = locator<BaseProvider>();
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
@@ -59,7 +60,7 @@ class RejectedInvitesDescriptionScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: false),
+                OrganizedEventsCard(showEventRespondBtn: false, showEventScreen: false, contactId: baseProvider.auth.currentUser!.uid.toString()),
               ],
             ),
           ),

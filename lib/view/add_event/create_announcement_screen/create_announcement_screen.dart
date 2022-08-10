@@ -47,6 +47,9 @@ class CreateAnnouncementScreen extends StatelessWidget {
               provider.startDate = provider.announcementDetail.announcementStartDateAndTime!;
               provider.startTime = TimeOfDay.fromDateTime(
                   provider.announcementDetail.announcementStartDateAndTime!);
+              provider.endDate = provider.announcementDetail.announcementStartDateAndTime!;
+              provider.endTime = TimeOfDay.fromDateTime(
+                  provider.announcementDetail.announcementStartDateAndTime!);
             }
             if(provider.announcementDetail.announcementLocation != null){
               provider.addLocation = true;
@@ -120,13 +123,13 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                   },
                                 ),
                                 SizedBox(height: scaler.getHeight(1.8)),
-                                provider.addDateAndTime ? dateAndTimeField(context, scaler, provider) :
-                                addDateTimeAndLocationText(scaler, "add_a_date_and_time".tr(),
-                                    onTap: (){
-                                      provider.addDateAndTime = true;
-                                      provider.updateLoadingStatus(true);
-                                    }),
-                                SizedBox(height: scaler.getHeight(1.8)),
+                                // provider.addDateAndTime ? dateAndTimeField(context, scaler, provider) :
+                                // addDateTimeAndLocationText(scaler, "add_a_date_and_time".tr(),
+                                //     onTap: (){
+                                //       provider.addDateAndTime = true;
+                                //       provider.updateLoadingStatus(true);
+                                //     }),
+                                // SizedBox(height: scaler.getHeight(1.8)),
                                 provider.addLocation ? locationField(context, scaler, provider) :
                                 addDateTimeAndLocationText(scaler, "add_a_location".tr(),
                                     onTap: (){
@@ -164,25 +167,25 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                   keyboardType: TextInputType.multiline,
                                   maxLines: 6,
                                   validator: (value) {
-                                    if (value!.trim().isEmpty) {
-                                      return "description_required".tr();
-                                    }
-                                    {
-                                      return null;
-                                    }
+                                    // if (value!.trim().isEmpty) {
+                                    //   return "description_required".tr();
+                                    // }
+                                    // {
+                                    //   return null;
+                                    // }
                                   },
                                 ),
-                             provider.announcementDetail.editAnnouncement ? Column(
+                            Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: scaler.getHeight(2.0)),
                                     discussionSwitch(context, scaler, provider),
                                     SizedBox(height: scaler.getHeight(2.0)),
                                     askForInfoSwitch(context, scaler, provider),
-                                    provider.askInfoSwitch == true && _fields.length > 0
+                                    provider.askInfoSwitch == true
                                         ? SizedBox(height: scaler.getHeight(1.8))
                                         : SizedBox(height: scaler.getHeight(0.0)),
-                                    provider.askInfoSwitch == true
+                                    (provider.askInfoSwitch == true && _fields.length > 0)
                                         ? questionsListView(provider, scaler)
                                         : Container(),
                                     // provider.askInfoSwitch == true
@@ -193,21 +196,20 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                         : Container(),
                                     SizedBox(height: scaler.getHeight(2.0)),
                                     photoGallerySwitch(context, scaler, provider),
+                                    provider.announcementDetail.editAnnouncement == false ? Container() :
                                     SizedBox(height: scaler.getHeight(3.0)),
-                                    CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
-                                      Navigator.pushNamed(
-                                          context,
-                                          RoutesConstants
-                                              .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
-                                          .then((value) {
-                                        //provider.fromInviteScreen = true;
+                                   provider.announcementDetail.editAnnouncement == false ? Container() :
+                                   CommonWidgets.inviteMoreFriends(context, scaler, onTap:  () {
+                                          Navigator.pushNamed(context, RoutesConstants.publicationVisibility).then((value) {
                                         provider.updateLoadingStatus(true);
                                         hideKeyboard(context);
                                       });
                                     }),
-                                    SizedBox(height: scaler.getHeight(5.0)),
+                                    SizedBox(height: scaler.getHeight(2.5)),
                                   ],
-                                ) : Container(),
+                                ),
+                                dateAndTimeField(context, scaler, provider),
+                                SizedBox(height: scaler.getHeight(3.5)),
                               ],
                             ),
                           ),
@@ -241,9 +243,11 @@ class CreateAnnouncementScreen extends StatelessWidget {
                               btn1: false,
                             onTapBtn2: (){
                               provider.updateAnnouncement(context, titleController.text, addressController.text, descriptionController.text,
-                                  provider.addDateAndTime ? DateTimeHelper.dateTimeFormat(
+                                  DateTimeHelper.dateTimeFormat(
                                       provider.startDate,
-                                      provider.startTime) : null);
+                                      provider.startTime), DateTimeHelper.dateTimeFormat(
+                                      provider.endDate,
+                                      provider.endTime) );
                             })),
                       )
                           :   Expanded(
@@ -258,18 +262,20 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                 ColorConstants.primaryColor,
                                 ColorConstants.colorWhite, onTapFun: (){
                               if (_formKey.currentState!.validate()) {
-                                if (provider.image == null &&
-                                    provider.announcementDetail.announcementPhotoUrl == null) {
-                                  DialogHelper.showMessage(context,
-                                      "please_select_image".tr());
-                                  return;
-                                } else{
+                              //  if (provider.image == null &&
+                                //     provider.announcementDetail.announcementPhotoUrl == null) {
+                                //   DialogHelper.showMessage(context,
+                                //       "please_select_image".tr());
+                                //   return;
+                                // } else{
                                   provider.createAnnouncement(context, titleController.text, addressController.text, descriptionController.text,
-                                    provider.addDateAndTime ? DateTimeHelper.dateTimeFormat(
+                                    DateTimeHelper.dateTimeFormat(
                                       provider.startDate,
-                                      provider.startTime) : null);
+                                      provider.startTime), DateTimeHelper.dateTimeFormat(
+                                          provider.endDate,
+                                          provider.endTime));
                                 }
-                              }
+                             // }
                             }),
                           ),
                         )
@@ -403,19 +409,19 @@ class CreateAnnouncementScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("date_and_time".tr())
+        Text("display_until".tr())
             .boldText(
             Colors.black,
             scaler.getTextSize(10.5),
             TextAlign.center),
         SizedBox(
             height: scaler.getHeight(0.3)),
-        startDateTimePickField(context, scaler, provider)
+        endDateTimePickField(context, scaler, provider)
       ],
     );
   }
 
-  Widget startDateTimePickField(
+  Widget endDateTimePickField(
       BuildContext context, ScreenScaler scaler, AnnouncementProvider provider) {
     return Container(
       height: scaler.getHeight(5),
@@ -446,7 +452,7 @@ class CreateAnnouncementScreen extends StatelessWidget {
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
                 height: scaler.getHeight(3.0),
-                child: Text(DateTimeHelper.dateConversion(provider.startDate))
+                child: Text(DateTimeHelper.dateConversion(provider.endDate))
                     .regularText(ColorConstants.colorGray,
                     scaler.getTextSize(10.5), TextAlign.center),
               ),
@@ -466,7 +472,7 @@ class CreateAnnouncementScreen extends StatelessWidget {
                     ),
                     borderRadius: scaler.getBorderRadiusCircular(8.0)),
                 height: scaler.getHeight(3.0),
-                child: Text(DateTimeHelper.timeConversion(provider.startTime))
+                child: Text(DateTimeHelper.timeConversion(provider.endTime))
                     .regularText(ColorConstants.colorGray,
                     scaler.getTextSize(10.5), TextAlign.center),
               ),
@@ -547,7 +553,9 @@ class CreateAnnouncementScreen extends StatelessWidget {
           onToggle: (val) async {
             hideKeyboard(context);
             provider.photoGallerySwitch = val;
-            await provider.createEventAlbum(context, provider.announcementDetail.announcementId.toString(), val);
+            provider.announcementDetail.editAnnouncement == true ?
+            await provider.createEventAlbum(context, provider.announcementDetail.announcementId.toString(), val)
+                : Container();
             provider.updateLoadingStatus(true);
           },
         ),
@@ -574,7 +582,9 @@ class CreateAnnouncementScreen extends StatelessWidget {
           onToggle: (val) async {
             hideKeyboard(context);
             provider.discussionSwitch = val;
-             provider.setEventParam(context, provider.announcementDetail.announcementId.toString(), "discussion", provider.discussionSwitch);
+           provider.announcementDetail.editAnnouncement == true ?
+          await provider.setEventParam(context, provider.announcementDetail.announcementId.toString(), "discussion", provider.discussionSwitch)
+             : Container();
             provider.updateLoadingStatus(true);
           },
         ),
@@ -653,16 +663,24 @@ class CreateAnnouncementScreen extends StatelessWidget {
         shrinkWrap: true,
         itemCount: _fields.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _fields[index],
-              GestureDetector(
-                  onTap: () {
-                    _fields.removeAt(index);
-                    provider.updateLoadingStatus(true);
-                  },
-                  child: Icon(Icons.close))
+              Text("${"question".tr()} ${index + 1}")
+                  .boldText(ColorConstants.colorBlack, 10.5, TextAlign.left),
+              SizedBox(height: scaler.getHeight(0.2)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _fields[index],
+                provider.announcementDetail.editAnnouncement ? Container() : GestureDetector(
+                      onTap: () {
+                        _fields.removeAt(index);
+                        provider.updateLoadingStatus(true);
+                      },
+                      child: Icon(Icons.close))
+                ],
+              ),
             ],
           );
         },
@@ -675,9 +693,6 @@ class CreateAnnouncementScreen extends StatelessWidget {
       {bool addQue = true}) {
     final field =
     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text("${"question".tr()} ${_fields.length + 1}")
-          .boldText(ColorConstants.colorBlack, 10.5, TextAlign.left),
-      SizedBox(height: scaler.getHeight(0.2)),
       Container(
         width: scaler.getWidth(78),
         child: Text(questionController.text).mediumText(
@@ -691,10 +706,15 @@ class CreateAnnouncementScreen extends StatelessWidget {
 
     _fields.add(field);
     // questionsList.add(questionController.text);
-    addQue
-        ? provider.addQuestionToEvent(context, provider.eventDetail.event!,
-        _fields.length, questionController.text)
-        : Container();
+    if(provider.announcementDetail.editAnnouncement){
+      addQue
+          ? provider.addQuestionToEvent(context, provider.eventDetail.event!,
+          _fields.length, questionController.text)
+          : Container();
+    } else{
+      provider.questionsList.add(questionController.text);
+    }
+
     provider.updateLoadingStatus(true);
   }
 

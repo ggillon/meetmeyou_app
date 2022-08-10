@@ -50,6 +50,7 @@ import 'package:meetmeyou_app/provider/organize_event_card_provider.dart';
 import 'package:meetmeyou_app/provider/privacy_policy_provider.dart';
 import 'package:meetmeyou_app/provider/public_home_page_provider.dart';
 import 'package:meetmeyou_app/provider/public_location_create_event_provider.dart';
+import 'package:meetmeyou_app/provider/publication_visibilty_provider.dart';
 import 'package:meetmeyou_app/provider/rejected_invites_Provider.dart';
 import 'package:meetmeyou_app/provider/search_profile_provider.dart';
 import 'package:meetmeyou_app/provider/see_all_people_provider.dart';
@@ -125,6 +126,7 @@ void setupLocator() {
   locator.registerFactory<EventGalleryImageViewProvider>(() => EventGalleryImageViewProvider());
   locator.registerFactory<AnnouncementProvider>(() => AnnouncementProvider());
   locator.registerFactory<ViewReplyToFormProvider>(() => ViewReplyToFormProvider());
+  locator.registerFactory<PublicationVisibilityProvider>(() => PublicationVisibilityProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {
