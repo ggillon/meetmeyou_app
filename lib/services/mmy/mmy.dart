@@ -267,6 +267,7 @@ class MMY implements MMYEngine {
   Future<Profile> getUserProfile() async {
     Profile profile = await profileLib.getUserProfile(_currentUser);
     await notificationLib.setToken(_currentUser); // set token for notification
+    profileLib.cleanUpDb(_currentUser); // perform db cleanUp at start
     return profile;
   }
 
@@ -404,7 +405,7 @@ class MMY implements MMYEngine {
     List<String> invitedListID = await getContactIDs(invitedContacts: true);
     for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
       if(profile.uid != _currentUser.uid) {
-        Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
+        Contact contact = await contactLib.contactFromProfile(profile, _currentUser.uid);
         if (contactListID.contains(contact.cid)) contact = await contactLib.getContact(_currentUser, cid: contact.cid);
         if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
         searchList.add(contact);
@@ -829,8 +830,12 @@ class MMY implements MMYEngine {
   @override
   Future<void> addToFavourites(String cid) async {
     if((await contactLib.getContact(_currentUser, cid: cid)).status == CONTACT_GROUP) {
-      profileLib.addGroupToFavourites(_currentUser, cid);
-    } else {profileLib.addUserToFavourites(_currentUser, cid);}
+      if ((await getContact(cid)).isFavourite) profileLib.removeUserFromFavourites(_currentUser, cid);
+      else profileLib.addGroupToFavourites(_currentUser, cid);
+    } else {
+      if ((await getContact(cid)).isFavourite) profileLib.removeUserFromFavourites(_currentUser, cid);
+      else profileLib.addUserToFavourites(_currentUser, cid);
+    }
   }
 
   @override

@@ -68,6 +68,16 @@ Future<Contact> syncContact(User currentUser, {required String cid}) async {
   return contact;
 }
 
+Future<void> asyncContact(User currentUser, {required String cid}) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Contact oldContact = await db.getContact(currentUser.uid, cid);
+  Contact contact = (await getContactFromProfile(currentUser, uid: cid))!;
+  // Now deal with specifics stored
+  contact.status = CONTACT_CONFIRMED;
+  contact.other = oldContact.other;
+  await FirestoreDB(uid: currentUser.uid).setContact(currentUser.uid, contact);
+}
+
 // Get a particular contact
 Future<Contact> getContact(User currentUser, {required String cid}) async {
   Contact contact = await FirestoreDB(uid: currentUser.uid).getContact(currentUser.uid, cid);
@@ -79,6 +89,7 @@ Future<Contact> getContact(User currentUser, {required String cid}) async {
 
 // Get a contact from a profile (for event invitation)
 Future<Contact?> getContactFromProfile(User currentUser, {required String uid}) async {
+
   Profile? profile;
   Contact? contact;
   String status = CONTACT_PROFILE;
@@ -95,15 +106,17 @@ Future<Contact?> getContactFromProfile(User currentUser, {required String uid}) 
   }
 
   if(profile != null) {
+    contact = Contact(
+      cid: profile.uid, uid: profile.uid,
+      displayName: profile.displayName, firstName: profile.firstName, lastName: profile.lastName,
+      email: profile.email, countryCode: profile.countryCode, phoneNumber: profile.phoneNumber,
+      photoURL: profile.photoURL, addresses: profile.addresses,
+      about: profile.about, other: profile.other, group: EMPTY_MAP, status: status,
+    );
 
-    return Contact(
-        cid: profile.uid, uid: profile.uid,
-        displayName: profile.displayName, firstName: profile.firstName, lastName: profile.lastName,
-        email: profile.email, countryCode: profile.countryCode, phoneNumber: profile.phoneNumber,
-        photoURL: profile.photoURL, addresses: profile.addresses,
-        about: profile.about, other: profile.other, group: EMPTY_MAP, status: status,
-        );
+    return contact;
   }
+
 }
 
 // Delete a particular contact
@@ -116,7 +129,7 @@ Future<List<Contact>> getContacts(User currentUser,) async {
   List<Contact> contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
   for(Contact contact in contacts) {
     if(contact.status == CONTACT_CONFIRMED) {
-      contact = await syncContact(currentUser, cid: contact.cid);
+      asyncContact(currentUser, cid: contact.cid);
     }
   }
   contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
@@ -164,10 +177,18 @@ Future<Contact> updatePrivateContact(User currentUser, String cid, {String? disp
 }
 
 // Generate a contact from a profile, to display in contact sheet ; beware uid is set to profile.uid -> need to be changed
-Contact contactFromProfile(Profile profile, {String? uid}) {
+Future<Contact> contactFromProfile(Profile profile, String uid) async {
+  Database db = FirestoreDB(uid: uid);
+  Contact? contact;
+  try {
+    contact = await db.getContact(uid, profile.uid);
+  } catch(e) {}
+  if (contact != null) {
+    profile.other.addAll(contact.other);
+  }
   return Contact(
     cid: profile.uid,
-    uid: uid ?? profile.uid,
+    uid: uid,
     displayName: profile.displayName,
     firstName: profile.firstName,
     lastName: profile.lastName,
@@ -177,7 +198,7 @@ Contact contactFromProfile(Profile profile, {String? uid}) {
     photoURL: profile.photoURL,
     addresses: profile.addresses,
     about: profile.about,
-    other: EMPTY_MAP,
+    other: profile.other,
     group: EMPTY_MAP,
     status: CONTACT_PROFILE,
   );
@@ -259,12 +280,12 @@ Future<void> inviteProfile(User currentUser, {required String uid}) async {
   Database db = FirestoreDB(uid: currentUser.uid);
 
   // Add an invited contact to current user
-  Contact invited = contactFromProfile((await db.getProfile(uid))!, uid: currentUser.uid);
+  Contact invited = await contactFromProfile((await db.getProfile(uid))!, currentUser.uid);
   invited.status = CONTACT_INVITED; // change status to invited contact
   await db.setContact(currentUser.uid, invited);
 
   // Add an invitation to invited profile
-  Contact invitation = contactFromProfile(await getUserProfile(currentUser), uid: uid);
+  Contact invitation = await contactFromProfile(await getUserProfile(currentUser), uid);
   invitation.status = CONTACT_INVITATION; // change status to invitation contact
   await db.setContact(uid, invitation);
 }
@@ -305,10 +326,10 @@ Future<void> respondProfile(User currentUser, {required String cid, required boo
 Future<void> linkProfiles(User currentUser, {required String uid,}) async {
   Database db = FirestoreDB(uid: currentUser.uid);
   if(currentUser.uid != uid) {
-    Contact contact1 = contactFromProfile(
-        (await db.getProfile(uid))!, uid: currentUser.uid);
-    Contact contact2 = contactFromProfile(
-        (await db.getProfile(currentUser.uid))!, uid: uid);
+    Contact contact1 = await contactFromProfile(
+        (await db.getProfile(uid))!, currentUser.uid);
+    Contact contact2 = await contactFromProfile(
+        (await db.getProfile(currentUser.uid))!, uid);
     contact1.status = CONTACT_CONFIRMED;
     contact2.status = CONTACT_CONFIRMED;
     await db.setContact(currentUser.uid, contact1);
