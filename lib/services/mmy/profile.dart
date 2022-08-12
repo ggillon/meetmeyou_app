@@ -2,6 +2,7 @@ import 'package:meetmeyou_app/models/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
+import 'contact.dart' as contactLib;
 
 import '../../models/contact.dart';
 import 'idgen.dart';
@@ -191,6 +192,16 @@ Future<Profile> addGroupToFavourites(User currentUser, String gid) async {
   return profile;
 }
 
+Future<Profile> removeGroupFromFavourites(User currentUser, String gid) async {
+  Database db = FirestoreDB(uid: currentUser.uid);
+  Profile profile = (await db.getProfile(currentUser.uid))!;
+  Contact group = (await db.getContact(currentUser.uid, gid));
+  group.other['Favourite'] = false;
+
+  db.setContact(currentUser.uid, group);
+  return profile;
+}
+
 Future<bool> isFavourite(User currentUser, String uid) async {
   Database db = FirestoreDB(uid: currentUser.uid);
   Profile profile = (await db.getProfile(currentUser.uid))!;
@@ -207,7 +218,8 @@ Future<List<String>> getFavouriteIDs(User currentUser) async {
   Database db = FirestoreDB(uid: currentUser.uid);
   Profile profile = (await db.getProfile(currentUser.uid))!;
   if(profile.other.containsKey('Favourites')) {
-    favourites = profile.other['Favourites'];
+    List<dynamic> list = profile.other['Favourites'];
+    favourites = list.map((e) => e.toString()).toList();
   }
   return favourites;
 }
@@ -276,6 +288,24 @@ Future<List<Profile>> searchProfiles(User currentUser, {required String searchTe
     }
   }
   return results;
+}
+
+Future<void> cleanUpDb(User currentUser) async { // Cleaning up profile problems
+  Database db = await FirestoreDB(uid: currentUser.uid);
+
+  // No self-contact
+  try {
+    await contactLib.deleteContact(currentUser, cid: currentUser.uid);
+  } catch(e) {}
+
+  // Duplicate in Favourite
+  try {
+    Profile? profile = await db.getProfile(currentUser.uid);
+    profile!.other['Favourites'] = (profile!.other['Favourites']).toSet().toList();
+    await db.setProfile(profile);
+  } catch(e) {}
+
+
 }
 
 

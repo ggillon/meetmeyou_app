@@ -55,6 +55,7 @@ Future<List<Event>> searchEvents(User currentUser, String searchText) async {
 }
 
 Future<List<Contact>> searchProfiles(User currentUser, {required String searchText, List<String> searchFields = FIELD_ALL, bool split=true }) async {
+
   List<Contact> results = [];
   List<Profile> profiles = [];
   Database db = await FirestoreDB(uid: currentUser.uid);
@@ -77,12 +78,14 @@ Future<List<Contact>> searchProfiles(User currentUser, {required String searchTe
   }
   for (Profile profile in profiles) {
     if(profile.uid != currentUser.uid) {
-      Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
+      Contact contact = await contactLib.contactFromProfile(profile, currentUser.uid);
       if (confirmedList.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
       if (invitedList.contains(contact.cid)) contact.status = CONTACT_INVITED;
+
       results.add(contact);
     }
   }
+  print(profiles.first.other);
   return results;
 }
 
