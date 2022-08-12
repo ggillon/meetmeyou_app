@@ -305,5 +305,7 @@
   "save_publication" : "Save Publication",
   "please_select_contacts_to_Invite" : "Please select contacts to Invite",
   "manage_visibility" : "Manage Visibility",
-  "publication_discussion" : "Publication Discussion"
+  "publication_discussion" : "Publication Discussion",
+  "events_only" : "Events only",
+  "publications_only" : "Publications only"
 }

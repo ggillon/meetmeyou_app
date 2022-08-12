@@ -103,7 +103,7 @@ class EventDetailScreen extends StatelessWidget {
               questionnaireKeysList.add(key);
             }
           }
-          if(provider.eventDetail.eventBtnStatus == "going"){
+          if(provider.eventDetail.eventBtnStatus == "going" || provider.eventDetail.eventBtnStatus == "Hide"){
             if (provider
                 .eventDetail.event!.form.isNotEmpty) {
               provider.getAnswerEventForm(context, provider.eventDetail.eid.toString(), provider.auth.currentUser!.uid.toString()).then((value) {
@@ -197,7 +197,48 @@ class EventDetailScreen extends StatelessWidget {
                               }, pastEventOrAnnouncement: true);
                             }
                             )  : (provider.eventDetail.event!.multipleDates == true &&
-                                   provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid) ? Container() : CommonWidgets.commonBtn(
+                                   provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid) ? Container() :
+                            (provider.eventDetail.event!.eventType == EVENT_TYPE_ANNOUNCEMENT && provider.eventDetail.event!.form.isNotEmpty
+                                && provider.eventDetail.event!.organiserID != provider.auth.currentUser!.uid.toString()
+                            && CommonEventFunction.getAnnouncementBtnStatus(provider.eventDetail.event!, provider.auth.currentUser!.uid.toString(), checkForAns: true) == "ans") ?
+                            (provider.value == true ? Center(child: CircularProgressIndicator()) : Column(
+                              children: [
+                                CommonWidgets.commonBtn(
+                                  scaler,
+                                  context,
+                                  "answer".tr(),
+                                  ColorConstants.primaryColor,
+                                  ColorConstants.colorWhite, onTapFun: () {
+                                  List<String> questionsList = [];
+                                  for (var value in provider
+                                      .eventDetail.event!.form.values) {
+                                    questionsList.add(value);
+                                  }
+                                  alertForQuestionnaireAnswers(
+                                      _scaffoldkey.currentContext!,
+                                      scaler,
+                                      questionsList,
+                                      provider);
+                                },),
+                                SizedBox(height: scaler.getHeight(2.0)),
+                                CommonWidgets.commonBtn(
+                                  scaler,
+                                  context,
+                                  provider.eventDetail.eventBtnStatus?.tr() ?? "Hide",
+                                  provider.eventDetail.btnBGColor ?? ColorConstants.primaryColor,
+                                  provider.eventDetail.textColor ?? ColorConstants.colorWhite, onTapFun: () {
+                                  CommonWidgets.respondToEventBottomSheet(
+                                      context, scaler, hide: () {
+                                    Navigator.of(context).pop();
+                                    provider.replyToEvent(
+                                        context,
+                                        provider.eventDetail.eid!,
+                                        EVENT_NOT_INTERESTED);
+                                  }, pastEventOrAnnouncement: true);
+                                },)
+                              ],
+                            )) :
+                            CommonWidgets.commonBtn(
                                   scaler,
                                   context,
                                   provider.eventDetail.eventBtnStatus?.tr() ?? "Respond",
@@ -320,7 +361,7 @@ class EventDetailScreen extends StatelessWidget {
                             (provider.eventDetail.organiserId == provider.auth.currentUser?.uid && provider.eventDetail.event!.form.isNotEmpty)?
                             viewRepliesToFormCard(context, scaler, provider) : Container(),
                             SizedBox(height: scaler.getHeight(2)),
-                           checkAvailabilitiesCard(context, scaler, provider),
+                            provider.eventDetail.event!.eventType == EVENT_TYPE_ANNOUNCEMENT ? Container() :  checkAvailabilitiesCard(context, scaler, provider),
                             // Container(
                             //       width: double.infinity,
                             //       child: Row(
@@ -480,8 +521,8 @@ class EventDetailScreen extends StatelessWidget {
                                 .regularText(ColorConstants.colorBlack,
                                     scaler.getTextSize(10.5), TextAlign.left),
                             SizedBox(height: scaler.getHeight(3.5)),
-                            provider.eventDetail.event!.eventType == EVENT_TYPE_PRIVATE ? eventDiscussionCard(context, scaler) :
-                            (provider.discussionEnable == true ?  eventDiscussionCard(context, scaler) : Container()),
+                            provider.eventDetail.event!.eventType == EVENT_TYPE_PRIVATE ? eventDiscussionCard(context, scaler, provider) :
+                            (provider.discussionEnable == true ?  eventDiscussionCard(context, scaler, provider) : Container()),
                             provider.photoGalleryEnable == true ?  SizedBox(height: scaler.getHeight(2.0)) : Container(),
                             provider.photoGalleryEnable == true ?  photoGalleryCard(context, scaler) : Container(),
                             SizedBox(height: scaler.getHeight(6.0)),
@@ -757,13 +798,36 @@ class EventDetailScreen extends StatelessWidget {
   Widget manageInvitationCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return GestureDetector(
       onTap: provider.eventDetail.isPastEvent == true ? (){} : (){
-        provider.setContactKeys(provider.eventDetail.event!);
-        Navigator.pushNamed(
-            context,
-            RoutesConstants
-                .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false,)).then((value) {
-          Navigator.of(context).pop();
-        });
+        List<String> valuesList = [];
+        for (var value in provider.eventDetail.event!.invitedContacts.values) {
+          valuesList.add(value);
+        }
+        List<String> keysList = [];
+        for (var key in provider.eventDetail.event!.invitedContacts.keys) {
+          keysList.add(key);
+        }
+        List<String> contactsKeys = [];
+        for (int i = 0; i < keysList.length; i++) {
+          if (valuesList[i] != "Organiser") {
+            contactsKeys.add(keysList[i]);
+          }
+        }
+
+        provider.announcementDetail.contactCIDs = contactsKeys;
+        if(provider.eventDetail.event!.eventType == EVENT_TYPE_ANNOUNCEMENT){
+          Navigator.pushNamed(context, RoutesConstants.publicationVisibility).then((value) {
+            Navigator.of(context).pop();
+          });
+        } else{
+          provider.setContactKeys(provider.eventDetail.event!);
+          Navigator.pushNamed(
+              context,
+              RoutesConstants
+                  .eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false,)).then((value) {
+            Navigator.of(context).pop();
+          });
+        }
+
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -777,7 +841,7 @@ class EventDetailScreen extends StatelessWidget {
               Expanded(
                   child: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text("manage_invitations".tr())
+                    child: Text(provider.eventDetail.event!.eventType == EVENT_TYPE_ANNOUNCEMENT ? "manage_visibility".tr() : "manage_invitations".tr())
                         .semiBoldText(ColorConstants.colorBlack,
                         scaler.getTextSize(10.8), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -1121,7 +1185,7 @@ class EventDetailScreen extends StatelessWidget {
   }
 
 
-  Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler) {
+  Widget eventDiscussionCard(BuildContext context, ScreenScaler scaler, EventDetailProvider provider) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: false, chatDid: ""));
@@ -1138,7 +1202,7 @@ class EventDetailScreen extends StatelessWidget {
               Expanded(
                   child: Container(
                 alignment: Alignment.centerLeft,
-                child: Text("event_discussion".tr()).mediumText(
+                child: Text(provider.eventDetail.event!.eventType == EVENT_TYPE_ANNOUNCEMENT ? "publication_discussion".tr() : "event_discussion".tr()).mediumText(
                     ColorConstants.colorBlack,
                     scaler.getTextSize(10.8),
                     TextAlign.left,

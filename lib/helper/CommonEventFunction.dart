@@ -72,7 +72,7 @@ class CommonEventFunction{
     }
   }
 
- static getAnnouncementBtnStatus(eventModel.Event event, String userCid) {
+ static getAnnouncementBtnStatus(eventModel.Event event, String userCid, {bool checkForAns = false}) {
    List<String> keysList = [];
    for (var key in event.invitedContacts.keys) {
      keysList.add(key);
@@ -84,14 +84,16 @@ class CommonEventFunction{
    for (int i = 0; i < keysList.length; i++) {
      if (keysList[i] == userCid) {
        if (valuesList[i] == "Invited") {
-         return "hide";
+         return checkForAns ? "ans" : "hide";
        } else if (valuesList[i] == "Organiser") {
          return "edit";
        } else if (valuesList[i] == "Not Interested") {
          return "hide";
        } else if (valuesList[i] == "Canceled") {
          return "cancelled";
-       } else{
+       } else if (valuesList[i] == "Attending") {
+         return "attending";
+       }else{
          return "hide";
        }
      }

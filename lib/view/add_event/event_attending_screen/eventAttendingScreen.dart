@@ -203,7 +203,7 @@ class EventAttendingScreen extends StatelessWidget {
         provider.inviteProfile(context, cList[index]);
       }, deleteIconTapAction: () {
         deleteIconAlertDialog(context, scaler, cList, index, provider);
-      }, currentUser: currentUser),
+      }, currentUser: currentUser, isFavouriteContact: cList[index].other['Favourite']),
     );
   }
 

@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
+import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/announcement_detail.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
@@ -25,6 +26,7 @@ import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/dashboard_provider.dart';
+import 'package:meetmeyou_app/services/mmy/event.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
@@ -45,6 +47,7 @@ class HomePageProvider extends BaseProvider {
   FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
   AnnouncementDetail announcementDetail = locator<AnnouncementDetail>();
 
+
   bool _value = false;
 
   bool get value => _value;
@@ -57,6 +60,7 @@ class HomePageProvider extends BaseProvider {
   tabChangeEvent(BuildContext context) {
     tabController?.addListener(() {
       getIndexChanging(context);
+      SharedPref.prefs!.setInt(SharedPref.homeTabIndex, tabController!.index);
       notifyListeners();
     });
   }
@@ -91,12 +95,12 @@ class HomePageProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getUserEvents(BuildContext context, {List<String>? filters, bool refresh = false}) async {
+  Future getUserEvents(BuildContext context, {List<String>? filters, bool refresh = false, List<String>? selector}) async {
    refresh == true ? updateRefresh(true) : setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value =
-        await mmyEngine!.getUserEvents(filters: filters).catchError((e) {
+        await mmyEngine!.getUserEvents(filters: filters, selector: selector).catchError((e) {
           refresh == true ? updateRefresh(false) : setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -179,22 +183,40 @@ class HomePageProvider extends BaseProvider {
   //   }
   // }
 
+  var tabTextIndexSelected = 0;
+
   getIndexChanging(BuildContext context, {bool refresh = false}) {
     switch (tabController!.index) {
       case 0:
-        getUserEvents(context, refresh: refresh);
+        if(tabTextIndexSelected == 0){
+          getUserEvents(context, refresh: refresh);
+        } else if(tabTextIndexSelected == 1){
+          getUserEvents(context, refresh: refresh, selector: [SELECTOR_PRIVATE_EVENTS]);
+        }
         break;
 
       case 1:
-        getUserEvents(context, filters: ["Attending"], refresh: refresh);
+        if(tabTextIndexSelected == 0){
+          getUserEvents(context, filters: ["Attending"], refresh: refresh);
+        } else  if(tabTextIndexSelected == 1){
+          getUserEvents(context, filters: ["Attending"], refresh: refresh, selector: [SELECTOR_PRIVATE_EVENTS]);
+        }
         break;
 
       case 2:
-        getUserEvents(context, filters: ["Not Attending"], refresh: refresh);
+        if(tabTextIndexSelected == 0){
+          getUserEvents(context, filters: ["Not Attending"], refresh: refresh);
+        } else  if(tabTextIndexSelected == 1){
+          getUserEvents(context, filters: ["Not Attending"], refresh: refresh, selector: [SELECTOR_PRIVATE_EVENTS]);
+        }
         break;
 
       case 3:
-        getUserEvents(context, filters: ["Invited"], refresh: refresh);
+        if(tabTextIndexSelected == 0){
+          getUserEvents(context, filters: ["Invited"], refresh: refresh);
+        } else  if(tabTextIndexSelected == 1){
+          getUserEvents(context, filters: ["Invited"], refresh: refresh, selector: [SELECTOR_PRIVATE_EVENTS]);
+        }
         break;
 
       case 4:
@@ -202,7 +224,11 @@ class HomePageProvider extends BaseProvider {
         break;
 
       case 5:
-        getUserEvents(context, filters: ["Not Interested"], refresh: refresh);
+        if(tabTextIndexSelected == 0){
+          getUserEvents(context, filters: ["Not Interested"], refresh: refresh);
+        } else  if(tabTextIndexSelected == 1){
+          getUserEvents(context, filters: ["Not Interested"], refresh: refresh, selector: [SELECTOR_PRIVATE_EVENTS]);
+        }
         break;
     }
     notifyListeners();

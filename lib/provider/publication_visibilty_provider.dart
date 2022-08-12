@@ -15,7 +15,7 @@ class PublicationVisibilityProvider extends BaseProvider {
   int toggle = 0;
   bool isManuallyList = false;
 
-  late List<bool> value = [];
+   List<bool> value = [];
 
   void updateCheckValue(bool val, int index) {
     value[index] = val;
@@ -25,7 +25,6 @@ class PublicationVisibilityProvider extends BaseProvider {
   tabChangeEvent(BuildContext context) {
     tabController?.addListener(() {
       if(tabController!.index == 0){
-        contactsKeys.addAll(announcementDetail.contactCIDs);
         isManuallyList = false;
       } else if(tabController!.index == 1){
         isManuallyList = false;
@@ -272,6 +271,22 @@ class PublicationVisibilityProvider extends BaseProvider {
     });
 
     if(value != null){
+      List<String> valuesList = [];
+      for (var value in value.invitedContacts.values) {
+        valuesList.add(value);
+      }
+      List<String> keysList = [];
+      for (var key in value.invitedContacts.keys) {
+        keysList.add(key);
+      }
+      List<String> contactsKeys = [];
+      for (int i = 0; i < keysList.length; i++) {
+        if (valuesList[i] != "Organiser") {
+          contactsKeys.add(keysList[i]);
+        }
+      }
+
+      announcementDetail.contactCIDs = contactsKeys;
       updateInviteContacts(false);
       Navigator.of(context).pop();
     }
@@ -290,6 +305,22 @@ class PublicationVisibilityProvider extends BaseProvider {
     });
 
     if(value != null){
+      List<String> valuesList = [];
+      for (var value in value.invitedContacts.values) {
+        valuesList.add(value);
+      }
+      List<String> keysList = [];
+      for (var key in value.invitedContacts.keys) {
+        keysList.add(key);
+      }
+      List<String> contactsKeys = [];
+      for (int i = 0; i < keysList.length; i++) {
+        if (valuesList[i] != "Organiser") {
+          contactsKeys.add(keysList[i]);
+        }
+      }
+
+      announcementDetail.contactCIDs = contactsKeys;
       updateInviteContacts(false);
       Navigator.of(context).pop();
     }

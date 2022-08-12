@@ -170,7 +170,7 @@ class CustomSearchDelegate extends SearchDelegate   {
                 searchStatus: provider.contactsList[index].status,
                 search: true, addIconTapAction: () {
               provider.inviteProfile(context, provider.contactsList[index]);
-            }),
+            }, isFavouriteContact: provider.contactsList[index].other['Favourite']),
           );
         });
   }

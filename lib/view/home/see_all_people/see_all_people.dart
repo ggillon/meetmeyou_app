@@ -76,7 +76,7 @@ class SeeAllPeople extends StatelessWidget {
                          searchStatus: contactsList[index].status,
                          search: true, addIconTapAction: () {
                        provider.inviteProfile(context, contactsList[index]);
-                     }),
+                     }, isFavouriteContact: contactsList[index].other['Favourite']),
                      SizedBox(height: scaler.getHeight(0.5)),
                    ],
                  ),

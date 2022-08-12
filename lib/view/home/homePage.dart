@@ -4,10 +4,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
+import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/decoration.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
+import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
@@ -24,6 +26,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/provider/home_page_provider.dart';
 import 'package:meetmeyou_app/provider/public_home_page_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
+import 'package:meetmeyou_app/services/mmy/event.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_search_delegate.dart';
@@ -58,6 +61,8 @@ class _HomePageState extends State<HomePage>
   var refreshKeyTab4 = GlobalKey<RefreshIndicatorState>();
   var refreshKeyTab5 = GlobalKey<RefreshIndicatorState>();
   var refreshKeyTab6 = GlobalKey<RefreshIndicatorState>();
+
+  var refreshKeyTabPublication = GlobalKey<RefreshIndicatorState>();
   HomePageProvider provider = HomePageProvider();
   DashboardProvider _dashboardProvider = DashboardProvider();
 
@@ -102,6 +107,13 @@ class _HomePageState extends State<HomePage>
     await Future.delayed(Duration(seconds: 2));
 
     await this.provider.getIndexChanging(context, refresh: true);
+  }
+
+  Future<Null> refreshListTabPublication() async {
+    refreshKeyTabPublication.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+
+    await this.provider.getUserEvents(context, refresh: true, selector: [SELECTOR_ANNOUNCEMENT]);
   }
 
   @override
@@ -149,7 +161,13 @@ class _HomePageState extends State<HomePage>
           widget.provider = provider;
           provider.tabController = TabController(length: 6, vsync: this);
           provider.tabChangeEvent(context);
-          await provider.getIndexChanging(context);
+         provider.tabTextIndexSelected = SharedPref.prefs!.getInt(SharedPref.homeToggleIndex) ?? 0;
+         if(provider.tabTextIndexSelected == 0 || provider.tabTextIndexSelected == 1){
+           provider.tabController!.index = SharedPref.prefs!.getInt(SharedPref.homeTabIndex) ?? 0;
+           await provider.getIndexChanging(context);
+         } else{
+          await provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
+         }
           provider.updatedDiscussions(context);
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             if ((provider.eventDetail.unRespondedEvent ?? 0) >
@@ -263,215 +281,479 @@ class _HomePageState extends State<HomePage>
                 SizedBox(height: scaler.getHeight(2.0)),
                 Padding(
                   padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
-                  child: Text("events".tr()).boldText(
-                      ColorConstants.colorBlack,
-                      scaler.getTextSize(13),
-                      TextAlign.left),
-                ),
-                SizedBox(height: scaler.getHeight(0.5)),
-                Padding(
-                  padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
-                  child: TabBar(
-                    labelPadding: scaler.getPadding(0.0, 2.5),
-                    indicatorColor: Colors.transparent,
-                    controller: widget.provider?.tabController,
-                    isScrollable: true,
-                    onTap: (index) {
-                      if (provider.tabController!.indexIsChanging) {
+                  // child: Text("events".tr()).boldText(
+                  //     ColorConstants.colorBlack,
+                  //     scaler.getTextSize(13),
+                  //     TextAlign.left),
+                  child: FlutterToggleTab(
+                    width: scaler.getWidth(22),
+                    borderRadius: 30,
+                    height: scaler.getHeight(4.0),
+                    selectedIndex: provider.tabTextIndexSelected,
+                    selectedBackgroundColors: [ColorConstants.primaryColor],
+                    selectedTextStyle: TextStyle(
+                       fontFamily: StringConstants.spProDisplay,
+                        color: Colors.white,
+                        fontSize: scaler.getTextSize(10.5),
+                        fontWeight: FontWeight.w600),
+                    unSelectedTextStyle: TextStyle(
+                        fontFamily: StringConstants.spProDisplay,
+                        color: Colors.black,
+                        fontSize: scaler.getTextSize(10.5),
+                        fontWeight: FontWeight.w500),
+                    labels: ['all'.tr(), 'events_only'.tr(), 'publications_only'.tr()],
+                    selectedLabelIndex: (index) {
+                      SharedPref.prefs!.setInt(SharedPref.homeToggleIndex, index);
+                      SharedPref.prefs!.setInt(SharedPref.homeTabIndex, 0);
+                      provider.tabController!.index = 0;
+                      provider.tabTextIndexSelected = index;
+                      if(index == 0 || index == 1){
                         provider.getIndexChanging(context);
+                      } else if(index == 2){
+                        provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
                       }
-                      provider.updateValue(true);
+                        provider.updateLoadingStatus(false);
                     },
-                    tabs: [
-                      Tab(
-                          child: ClipRRect(
-                        borderRadius: scaler.getBorderRadiusCircular(15.0),
-                        child: Container(
-                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-                          color: provider.tabController!.index == 0
-                              ? ColorConstants.primaryColor
-                              : ColorConstants.colorWhitishGray,
-                          child: Text('all'.tr()).mediumText(
-                              provider.tabController!.index == 0
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorGray,
-                              scaler.getTextSize(11.2),
-                              TextAlign.left),
-                        ),
-                      )),
-                      Tab(
-                          child: ClipRRect(
-                        borderRadius: scaler.getBorderRadiusCircular(15.0),
-                        child: Container(
-                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-                          color: provider.tabController!.index == 1
-                              ? ColorConstants.primaryColor
-                              : ColorConstants.colorWhitishGray,
-                          child: Text('going'.tr()).mediumText(
-                              provider.tabController!.index == 1
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorGray,
-                              scaler.getTextSize(11.2),
-                              TextAlign.left),
-                        ),
-                      )),
-                      Tab(
-                          child: ClipRRect(
-                        borderRadius: scaler.getBorderRadiusCircular(15.0),
-                        child: Container(
-                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-                          color: provider.tabController!.index == 2
-                              ? ColorConstants.primaryColor
-                              : ColorConstants.colorWhitishGray,
-                          child: Text('not_going'.tr()).mediumText(
-                              provider.tabController!.index == 2
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorGray,
-                              scaler.getTextSize(11.2),
-                              TextAlign.left),
-                        ),
-                      )),
-                      Tab(
-                          child: ClipRRect(
-                        borderRadius: scaler.getBorderRadiusCircular(15.0),
-                        child: Container(
-                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-                          color: provider.tabController!.index == 3
-                              ? ColorConstants.primaryColor
-                              : ColorConstants.colorWhitishGray,
-                          child: Text('not_replied'.tr()).mediumText(
-                              provider.tabController!.index == 3
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorGray,
-                              scaler.getTextSize(11.2),
-                              TextAlign.left),
-                        ),
-                      )),
-                      Tab(
-                          child: ClipRRect(
-                            borderRadius: scaler.getBorderRadiusCircular(15.0),
-                            child: Container(
-                              padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-                              color: provider.tabController!.index == 4
-                                  ? ColorConstants.primaryColor
-                                  : ColorConstants.colorWhitishGray,
-                              child: Text('past'.tr()).mediumText(
-                                  provider.tabController!.index == 4
-                                      ? ColorConstants.colorWhite
-                                      : ColorConstants.colorGray,
-                                  scaler.getTextSize(11.2),
-                                  TextAlign.left),
-                            ),
-                          )),
-                      Tab(
-                          child: ClipRRect(
-                        borderRadius: scaler.getBorderRadiusCircular(15.0),
-                        child: Container(
-                          padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
-                          color: provider.tabController!.index == 5
-                              ? ColorConstants.primaryColor
-                              : ColorConstants.colorWhitishGray,
-                          child: Text('hidden'.tr()).mediumText(
-                              provider.tabController!.index == 5
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorGray,
-                              scaler.getTextSize(11.2),
-                              TextAlign.left),
-                        ),
-                      )),
-                    ],
+                    isScroll: false,
                   ),
                 ),
-                Expanded(
-                  child: TabBarView(
-                    controller: provider.tabController,
-                    children: <Widget>[
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                              ? CommonWidgets.noEventFoundText(scaler)
-                              : RefreshIndicator(
-                                  onRefresh: refreshListTab1,
-                                  key: refreshKeyTab1,
-                                  child: upcomingEventsList(
-                                      scaler,
-                                      provider.eventLists,
-                                      provider,
-                                      dashBoardProvider),
-                                ),
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                              ? CommonWidgets.noEventFoundText(scaler)
-                              : RefreshIndicator(
-                                  onRefresh: refreshListTab2,
-                                  key: refreshKeyTab2,
-                                  child: upcomingEventsList(
-                                      scaler,
-                                      provider.eventLists,
-                                      provider,
-                                      dashBoardProvider),
-                                ),
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                              ? CommonWidgets.noEventFoundText(scaler)
-                              : RefreshIndicator(
-                                  onRefresh: refreshListTab3,
-                                  key: refreshKeyTab3,
-                                  child: upcomingEventsList(
-                                      scaler,
-                                      provider.eventLists,
-                                      provider,
-                                      dashBoardProvider),
-                                ),
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                              ? CommonWidgets.noEventFoundText(scaler)
-                              : RefreshIndicator(
-                                  onRefresh: refreshListTab4,
-                                  key: refreshKeyTab4,
-                                  child: upcomingEventsList(
-                                      scaler,
-                                      provider.eventLists,
-                                      provider,
-                                      dashBoardProvider),
-                                ),
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                          ? CommonWidgets.noEventFoundText(scaler)
-                          :
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                          ? CommonWidgets.noEventFoundText(scaler)
-                          : RefreshIndicator(
-                        onRefresh: refreshListTab5,
-                        key: refreshKeyTab5,
-                        child: upcomingEventsList(
+                SizedBox(height: scaler.getHeight(1.0)),
+
+                provider.tabTextIndexSelected == 0 ? Expanded(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
+                        child: TabBar(
+                          labelPadding: scaler.getPadding(0.0, 2.5),
+                          indicatorColor: Colors.transparent,
+                          controller: widget.provider?.tabController,
+                          isScrollable: true,
+                          onTap: (index) {
+                            if (provider.tabController!.indexIsChanging) {
+                              //SharedPref.prefs!.setInt(SharedPref.homeTabIndex, provider.tabController!.index);
+                              provider.getIndexChanging(context);
+                            }
+                            provider.updateValue(true);
+                          },
+                          tabs: [
+                            Tab(
+                                child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                color: provider.tabController!.index == 0
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('all'.tr()).mediumText(
+                                    provider.tabController!.index == 0
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(11.2),
+                                    TextAlign.left),
+                              ),
+                            )),
+                            Tab(
+                                child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                color: provider.tabController!.index == 1
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('going'.tr()).mediumText(
+                                    provider.tabController!.index == 1
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(11.2),
+                                    TextAlign.left),
+                              ),
+                            )),
+                            Tab(
+                                child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                color: provider.tabController!.index == 2
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('not_going'.tr()).mediumText(
+                                    provider.tabController!.index == 2
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(11.2),
+                                    TextAlign.left),
+                              ),
+                            )),
+                            Tab(
+                                child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                color: provider.tabController!.index == 3
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('not_replied'.tr()).mediumText(
+                                    provider.tabController!.index == 3
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(11.2),
+                                    TextAlign.left),
+                              ),
+                            )),
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 4
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('past'.tr()).mediumText(
+                                        provider.tabController!.index == 4
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                            Tab(
+                                child: ClipRRect(
+                              borderRadius: scaler.getBorderRadiusCircular(15.0),
+                              child: Container(
+                                padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                color: provider.tabController!.index == 5
+                                    ? ColorConstants.primaryColor
+                                    : ColorConstants.colorWhitishGray,
+                                child: Text('hidden'.tr()).mediumText(
+                                    provider.tabController!.index == 5
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorGray,
+                                    scaler.getTextSize(11.2),
+                                    TextAlign.left),
+                              ),
+                            )),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          controller: provider.tabController,
+                          children: <Widget>[
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab1,
+                              key: refreshKeyTab1,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab2,
+                              key: refreshKeyTab2,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab3,
+                              key: refreshKeyTab3,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab4,
+                              key: refreshKeyTab4,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                :
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab5,
+                              key: refreshKeyTab5,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider, pastEvent: true),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab6,
+                              key: refreshKeyTab6,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ) : (provider.tabTextIndexSelected == 1 ?
+                    Expanded(child: Column(
+                    children: [
+                      Padding(
+                        padding: scaler.getPaddingLTRB(2.0, 0, 0, 0),
+                        child: TabBar(
+                          labelPadding: scaler.getPadding(0.0, 2.5),
+                          indicatorColor: Colors.transparent,
+                          controller: widget.provider?.tabController,
+                          isScrollable: true,
+                          onTap: (index) {
+                            if (provider.tabController!.indexIsChanging) {
+                              provider.getIndexChanging(context);
+                            }
+                            provider.updateValue(true);
+                          },
+                          tabs: [
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 0
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('all'.tr()).mediumText(
+                                        provider.tabController!.index == 0
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 1
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('going'.tr()).mediumText(
+                                        provider.tabController!.index == 1
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 2
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('not_going'.tr()).mediumText(
+                                        provider.tabController!.index == 2
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 3
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('not_replied'.tr()).mediumText(
+                                        provider.tabController!.index == 3
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 4
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('past'.tr()).mediumText(
+                                        provider.tabController!.index == 4
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                            Tab(
+                                child: ClipRRect(
+                                  borderRadius: scaler.getBorderRadiusCircular(15.0),
+                                  child: Container(
+                                    padding: scaler.getPaddingLTRB(4.0, 0.5, 4.0, 0.5),
+                                    color: provider.tabController!.index == 5
+                                        ? ColorConstants.primaryColor
+                                        : ColorConstants.colorWhitishGray,
+                                    child: Text('hidden'.tr()).mediumText(
+                                        provider.tabController!.index == 5
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorGray,
+                                        scaler.getTextSize(11.2),
+                                        TextAlign.left),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          controller: provider.tabController,
+                          children: <Widget>[
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab1,
+                              key: refreshKeyTab1,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab2,
+                              key: refreshKeyTab2,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab3,
+                              key: refreshKeyTab3,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab4,
+                              key: refreshKeyTab4,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                :
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab5,
+                              key: refreshKeyTab5,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider, pastEvent: true),
+                            ),
+                            provider.state == ViewState.Busy
+                                ? CommonWidgets.loading(scaler)
+                                : provider.eventLists.length == 0
+                                ? CommonWidgets.noEventFoundText(scaler)
+                                : RefreshIndicator(
+                              onRefresh: refreshListTab6,
+                              key: refreshKeyTab6,
+                              child: upcomingEventsList(
+                                  scaler,
+                                  provider.eventLists,
+                                  provider,
+                                  dashBoardProvider),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )) : (
+                    provider.state == ViewState.Busy
+                        ? Expanded(child: CommonWidgets.loading(scaler))
+                        : provider.eventLists.length == 0
+                        ? Expanded(child: CommonWidgets.noEventFoundText(scaler))
+                        : Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: refreshListTabPublication,
+                            key: refreshKeyTabPublication,
+                            child: upcomingEventsList(
                             scaler,
                             provider.eventLists,
                             provider,
-                            dashBoardProvider, pastEvent: true),
-                      ),
-                      provider.state == ViewState.Busy
-                          ? CommonWidgets.loading(scaler)
-                          : provider.eventLists.length == 0
-                              ? CommonWidgets.noEventFoundText(scaler)
-                              : RefreshIndicator(
-                                  onRefresh: refreshListTab6,
-                                  key: refreshKeyTab6,
-                                  child: upcomingEventsList(
-                                      scaler,
-                                      provider.eventLists,
-                                      provider,
-                                      dashBoardProvider),
-                                ),
-                    ],
-                  ),
+                            dashBoardProvider),
+                          ),
+                        )
+                )
                 ),
+
               ],
             ),
           ),
@@ -497,13 +779,13 @@ class _HomePageState extends State<HomePage>
                   eventList[index].eventType == EVENT_TYPE_PRIVATE
                       ? CommonEventFunction.getEventBtnStatus(
                           eventList[index], provider.userDetail.cid.toString())
-                      : CommonEventFunction.getAnnouncementBtnStatus(
+                      : (CommonEventFunction.getAnnouncementBtnStatus(eventList[index], provider.auth.currentUser!.uid.toString()) == "attending") ? "hide".tr() : CommonEventFunction.getAnnouncementBtnStatus(
                       eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.textColor =
-                      CommonEventFunction.getEventBtnColorStatus(
+                      (CommonEventFunction.getAnnouncementBtnStatus(eventList[index], provider.auth.currentUser!.uid.toString()) == "attending") ? ColorConstants.colorWhite : CommonEventFunction.getEventBtnColorStatus(
                           eventList[index], provider.userDetail.cid.toString());
                   provider.eventDetail.btnBGColor =
-                      CommonEventFunction.getEventBtnColorStatus(
+                  (CommonEventFunction.getAnnouncementBtnStatus(eventList[index], provider.auth.currentUser!.uid.toString()) == "attending") ? ColorConstants.primaryColor : CommonEventFunction.getEventBtnColorStatus(
                           eventList[index], provider.userDetail.cid.toString(),
                           textColor: false);
                   provider.eventDetail.eventMapData = eventList[index].invitedContacts;
@@ -668,7 +950,16 @@ class _HomePageState extends State<HomePage>
               ),
               SizedBox(width: scaler.getWidth(1)),
               pastEvent == false ? (eventList[index].eventType == EVENT_TYPE_PRIVATE ? eventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index)
-               : announcementRespondBtn(scaler, eventList[index], provider, dashboardProvider, index))
+               : ((eventList[index].form.isNotEmpty && eventList[index].organiserID != provider.auth.currentUser!.uid.toString() &&
+                  (CommonEventFunction.getAnnouncementBtnStatus(eventList[index], provider.auth.currentUser!.uid.toString(), checkForAns: true) == "ans")) ?  Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  announcementRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, 15.0),
+                  SizedBox(width: scaler.getWidth(2.0)),
+                  announcementAnswersRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, 15.0)
+                ],
+              )
+                  : announcementRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, 24.0)))
                : pastEventRespondBtn(scaler, eventList[index], provider, dashboardProvider, index, pastEvent)
             ],
           ),
@@ -921,7 +1212,7 @@ class _HomePageState extends State<HomePage>
       Event event,
       HomePageProvider provider,
       DashboardProvider dashboardProvider,
-      int index) {
+      int index, double width) {
     return GestureDetector(
       onTap: () {
         if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.userDetail.cid.toString()) == "edit"){
@@ -952,10 +1243,51 @@ class _HomePageState extends State<HomePage>
       },
       child: CustomShape(
         child: Center(
-            child: Text(CommonEventFunction.getAnnouncementBtnStatus(
+            child: Text((CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.uid.toString()) == "attending") ? "hide".tr() : CommonEventFunction.getAnnouncementBtnStatus(
                 event, provider.userDetail.cid.toString())
                 .toString()
                 .tr())
+                .semiBoldText(
+               (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.uid.toString()) == "attending") ? ColorConstants.colorWhite : CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.userDetail.cid.toString()),
+                scaler.getTextSize(10.5),
+                TextAlign.center)),
+        bgColor: (CommonEventFunction.getAnnouncementBtnStatus(
+            event, provider.auth.currentUser!.uid.toString()) == "attending") ? ColorConstants.primaryColor : CommonEventFunction.getEventBtnColorStatus(
+            event, provider.userDetail.cid.toString(),
+            textColor: false),
+        radius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        width: scaler.getWidth(width),
+        height: scaler.getHeight(4.5),
+      ),
+    );
+  }
+
+  Widget announcementAnswersRespondBtn(
+      ScreenScaler scaler,
+      Event event,
+      HomePageProvider provider,
+      DashboardProvider dashboardProvider,
+      int index, double width) {
+    return GestureDetector(
+      onTap: () {
+          List<String> questionsList = [];
+          for (var value in event.form.values) {
+            questionsList.add(value);
+          }
+          for (var key in event.form.keys) {
+            questionnaireKeysList.add(key);
+          }
+
+          alertForQuestionnaireAnswers(context, scaler, event,
+              questionsList, provider, dashboardProvider);
+
+      },
+      child: CustomShape(
+        child: Center(
+            child: Text("answer".tr())
                 .semiBoldText(
                 CommonEventFunction.getEventBtnColorStatus(
                     event, provider.userDetail.cid.toString()),
@@ -967,7 +1299,7 @@ class _HomePageState extends State<HomePage>
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
-        width: scaler.getWidth(24),
+        width: scaler.getWidth(width),
         height: scaler.getHeight(4.5),
       ),
     );

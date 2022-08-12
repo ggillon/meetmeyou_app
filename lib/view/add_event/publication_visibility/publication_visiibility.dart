@@ -34,6 +34,7 @@ class _PublicationVisibilityState extends State<PublicationVisibility> with Tick
           provider.tabController = TabController(length: 3, vsync: this);
           provider.getConfirmedContactsList(context);
           provider.tabChangeEvent(context);
+          provider.contactsKeys.addAll(provider.announcementDetail.contactCIDs);
         },
         builder: (context, provider, _){
           return SafeArea(
