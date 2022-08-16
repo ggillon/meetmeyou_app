@@ -191,8 +191,7 @@ class EventDetailProvider extends BaseProvider {
     if (value != null) {
       event = value;
       eventDetail.eventBtnStatus = (event!.eventType == EVENT_TYPE_PRIVATE
-          ? CommonEventFunction.getEventBtnStatus(
-          event!, auth.currentUser!.uid)
+          ? CommonEventFunction.getEventBtnStatus(event!, auth.currentUser!.uid)
           : CommonEventFunction.getAnnouncementBtnStatus(
           event!, auth.currentUser!.uid));
       eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(

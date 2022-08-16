@@ -33,6 +33,8 @@ class MultipleDateTmeScreen extends StatelessWidget {
               provider.endTime = provider.startTime.addHour(3);
             }
           }
+          provider.startDate = provider.multipleDateOption.startDate.isNotEmpty ? provider.multipleDateOption.startDate.last : DateTime.now().add(Duration(days: 7));
+          provider.endDate = provider.multipleDateOption.endDate.isNotEmpty ? provider.multipleDateOption.endDate.last : DateTime.now().add(Duration(days: 7));
         },
         builder: (context, provider, _) {
           return SafeArea(

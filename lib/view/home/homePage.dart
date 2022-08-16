@@ -181,8 +181,13 @@ class _HomePageState extends State<HomePage>
             if(event.eventId != null){
               provider.calendarDetail.fromAnotherPage = true;
               provider.eventDetail.eid = event.eventId;
-              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
-                provider.getIndexChanging(context);
+              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) async {
+                if(provider.tabTextIndexSelected == 0 || provider.tabTextIndexSelected == 1){
+                  provider.tabController!.index = SharedPref.prefs!.getInt(SharedPref.homeTabIndex) ?? 0;
+                  await provider.getIndexChanging(context);
+                } else{
+                  await provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
+                }
                 provider.unRespondedEvents(context, dashBoardProvider);
                 provider.unRespondedEventsApi(context);
               });
@@ -191,8 +196,13 @@ class _HomePageState extends State<HomePage>
 
           // this event will fire when user comes from link and when gets back from event detail
           //this event is fire so that we can refresh status of events in home screen.
-        provider.eventInviteFromLink =  provider.eventBus.on<InviteEventFromLink>().listen((event) {
-          provider.getIndexChanging(context);
+        provider.eventInviteFromLink =  provider.eventBus.on<InviteEventFromLink>().listen((event) async {
+          if(provider.tabTextIndexSelected == 0 || provider.tabTextIndexSelected == 1){
+            provider.tabController!.index = SharedPref.prefs!.getInt(SharedPref.homeTabIndex) ?? 0;
+            await provider.getIndexChanging(context);
+          } else{
+            await provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
+          }
           provider.unRespondedEvents(context, dashBoardProvider);
           provider.unRespondedEventsApi(context);
         });
@@ -279,42 +289,42 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
                 SizedBox(height: scaler.getHeight(2.0)),
-                Padding(
-                  padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
-                  // child: Text("events".tr()).boldText(
-                  //     ColorConstants.colorBlack,
-                  //     scaler.getTextSize(13),
-                  //     TextAlign.left),
-                  child: FlutterToggleTab(
-                    width: scaler.getWidth(22),
-                    borderRadius: 30,
-                    height: scaler.getHeight(4.0),
-                    selectedIndex: provider.tabTextIndexSelected,
-                    selectedBackgroundColors: [ColorConstants.primaryColor],
-                    selectedTextStyle: TextStyle(
-                       fontFamily: StringConstants.spProDisplay,
-                        color: Colors.white,
-                        fontSize: scaler.getTextSize(10.5),
-                        fontWeight: FontWeight.w600),
-                    unSelectedTextStyle: TextStyle(
-                        fontFamily: StringConstants.spProDisplay,
-                        color: Colors.black,
-                        fontSize: scaler.getTextSize(10.5),
-                        fontWeight: FontWeight.w500),
-                    labels: ['all'.tr(), 'events_only'.tr(), 'publications_only'.tr()],
-                    selectedLabelIndex: (index) {
-                      SharedPref.prefs!.setInt(SharedPref.homeToggleIndex, index);
-                      SharedPref.prefs!.setInt(SharedPref.homeTabIndex, 0);
-                      provider.tabController!.index = 0;
-                      provider.tabTextIndexSelected = index;
-                      if(index == 0 || index == 1){
-                        provider.getIndexChanging(context);
-                      } else if(index == 2){
-                        provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
-                      }
-                        provider.updateLoadingStatus(false);
-                    },
-                    isScroll: false,
+                Center(
+                  child: Container(
+                    width: scaler.getWidth(95),
+                    padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
+                    child: FlutterToggleTab(
+                      marginSelected: EdgeInsets.zero,
+                      width: scaler.getWidth(25),
+                      borderRadius: 30,
+                      height: scaler.getHeight(4.0),
+                      selectedIndex: provider.tabTextIndexSelected,
+                      selectedBackgroundColors: [ColorConstants.primaryColor],
+                      selectedTextStyle: TextStyle(
+                         fontFamily: StringConstants.spProDisplay,
+                          color: Colors.white,
+                          fontSize: scaler.getTextSize(10.5),
+                          fontWeight: FontWeight.w600),
+                      unSelectedTextStyle: TextStyle(
+                          fontFamily: StringConstants.spProDisplay,
+                          color: Colors.black,
+                          fontSize: scaler.getTextSize(10.5),
+                          fontWeight: FontWeight.w500),
+                      labels: ['all'.tr(), 'events_only'.tr(), 'publications_only'.tr()],
+                      selectedLabelIndex: (index) {
+                        SharedPref.prefs!.setInt(SharedPref.homeToggleIndex, index);
+                        SharedPref.prefs!.setInt(SharedPref.homeTabIndex, 0);
+                        provider.tabController!.index = 0;
+                        provider.tabTextIndexSelected = index;
+                        if(index == 0 || index == 1){
+                          provider.getIndexChanging(context);
+                        } else if(index == 2){
+                          provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
+                        }
+                          provider.updateLoadingStatus(false);
+                      },
+                      isScroll: false,
+                    ),
                   ),
                 ),
                 SizedBox(height: scaler.getHeight(1.0)),
@@ -1057,8 +1067,13 @@ class _HomePageState extends State<HomePage>
             provider.calendarDetail.fromAnotherPage = false;
             Navigator.pushNamed(
                 context, RoutesConstants.eventDetailScreen)
-                .then((value) {
-              provider.getIndexChanging(context);
+                .then((value) async {
+              if(provider.tabTextIndexSelected == 0 || provider.tabTextIndexSelected == 1){
+                provider.tabController!.index = SharedPref.prefs!.getInt(SharedPref.homeTabIndex) ?? 0;
+                await provider.getIndexChanging(context);
+              } else{
+                await provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
+              }
               provider.unRespondedEvents(context, dashboardProvider);
               provider.unRespondedEventsApi(context);
             });
@@ -1102,7 +1117,12 @@ class _HomePageState extends State<HomePage>
             provider.clearMultiDateOption();
             Navigator.pushNamed(context, RoutesConstants.createEventScreen)
                 .then((value) async {
-             await provider.getIndexChanging(context);
+              if(provider.tabTextIndexSelected == 0 || provider.tabTextIndexSelected == 1){
+                provider.tabController!.index = SharedPref.prefs!.getInt(SharedPref.homeTabIndex) ?? 0;
+                await provider.getIndexChanging(context);
+              } else{
+                await provider.getUserEvents(context, selector: [SELECTOR_ANNOUNCEMENT]);
+              }
             });
         } else if (CommonEventFunction.getEventBtnStatus(
                 event, provider.userDetail.cid.toString()) ==

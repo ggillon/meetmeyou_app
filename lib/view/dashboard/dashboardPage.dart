@@ -8,6 +8,7 @@ import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/helper/deep_linking.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/models/contactInvitationNotificationEvent.dart';
 import 'package:meetmeyou_app/models/messageNotificationEvent.dart';
@@ -105,7 +106,10 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
             if(event.eventId != null){
               provider.calendarDetail.fromAnotherPage = true;
               provider.eventDetail.eid = event.eventId;
-              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen);
+              Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value) {
+                provider.eventBus.fire(InviteEventFromLink(true));
+                provider.onItemTapped(0);
+              });
             }}
           });
 
