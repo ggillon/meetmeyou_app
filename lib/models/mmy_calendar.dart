@@ -6,6 +6,7 @@ const MMY_CALENDAR_PERMISSION_NONE = "None";
 
 class MMYCalendar {
   String uid;
+  String calID;
   String name;
   DateTime timeStamp;
 
@@ -13,12 +14,13 @@ class MMYCalendar {
   Map<String, String> permissions;
   Map<String, dynamic> params;
 
-  MMYCalendar({required this.uid, required this.name, required this.timeStamp,
+  MMYCalendar({required this.uid, required this.calID, required this.name, required this.timeStamp,
     this.events = const[], this.permissions = const <String, String>{}, this.params = const <String, dynamic>{} });
 
   factory MMYCalendar.fromMap(Map<String, dynamic> data) {
     return MMYCalendar(
         uid: data['uid'],
+        calID: data['calID'],
         name: data['name'],
         timeStamp: DateTime.now(),
         events: data['events'],
@@ -30,6 +32,7 @@ class MMYCalendar {
   MMYCalendar getFromMap(Map<String, dynamic> data) {
     return MMYCalendar(
       uid: data['uid'],
+      calID: data['calID'],
       name: data['name'],
       timeStamp: DateTime.now(),
       events: data['events'],
@@ -42,6 +45,7 @@ class MMYCalendar {
     return {
       'uid': uid,
       'name': name,
+      'calID': calID,
       'timeStamp': timeStamp.millisecondsSinceEpoch,
       'events': events,
       'permissions': permissions,

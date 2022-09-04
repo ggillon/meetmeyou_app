@@ -27,11 +27,11 @@ Future<String?> createCalendar() async {
       return result.data!;
     }
   } else {
-    return getCaldendarID();
+    return getCalendarID();
   }
 }
 
-Future<String?> getCaldendarID() async {
+Future<String?> getCalendarID() async {
   String result='';
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
   final calendarsResult = await plugin.retrieveCalendars();
@@ -49,7 +49,7 @@ Future<String?> getCaldendarID() async {
 
 void updateCalendarEvent(Event event) async {
   Location _location = TZDateTime.local(2000).location;
-  String? deviceCalID = await getCaldendarID();
+  String? deviceCalID = await getCalendarID();
   if(deviceCalID == null) return null;
   device.Event deviceEvent = device.Event(deviceCalID);
 
@@ -66,11 +66,54 @@ void updateCalendarEvent(Event event) async {
 
 Future<void> storeCalendar(String uid, Database db) async {
   final entries = await getCalendarEvents(uid);
-  MMYCalendar serverCalendar = MMYCalendar(uid: uid, name: uid, timeStamp: DateTime.now());
+  MMYCalendar serverCalendar = MMYCalendar(uid: uid, calID: uid, name: uid, timeStamp: DateTime.now());
   for(CalendarEvent entry in entries) {
     serverCalendar.addEvent(entry.title, entry.start, entry.end);
   }
   await db.setCalendar(serverCalendar);
+}
+
+Future<List<MMYCalendar>> getDeviceCalendars(String uid) async {
+  List<MMYCalendar> results = [];
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  final calendarsResult = await plugin.retrieveCalendars();
+  if(calendarsResult.isSuccess && calendarsResult.data != null) {
+    final calendars = calendarsResult.data!.toList();
+    for(device.Calendar cal in calendars) {
+
+      // Create Calendar
+      MMYCalendar newDeviceCal = MMYCalendar(
+        name: cal.name ?? '',
+        uid: uid, calID: cal.id ?? '',
+        timeStamp: DateTime.now(), );
+
+      // Retrieve entries
+      final retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
+      final result = await plugin.retrieveEvents(cal.id, retrieveEventsParams);
+      if (result.isSuccess && result.data != null) {
+        final events = result.data!.toList();
+        for(device.Event e in events){
+          CalendarEvent entry = CalendarEvent(
+            title: e.title ?? 'Untitled Event',
+            start: DateTime.fromMicrosecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
+            end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
+            meetMeYou: (cal!.name == 'MeetMeYou'),
+            location: e.location ?? '',
+            description: e.description ?? '',
+          );
+          e.attendees?.map((a) => entry.addAttendee(a?.name ?? '', a?.emailAddress ?? '', a?.isOrganiser ?? false));
+          newDeviceCal.addEvent(entry.title, entry.start, entry.end);
+        }
+
+      }
+
+      // Add to results;
+      if(newDeviceCal.name != "MeetMeYou")
+        results.add(newDeviceCal);
+    }
+  }
+
+  return results;
 }
 
 
@@ -92,8 +135,10 @@ Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) a
             start: DateTime.fromMicrosecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
             end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
             meetMeYou: (cal!.name == 'MeetMeYou'),
+            location: e.location ?? '',
             description: e.description ?? '',
           );
+          e.attendees?.map((a) => entry.addAttendee(a?.name ?? '', a?.emailAddress ?? '', a?.isOrganiser ?? false));
           returnList.add(entry);
         }
       }
@@ -109,6 +154,7 @@ Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) a
         meetMeYou: true,
         eid: e.eid,
         eventStatus: e.invitedContacts[uid],
+        location: e.location,
         description: e.description);
     returnList.add(entry);
   }
