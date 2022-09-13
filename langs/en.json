@@ -307,5 +307,8 @@
   "manage_visibility" : "Manage Visibility",
   "publication_discussion" : "Publication Discussion",
   "events_only" : "Events only",
-  "publications_only" : "Publications only"
+  "publications_only" : "Publications only",
+  "video_gallery" : "Video Gallery",
+  "no_video_selected" : "No video selected",
+  "sending_video" : "Sending video...."
 }

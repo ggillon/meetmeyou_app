@@ -41,6 +41,7 @@ import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
 import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/view/home/view_replies_to_form_screen/view_replies_to_form_screen.dart';
+import 'package:meetmeyou_app/view/home/view_video_screen/view_video_screen.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
 import 'package:meetmeyou_app/view/login/loginPage.dart';
@@ -244,6 +245,9 @@ class Router {
 
       case RoutesConstants.publicationVisibility:
         return MaterialPageRoute(builder: (_) => PublicationVisibility(), settings: settings);
+
+      case RoutesConstants.viewVideoScreen:
+        return MaterialPageRoute(builder: (_) => ViewVideoScreen(viewVideoData: settings.arguments as ViewVideoData,), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

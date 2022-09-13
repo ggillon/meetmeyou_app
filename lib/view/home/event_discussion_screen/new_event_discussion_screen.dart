@@ -30,6 +30,7 @@ import 'package:meetmeyou_app/widgets/reply_image_widget.dart';
 import 'package:meetmeyou_app/widgets/reply_message_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:swipe_to/swipe_to.dart';
+import 'package:video_player/video_player.dart';
 
 class NewEventDiscussionScreen extends StatelessWidget {
   NewEventDiscussionScreen({Key? key, required this.fromContactOrGroup, required this.fromChatScreen, required this.chatDid})
@@ -311,9 +312,16 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                                   galleryClick: () {
                                                     provider.getImage(
                                                         _scaffoldKey.currentContext!, 2, fromContactOrGroup, fromChatScreen, chatDid).catchError((e){
-                                                      CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                                      CommonWidgets.errorDialog(_scaffoldKey.currentContext!, "enable_storage_permission".tr());
                                                     });
                                                   },
+                                                  videoClick: (){
+                                                    provider.getImage(
+                                                        _scaffoldKey.currentContext!, 3, fromContactOrGroup, fromChatScreen, chatDid).catchError((e){
+                                                      CommonWidgets.errorDialog(_scaffoldKey.currentContext!, "enable_storage_permission".tr());
+                                                    });
+                                                  },
+                                                  videoSelection: true,
                                                   cancelClick: () {
                                                     Navigator.of(context).pop();
                                                   },
@@ -394,7 +402,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
         itemCount:
         provider.eventDiscussionList.length,
         itemBuilder: (context, index) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (provider.scrollController.hasClients) {
               jump == true ?
               provider.scrollController.jumpTo(provider.scrollController.position.maxScrollExtent)
@@ -440,30 +448,20 @@ class NewEventDiscussionScreen extends StatelessWidget {
   }
 
   Widget chat(BuildContext context, ScreenScaler scaler, int index){
-    return (provider
-        .eventDiscussionList[index]
-        .contactUid) !=
-        provider.auth.currentUser!.uid
+    return (provider.eventDiscussionList[index].contactUid) != provider.auth.currentUser!.uid
         ? Column(
       children: [
         SwipeTo(
           child: ChatBubble(
-            clipper: ChatBubbleClipper3(
-                type: BubbleType
-                    .receiverBubble),
+            clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
             backGroundColor:
-            ColorConstants
-                .colorWhite,
+            ColorConstants.colorWhite,
             margin: EdgeInsets.only(
                 top: 20),
             child: Container(
               constraints:
               BoxConstraints(
-                maxWidth: MediaQuery.of(
-                    context)
-                    .size
-                    .width *
-                    0.7,
+                maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
                   ? Column(
@@ -479,52 +477,22 @@ class NewEventDiscussionScreen extends StatelessWidget {
                     children: [
                       SizedBox(width: scaler.getWidth(0.5)),
                       Text(provider.eventDiscussionList[index].text).regularText(
-                          ColorConstants
-                              .colorBlack,
-                          scaler
-                              .getTextSize(
-                              11),
-                          TextAlign
-                              .left,
-                          isHeight:
-                          true),
+                          ColorConstants.colorBlack,
+                          scaler.getTextSize(11),
+                          TextAlign.left,
+                          isHeight: true),
                     ],
                   ),
                 ],
               )
                   :
               Column(
-                crossAxisAlignment:
-                CrossAxisAlignment
-                    .start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(provider
-                      .eventDiscussionList[
-                  index]
-                      .contactDisplayName)
-                      .boldText(
-                      ColorConstants
-                          .colorRed,
-                      scaler
-                          .getTextSize(
-                          11.0),
-                      TextAlign
-                          .left),
-                  (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ? Text(provider
-                      .eventDiscussionList[
-                  index]
-                      .text)
-                      .regularText(
-                      ColorConstants
-                          .colorBlack,
-                      scaler
-                          .getTextSize(
-                          11),
-                      TextAlign
-                          .left,
-                      isHeight:
-                      true) :
-                  InkWell(
+                  Text(provider.eventDiscussionList[index].contactDisplayName).boldText(ColorConstants.colorRed, scaler.getTextSize(11.0), TextAlign.left),
+                  (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
+                  Text(provider.eventDiscussionList[index].text).regularText(ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left, isHeight: true) :
+                 ( provider.eventDiscussionList[index].type == PHOTO_MESSAGE ? InkWell(
                     onTap: (){
                       Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
                     },
@@ -537,7 +505,18 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
                       ),
                     ),
-                  ),
+                  ) : InkWell(
+                    onTap: (){
+                    },
+                    child: ClipRRect(
+                      borderRadius: scaler.getBorderRadiusCircular(7.5),
+                      child: Container(
+                        color: ColorConstants.primaryColor,
+                        height: scaler.getHeight(30.0),
+                        width: scaler.getWidth(70.0),
+                      ),
+                    ),
+                  )),
                 ],
               ),
             ),
@@ -562,25 +541,13 @@ class NewEventDiscussionScreen extends StatelessWidget {
         SwipeTo(
           child: ChatBubble(
             elevation : (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? 0.0 : 2,
-            clipper: ChatBubbleClipper3(
-                type: BubbleType
-                    .sendBubble),
-            alignment:
-            Alignment.topRight,
-            margin: EdgeInsets.only(
-                top: 20),
-            backGroundColor:
-            (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ? ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants
-                .primaryColor,
+            clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
+            alignment: Alignment.topRight,
+            margin: EdgeInsets.only(top: 20),
+            backGroundColor: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "") ?
+            ColorConstants.primaryColor.withOpacity(0.2) : ColorConstants.primaryColor,
             child: Container(
-              constraints:
-              BoxConstraints(
-                maxWidth: MediaQuery.of(
-                    context)
-                    .size
-                    .width *
-                    0.7,
-              ),
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7,),
               child: (provider.eventDiscussionList[index].isReply == true && provider.eventDiscussionList[index].replyMid != "")
                   ? Column(
                 crossAxisAlignment : CrossAxisAlignment.start,
@@ -595,23 +562,14 @@ class NewEventDiscussionScreen extends StatelessWidget {
                     children: [
                       SizedBox(width: scaler.getWidth(0.5)),
                       Text(provider.eventDiscussionList[index].text).regularText(
-                          ColorConstants
-                              .colorBlack,
-                          scaler
-                              .getTextSize(
-                              11),
-                          TextAlign
-                              .left,
-                          isHeight:
-                          true),
+                          ColorConstants.colorBlack, scaler.getTextSize(11), TextAlign.left,
+                          isHeight: true),
                     ],
                   ),
                 ],
               )
                   : Column(
-                crossAxisAlignment:
-                CrossAxisAlignment
-                    .start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Text("you".tr()).boldText(
                   //     Colors
@@ -623,15 +581,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                   (provider.eventDiscussionList[index].attachmentURL == "" || provider.eventDiscussionList[index].attachmentURL == null) ?
                   Text(provider.eventDiscussionList[index].text)
                       .regularText(
-                      ColorConstants
-                          .colorWhite,
-                      scaler.getTextSize(
-                          11),
-                      TextAlign
-                          .left,
-                      isHeight:
-                      true) :
-                  InkWell(
+                      ColorConstants.colorWhite, scaler.getTextSize(11), TextAlign.left, isHeight: true) :
+                  (provider.eventDiscussionList[index].type == PHOTO_MESSAGE ? InkWell(
                     onTap: (){
                       Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(imageUrl: provider.eventDiscussionList[index].attachmentURL));
                     },
@@ -644,7 +595,18 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         child: ImageView(path: provider.eventDiscussionList[index].attachmentURL, fit: BoxFit.cover,),
                       ),
                     ),
-                  ),
+                  ) : InkWell(
+                    onTap: (){},
+                    child: ClipRRect(
+                      borderRadius: scaler.getBorderRadiusCircular(7.5),
+                      child: Container(
+                        color: ColorConstants.primaryColor,
+                        height: scaler.getHeight(30.0),
+                        width: scaler.getWidth(70.0),
+                      //  child: VideoPlayer(provider.eventDiscussionList[index].attachmentURL),
+                      ),
+                    ),
+                  )),
                 ],
               ),
             ),

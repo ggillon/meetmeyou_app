@@ -18,6 +18,7 @@ import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
+import 'package:meetmeyou_app/view/home/view_video_screen/view_video_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
@@ -31,6 +32,7 @@ class NewEventDiscussionProvider extends BaseProvider {
   ScrollController scrollController = ScrollController();
   bool? isRightSwipe;
   File? image;
+  File? video;
   Timer? clockTimer;
   bool isJump = true;
   // these variable used in reply message functionality.
@@ -54,38 +56,9 @@ class NewEventDiscussionProvider extends BaseProvider {
     super.dispose();
   }
 
-  Future<bool> permissionCheck() async {
-    var status = await Permission.storage.status;
-    if (Platform.isAndroid) {
-      var androidInfo = await DeviceInfoPlugin().androidInfo;
-      var release = androidInfo.version.release;
-      if (release.contains(".")) {
-        release = release.substring(0, 1);
-      }
-      if (int.parse(release) > 10) {
-        status = await Permission.manageExternalStorage.request();
-      } else {
-        status = await Permission.storage.request();
-      }
-    } else {
-      status = await Permission.storage.request();
-    }
-    if (status.isGranted) {
-      return true;
-    } else if (status.isDenied) {
-      Permission.storage.request();
-      return false;
-    } else if (status.isPermanentlyDenied) {
-      openAppSettings();
-      return false;
-    } else {
-      return false;
-    }
-  }
-
   Future getImage(BuildContext context, int type, bool fromContactOrGroup, bool fromChatScreen, String fromChatScreenDid) async {
     final picker = ImagePicker();
-    // type : 1 for camera in and 2 for gallery
+    // type : 1 for camera in , 2 for gallery and 3 for video gallery
     Navigator.of(context).pop();
     if (type == 1) {
       final pickedFile = await picker.pickImage(
@@ -114,7 +87,7 @@ class NewEventDiscussionProvider extends BaseProvider {
         });
       }
       notifyListeners();
-    } else {
+    } else if(type == 2) {
       final pickedFile = await picker.pickImage(
           source: ImageSource.gallery, imageQuality: 90, maxHeight: 720);
       //  image = File(pickedFile!.path);
@@ -133,7 +106,9 @@ class NewEventDiscussionProvider extends BaseProvider {
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
           image = value;
           if(image != null){
-            Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments: ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+            Navigator.pushNamed(context, RoutesConstants.viewImageScreen, arguments:
+            ViewImageData(image: image!, imageUrl: "", fromContactOrGroup: fromContactOrGroup,
+                groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
               image = null;
               value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
             });
@@ -145,6 +120,20 @@ class NewEventDiscussionProvider extends BaseProvider {
       else {
         print('No image selected.');
         return;
+      }
+      notifyListeners();
+    } else{
+      final pickedFile = await picker.pickVideo(
+          source: ImageSource.gallery);
+      if(pickedFile != null){
+        Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments:  ViewVideoData(video: File(pickedFile.path), videoUrl: "", fromContactOrGroup: fromContactOrGroup,
+            groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+          video = null;
+          value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
+        }
+        );
+      } else{
+        DialogHelper.showMessage(context, "no_video_selected".tr());
       }
       notifyListeners();
     }
@@ -169,7 +158,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     });
 
     if (value != null) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
           jump == true ?
           scrollController.jumpTo(scrollController.position.maxScrollExtent)
@@ -300,7 +289,7 @@ class NewEventDiscussionProvider extends BaseProvider {
     });
 
     if (value != null) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (scrollController.hasClients) {
           jump == true ?
           scrollController.jumpTo(scrollController.position.maxScrollExtent)

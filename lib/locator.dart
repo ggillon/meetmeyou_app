@@ -59,6 +59,7 @@ import 'package:meetmeyou_app/provider/signup_provider.dart';
 import 'package:meetmeyou_app/provider/verify_provider.dart';
 import 'package:meetmeyou_app/provider/view_image_provider.dart';
 import 'package:meetmeyou_app/provider/view_replies_to_form_provider.dart';
+import 'package:meetmeyou_app/provider/view_video_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 
@@ -127,6 +128,7 @@ void setupLocator() {
   locator.registerFactory<AnnouncementProvider>(() => AnnouncementProvider());
   locator.registerFactory<ViewReplyToFormProvider>(() => ViewReplyToFormProvider());
   locator.registerFactory<PublicationVisibilityProvider>(() => PublicationVisibilityProvider());
+  locator.registerFactory<ViewVideoProvider>(() => ViewVideoProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {
