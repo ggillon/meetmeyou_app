@@ -2,7 +2,8 @@ import 'constants.dart';
 
 const TEXT_MESSAGE = "Text message";
 const PHOTO_MESSAGE = "Photo message";
-const FILE_MESSAGE = "Photo message";
+const FILE_MESSAGE = "File message";
+const VIDEO_MESSAGE = "Video message";
 
 class DiscussionMessage {
   DiscussionMessage(
