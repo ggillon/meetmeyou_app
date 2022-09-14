@@ -11,9 +11,10 @@ import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:video_player/video_player.dart';
 
 class ViewVideoScreen extends StatelessWidget {
-  ViewVideoScreen({Key? key, required this.viewVideoData}) : super(key: key);
+  ViewVideoScreen({Key? key, required this.viewVideoData, required this.fromChat}) : super(key: key);
 
   ViewVideoData viewVideoData;
+  bool? fromChat;
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +97,9 @@ class ViewVideoScreen extends StatelessWidget {
                   ) :
                   InkWell(
                     onTap: (){
-                      provider.postDiscussionMessage(context, viewVideoData.video!, viewVideoData.fromContactOrGroup!, viewVideoData.groupContactChatDid!, viewVideoData.fromChatScreen!, viewVideoData.fromChatScreenDid!).then((value) {
+                     fromChat == true ? provider.postDiscussionMessage(context, viewVideoData.video!, viewVideoData.fromContactOrGroup!, viewVideoData.groupContactChatDid!, viewVideoData.fromChatScreen!, viewVideoData.fromChatScreenDid!).then((value) {
                         Navigator.of(context).pop(viewVideoData.fromChatScreen);
-                      });
+                      }) : Navigator.of(context).pop(viewVideoData.video);
                     },
                     child: Container(
                         padding: scaler.getPaddingAll(8.0),
@@ -120,11 +121,12 @@ class ViewVideoScreen extends StatelessWidget {
 
 class ViewVideoData{
   File? video;
-  String videoUrl;
+  String? videoUrl;
   bool? fromContactOrGroup;
   String? groupContactChatDid;
   bool? fromChatScreen;
   String? fromChatScreenDid;
 
-  ViewVideoData({this.video, required this.videoUrl, this.fromContactOrGroup, this.groupContactChatDid, this.fromChatScreen, this.fromChatScreenDid});
+  ViewVideoData({this.video, this.videoUrl, this.fromContactOrGroup, this.groupContactChatDid, this.fromChatScreen, this.fromChatScreenDid});
+
 }

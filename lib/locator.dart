@@ -14,6 +14,7 @@ import 'package:meetmeyou_app/models/notification_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/notification/firebase_notification.dart';
 import 'package:meetmeyou_app/provider/announcement_provider.dart';
+import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/provider/calendarProvider.dart';
 import 'package:meetmeyou_app/provider/calendar_settings_provider.dart';
 import 'package:meetmeyou_app/provider/chat_screen_provider.dart';
@@ -129,6 +130,7 @@ void setupLocator() {
   locator.registerFactory<ViewReplyToFormProvider>(() => ViewReplyToFormProvider());
   locator.registerFactory<PublicationVisibilityProvider>(() => PublicationVisibilityProvider());
   locator.registerFactory<ViewVideoProvider>(() => ViewVideoProvider());
+  locator.registerFactory<BaseProvider>(() => BaseProvider());
 
   /*
  locator.registerLazySingleton<Dio>(() {

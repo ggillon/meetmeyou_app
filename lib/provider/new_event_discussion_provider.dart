@@ -20,6 +20,7 @@ import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/view/home/view_video_screen/view_video_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_player/video_player.dart';
 
 class NewEventDiscussionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -42,6 +43,7 @@ class NewEventDiscussionProvider extends BaseProvider {
   String replyMessageText = "";
   String replyMessageImageUrl = "";
   String imageUrl = "";
+ // List<VideoPlayerController> videoPlayerController = [];
 
   bool swipe = false;
 
@@ -126,8 +128,8 @@ class NewEventDiscussionProvider extends BaseProvider {
       final pickedFile = await picker.pickVideo(
           source: ImageSource.gallery);
       if(pickedFile != null){
-        Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments:  ViewVideoData(video: File(pickedFile.path), videoUrl: "", fromContactOrGroup: fromContactOrGroup,
-            groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid)).then((value) {
+        Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments:  ViewVideoScreen(viewVideoData: ViewVideoData(video: File(pickedFile.path), videoUrl: "", fromContactOrGroup: fromContactOrGroup,
+            groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid), fromChat: true)).then((value) {
           video = null;
           value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
         }
@@ -174,6 +176,15 @@ class NewEventDiscussionProvider extends BaseProvider {
         eventDiscussionList.addAll(value) ;
         eventDiscussionList.sort((a,b) {
           return a.createdTimeStamp.compareTo(b.createdTimeStamp);
+        });
+        eventDiscussionList.forEach((element) {
+          if(element.type == "video message"){
+            element.videoPlayerController = VideoPlayerController.network(element.attachmentURL)
+              ..initialize().then((_) {
+                // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+                notifyListeners();
+              });
+          }
         });
         notifyListeners();
       });
@@ -306,8 +317,19 @@ class NewEventDiscussionProvider extends BaseProvider {
         eventDiscussionList.sort((a,b) {
           return a.createdTimeStamp.compareTo(b.createdTimeStamp);
         });
+        print(eventDiscussionList);
+        eventDiscussionList.forEach((element) {
+          if(element.type == "video message"){
+            element.videoPlayerController = VideoPlayerController.network(element.attachmentURL)
+              ..initialize().then((_) {
+                // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+               notifyListeners();
+              });
+          }
+        });
        notifyListeners();
       });
+
       fromChatScreen == true ?  setState(ViewState.Idle) : updateRetrieveDiscussion(false);
     }
   }

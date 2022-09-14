@@ -48,4 +48,5 @@ class RoutesConstants {
   static const viewRepliesToFormScreen = "viewRepliesToFormScreen";
   static const publicationVisibility = "publicationVisibility";
   static const viewVideoScreen = "viewVideoScreen";
+  static const videoPlayer = "videoPlayer";
 }

@@ -1,3 +1,5 @@
+import 'package:video_player/video_player.dart';
+
 import 'constants.dart';
 
 const TEXT_MESSAGE = "Text message";
@@ -37,6 +39,7 @@ class DiscussionMessage {
   DateTime createdTimeStamp;
   DateTime editedTimeStamp;
   Map params;
+  VideoPlayerController? videoPlayerController;
 
   factory DiscussionMessage.fromMap(Map<String, dynamic> data) {
     return DiscussionMessage(

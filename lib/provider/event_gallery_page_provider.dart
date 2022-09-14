@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meetmeyou_app/constants/routes_constants.dart';
@@ -12,6 +13,7 @@ import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/storage/storage.dart';
+import 'package:meetmeyou_app/view/home/view_video_screen/view_video_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EventGalleryPageProvider extends BaseProvider{
@@ -19,13 +21,14 @@ class EventGalleryPageProvider extends BaseProvider{
   MMYEngine? mmyEngine;
   EventDetail eventDetail = locator<EventDetail>();
   File? image;
+  File? video;
   List<MMYPhoto> mmyPhotoList = [];
   List<dynamic> galleryImagesUrl = [];
 
 
   Future getImage(BuildContext context, int type, Widget postBtn) async {
     final picker = ImagePicker();
-    // type : 1 for camera in and 2 for gallery
+    // type : 1 for camera in , 2 for gallery and 3 for video.
     Navigator.of(context).pop();
     if (type == 1) {
       final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
@@ -42,7 +45,7 @@ class EventGalleryPageProvider extends BaseProvider{
         //  image = File(pickedFile.path);
       }
       notifyListeners();
-    } else {
+    } else if(type == 2) {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
       //  image = File(pickedFile!.path);
       if (pickedFile != null) {
@@ -60,6 +63,23 @@ class EventGalleryPageProvider extends BaseProvider{
       } else {
         print('No image selected.');
         return;
+      }
+      notifyListeners();
+    } else{
+      final pickedFile = await picker.pickVideo(
+          source: ImageSource.gallery);
+      if(pickedFile != null){
+       Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments: ViewVideoScreen(viewVideoData: ViewVideoData(video: File(pickedFile.path)), fromChat: false)).then((dynamic value) async{
+         image = value;
+         if(image != null){
+           setState(ViewState.Busy);
+           var videoUrl =  await storeFile(image!, path: StoragePath.eventPhotoGallery(eventDetail.eid.toString()));
+           await postPhoto(context, eventDetail.eid.toString(), videoUrl, postBtn);
+         }
+         notifyListeners();
+       });
+      } else{
+        DialogHelper.showMessage(context, "no_video_selected".tr());
       }
       notifyListeners();
     }

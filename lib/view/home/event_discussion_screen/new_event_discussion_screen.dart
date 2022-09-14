@@ -50,10 +50,10 @@ class NewEventDiscussionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<NewEventDiscussionProvider>(
-      onModelReady: (provider) {
+      onModelReady: (provider) async {
         this.provider = provider;
         if(fromChatScreen == true){
-          provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen).then((value) {
+         await provider.getDiscussion(context, chatDid, fromChatScreen: fromChatScreen).then((value) {
             jump = false;
           });
          // const milliSecTime = const Duration(milliseconds: 500);
@@ -506,17 +506,35 @@ class NewEventDiscussionScreen extends StatelessWidget {
                       ),
                     ),
                   ) : InkWell(
-                    onTap: (){
-                    },
-                    child: ClipRRect(
-                      borderRadius: scaler.getBorderRadiusCircular(7.5),
-                      child: Container(
-                        color: ColorConstants.primaryColor,
-                        height: scaler.getHeight(30.0),
-                        width: scaler.getWidth(70.0),
-                      ),
-                    ),
-                  )),
+                   onTap: (){},
+                   child: ClipRRect(
+                     borderRadius: scaler.getBorderRadiusCircular(7.5),
+                     child: Container(
+                         color: ColorConstants.primaryColor,
+                         height: scaler.getHeight(30.0),
+                         width: scaler.getWidth(70.0),
+                         child:  Stack(
+                           alignment: Alignment.center,
+                           children: [
+                             VideoPlayer(provider.eventDiscussionList[index].videoPlayerController!),
+                             GestureDetector(
+                               onTap: (){
+                                 Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments: provider.eventDiscussionList[index].attachmentURL);
+                               },
+                               child: Container(
+                                 decoration: BoxDecoration(
+                                   color: ColorConstants.colorWhitishGray,
+                                   shape: BoxShape.circle,
+                                 ),
+                                 padding: scaler.getPaddingAll(8.0),
+                                 child: Icon(Icons.play_arrow, size: 30, color: Colors.blueGrey,),
+                               ),
+                             )
+                           ],
+                         )
+                     ),
+                   ),
+                 )),
                 ],
               ),
             ),
@@ -603,7 +621,25 @@ class NewEventDiscussionScreen extends StatelessWidget {
                         color: ColorConstants.primaryColor,
                         height: scaler.getHeight(30.0),
                         width: scaler.getWidth(70.0),
-                      //  child: VideoPlayer(provider.eventDiscussionList[index].attachmentURL),
+                        child:  Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            VideoPlayer(provider.eventDiscussionList[index].videoPlayerController!),
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments: provider.eventDiscussionList[index].attachmentURL);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: ColorConstants.colorWhitishGray,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: scaler.getPaddingAll(8.0),
+                                child: Icon(Icons.play_arrow, size: 30, color: Colors.blueGrey,),
+                              ),
+                            )
+                          ],
+                        )
                       ),
                     ),
                   )),
@@ -629,6 +665,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
   static final inputTopRadius = Radius.circular(12);
   static final inputBottomRadius = Radius.circular(24);
 
+
+  /// used to show when retriving discussion
   Widget sendReplySwipe(String message) => Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -652,6 +690,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
         ),
       );
 
+  /// used to show when post a discussion
   Widget replySwipe(BuildContext context, String replyMessage) => Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(

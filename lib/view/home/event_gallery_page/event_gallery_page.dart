@@ -107,7 +107,14 @@ class EventGalleryPage extends StatelessWidget {
                     galleryClick: () {
                       provider.getImage(
                           _scaffoldKey.currentContext!, 2, postPhotoBtn(context, scaler, provider)).catchError((e){
-                        CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                        CommonWidgets.errorDialog(_scaffoldKey.currentContext!, "enable_storage_permission".tr());
+                      });
+                    },
+                    videoSelection: true,
+                    videoClick: (){
+                      provider.getImage(
+                          _scaffoldKey.currentContext!, 3, postPhotoBtn(context, scaler, provider)).catchError((e){
+                        CommonWidgets.errorDialog(_scaffoldKey.currentContext!, "enable_storage_permission".tr());
                       });
                     },
                     cancelClick: () {

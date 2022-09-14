@@ -197,7 +197,7 @@ class SettingsPage extends StatelessWidget {
                           SizedBox(height: scaler.getHeight(2.0)),
                           DialogHelper.btnWidget(scaler, context, "logout".tr(),
                               ColorConstants.primaryColor, funOnTap: () async {
-                           await auth.signOut();
+                           //await auth.signOut();
                             provider.userDetail.userType = null;
                             provider.userDetail.profileUrl = null;
                             SharedPref.clearSharePref();
