@@ -4,6 +4,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
@@ -245,7 +246,7 @@ abstract class MMYEngine {
   /// Get photo Album
   Future<MMYPhotoAlbum> getPhotoAlbum(String aid);
   /// Post photo
-  Future<void> postPhoto(String aid, String photoURL);
+  Future<void> postPhoto(String aid, String photoURL, {String type=PHOTO_TYPE_PHOTO});
   /// Delete photo
   Future<void> deletePhoto(String aid, String pid);
 
@@ -803,8 +804,8 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<void> postPhoto(String aid, String photoURL) async {
-    await albumLib.postPhoto(_currentUser, aid, photoURL);
+  Future<void> postPhoto(String aid, String photoURL, {String type=PHOTO_TYPE_PHOTO}) async {
+    await albumLib.postPhoto(_currentUser, aid, photoURL, type);
   }
 
   @override

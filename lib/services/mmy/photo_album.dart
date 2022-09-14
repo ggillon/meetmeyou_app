@@ -20,9 +20,9 @@ Future<MMYPhotoAlbum> getAlbum(User currentUser, String aid) async {
   return db.getPhotoAlbum(aid);
 }
 
-Future<void> postPhoto(User currentUser, String aid, String photoURL) async {
+Future<void> postPhoto(User currentUser, String aid, String photoURL, String type) async {
   final db = FirestoreDB(uid: currentUser.uid);
-  MMYPhoto photo = MMYPhoto(pid: idGenerator(), aid: aid, ownerId: currentUser.uid, title: '', description: '', photoURL: photoURL, timeStamp: DateTime.now());
+  MMYPhoto photo = MMYPhoto(pid: idGenerator(), aid: aid, ownerId: currentUser.uid, title: '', description: '', photoURL: photoURL, type: type, timeStamp: DateTime.now());
   await db.setPhoto(photo);
 }
 
