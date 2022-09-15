@@ -19,20 +19,19 @@ class ViewVideoProvider extends BaseProvider{
 
   late VideoPlayerController controller;
 
-  Future postDiscussionMessage(BuildContext context, File videoFile, bool fromContactOrGroup, String contactGroupDid, bool fromChatScreen, String fromChatScreenDid) async {
+  Future postDiscussionMessage(BuildContext context, File videoFile, bool fromContactOrGroup, String contactGroupDid, bool fromChatScreen, String fromChatScreenDid, String format) async {
 
     setState(ViewState.Busy);
 
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     if(videoFile != null){
-      videoUrl =  await storeFile(videoFile, path: StoragePath.discussionChatGallery(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!),
-          fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!))).catchError((e) {
+      videoUrl =  await storeFile(videoFile, path: StoragePath.discussionChatGalleryVideo(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!),
+          fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), format)).catchError((e) {
         setState(ViewState.Idle);
         DialogHelper.showMessage(context, e.message);
       });
     }
-    await mmyEngine!.postDiscussionMessage(
-        fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: VIDEO_MESSAGE, text: "", photoURL: videoUrl)
+    await mmyEngine!.postDiscussionMessage(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: VIDEO_MESSAGE, text: "", photoURL: videoUrl)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "error_message".tr());

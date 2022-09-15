@@ -11,9 +11,10 @@ import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:video_player/video_player.dart';
 
 class ViewVideoScreen extends StatelessWidget {
-  ViewVideoScreen({Key? key, required this.viewVideoData, required this.fromChat}) : super(key: key);
+  ViewVideoScreen({Key? key, required this.viewVideoData, required this.fromChat, required this.format}) : super(key: key);
 
   ViewVideoData viewVideoData;
+  String format;
   bool? fromChat;
 
   @override
@@ -97,7 +98,9 @@ class ViewVideoScreen extends StatelessWidget {
                   ) :
                   InkWell(
                     onTap: (){
-                     fromChat == true ? provider.postDiscussionMessage(context, viewVideoData.video!, viewVideoData.fromContactOrGroup!, viewVideoData.groupContactChatDid!, viewVideoData.fromChatScreen!, viewVideoData.fromChatScreenDid!).then((value) {
+                     fromChat == true ?
+                     provider.postDiscussionMessage(context, viewVideoData.video!, viewVideoData.fromContactOrGroup!,
+                         viewVideoData.groupContactChatDid!, viewVideoData.fromChatScreen!, viewVideoData.fromChatScreenDid!, format).then((value) {
                         Navigator.of(context).pop(viewVideoData.fromChatScreen);
                       }) : Navigator.of(context).pop(viewVideoData.video);
                     },

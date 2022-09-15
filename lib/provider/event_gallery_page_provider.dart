@@ -70,11 +70,15 @@ class EventGalleryPageProvider extends BaseProvider{
       final pickedFile = await picker.pickVideo(
           source: ImageSource.gallery);
       if(pickedFile != null){
-       Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments: ViewVideoScreen(viewVideoData: ViewVideoData(video: File(pickedFile.path)), fromChat: false)).then((dynamic value) async{
+        video = File(pickedFile.path);
+        var fileName = (video!.path.split('/').last);
+        var format = fileName.split(".").last;
+       Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments: ViewVideoScreen(viewVideoData: ViewVideoData(video: video), fromChat: false,
+       format: format,)).then((dynamic value) async{
          video = value;
          if(video != null){
            setState(ViewState.Busy);
-           var videoUrl =  await storeFile(video!, path: StoragePath.eventPhotoGallery(eventDetail.eid.toString()));
+           var videoUrl =  await storeFile(video!, path: StoragePath.eventPhotoGalleryVideo(eventDetail.eid.toString(), format));
            await postPhoto(context, eventDetail.eid.toString(), videoUrl, postBtn, type: PHOTO_TYPE_VIDEO);
            video = null;
          }

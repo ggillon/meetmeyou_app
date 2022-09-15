@@ -128,8 +128,11 @@ class NewEventDiscussionProvider extends BaseProvider {
       final pickedFile = await picker.pickVideo(
           source: ImageSource.gallery);
       if(pickedFile != null){
-        Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments:  ViewVideoScreen(viewVideoData: ViewVideoData(video: File(pickedFile.path), videoUrl: "", fromContactOrGroup: fromContactOrGroup,
-            groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid), fromChat: true)).then((value) {
+        video = File(pickedFile.path);
+        var fileName = (video!.path.split('/').last);
+        var format = fileName.split(".").last;
+        Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments:
+        ViewVideoScreen(viewVideoData: ViewVideoData(video: video, videoUrl: "", fromContactOrGroup: fromContactOrGroup, groupContactChatDid: discussion?.did ?? "", fromChatScreen: fromChatScreen, fromChatScreenDid: fromChatScreenDid), fromChat: true, format: format)).then((value) {
           video = null;
           value == true ? getDiscussion(context, fromChatScreenDid) : getEventDiscussion(context, false);
         }
