@@ -7,11 +7,15 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/provider/event_gallery_page_provider.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_player/video_player.dart';
+
+import '../video_player/video_player.dart' as video_player;
 
 class EventGalleryPage extends StatelessWidget {
   EventGalleryPage({Key? key}) : super(key: key);
@@ -80,13 +84,37 @@ class EventGalleryPage extends StatelessWidget {
           ),
           itemBuilder: (BuildContext context, int index){
 
-            return(index+1) == provider.galleryImagesUrl.length ? provider.galleryImagesUrl[index] :  (GestureDetector(
+            return(index+1) == provider.galleryImagesUrl.length ? provider.galleryImagesUrl[index] :
+            (provider.mmyPhotoList[index].type == PHOTO_TYPE_VIDEO ?
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                VideoPlayer(provider.mmyPhotoList[index].videoPlayerController!),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments:
+                    video_player.VideoPlayer(videoUrl: provider.mmyPhotoList[index].photoURL, fromDiscussion: false,
+                    aid: provider.mmyPhotoList[index].aid, pid: provider.mmyPhotoList[index].pid, ownerId: provider.mmyPhotoList[index].ownerId,)).then((value) {
+                      provider.getPhotoAlbum(_scaffoldKey.currentContext!, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(_scaffoldKey.currentContext!, scaler, provider));
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.colorWhitishGray,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: scaler.getPaddingAll(6.0),
+                    child: Icon(Icons.play_arrow, size: 24, color: Colors.blueGrey,),
+                  ),
+                )
+              ],
+            ) : GestureDetector(
               onTap: (){
                 Navigator.pushNamed(context, RoutesConstants.eventGalleryImageView, arguments: provider.mmyPhotoList[index]).then((value) {
                   provider.getPhotoAlbum(_scaffoldKey.currentContext!, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(_scaffoldKey.currentContext!, scaler, provider));
                 });
               },
-                child:  Card(child: ImageView(path: provider.galleryImagesUrl[index], fit: BoxFit.cover,))));
+                child: Card(child: ImageView(path: provider.galleryImagesUrl[index], fit: BoxFit.cover,))));
           },
         ));
   }

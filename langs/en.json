@@ -310,5 +310,9 @@
   "publications_only" : "Publications only",
   "video_gallery" : "Video Gallery",
   "no_video_selected" : "No video selected",
-  "sending_video" : "Sending video...."
+  "sending_video" : "Sending video....",
+  "video_size" : "Video size can't be greater than 25 mb.",
+  "delete_video" : "Delete video",
+  "are_you_sure_to_delete_video" : "Are you sure you want to delete video?",
+  "video_saved" : "Video saved"
 }

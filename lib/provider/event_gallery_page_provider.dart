@@ -73,17 +73,24 @@ class EventGalleryPageProvider extends BaseProvider{
         video = File(pickedFile.path);
         var fileName = (video!.path.split('/').last);
         var format = fileName.split(".").last;
-       Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments: ViewVideoScreen(viewVideoData: ViewVideoData(video: video), fromChat: false,
-       format: format,)).then((dynamic value) async{
-         video = value;
-         if(video != null){
-           setState(ViewState.Busy);
-           var videoUrl =  await storeFile(video!, path: StoragePath.eventPhotoGalleryVideo(eventDetail.eid.toString(), format));
-           await postPhoto(context, eventDetail.eid.toString(), videoUrl, postBtn, type: PHOTO_TYPE_VIDEO);
-           video = null;
-         }
-         notifyListeners();
-       });
+        int sizeInBytes = await video!.length();
+        double sizeInMb = sizeInBytes / (1024 * 1024);
+        if(sizeInMb <= 25){
+          Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments: ViewVideoScreen(viewVideoData: ViewVideoData(video: video), fromChat: false,
+            format: format,)).then((dynamic value) async{
+            video = value;
+            if(video != null){
+              setState(ViewState.Busy);
+              var videoUrl =  await storeFile(video!, path: StoragePath.eventPhotoGalleryVideo(eventDetail.eid.toString(), format));
+              await postPhoto(context, eventDetail.eid.toString(), videoUrl, postBtn, type: PHOTO_TYPE_VIDEO);
+              video = null;
+            }
+            notifyListeners();
+          });
+        } else{
+          DialogHelper.showMessage(context, "video_size".tr());
+        }
+
       } else{
         DialogHelper.showMessage(context, "no_video_selected".tr());
       }

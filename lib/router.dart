@@ -252,7 +252,9 @@ class Router {
         return MaterialPageRoute(builder: (_) => ViewVideoScreen(viewVideoData: args.viewVideoData, fromChat: args.fromChat, format:  args.format,), settings: settings);
 
       case RoutesConstants.videoPlayer:
-        return MaterialPageRoute(builder: (_) => VideoPlayer(videoUrl: settings.arguments as String,), settings: settings);
+        final args = settings.arguments as VideoPlayer;
+        return MaterialPageRoute(builder: (_) => VideoPlayer(videoUrl: args.videoUrl, fromDiscussion:  args.fromDiscussion, aid: args.aid, pid: args.pid,
+        ownerId: args.ownerId,), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

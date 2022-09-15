@@ -26,7 +26,7 @@ class ViewVideoProvider extends BaseProvider{
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     if(videoFile != null){
       videoUrl =  await storeFile(videoFile, path: StoragePath.discussionChatGalleryVideo(fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!),
-          fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), format)).catchError((e) {
+          auth.currentUser!.uid.toString(), format)).catchError((e) {
         setState(ViewState.Idle);
         DialogHelper.showMessage(context, e.message);
       });

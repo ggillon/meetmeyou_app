@@ -22,6 +22,7 @@ import 'package:meetmeyou_app/models/discussion_message.dart';
 import 'package:meetmeyou_app/provider/new_event_discussion_provider.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/home/video_player/video_player.dart' as video_ui;
 import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
@@ -519,7 +520,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                              VideoPlayer(provider.eventDiscussionList[index].videoPlayerController!),
                              GestureDetector(
                                onTap: (){
-                                 Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments: provider.eventDiscussionList[index].attachmentURL);
+                                 Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments: video_ui.VideoPlayer(videoUrl: provider.eventDiscussionList[index].attachmentURL
+                                   , fromDiscussion: true,));
                                },
                                child: Container(
                                  decoration: BoxDecoration(
@@ -627,7 +629,8 @@ class NewEventDiscussionScreen extends StatelessWidget {
                             VideoPlayer(provider.eventDiscussionList[index].videoPlayerController!),
                             GestureDetector(
                               onTap: (){
-                                Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments: provider.eventDiscussionList[index].attachmentURL);
+                                Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments: video_ui.VideoPlayer(videoUrl: provider.eventDiscussionList[index].attachmentURL
+                                  , fromDiscussion: true,));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
