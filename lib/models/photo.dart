@@ -1,3 +1,5 @@
+import 'package:video_player/video_player.dart';
+
 import 'constants.dart';
 
 const PHOTO_TYPE_PHOTO = "Photo";
@@ -28,6 +30,7 @@ class MMYPhoto {
   DateTime timeStamp;
   String type;
   Map other;
+  VideoPlayerController? videoPlayerController;
 
   factory MMYPhoto.fromMap(Map<String, dynamic> data) {
     final int timeMillisec = data['timeStamp'];

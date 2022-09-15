@@ -15,6 +15,7 @@ import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/storage/storage.dart';
 import 'package:meetmeyou_app/view/home/view_video_screen/view_video_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_player/video_player.dart';
 
 class EventGalleryPageProvider extends BaseProvider{
 
@@ -70,11 +71,12 @@ class EventGalleryPageProvider extends BaseProvider{
           source: ImageSource.gallery);
       if(pickedFile != null){
        Navigator.pushNamed(context, RoutesConstants.viewVideoScreen, arguments: ViewVideoScreen(viewVideoData: ViewVideoData(video: File(pickedFile.path)), fromChat: false)).then((dynamic value) async{
-         image = value;
-         if(image != null){
+         video = value;
+         if(video != null){
            setState(ViewState.Busy);
-           var videoUrl =  await storeFile(image!, path: StoragePath.eventPhotoGallery(eventDetail.eid.toString()));
-           await postPhoto(context, eventDetail.eid.toString(), videoUrl, postBtn);
+           var videoUrl =  await storeFile(video!, path: StoragePath.eventPhotoGallery(eventDetail.eid.toString()));
+           await postPhoto(context, eventDetail.eid.toString(), videoUrl, postBtn, type: PHOTO_TYPE_VIDEO);
+           video = null;
          }
          notifyListeners();
        });
@@ -109,7 +111,15 @@ class EventGalleryPageProvider extends BaseProvider{
       mmyPhotoList = value.photos;
       galleryImagesUrl = [];
       for(int i = 0; i < mmyPhotoList.length; i++){
-        galleryImagesUrl.add(mmyPhotoList[i].photoURL);
+        if(mmyPhotoList[i].type == PHOTO_TYPE_VIDEO){
+          mmyPhotoList[i].videoPlayerController = VideoPlayerController.network(mmyPhotoList[i].photoURL)
+            ..initialize().then((_) {
+              notifyListeners();
+            });
+        } else{
+          galleryImagesUrl.add(mmyPhotoList[i].photoURL);
+        }
+
       }
      galleryImagesUrl.insert(galleryImagesUrl.length, postBtn);
 
@@ -119,10 +129,11 @@ class EventGalleryPageProvider extends BaseProvider{
   }
 
   /// Post photo
-  Future postPhoto(BuildContext context, String aid, String photoURL, Widget postBtn) async{
+  Future postPhoto(BuildContext context, String aid, String photoURL, Widget postBtn,
+      {String? type}) async{
     setState(ViewState.Busy);
 
-    await mmyEngine!.postPhoto(aid, photoURL).catchError((e) {
+    await mmyEngine!.postPhoto(aid, photoURL, type: type ?? PHOTO_TYPE_PHOTO).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });

@@ -32,7 +32,7 @@ class ViewVideoProvider extends BaseProvider{
       });
     }
     await mmyEngine!.postDiscussionMessage(
-        fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: "video message", text: "", photoURL: videoUrl)
+        fromChatScreen == true ? fromChatScreenDid : (fromContactOrGroup == true ? contactGroupDid :  eventDetail.eid!), type: VIDEO_MESSAGE, text: "", photoURL: videoUrl)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, "error_message".tr());

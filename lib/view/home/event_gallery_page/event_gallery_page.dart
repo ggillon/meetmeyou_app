@@ -80,13 +80,13 @@ class EventGalleryPage extends StatelessWidget {
           ),
           itemBuilder: (BuildContext context, int index){
 
-            return(index+1) == provider.galleryImagesUrl.length ? provider.galleryImagesUrl[index] :  GestureDetector(
+            return(index+1) == provider.galleryImagesUrl.length ? provider.galleryImagesUrl[index] :  (GestureDetector(
               onTap: (){
                 Navigator.pushNamed(context, RoutesConstants.eventGalleryImageView, arguments: provider.mmyPhotoList[index]).then((value) {
                   provider.getPhotoAlbum(_scaffoldKey.currentContext!, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(_scaffoldKey.currentContext!, scaler, provider));
                 });
               },
-                child: Card(child: ImageView(path: provider.galleryImagesUrl[index], fit: BoxFit.cover,)));
+                child:  Card(child: ImageView(path: provider.galleryImagesUrl[index], fit: BoxFit.cover,))));
           },
         ));
   }

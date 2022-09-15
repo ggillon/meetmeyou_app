@@ -178,7 +178,7 @@ class NewEventDiscussionProvider extends BaseProvider {
           return a.createdTimeStamp.compareTo(b.createdTimeStamp);
         });
         eventDiscussionList.forEach((element) {
-          if(element.type == "video message"){
+          if(element.type == VIDEO_MESSAGE){
             element.videoPlayerController = VideoPlayerController.network(element.attachmentURL)
               ..initialize().then((_) {
                 // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
@@ -319,7 +319,7 @@ class NewEventDiscussionProvider extends BaseProvider {
         });
         print(eventDiscussionList);
         eventDiscussionList.forEach((element) {
-          if(element.type == "video message"){
+          if(element.type == VIDEO_MESSAGE){
             element.videoPlayerController = VideoPlayerController.network(element.attachmentURL)
               ..initialize().then((_) {
                 // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
