@@ -17,9 +17,14 @@ class StoragePath {
   static String contactGroupPhoto(String uid, String cid) => '/users/${uid}/contacts/groups/${cid}.png';
   static String eventPhoto(String eid) => '/events/${eid}/${eid}.png';
   static String eventPhotoGallery(String eid,) => '/photoAlbums/$eid/${idGenerator()}.png';
+  static String eventPhotoGalleryVideo(String eid, String format) => '/photoAlbums/$eid/${idGenerator()}.$format';
   static String discussionPhoto(String did,) => '/discussions/${did}/${did}.png';
+  static String discussionVideo(String did, String format) => '/discussions/${did}/${did}.$format';
   static String discussionChatGallery(String did, String pid) => '/discussions/${did}/chat/${did}.png';
+  static String discussionChatGalleryVideo(String did, String pid, String format) => '/discussions/${did}/chat/${did}.$format';
   static String discussionPhotoGallery(String did, String folder, String pid) => '/discussions/${did}/$folder/${did}.png';
+  static String discussionPhotoGalleryVideo(String did, String folder, String pid, String format) => '/discussions/${did}/$folder/${did}.$format';
+
 }
 
 /// TODO: Deprecate
