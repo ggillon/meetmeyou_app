@@ -19,11 +19,11 @@ class StoragePath {
   static String eventPhotoGallery(String eid,) => '/photoAlbums/$eid/${idGenerator()}.png';
   static String eventPhotoGalleryVideo(String eid, String format) => '/photoAlbums/$eid/${idGenerator()}.$format';
   static String discussionPhoto(String did,) => '/discussions/${did}/${did}.png';
-  static String discussionVideo(String did, String format) => '/discussions/${did}/${did}.$format';
+  static String discussionVideo(String did, String format) => '/discussions/${did}/${idGenerator()}.$format';
   static String discussionChatGallery(String did, String pid) => '/discussions/${did}/chat/${pid}.png';
-  static String discussionChatGalleryVideo(String did, String pid, String format) => '/discussions/${did}/chat/${pid}.$format';
+  static String discussionChatGalleryVideo(String did, String pid, String format) => '/discussions/${did}/chat/${idGenerator()}.$format';
   static String discussionPhotoGallery(String did, String folder, String pid) => '/discussions/${did}/$folder/${pid}.png';
-  static String discussionPhotoGalleryVideo(String did, String folder, String pid, String format) => '/discussions/${did}/$folder/${pid}.$format';
+  static String discussionPhotoGalleryVideo(String did, String folder, String pid, String format) => '/discussions/${did}/$folder/${idGenerator()}.$format';
 
 }
 
