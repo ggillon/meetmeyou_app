@@ -770,7 +770,7 @@ class CreateEventScreen extends StatelessWidget {
                             },
                             child: Container(
                                 padding:
-                                    scaler.getPaddingLTRB(0.0, 4.0, 3.0, 0.0),
+                                    scaler.getPaddingLTRB(0.0, 5.0, 3.0, 0.0),
                                 alignment: Alignment.centerRight,
                                 child: ImageView(
                                     path: ImageConstants.close_icon,

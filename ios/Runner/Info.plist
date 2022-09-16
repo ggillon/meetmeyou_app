@@ -41,6 +41,8 @@
 		<string>$(CURRENT_PROJECT_VERSION)</string>
 		<key>FacebookAppID</key>
 		<string>1321275768236042</string>
+		<key>FacebookClientToken</key>
+        <string>60b96af50817dac6b34d0422eee58d0e</string>
 		<key>FacebookDisplayName</key>
 		<string>MeetMeYou</string>
 		<key>FlutterDeepLinkingEnabled</key>

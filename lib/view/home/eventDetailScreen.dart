@@ -586,7 +586,7 @@ class EventDetailScreen extends StatelessWidget {
                      // Navigator.of(context).pop();
                     },
                     child: Container(
-                        padding: scaler.getPaddingLTRB(3.0, 4.0, 3.0, 0.0),
+                        padding: scaler.getPaddingLTRB(3.0, 5.0, 3.0, 0.0),
                         alignment: Alignment.centerRight,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -36,30 +36,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   ChewieController? _chewieController;
 
   @override
-  void initState() {
-    initializePlayer();
-    super.initState();
-  }
-
-  Future<void> initializePlayer() async {
-    videoPlayerController = VideoPlayerController.network(widget.videoUrl);
-
-    await videoPlayerController.initialize();
-
-    _chewieController = ChewieController(
-        videoPlayerController: videoPlayerController,
-        autoPlay: true,
-        looping: true,
-        fullScreenByDefault: true
-    );
-
-    videoPlayerController.addListener(() {
-      setState(() {});
-    });
-
-  }
-
-  @override
   void dispose() {
     videoPlayerController.dispose();
     _chewieController?.dispose();
@@ -72,6 +48,33 @@ class _VideoPlayerState extends State<VideoPlayer> {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<EventGalleryImageViewProvider>(
+      onModelReady: (provider) async {
+        videoPlayerController = await VideoPlayerController.network(widget.videoUrl)..initialize().then((_) {
+          _chewieController = ChewieController(
+              videoPlayerController: videoPlayerController,
+              autoPlay: true,
+              looping: true,
+              fullScreenByDefault: false
+          );
+          provider.updateLoadingStatus(true);
+        });;
+
+        // if(!videoPlayerController.value.isInitialized){
+        //
+        //   _chewieController = ChewieController(
+        //       videoPlayerController: videoPlayerController,
+        //       autoPlay: true,
+        //       looping: true,
+        //       fullScreenByDefault: true
+        //   );
+        // }
+
+
+        videoPlayerController.addListener(() {
+         provider.updateLoadingStatus(true);
+        });
+        provider.updateLoadingStatus(true);
+      },
       builder: (context, provider, _){
         return Scaffold(
           key: _scaffoldKey,
@@ -109,13 +112,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
                         });
                       },
                       child: Icon(Icons.save_alt, color: Colors.blue,)),
-                  SizedBox(width: scaler.getWidth(3.0)),
+                  SizedBox(width: scaler.getWidth(5.0)),
                   GestureDetector(
                       onTap: (){
                         shareVideo();
                       },
                       child: Icon(Icons.share, color: Colors.blue,)),
-                  SizedBox(width: scaler.getWidth(3.0)),
+                  SizedBox(width: scaler.getWidth(5.0)),
                   (provider.auth.currentUser!.uid == widget.ownerId || provider.auth.currentUser!.uid == provider.eventDetail.albumAdminId) ? GestureDetector(
                       onTap: (){
                         DialogHelper.showDialogWithTwoButtons(
@@ -132,19 +135,21 @@ class _VideoPlayerState extends State<VideoPlayer> {
               )
             ],
           ),
-          body:  Center(
-            child: (_chewieController != null &&
-                _chewieController!.videoPlayerController.value.isInitialized)
-                ? Chewie(
-              controller: _chewieController!,
-            )
-                : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(height: 20),
-                Text('Loading'),
-              ],
+          body:  SafeArea(
+            child: Center(
+              child: (_chewieController != null &&
+                  _chewieController!.videoPlayerController.value.isInitialized)
+                  ? Chewie(
+                controller: _chewieController!,
+              )
+                  : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20),
+                  Text('Loading'),
+                ],
+              ),
             ),
           ),
         );

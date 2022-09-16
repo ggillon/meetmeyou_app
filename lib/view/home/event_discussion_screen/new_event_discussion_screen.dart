@@ -290,7 +290,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       provider.isRightSwipe == true
-                                          ? replySwipe(context, provider.replyMessage)
+                                          ? replySwipe(context, provider.replyMessage, provider.type)
                                           : Container(),
                                       writeSomethingTextField(
                                           context, scaler, provider),
@@ -472,7 +472,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                     provider.replyMessageImageUrl = element.attachmentURL;
                     provider.replyMessageText = element.text;
                     return element.mid == provider.eventDiscussionList[index].replyMid;
-                  }) ? provider.replyMessageText : ""),
+                  }) ? provider.replyMessageText : "", provider.eventDiscussionList[index].type),
                   SizedBox(height: scaler.getHeight(0.1)),
                   Row(
                     children: [
@@ -541,13 +541,14 @@ class NewEventDiscussionScreen extends StatelessWidget {
               ),
             ),
           ),
-          onRightSwipe: () {
+          onRightSwipe: provider.eventDiscussionList[index].type == VIDEO_MESSAGE ? (){} : () {
             provider.isRightSwipe = true;
             FocusScope.of(context).requestFocus(messageFocusNode);
             provider.replyMessage = provider.eventDiscussionList[index].text;
             provider.replyMid = provider.eventDiscussionList[index].mid;
             provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
             // provider.userName ="you".tr();
+            provider.type = provider.eventDiscussionList[index].type;
             provider.updateSwipe(true);
           },
         ),
@@ -576,7 +577,7 @@ class NewEventDiscussionScreen extends StatelessWidget {
                     provider.replyMessageText = element.text;
                     provider.replyMessageImageUrl = element.attachmentURL;
                     return element.mid == provider.eventDiscussionList[index].replyMid;
-                  }) ? provider.replyMessageText: ""),
+                  }) ? provider.replyMessageText: "", provider.eventDiscussionList[index].type),
                   SizedBox(height: scaler.getHeight(0.1)),
                   Row(
                     children: [
@@ -650,13 +651,14 @@ class NewEventDiscussionScreen extends StatelessWidget {
               ),
             ),
           ),
-          onRightSwipe: () {
+          onRightSwipe: provider.eventDiscussionList[index].type == VIDEO_MESSAGE ? (){} : () {
             provider.isRightSwipe = true;
             FocusScope.of(context).requestFocus(messageFocusNode);
             provider.replyMessage = provider.eventDiscussionList[index].text;
             provider.replyMid = provider.eventDiscussionList[index].mid;
             provider.imageUrl = provider.eventDiscussionList[index].attachmentURL;
             // provider.userName = "you".tr();
+            provider.type = provider.eventDiscussionList[index].type;
             provider.updateSwipe(true);
           },
         ),
@@ -670,13 +672,13 @@ class NewEventDiscussionScreen extends StatelessWidget {
 
 
   /// used to show when retriving discussion
-  Widget sendReplySwipe(String message) => Container(
+  Widget sendReplySwipe(String message, String type) => type == VIDEO_MESSAGE ? Container() : Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.1),
           borderRadius: BorderRadius.all(inputTopRadius),
         ),
-        child: message == "" ? ReplyImageWidget(
+        child: (message == "" ? ReplyImageWidget(
           message: message,
           userName: provider.userName,
           isUserName: true,
@@ -690,11 +692,11 @@ class NewEventDiscussionScreen extends StatelessWidget {
           imageUrl: provider.imageUrl,
           onCancelReply: () {},
           showCloseIcon: false,
-        ),
+        )),
       );
 
   /// used to show when post a discussion
-  Widget replySwipe(BuildContext context, String replyMessage) => Container(
+  Widget replySwipe(BuildContext context, String replyMessage, String type) => type == VIDEO_MESSAGE ? Container() : Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.1),

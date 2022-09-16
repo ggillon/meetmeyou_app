@@ -125,7 +125,7 @@ class EventGalleryPageProvider extends BaseProvider{
       photoGalleryData = [];
       for(int i = 0; i < mmyPhotoList.length; i++){
         if(mmyPhotoList[i].type == PHOTO_TYPE_VIDEO){
-          mmyPhotoList[i].videoPlayerController = VideoPlayerController.network(mmyPhotoList[i].photoURL)
+          mmyPhotoList[i].videoPlayerController = await VideoPlayerController.network(mmyPhotoList[i].photoURL)
             ..initialize().then((_) {
               notifyListeners();
             });

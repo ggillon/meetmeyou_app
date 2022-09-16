@@ -55,13 +55,13 @@ class EventGalleryImageView extends StatelessWidget {
                     _save(context, mmyPhoto.photoURL, mmyPhoto.pid);
                   },
                   child: Icon(Icons.save_alt, color: Colors.blue,)),
-              SizedBox(width: scaler.getWidth(3.0)),
+              SizedBox(width: scaler.getWidth(5.0)),
               GestureDetector(
                 onTap: (){
                   shareImage();
                 },
                   child: Icon(Icons.share, color: Colors.blue,)),
-              SizedBox(width: scaler.getWidth(3.0)),
+              SizedBox(width: scaler.getWidth(5.0)),
             (provider.auth.currentUser!.uid == mmyPhoto.ownerId || provider.auth.currentUser!.uid == provider.eventDetail.albumAdminId) ? GestureDetector(
                 onTap: (){
                   DialogHelper.showDialogWithTwoButtons(

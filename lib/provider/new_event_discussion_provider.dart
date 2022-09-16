@@ -43,6 +43,7 @@ class NewEventDiscussionProvider extends BaseProvider {
   String replyMessageText = "";
   String replyMessageImageUrl = "";
   String imageUrl = "";
+  String type = PHOTO_MESSAGE;
  // List<VideoPlayerController> videoPlayerController = [];
 
   bool swipe = false;
@@ -187,9 +188,9 @@ class NewEventDiscussionProvider extends BaseProvider {
         eventDiscussionList.sort((a,b) {
           return a.createdTimeStamp.compareTo(b.createdTimeStamp);
         });
-        eventDiscussionList.forEach((element) {
+        eventDiscussionList.forEach((element) async {
           if(element.type == VIDEO_MESSAGE){
-            element.videoPlayerController = VideoPlayerController.network(element.attachmentURL)
+            element.videoPlayerController = await VideoPlayerController.network(element.attachmentURL)
               ..initialize().then((_) {
                 // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
                 notifyListeners();
@@ -327,10 +328,10 @@ class NewEventDiscussionProvider extends BaseProvider {
         eventDiscussionList.sort((a,b) {
           return a.createdTimeStamp.compareTo(b.createdTimeStamp);
         });
-        print(eventDiscussionList);
-        eventDiscussionList.forEach((element) {
+       // print(eventDiscussionList);
+        eventDiscussionList.forEach((element) async {
           if(element.type == VIDEO_MESSAGE){
-            element.videoPlayerController = VideoPlayerController.network(element.attachmentURL)
+            element.videoPlayerController = await VideoPlayerController.network(element.attachmentURL)
               ..initialize().then((_) {
                 // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
                notifyListeners();
