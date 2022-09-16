@@ -76,7 +76,7 @@ class EventGalleryPage extends StatelessWidget {
         height: scaler.getHeight(100),
         child: GridView.builder(
           physics: NeverScrollableScrollPhysics(),
-          itemCount: provider.galleryImagesUrl.length,
+          itemCount: provider.photoGalleryData.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 4.0,
@@ -84,17 +84,18 @@ class EventGalleryPage extends StatelessWidget {
           ),
           itemBuilder: (BuildContext context, int index){
 
-            return(index+1) == provider.galleryImagesUrl.length ? provider.galleryImagesUrl[index] :
+            return
+              (index+1) == provider.photoGalleryData.length ? provider.photoGalleryData[index].btn! :
             (provider.mmyPhotoList[index].type == PHOTO_TYPE_VIDEO ?
             Stack(
               alignment: Alignment.center,
               children: [
-                VideoPlayer(provider.mmyPhotoList[index].videoPlayerController!),
+                VideoPlayer(provider.photoGalleryData[index].videoPlayerController!),
                 GestureDetector(
                   onTap: (){
                     Navigator.pushNamed(context, RoutesConstants.videoPlayer, arguments:
-                    video_player.VideoPlayer(videoUrl: provider.mmyPhotoList[index].photoURL, fromDiscussion: false,
-                    aid: provider.mmyPhotoList[index].aid, pid: provider.mmyPhotoList[index].pid, ownerId: provider.mmyPhotoList[index].ownerId,)).then((value) {
+                    video_player.VideoPlayer(videoUrl: provider.photoGalleryData[index].photoUrl!, fromDiscussion: false,
+                    aid: provider.photoGalleryData[index].aid, pid: provider.photoGalleryData[index].pid, ownerId: provider.photoGalleryData[index].ownerId,)).then((value) {
                       provider.getPhotoAlbum(_scaffoldKey.currentContext!, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(_scaffoldKey.currentContext!, scaler, provider));
                     });
                   },
@@ -114,7 +115,7 @@ class EventGalleryPage extends StatelessWidget {
                   provider.getPhotoAlbum(_scaffoldKey.currentContext!, provider.eventDetail.eid.toString(), postBtn: postPhotoBtn(_scaffoldKey.currentContext!, scaler, provider));
                 });
               },
-                child: Card(child: ImageView(path: provider.galleryImagesUrl[index], fit: BoxFit.cover,))));
+                child: Card(child: ImageView(path: provider.photoGalleryData[index].photoUrl, fit: BoxFit.cover,))));
           },
         ));
   }

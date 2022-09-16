@@ -25,6 +25,7 @@ class EventGalleryPageProvider extends BaseProvider{
   File? video;
   List<MMYPhoto> mmyPhotoList = [];
   List<dynamic> galleryImagesUrl = [];
+  List<PhotoGallery> photoGalleryData = [];
 
 
   Future getImage(BuildContext context, int type, Widget postBtn) async {
@@ -121,18 +122,25 @@ class EventGalleryPageProvider extends BaseProvider{
       eventDetail.albumAdminId = value.adminId;
       mmyPhotoList = value.photos;
       galleryImagesUrl = [];
+      photoGalleryData = [];
       for(int i = 0; i < mmyPhotoList.length; i++){
         if(mmyPhotoList[i].type == PHOTO_TYPE_VIDEO){
           mmyPhotoList[i].videoPlayerController = VideoPlayerController.network(mmyPhotoList[i].photoURL)
             ..initialize().then((_) {
               notifyListeners();
             });
+          photoGalleryData.add(PhotoGallery(aid: mmyPhotoList[i].aid, pid : mmyPhotoList[i].pid, ownerId: mmyPhotoList[i].ownerId,
+              photoUrl: mmyPhotoList[i].photoURL, type: mmyPhotoList[i].type, videoPlayerController: mmyPhotoList[i].videoPlayerController));
         } else{
           galleryImagesUrl.add(mmyPhotoList[i].photoURL);
+          photoGalleryData.add(PhotoGallery(aid: mmyPhotoList[i].aid, pid : mmyPhotoList[i].pid, ownerId: mmyPhotoList[i].ownerId,
+              photoUrl: mmyPhotoList[i].photoURL, type: mmyPhotoList[i].type, videoPlayerController: mmyPhotoList[i].videoPlayerController));
         }
 
       }
      galleryImagesUrl.insert(galleryImagesUrl.length, postBtn);
+      photoGalleryData.insert(photoGalleryData.length, PhotoGallery(btn: postBtn));
+
 
       postPhoto ? setState(ViewState.Busy) : updateGetAlbum(false);
     }
@@ -153,4 +161,16 @@ class EventGalleryPageProvider extends BaseProvider{
 
     setState(ViewState.Idle);
 }
+}
+
+class PhotoGallery{
+  String? pid;
+  String? aid;
+  String? ownerId;
+  String? photoUrl;
+  String? type;
+  VideoPlayerController? videoPlayerController;
+  Widget? btn;
+
+  PhotoGallery({this.aid, this.pid, this.ownerId, this.photoUrl, this.type, this.videoPlayerController, this.btn});
 }
