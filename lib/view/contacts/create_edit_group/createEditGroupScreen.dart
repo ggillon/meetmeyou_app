@@ -227,7 +227,7 @@ class CreateEditGroupScreen extends StatelessWidget {
                                   ColorConstants.colorBlack),
                               decoration:
                                   ViewDecoration.inputDecorationWithCurve(
-                                      "random@random.com",
+                                      "enter_description_of_group".tr(),
                                       scaler,
                                       ColorConstants.primaryColor),
                               onFieldSubmitted: (data) {
