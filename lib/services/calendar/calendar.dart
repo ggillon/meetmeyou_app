@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+
 import 'package:device_calendar/device_calendar.dart' as device;
 import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/mmy_calendar.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:timezone/timezone.dart';
+import '../../models/event.dart';
 
 Future<bool> checkCalendar() async {
   bool result=false;
@@ -64,18 +69,43 @@ void updateCalendarEvent(Event event) async {
   final result = await plugin.createOrUpdateEvent(deviceEvent);
 }
 
-Future<void> storeCalendar(String uid, Database db) async {
-  final entries = await getCalendarEvents(uid);
-  MMYCalendar serverCalendar = MMYCalendar(uid: uid, calID: uid, name: uid, timeStamp: DateTime.now());
+Future<void> storeCalendar(BuildContext context, String uid, Database db) async {
+  final entries = await getCalendarEvents(context, uid);
+  MMYCalendar serverCalendar = MMYCalendar(uid: uid, name: uid, timeStamp: DateTime.now(), calID: '');
   for(CalendarEvent entry in entries) {
     serverCalendar.addEvent(entry.title, entry.start, entry.end);
   }
   await db.setCalendar(serverCalendar);
 }
 
+Future<void> generateMMYCalendar(List<Event> events, String uid) async {
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  Location _location = TZDateTime.local(2000).location;
+  if(await checkCalendar()) {
+    final oldCalID = await getCalendarID();
+    final result = await plugin.deleteCalendar(oldCalID!);
+  }
+  final newCalID = await getCalendarID();
+  for(final event in events) {
+    final status = event.invitedContacts[uid];
+    device.Event e = device.Event(newCalID);
+    if(event.multipleDates == false && (status == EVENT_ATTENDING || status == EVENT_ORGANISER)) {
+      e.title = event.title;
+      if(status == EVENT_ORGANISER) e.title = e.title! + ' (Organiser)';
+      // The device's timezone.
+      e.start = TZDateTime.from(event.start, _location);
+      e.end = TZDateTime.from(event.end, _location);
+      e.description = event.description;
+      e.location = event.location;
+      await plugin.createOrUpdateEvent(e);
+    }
+  }
+}
+
 Future<List<MMYCalendar>> getDeviceCalendars(String uid) async {
   List<MMYCalendar> results = [];
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+
   final calendarsResult = await plugin.retrieveCalendars();
   if(calendarsResult.isSuccess && calendarsResult.data != null) {
     final calendars = calendarsResult.data!.toList();
@@ -97,7 +127,7 @@ Future<List<MMYCalendar>> getDeviceCalendars(String uid) async {
             title: e.title ?? 'Untitled Event',
             start: DateTime.fromMicrosecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
             end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
-            meetMeYou: (cal!.name == 'MeetMeYou'),
+            meetMeYou: (cal.name == 'MeetMeYou'),
             location: e.location ?? '',
             description: e.description ?? '',
           );
@@ -117,12 +147,25 @@ Future<List<MMYCalendar>> getDeviceCalendars(String uid) async {
 }
 
 
-Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) async {
+Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {bool display = true}) async {
   List<CalendarEvent> returnList = [];
+  var calendarsResult;
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
-  final calendarsResult = await plugin.retrieveCalendars();
-  if(display==null) display=true;
-  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
+  calendarsResult = await plugin.retrieveCalendars();
+  var permissionsGranted;
+  if (Platform.isIOS) {
+    permissionsGranted = await plugin.hasPermissions();
+    if (permissionsGranted.isSuccess && !permissionsGranted.data!) {
+      permissionsGranted = await plugin.requestPermissions();
+      calendarsResult = await plugin.retrieveCalendars();
+      if (!permissionsGranted.isSuccess || !permissionsGranted.loading!) {
+        //CommonWidgets.errorDialog(context, "enable_calendar_permission".tr()); ///TODO : UnComment in your version
+      }
+    }
+  }
+  if((calendarsResult.isSuccess || permissionsGranted.isSuccess) && (calendarsResult.data != null) && display) {
+    // final calendarsResult = await plugin.retrieveCalendars();
+//  if(calendarsResult.isSuccess && calendarsResult.data != null && display) {
     final calendars = calendarsResult.data!.toList();
     for(device.Calendar cal in calendars) {
       device.RetrieveEventsParams retrieveEventsParams = device.RetrieveEventsParams(startDate: DateTime.now(), endDate: (DateTime.now().add(Duration(days: 365))));
@@ -132,9 +175,9 @@ Future<List<CalendarEvent>> getCalendarEvents(String uid, {bool display=true}) a
         for(device.Event e in events){
           CalendarEvent entry = CalendarEvent(
             title: e.title ?? 'Untitled Event',
-            start: DateTime.fromMicrosecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
+            start: DateTime.fromMillisecondsSinceEpoch(e.start!.millisecondsSinceEpoch),
             end: DateTime.fromMillisecondsSinceEpoch(e.end!.millisecondsSinceEpoch),
-            meetMeYou: (cal!.name == 'MeetMeYou'),
+            meetMeYou: (cal.name == 'MeetMeYou'),
             location: e.location ?? '',
             description: e.description ?? '',
           );

@@ -14,18 +14,21 @@ class MMYCalendar {
   Map<String, String> permissions;
   Map<String, dynamic> params;
 
-  MMYCalendar({required this.uid, required this.calID, required this.name, required this.timeStamp,
-    this.events = const[], this.permissions = const <String, String>{}, this.params = const <String, dynamic>{} });
+  MMYCalendar({required this.uid, required this.calID, required this.name, required this.timeStamp, this.events = const [],
+    this.permissions = const <String, String>{}, this.params = const <String, dynamic>{} })
+  {
+    events = [];
+  }
 
   factory MMYCalendar.fromMap(Map<String, dynamic> data) {
     return MMYCalendar(
-        uid: data['uid'],
-        calID: data['calID'],
-        name: data['name'],
-        timeStamp: DateTime.now(),
-        events: data['events'],
-        permissions: data['permissions'],
-        params: data['params'],
+      uid: data['uid'],
+      calID: data['calID'],
+      name: data['name'],
+      timeStamp: DateTime.now(),
+      events: data['events'],
+      permissions: data['permissions'],
+      params: data['params'],
     );
   }
 
@@ -52,8 +55,10 @@ class MMYCalendar {
       'params': params,
     };
   }
-  
-  void addEvent(String title, DateTime start, DateTime end) {events.add({'title': title, 'start': start, 'end': end});}
+
+  void addEvent(String title, DateTime start, DateTime end) {
+    events.add({'title': title, 'start': start, 'end': end});
+  }
   void setParam(String name, dynamic value) {params.addAll({name: value});}
   void setAccess(String uid, {String access=MMY_CALENDAR_PERMISSION_FULL}) {permissions.addAll({uid:access});}
 }

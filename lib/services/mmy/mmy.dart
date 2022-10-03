@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -30,6 +31,7 @@ import 'search.dart' as searchLib;
 import 'notification.dart' as notificationLib;
 import 'photo_album.dart' as albumLib;
 import 'announcement.dart' as announcementLib;
+import 'calendar.dart' as calLib;
 
 const USER_TYPE_NORMAL = "Normal User";
 const USER_TYPE_PRO = "Pro User";
@@ -190,11 +192,13 @@ abstract class MMYEngine {
 
   /// CALENDAR FUNCTIONS
   /// Get the CalendarEvents from mobile or web calendar
-  Future<List<CalendarEvent>> getCalendarEvents();
+  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context);
   /// Set the parameters for calender
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
   Future<Map<String, dynamic>> getCalendarParams();
+  /// Sync calendars
+  Future<void> syncCalendar();
 
   /// Event Message functions
   /// Get all the chat messages from Event
@@ -257,6 +261,11 @@ class MMY implements MMYEngine {
 
   MMY(this._currentUser);
   final User _currentUser;
+
+  static Future<Event> getWebEvent(String eid) async {
+    User webUser = (await FirebaseAuth.instance.signInAnonymously()).user!;
+    return await eventLib.getEvent(webUser, eid);
+  }
 
   @override
   void debugMsg(String text, {Map? attachment}) {
@@ -433,6 +442,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Event>> getUserEvents({List<String>? filters, List<String>? selector}) {
+    calLib.syncCalendars(_currentUser);
     return eventLib.getUserEvents(_currentUser, filters: filters, selector: selector);
   }
 
@@ -458,6 +468,9 @@ class MMY implements MMYEngine {
       for(int i=0; i<startDateOptions.length; i++) {
         await dateLib.addDateToEvent(_currentUser, event.eid, startDateOptions[i], endDateOptions[i]);
       }
+      startDateOptions.sort((a,b)=>a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch));
+      endDateOptions.sort((a,b)=>a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch));
+      await eventLib.updateEvent(_currentUser, event.eid,start: startDateOptions.first, end: endDateOptions.last);
     }
     return event;
   }
@@ -571,9 +584,9 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<List<CalendarEvent>> getCalendarEvents() async {
+  Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
     Profile profile = await getUserProfile();
-    return calendarLib.getCalendarEvents(_currentUser.uid, display: profile.parameters['calendar_display']);
+    return calendarLib.getCalendarEvents(context, _currentUser.uid, display: profile.parameters['calendar_display'] == null ? true : profile.parameters['calendar_display']);
   }
 
   @override
@@ -854,6 +867,11 @@ class MMY implements MMYEngine {
   Future<Event> inviteAllFavourites(String eid) async {
     List<String> CIDs = await profileLib.getFavouriteIDs(_currentUser);
     return await inviteContactsToEvent(eid, CIDs: CIDs);
+  }
+
+  @override
+  Future<void> syncCalendar() async {
+    await calLib.syncCalendars(_currentUser);
   }
 
 }
