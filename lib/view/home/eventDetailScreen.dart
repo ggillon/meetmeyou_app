@@ -512,7 +512,12 @@ class EventDetailScreen extends StatelessWidget {
                             multiAttendDateUi(context, scaler, provider)
                                 : Container(),
                             SizedBox(height: scaler.getHeight(1.5)),
-                            Text("event_description".tr()).boldText(
+                          provider.eventDetail.event!.eventType == EVENT_TYPE_ANNOUNCEMENT ?
+                          Text("publication".tr()).boldText(
+                              ColorConstants.colorBlack,
+                              scaler.getTextSize(10.8),
+                              TextAlign.left)
+                              :  Text("event_description".tr()).boldText(
                                 ColorConstants.colorBlack,
                                 scaler.getTextSize(10.8),
                                 TextAlign.left),

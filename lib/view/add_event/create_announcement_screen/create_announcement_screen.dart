@@ -139,7 +139,7 @@ class CreateAnnouncementScreen extends StatelessWidget {
                                 SizedBox(height: scaler.getHeight(2.2)),
                                 Align(
                                   alignment: Alignment.bottomLeft,
-                                  child: Text("description".tr()).boldText(
+                                  child: Text("publication".tr()).boldText(
                                       Colors.black,
                                       scaler.getTextSize(10.5),
                                       TextAlign.center),
