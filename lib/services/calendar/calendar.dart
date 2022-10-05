@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/mmy_calendar.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:timezone/timezone.dart';
+import '../../models/event.dart';
 
 Future<bool> checkCalendar() async {
   bool result=false;
@@ -78,9 +79,34 @@ Future<void> storeCalendar(BuildContext context, String uid, Database db) async 
   await db.setCalendar(serverCalendar);
 }
 
+Future<void> generateMMYCalendar(List<Event> events, String uid) async {
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  Location _location = TZDateTime.local(2000).location;
+  if(await checkCalendar()) {
+    final oldCalID = await getCalendarID();
+    final result = await plugin.deleteCalendar(oldCalID!);
+  }
+  final newCalID = await getCalendarID();
+  for(final event in events) {
+    final status = event.invitedContacts[uid];
+    device.Event e = device.Event(newCalID);
+    if(event.multipleDates == false && (status == EVENT_ATTENDING || status == EVENT_ORGANISER)) {
+      e.title = event.title;
+      if(status == EVENT_ORGANISER) e.title = e.title! + ' (Organiser)';
+      // The device's timezone.
+      e.start = TZDateTime.from(event.start, _location);
+      e.end = TZDateTime.from(event.end, _location);
+      e.description = event.description;
+      e.location = event.location;
+      await plugin.createOrUpdateEvent(e);
+    }
+  }
+}
+
 Future<List<MMYCalendar>> getDeviceCalendars(String uid) async {
   List<MMYCalendar> results = [];
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+
   final calendarsResult = await plugin.retrieveCalendars();
   if(calendarsResult.isSuccess && calendarsResult.data != null) {
     final calendars = calendarsResult.data!.toList();
@@ -122,6 +148,7 @@ Future<List<MMYCalendar>> getDeviceCalendars(String uid) async {
 }
 
 
+//Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {bool display = true}) async {
 // Future<List<CalendarEvent>> getCalendarEvents1(String uid, {bool display=true}) async {
 //   List<CalendarEvent> returnList = [];
 //   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
@@ -175,7 +202,7 @@ Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {
       permissionsGranted = await plugin.requestPermissions();
       calendarsResult = await plugin.retrieveCalendars();
       if (!permissionsGranted.isSuccess || !permissionsGranted.loading!) {
-        CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
+        //CommonWidgets.errorDialog(context, "enable_calendar_permission".tr()); ///TODO : UnComment in your version
       }
     }
   }

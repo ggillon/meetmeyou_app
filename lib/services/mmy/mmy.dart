@@ -31,6 +31,7 @@ import 'search.dart' as searchLib;
 import 'notification.dart' as notificationLib;
 import 'photo_album.dart' as albumLib;
 import 'announcement.dart' as announcementLib;
+import 'calendar.dart' as calLib;
 
 const USER_TYPE_NORMAL = "Normal User";
 const USER_TYPE_PRO = "Pro User";
@@ -196,6 +197,8 @@ abstract class MMYEngine {
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
   Future<Map<String, dynamic>> getCalendarParams();
+  /// Sync calendars
+  Future<void> syncCalendar();
 
   /// Event Message functions
   /// Get all the chat messages from Event
@@ -258,6 +261,11 @@ class MMY implements MMYEngine {
 
   MMY(this._currentUser);
   final User _currentUser;
+
+  static Future<Event> getWebEvent(String eid) async {
+    User webUser = (await FirebaseAuth.instance.signInAnonymously()).user!;
+    return await eventLib.getEvent(webUser, eid);
+  }
 
   @override
   void debugMsg(String text, {Map? attachment}) {
@@ -434,6 +442,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<Event>> getUserEvents({List<String>? filters, List<String>? selector}) {
+    calLib.syncCalendars(_currentUser);
     return eventLib.getUserEvents(_currentUser, filters: filters, selector: selector);
   }
 
@@ -459,6 +468,9 @@ class MMY implements MMYEngine {
       for(int i=0; i<startDateOptions.length; i++) {
         await dateLib.addDateToEvent(_currentUser, event.eid, startDateOptions[i], endDateOptions[i]);
       }
+      startDateOptions.sort((a,b)=>a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch));
+      endDateOptions.sort((a,b)=>a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch));
+      await eventLib.updateEvent(_currentUser, event.eid,start: startDateOptions.first, end: endDateOptions.last);
     }
     return event;
   }
@@ -586,7 +598,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Map<String, dynamic>> getCalendarParams() async {
-    Map<String, dynamic> params = Map<String, dynamic>();
+    Map<String, dynamic> params = EMPTY_MAP;
     Profile profile = await profileLib.getUserProfile(_currentUser);
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;
@@ -856,6 +868,11 @@ class MMY implements MMYEngine {
   Future<Event> inviteAllFavourites(String eid) async {
     List<String> CIDs = await profileLib.getFavouriteIDs(_currentUser);
     return await inviteContactsToEvent(eid, CIDs: CIDs);
+  }
+
+  @override
+  Future<void> syncCalendar() async {
+    await calLib.syncCalendars(_currentUser);
   }
 
 }
