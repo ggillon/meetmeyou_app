@@ -295,7 +295,7 @@ class _HomePageState extends State<HomePage>
                     padding: scaler.getPaddingLTRB(2.5, 0, 2.5, 0),
                     child: FlutterToggleTab(
                       marginSelected: EdgeInsets.zero,
-                      width: scaler.getWidth(25),
+                      width: scaler.getWidth(21),
                       borderRadius: 30,
                       height: scaler.getHeight(4.0),
                       selectedIndex: provider.tabTextIndexSelected,
@@ -310,7 +310,7 @@ class _HomePageState extends State<HomePage>
                           color: Colors.black,
                           fontSize: scaler.getTextSize(10.5),
                           fontWeight: FontWeight.w500),
-                      labels: ['all'.tr(), 'events_only'.tr(), 'publications_only'.tr()],
+                      labels: ['all'.tr(), 'events'.tr(), 'publication'.tr()],
                       selectedLabelIndex: (index) {
                         SharedPref.prefs!.setInt(SharedPref.homeToggleIndex, index);
                         SharedPref.prefs!.setInt(SharedPref.homeTabIndex, 0);
