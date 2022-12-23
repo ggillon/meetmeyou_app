@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
@@ -488,7 +489,10 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> getEvent(String eid) async {
-    return await eventLib.getEvent(_currentUser, eid);
+    Event event = await eventLib.getEvent(_currentUser, eid);
+    if(!event.invitedContacts.containsKey(_currentUser.uid))
+      event = await inviteContactsToEvent(eid, CIDs: [_currentUser.uid]);
+    return event;
   }
 
   @override
