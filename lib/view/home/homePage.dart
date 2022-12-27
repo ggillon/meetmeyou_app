@@ -18,6 +18,7 @@ import 'package:meetmeyou_app/helper/date_time_helper.dart';
 import 'package:meetmeyou_app/helper/deep_linking.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/calendar_permission_event.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/userEventsNotificationEvent.dart';
@@ -206,6 +207,13 @@ class _HomePageState extends State<HomePage>
           provider.unRespondedEvents(context, dashBoardProvider);
           provider.unRespondedEventsApi(context);
         });
+
+        // this will fire when user not accepted calendar permission in platform iOS.
+        provider.calendarPermissionEvent = provider.eventBus.on<CalendarPermissionEvent>().listen((event) async {
+          if(event.openSettings == true){
+            await CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
+          }
+        });
       },
       builder: (context, provider, _) {
         return SafeArea(
@@ -310,7 +318,7 @@ class _HomePageState extends State<HomePage>
                           color: Colors.black,
                           fontSize: scaler.getTextSize(10.5),
                           fontWeight: FontWeight.w500),
-                      labels: ['all'.tr(), 'events'.tr(), 'publication'.tr()],
+                      labels: ['all'.tr(), 'events'.tr(), 'publications'.tr()],
                       selectedLabelIndex: (index) {
                         SharedPref.prefs!.setInt(SharedPref.homeToggleIndex, index);
                         SharedPref.prefs!.setInt(SharedPref.homeTabIndex, 0);

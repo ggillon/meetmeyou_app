@@ -2,19 +2,37 @@ import 'dart:io';
 
 import 'package:device_calendar/device_calendar.dart' as device;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:meetmeyou_app/helper/common_widgets.dart';
+import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
+import 'package:meetmeyou_app/models/calendar_permission_event.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/mmy_calendar.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
 import 'package:timezone/timezone.dart';
 import '../../models/event.dart';
 
+EventBus eventBus = locator<EventBus>();
+
 Future<bool> checkCalendar() async {
   bool result=false;
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
-  final calendarsResult = await plugin.retrieveCalendars();
+  var calendarsResult;
+   calendarsResult = await plugin.retrieveCalendars();
+  if (Platform.isIOS) {
+   var permissionsGranted = await plugin.hasPermissions();
+    if (permissionsGranted.isSuccess && !permissionsGranted.data!) {
+      permissionsGranted = await plugin.requestPermissions();
+      calendarsResult = await plugin.retrieveCalendars();
+      if (permissionsGranted.data == false) {
+       eventBus.fire(CalendarPermissionEvent(openSettings: true));
+
+      }
+    }
+  }
+
   calendarsResult.data!.forEach((element) {
     if (element.name == "MeetMeYou") {
       result = true;

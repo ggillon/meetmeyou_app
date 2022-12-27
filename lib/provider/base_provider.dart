@@ -25,6 +25,7 @@ class BaseProvider extends ChangeNotifier {
   StreamSubscription? eventsNotifyEvent;
   StreamSubscription? messageNotifyEvent;
   StreamSubscription? ContactInvitationNotifyEvent;
+  StreamSubscription? calendarPermissionEvent;
 
   // this is used for deep link
   StreamSubscription? sub;
@@ -38,6 +39,7 @@ class BaseProvider extends ChangeNotifier {
     messageNotifyEvent?.cancel();
     ContactInvitationNotifyEvent?.cancel();
     eventInviteFromLink?.cancel();
+    calendarPermissionEvent?.cancel();
     sub?.cancel();
     _disposed = true;
     super.dispose();
