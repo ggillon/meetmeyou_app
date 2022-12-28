@@ -167,6 +167,17 @@ class CreateEventProvider extends BaseProvider {
       }
       //for rebuilding the ui
       if (checkOrEndStartDate == true) {
+        int startDateBeforeDiff = 0;
+        int startDateAfterDiff = 0;
+        if(startDate.isAfter(pickedDate)){
+          startDateBeforeDiff = startDate.difference(pickedDate).inDays;
+          endDate = endDate.subtract(Duration(days: startDateBeforeDiff));
+        } else if(pickedDate.isAfter(startDate)){
+          startDateAfterDiff = pickedDate.difference(startDate).inDays;
+          endDate = endDate.add(Duration(days: startDateAfterDiff));
+        }
+        // print(startDateBeforeDiff);
+        // print(startDateAfterDiff);
         startDate = pickedDate;
         if (startDate.isAfter(endDate)) {
           endDate = startDate;
@@ -193,6 +204,40 @@ class CreateEventProvider extends BaseProvider {
       return;
     }
     if (checkOrEndStartTime == true) {
+      // int beforeStartTime = 0;
+      // int afterStartTime = 0;
+      // if((startTime.hour == 0 ? 24 : startTime.hour) > (pickedTime.hour == 0 ? 24 : pickedTime.hour)){
+      //
+      //   // if(endTime.hour == 0){
+      //   //   endTime = endTime.addHour(12);
+      //   //   endTime = endTime.addHour(beforeStartTime);
+      //   // } else{
+      //   //   endTime = endTime.addHour(beforeStartTime);
+      //   // }
+      //   if(pickedTime.hour == 0 || startTime.hour == 0){
+      //     endTime = endTime.addHour(-startTime.hour);
+      //   } else{
+      //     beforeStartTime = ((startTime.hour) - (pickedTime.hour));
+      //     if((endTime.hour + beforeStartTime) > 24){
+      //       endTime = endTime.addHour(-beforeStartTime);
+      //     } else{
+      //       endTime = endTime.addHour(beforeStartTime);
+      //     }
+      //
+      //   }
+      //
+      // } else{
+      //   if(pickedTime.hour == 0){
+      //     endTime = endTime.addHour(-startTime.hour);
+      //   } else{
+      //     afterStartTime = ((pickedTime.hour) - (startTime.hour));
+      //     endTime = endTime.addHour(afterStartTime);
+      //   }
+      //
+      //
+      // }
+      // // print(beforeStartTime);
+      // // print(afterStartTime);
       startTime = pickedTime;
       startTimeFun(context);
       //dateTimeFormat(startDate, startTime);
