@@ -13,6 +13,26 @@ import 'package:meetmeyou_app/models/event.dart';
 const CONTACT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 const GROUP_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/meetmeyou-9fd90.appspot.com/o/contact.png?alt=media';
 
+/// This function will identify errors in contact and correct them.Fixes the data base too.
+Contact cleanContact(contact) {
+  Contact cleanedContact = contact;
+  if(cleanedContact.displayName.length < 2) {
+    cleanedContact.displayName = "Anonymous Contact";
+    FirestoreDB(uid: contact.cid).getProfile(contact.cid).then((profile) {
+      if(profile != null) {
+        profile.displayName = "Anonymous";
+        try {
+          profile.parameters['Anon'] = true;
+        } catch(e) {print(e);}
+        FirestoreDB(uid: contact.cid).setProfile(profile);
+      }
+    });
+  }
+  return cleanedContact;
+}
+
+
+
 // Create a new contact
 Future<Contact> createNewPrivateContact(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
   Contact contact = Contact(
@@ -41,9 +61,9 @@ Contact createLocalContact(User currentUser, {String? displayName, String? first
   Contact contact = Contact(
     cid: cidGenerator(),
     uid: currentUser.uid,
-    displayName: displayName ?? '',
-    firstName: firstName ?? '',
-    lastName: lastName ?? '',
+    displayName: displayName ?? 'Anonymous',
+    firstName: firstName ?? 'Anonymous',
+    lastName: lastName ?? 'Contact',
     email: email ?? '',
     countryCode: countryCode ?? '',
     phoneNumber: phoneNumber ?? '',
@@ -84,6 +104,7 @@ Future<Contact> getContact(User currentUser, {required String cid}) async {
   if(contact.status == CONTACT_CONFIRMED) {
     contact = await syncContact(currentUser, cid: cid);
   }
+  cleanContact(contact);
   return contact;
 }
 
@@ -114,6 +135,8 @@ Future<Contact?> getContactFromProfile(User currentUser, {required String uid}) 
       about: profile.about, other: profile.other, group: EMPTY_MAP, status: status,
     );
 
+    cleanContact(contact);
+
     return contact;
   }
 
@@ -133,6 +156,11 @@ Future<List<Contact>> getContacts(User currentUser,) async {
     }
   }
   contacts = await FirestoreDB(uid: currentUser.uid).getContacts(currentUser.uid);
+  for(Contact contact in contacts) {
+    if(contact.status == CONTACT_CONFIRMED) {
+      contact = cleanContact(contact);
+    }
+  }
   return contacts;
 }
 

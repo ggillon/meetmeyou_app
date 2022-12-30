@@ -601,7 +601,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Map<String, dynamic>> getCalendarParams() async {
-    Map<String, dynamic> params = EMPTY_MAP;
+    Map<String, dynamic> params = {};
     Profile profile = await profileLib.getUserProfile(_currentUser);
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;

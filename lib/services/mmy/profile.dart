@@ -115,9 +115,9 @@ Future<Profile> createProfileFromUser(User user) async {
 Future<Profile> createProfile(User currentUser, {String? displayName, String? firstName, String? lastName, String? email, String? countryCode, String? phoneNumber, String? photoUrl, String? homeAddress, String? about,}) async {
   Profile profile = Profile(
     uid: currentUser.uid,
-    displayName: displayName ?? '',
-    firstName: firstName ?? '',
-    lastName: lastName ?? '',
+    displayName: displayName ?? 'Anonymous',
+    firstName: firstName ?? 'Anonymous',
+    lastName: lastName ?? 'Profile - ${currentUser.uid.substring(0,6)}',
     email: email ?? '',
     countryCode: countryCode ?? '',
     phoneNumber: phoneNumber ?? '',
@@ -314,9 +314,9 @@ Profile createLocalProfile({required String uid, String? displayName, String? fi
 
   Profile profile = Profile(
     uid: uid,
-    displayName: displayName ?? '',
-    firstName: firstName ?? '',
-    lastName: lastName ?? '',
+    displayName: displayName ?? 'Anonymous',
+    firstName: firstName ?? 'Anonymous',
+    lastName: lastName ?? 'Profile',
     email: email ?? '',
     countryCode: countryCode ?? '',
     phoneNumber: phoneNumber ?? '',
