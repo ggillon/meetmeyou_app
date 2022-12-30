@@ -58,5 +58,12 @@ class BaseProvider extends ChangeNotifier {
     loading = val;
     notifyListeners();
   }
+
+  bool status = false;
+
+  updatingStatus(bool val){
+    status = val;
+    notifyListeners();
+  }
 }
 

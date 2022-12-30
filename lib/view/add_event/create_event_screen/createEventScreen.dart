@@ -90,7 +90,21 @@ class CreateEventScreen extends StatelessWidget {
             }
           },
           builder: (context, provider, _) {
-            return SingleChildScrollView(
+            return provider.status == true ? SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Text("loading_data".tr()).regularText(
+                        ColorConstants.primaryColor,
+                        scaler.getTextSize(11.0),
+                        TextAlign.center),
+                  ],
+                ),
+              ),
+            ) : SingleChildScrollView(
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -466,9 +480,10 @@ class CreateEventScreen extends StatelessWidget {
                             provider.eventDetail.editEvent == true
                                 ?  SizedBox(height: scaler.getHeight(1.7))
                                 : Container(),
-                            provider.eventDetail.editEvent == true
-                                ? photoGallerySwitch(context, scaler, provider)
-                                : Container(),
+                            // provider.eventDetail.editEvent == true
+                            //     ? photoGallerySwitch(context, scaler, provider)
+                            //     : Container(),
+                            photoGallerySwitch(context, scaler, provider),
                             SizedBox(height: scaler.getHeight(1.7)),
                             questionAndFeedback(context, scaler, provider),
                             provider.isSwitched == true && _fields.length > 0
@@ -1142,7 +1157,9 @@ class CreateEventScreen extends StatelessWidget {
           onToggle: (val) async {
             hideKeyboard(context);
             provider.photoGallerySwitch = val;
-            await provider.createEventAlbum(context, provider.eventDetail.eid.toString(), val);
+            if(provider.eventDetail.editEvent == true){
+              await provider.createEventAlbum(context, provider.eventDetail.eid.toString(), val);
+            }
             provider.updateLoadingStatus(true);
           },
         ),

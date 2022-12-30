@@ -121,7 +121,7 @@ class ContactDescriptionScreen extends StatelessWidget {
                                   lastName: provider.userDetail.lastName
                                       .toString()
                                       .capitalize(),
-                                  email: isFromNotification == true ? provider.email :  provider.userDetail.email,
+                                  email: isFromNotification == true ? provider.email ?? "" :  provider.userDetail.email ?? "",
                                   actionOnEmail: provider.userDetail.checkForInvitation!
                                       ? () {}
                                       : () {

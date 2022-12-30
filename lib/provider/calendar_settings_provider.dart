@@ -23,8 +23,7 @@ class CalendarSettingsProvider extends BaseProvider {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!
-        .setCalendarParams(sync: sync, display: display)
+    await mmyEngine!.setCalendarParams(sync: sync, display: display)
         .catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);

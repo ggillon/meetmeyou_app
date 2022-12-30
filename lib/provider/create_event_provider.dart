@@ -111,8 +111,10 @@ class CreateEventProvider extends BaseProvider {
     // type : 1 for camera in and 2 for gallery
     Navigator.of(context).pop();
     if (type == 1) {
+      updatingStatus(true);
       final pickedFile = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: 85, maxHeight: 1440);
+          source: ImageSource.camera, imageQuality: 50, maxHeight: 1440);
+      updatingStatus(false);
      // image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
@@ -126,14 +128,20 @@ class CreateEventProvider extends BaseProvider {
       }
       notifyListeners();
     } else {
+      updatingStatus(true);
       final pickedFile = await picker.pickImage(
-          source: ImageSource.gallery, imageQuality: 85, maxHeight: 1440);
+          source: ImageSource.gallery, imageQuality: 50, maxHeight: 1440);
+      updatingStatus(false);
      // image = File(pickedFile!.path);
       if (image != null) {
         eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
       }
 
       if (pickedFile != null) {
+        // final bytes =  File(pickedFile.path).readAsBytesSync().lengthInBytes;
+        // final kb = bytes / 1024;
+        // final mb = kb / 1024;
+        // print(mb);
         eventDetail.eventPhotoUrl = DEFAULT_EVENT_PHOTO_URL;
         Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
           image = value;
@@ -383,6 +391,11 @@ class CreateEventProvider extends BaseProvider {
       value.form = <String, dynamic>{};
       eventDetail.eid = value.eid;
 
+      /// for creating photo gallery
+      if(photoGallerySwitch){
+        await createEventAlbum(context, value.eid, photoGallerySwitch);
+      }
+
      // photoFile = null;
       if(image != null){
         eventDetail.eventPhotoUrl =  await storeFile(image!, path: StoragePath.eventPhoto(value.eid)).catchError((e) {
@@ -397,6 +410,7 @@ class CreateEventProvider extends BaseProvider {
           }
         }
         await updateEvent(context, title, location, description, startDateTime, endDateTime, photoURL: eventDetail.eventPhotoUrl, isCreateEvent: true);
+
         if(!eventDetail.isFromContactOrGroupDescription){
           Navigator.pushNamed(context, RoutesConstants.eventInviteFriendsScreen, arguments: EventInviteFriendsScreen(fromDiscussion: false, discussionId: "", fromChatDiscussion: false))
               .then((value) {

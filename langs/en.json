@@ -316,5 +316,6 @@
   "delete_video" : "Delete video",
   "are_you_sure_to_delete_video" : "Are you sure you want to delete video?",
   "video_saved" : "Video saved",
-   "enter_description_of_group" : "Enter description of group"
+   "enter_description_of_group" : "Enter description of group",
+  "loading_data" : "Loading data...."
 }
