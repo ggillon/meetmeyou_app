@@ -114,11 +114,11 @@ class ContactDescriptionScreen extends StatelessWidget {
                             children: [
                               SizedBox(height: scaler.getHeight(2)),
                               CommonWidgets.userDetails(scaler,
-                                  profilePic: provider.userDetail.profileUrl,
-                                  firstName: provider.userDetail.firstName
+                                  profilePic: provider.userDetail.profileUrl ?? null,
+                                  firstName: provider.userDetail.firstName == '' ? "" : provider.userDetail.firstName
                                       .toString()
                                       .capitalize(),
-                                  lastName: provider.userDetail.lastName
+                                  lastName: provider.userDetail.lastName == '' ? "" : provider.userDetail.lastName
                                       .toString()
                                       .capitalize(),
                                   email: isFromNotification == true ? provider.email ?? "" :  provider.userDetail.email ?? "",
