@@ -80,12 +80,10 @@ class DateTimeHelper {
   }
 
   static dateTimeFormat(DateTime date, TimeOfDay time) {
-    String dateTimeString =
-        date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
-    DateTime tempDate =
-    new DateFormat("yyyy-MM-dd hh:mm").parse(dateTimeString);
-    // print(dateTimeString);
-    // print(tempDate);
+    String dateTimeString = date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
+    DateTime tempDate = DateTime.parse(dateTimeString);
+     // print(dateTimeString);
+     // print(tempDate);
     return tempDate;
   }
 
