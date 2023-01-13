@@ -212,6 +212,59 @@ class CreateEventProvider extends BaseProvider {
       return;
     }
     if (checkOrEndStartTime == true) {
+      /// maintain time length
+      int startTimeHourDiff = 0;
+      int startTimeMinDiff = 0;  if (startDate
+          .toString()
+          .substring(0, 11)
+          .compareTo(endDate.toString().substring(0, 11)) ==
+          0) {
+        if(pickedTime.hour < startTime.hour){
+          startTimeHourDiff = startTime.hour - pickedTime.hour;
+          int hour = endTime.hour - startTimeHourDiff;
+          startTimeFun(context);
+          endTime = endTime.replacing(hour: hour, minute: endTime.minute);
+          // endTime = endTime.addHour(-startTimeHourDiff);
+          if(pickedTime.minute < startTime.minute){
+            startTimeMinDiff = startTime.minute - pickedTime.minute;
+            int min = endTime.minute - startTimeMinDiff;
+            endTime = endTime.replacing(hour: endTime.hour, minute: min);
+          }
+        } else if(pickedTime.hour == startTime.hour){
+          if(pickedTime.minute < startTime.minute){
+            startTimeMinDiff = startTime.minute - pickedTime.minute;
+            int min = endTime.minute - startTimeMinDiff;
+            endTime = endTime.replacing(hour: endTime.hour, minute: min);
+          }
+        }
+
+        if(pickedTime.hour > startTime.hour){
+          startTimeHourDiff = pickedTime.hour - startTime.hour;
+          int hour = endTime.hour + startTimeHourDiff;
+
+          if(hour >= 24){
+            startTimeFun(context);
+          } else{
+            endTime = endTime.replacing(hour: hour, minute: endTime.minute);
+          }
+
+          // endTime = endTime.addHour(-startTimeHourDiff);
+          if(pickedTime.minute > startTime.minute){
+            startTimeMinDiff = pickedTime.minute - startTime.minute;
+            int min = endTime.minute + startTimeMinDiff;
+            endTime = endTime.replacing(hour: endTime.hour, minute: min);
+          }
+        } else if(pickedTime.hour == startTime.hour){
+          if(pickedTime.minute > startTime.minute){
+            startTimeMinDiff = pickedTime.minute - startTime.minute;
+            int min = endTime.minute + startTimeMinDiff;
+            endTime = endTime.replacing(hour: endTime.hour, minute: min);
+          }
+        }
+      }
+
+      // print(startTimeHourDiff);
+      // print(startTimeMinDiff);
       // int beforeStartTime = 0;
       // int afterStartTime = 0;
       // if((startTime.hour == 0 ? 24 : startTime.hour) > (pickedTime.hour == 0 ? 24 : pickedTime.hour)){
@@ -312,48 +365,62 @@ class CreateEventProvider extends BaseProvider {
         }
       }
     }
+
+
   }
 
   endTimeFun(BuildContext context) {
     // for end time
     int startTimeHour = startTime.hour;
     int endTimeHour = endTime.hour;
-    if (startTime.hour >= 21) {
-      if (startDate
-              .toString()
-              .substring(0, 11)
-              .compareTo(endDate.toString().substring(0, 11)) ==
-          0) {
-        endDate = startDate.add(Duration(days: 1));
-        endTime = startTime.addHour(3);
-        DialogHelper.showMessage(
-            context, "End time should 3 hours greater than Start time.");
-        // dateCheck = true;
-      } else {
-        if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
-          endTime = startTime.addHour(3);
-          DialogHelper.showMessage(
-              context, "End time should 3 hours greater than Start time.");
-        }
-      }
-    }
+    // if (startTime.hour >= 21) {
+    //   if (startDate.toString().substring(0, 11)
+    //       .compareTo(endDate.toString().substring(0, 11)) ==
+    //       0) {
+    //     endDate = startDate.add(Duration(days: 1));
+    //     endTime = startTime.addHour(3);
+    //     DialogHelper.showMessage(
+    //         context, "End time should 3 hours greater than Start time.");
+    //     // dateCheck = true;
+    //   } else {
+    //     if ((endDate.day.toInt() - startDate.day.toInt()) == 1) {
+    //       endTime = startTime.addHour(3);
+    //       DialogHelper.showMessage(
+    //           context, "End time should 3 hours greater than Start time.");
+    //     }
+    //   }
+    // }
 
-    if (startDate
-            .toString()
-            .substring(0, 11)
+    if (startDate.toString().substring(0, 11)
             .compareTo(endDate.toString().substring(0, 11)) ==
         0) {
-      if (endTimeHour < startTimeHour + 3) {
+      if (endTimeHour < startTimeHour) {
         endTime = startTime.addHour(3);
         DialogHelper.showMessage(
-            context, "End time should 3 hours greater than Start time.");
-      } else if (endTimeHour == startTimeHour + 3) {
+            context, "end_time_cannot_before_start_time".tr());
+      } else if (endTimeHour == startTimeHour) {
         if (endTime.minute < startTime.minute) {
           endTime = startTime.addHour(3);
           DialogHelper.showMessage(
-              context, "End time should 3 hours greater than Start time.");
+              context, "end_time_cannot_before_start_time".tr());
+        } else if(endTime.minute == startTime.minute){
+          endTime = startTime.addHour(3);
+          DialogHelper.showMessage(
+              context, "end_time_cannot_same_start_time".tr());
         }
       }
+
+      // if (endTimeHour < startTimeHour + 3) {
+      //   endTime = startTime.addHour(3);
+      //   DialogHelper.showMessage(
+      //       context, "End time should 3 hours greater than Start time.");
+      // } else if (endTimeHour == startTimeHour + 3) {
+      //   if (endTime.minute < startTime.minute) {
+      //     endTime = startTime.addHour(3);
+      //     DialogHelper.showMessage(
+      //         context, "End time should 3 hours greater than Start time.");
+      //   }
+      // }
       // else if (startTime.isCompareTo(endTime) == 1) {
       //   DialogHelper.showMessage(context,
       //       "Select correct time.");

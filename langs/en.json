@@ -317,5 +317,7 @@
   "are_you_sure_to_delete_video" : "Are you sure you want to delete video?",
   "video_saved" : "Video saved",
    "enter_description_of_group" : "Enter description of group",
-  "loading_data" : "Loading data...."
+  "loading_data" : "Loading data....",
+  "end_time_cannot_before_start_time" : "End time can't before start time.",
+  "end_time_cannot_same_start_time" : "End time can't be same as start time"
 }
