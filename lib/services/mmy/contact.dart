@@ -372,24 +372,25 @@ Future<void> linkEvent(User currentUser, {required String eid,}) async {
 }
 
 Future<List<Contact>> getPhoneContacts(User currentUser) async {
-  //print('importing');
   List<Contact> phoneContactList = [];
   Iterable<Phone.Contact> phoneContacts;
 
   if (await Permission.contacts.request().isGranted) {
     // Get all contacts on device
     phoneContacts = await Phone.ContactsService.getContacts();
-
     for (Phone.Contact phoneContact in phoneContacts) {
-      if(phoneContact.displayName != null && (phoneContact.emails!.length>0)) {
-        Contact contact = createLocalContact(currentUser);
-        contact.displayName = phoneContact.displayName!;
-        contact.email = phoneContact.emails!.first.value!;
-        if(phoneContact.phones!.length>0)
-          contact.phoneNumber = phoneContact.phones!.first.value!;
-        contact.countryCode = '';
-        phoneContactList.add(contact);
-      }
+      try {
+        if (phoneContact.displayName != null &&
+            (phoneContact.emails!.length > 0)) {
+          Contact contact = createLocalContact(currentUser);
+          contact.displayName = phoneContact.displayName!;
+          contact.email = phoneContact.emails!.first.value!;
+          if (phoneContact.phones!.length > 0)
+            contact.phoneNumber = phoneContact.phones!.first.value!;
+          contact.countryCode = '';
+          phoneContactList.add(contact);
+        }
+      } catch(e) {print(e);}
     }
   } else {
     Map<Permission, PermissionStatus> statuses = await [
@@ -401,6 +402,7 @@ Future<List<Contact>> getPhoneContacts(User currentUser) async {
 }
 
 Future<List<Contact>> getInvitePhoneContacts(User currentUser) async {
+
   List<Contact> phoneContactList = [];
   Iterable<Phone.Contact> phoneContacts;
   Profile profile = await getUserProfile(currentUser);
@@ -408,31 +410,34 @@ Future<List<Contact>> getInvitePhoneContacts(User currentUser) async {
   if (await Permission.contacts.request().isGranted) {
     // Get all contacts on device
     phoneContacts = await Phone.ContactsService.getContacts();
-    try {
       for (Phone.Contact phoneContact in phoneContacts) {
-        if (phoneContact.displayName != null) {
-          Contact contact = createLocalContact(currentUser);
-          contact.other = addFieldToMap(contact.other, 'whatsapp');
-          /*Map other = {};
+        try {
+          if (phoneContact.displayName != null) {
+            Contact contact = createLocalContact(currentUser);
+            contact.other = addFieldToMap(contact.other, 'whatsapp');
+            /*Map other = {};
           other.addAll(contact.other);
           other.addAll(<String, dynamic>{'whatsapp': ''});
           contact.other = other;*/
-          contact.displayName = phoneContact.displayName!;
-          if (phoneContact.emails != null && phoneContact.emails!.length > 0)
-            contact.email = phoneContact.emails!.first.value ?? '';
-          if (phoneContact.phones != null && phoneContact.phones!.length > 0) {
-            contact.phoneNumber = cleanNumber(phoneContact.phones!.first.value ?? '');
-            if (contact.phoneNumber.substring(0, 1) == '+' ||
-                contact.phoneNumber.substring(0, 2) == '00')
-              contact.other['whatsapp'] = contact.phoneNumber;
-            else
-              contact.other['whatsapp'] = profile.countryCode +
-                  ((contact.phoneNumber.substring(0, 1) == '0') ? contact.phoneNumber.substring(1) : contact.phoneNumber);
+            contact.displayName = phoneContact.displayName!;
+            if (phoneContact.emails != null && phoneContact.emails!.length > 0)
+              contact.email = phoneContact.emails!.first.value ?? '';
+            if (phoneContact.phones != null &&
+                phoneContact.phones!.length > 0) {
+              contact.phoneNumber =
+                  cleanNumber(phoneContact.phones!.first.value ?? '');
+              if (contact.phoneNumber.substring(0, 1) == '+' ||
+                  contact.phoneNumber.substring(0, 2) == '00')
+                contact.other['whatsapp'] = contact.phoneNumber;
+              else
+                contact.other['whatsapp'] = profile.countryCode +
+                    ((contact.phoneNumber.substring(0, 1) == '0') ? contact
+                        .phoneNumber.substring(1) : contact.phoneNumber);
+            }
+            phoneContactList.add(contact);
           }
-          phoneContactList.add(contact);
-        }
+        } catch(e) {print(e);}
       }
-    } catch(e) {print(e);}
   } else {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.contacts,
