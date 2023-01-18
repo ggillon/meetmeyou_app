@@ -392,6 +392,32 @@ class ContactsScreen extends StatelessWidget {
                     Divider(),
                     GestureDetector(
                         behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.pushNamed(
+                              context, RoutesConstants.inviteFriendsScreen)
+                              .then((value) {
+                            provider
+                                .getConfirmedContactsAndInvitationsList(context);
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            SizedBox(height: scaler.getHeight(2)),
+                            Container(
+                              width: double.infinity,
+                              child: Text("search_your_phone_contacts".tr()).regularText(
+                                  ColorConstants.primaryColor,
+                                  scaler.getTextSize(12),
+                                  TextAlign.center),
+                            ),
+                            SizedBox(height: scaler.getHeight(1.4)),
+                          ],
+                        )
+                    ),
+                    Divider(),
+                    GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                       onTap: () {
                         Navigator.of(context).pop();
                         Navigator.pushNamed(

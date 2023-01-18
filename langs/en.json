@@ -319,5 +319,6 @@
    "enter_description_of_group" : "Enter description of group",
   "loading_data" : "Loading data....",
   "end_time_cannot_before_start_time" : "End time can't before start time.",
-  "end_time_cannot_same_start_time" : "End time can't be same as start time"
+  "end_time_cannot_same_start_time" : "End time can't be same as start time",
+  "search_your_phone_contacts" : "Search your phone contacts"
 }
