@@ -162,7 +162,14 @@ Future<List<Event>> getPastEvents(User currentUser,) async {
 
 
 Future<Event> getEvent(User currentUser, String eid) async {
-  return await FirestoreDB(uid: currentUser.uid).getEvent(eid);
+
+  final event = await FirestoreDB(uid: currentUser.uid).getEvent(eid);
+  try { // TODO: Clean up at some point
+    final organiser = await FirestoreDB(uid: currentUser.uid).getProfile(event.organiserID);
+    event.organiserName = organiser!.displayName;
+    FirestoreDB(uid: currentUser.uid).setEvent(event);
+  } catch(e) {print(e);}
+  return event;
 }
 
 Future<void> deleteEvent(User currentUser, String eid) async {
