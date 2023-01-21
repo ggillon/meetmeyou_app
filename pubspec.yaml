@@ -63,7 +63,7 @@ dependencies:
   shimmer: ^2.0.0
   contacts_service: ^0.6.3
   mailer: ^5.0.2
-  device_calendar: ^4.0.1
+  device_calendar: ^4.2.0
   firebase_messaging: ^11.2.6
   async: ^2.8.2
   timezone: ^0.8.0
