@@ -201,6 +201,7 @@ Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {
     }
   }
   // Code for MeetMeYou Events (to be adapted)
+  returnList = []; // get only MMY events for now
   List<Event> events = await FirestoreDB(uid: uid).getUserEvents(uid);
   for (Event e in events) {
     CalendarEvent entry = CalendarEvent(
