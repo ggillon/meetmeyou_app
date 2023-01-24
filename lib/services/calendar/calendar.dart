@@ -97,6 +97,17 @@ Future<void> storeCalendar(BuildContext context, String uid, Database db) async 
   await db.setCalendar(serverCalendar);
 }
 
+Future<bool> calendarEmpty(String id) async {
+  bool empty = true;
+  device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
+  final results = await plugin.retrieveEvents(id, device.RetrieveEventsParams(
+      startDate: DateTime.fromMillisecondsSinceEpoch(0),
+      endDate: DateTime(2030)
+  ));
+  if (results.data!.length>0) return false;
+  return empty;
+}
+
 Future<void> generateMMYCalendar(List<Event> events, String uid) async {
   device.DeviceCalendarPlugin plugin = device.DeviceCalendarPlugin();
   Location _location = TZDateTime.local(2000).location;
@@ -105,9 +116,11 @@ Future<void> generateMMYCalendar(List<Event> events, String uid) async {
     final result = await plugin.deleteCalendar(oldCalID!);
   }
   final newCalID = await getCalendarID();
+  if(!await calendarEmpty(newCalID!)) {return ;}
   for(final event in events) {
     final status = event.invitedContacts[uid];
     device.Event e = device.Event(newCalID);
+
     if(event.multipleDates == false && (status == EVENT_ATTENDING || status == EVENT_ORGANISER)) {
       e.title = event.title;
       if(status == EVENT_ORGANISER) e.title = e.title! + ' (Organiser)';
@@ -249,6 +262,7 @@ Future<List<CalendarEvent>> getCalendarEvents(BuildContext context,String uid, {
     }
   }
   // Code for MeetMeYou Events (to be adapted)
+  returnList = []; // get only MMY events for now
   List<Event> events = await FirestoreDB(uid: uid).getUserEvents(uid);
   for (Event e in events) {
     CalendarEvent entry = CalendarEvent(
