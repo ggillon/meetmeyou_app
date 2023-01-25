@@ -924,14 +924,23 @@ class _HomePageState extends State<HomePage>
                                           .end
                                           .toString()
                                           .substring(0, 11)
-                                  ? DateTimeHelper.getWeekDay(eventList[index].start) +
+                                  ? DateTimeHelper.getWeekDay(eventList[index].start) + " "+
+                             (eventList[index].start.day <= 9
+                              ? "0" + eventList[index].start.day.toString()
+                              : eventList[index].start.day.toString()) +
+                               DateTimeHelper.getMonthByName(eventList[index].start) +
                                       " - " +
                                       DateTimeHelper.convertEventDateToTimeFormat(
                                           eventList[index].start) +
                                       " to " +
                                       DateTimeHelper.convertEventDateToTimeFormat(
                                           eventList[index].end)
-                                  : DateTimeHelper.getWeekDay(eventList[index].start) +
+                                  : DateTimeHelper.getWeekDay(eventList[index].start)
+                              + " "+
+                              (eventList[index].start.day <= 9
+                                  ? "0" + eventList[index].start.day.toString()
+                                  : eventList[index].start.day.toString()) +
+                              DateTimeHelper.getMonthByName(eventList[index].start) +
                                       " - " +
                                       DateTimeHelper.convertEventDateToTimeFormat(
                                           eventList[index].start) +
