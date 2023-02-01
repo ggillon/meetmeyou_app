@@ -621,7 +621,11 @@ class CommonWidgets {
               children: [
                 Container(
                   width: scaler.getWidth(70.0),
-                  child: Text(event.title).semiBoldText(ColorConstants.colorBlack,
+                  child: event.start.toString().substring(0,10) == DateTime.now().toString().substring(0,10) ?
+                  Text(event.title).boldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(11.5), TextAlign.left,
+                      maxLines: 1, overflow: TextOverflow.ellipsis)
+                  : Text(event.title).semiBoldText(ColorConstants.colorBlack,
                       scaler.getTextSize(10.5), TextAlign.left,
                       maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
@@ -642,7 +646,8 @@ class CommonWidgets {
                     : event.start.toString().substring(0, 11)
                 )
                     .regularText(ColorConstants.colorBlack,
-                    scaler.getTextSize(10.5), TextAlign.center),
+                    scaler.getTextSize(event.start.toString().substring(0,10) == DateTime.now().toString().substring(0,10) ? 11.0
+                    : 10.5), TextAlign.center),
               ],
             ),
           ),

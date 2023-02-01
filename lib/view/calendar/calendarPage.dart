@@ -17,6 +17,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/event.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/view/base_view.dart';
+import 'package:meetmeyou_app/view/calendar/calendar_event_card/calendar_event_card_screen.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:paged_vertical_calendar/paged_vertical_calendar.dart';
 import 'package:provider/provider.dart';
@@ -30,9 +31,9 @@ class CalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<CalendarProvider>(
-          onModelReady: (provider) {
-            provider.getCalendarEvents(context);
-          },
+          onModelReady: (provider) async {
+           await provider.getCalendarEvents(context);
+           },
           builder: (context, provider, _) {
             return SafeArea(
               child: Scaffold(
@@ -108,8 +109,11 @@ class CalendarPage extends StatelessWidget {
                               //       )
                                   : Expanded(
                                       child: PagedVerticalCalendar(
-                                        startDate: DateTime.now(),
-                                        endDate: (DateTime.now().add(Duration(days: 365))),
+                                        minDate: DateTime(2000),
+                                        maxDate:(DateTime.now().add(Duration(days: 365))),
+                                        initialDate: DateTime.now(),
+                                        // startDate: DateTime(2022),
+                                        // endDate: (DateTime.now().add(Duration(days: 365))),
                                         addAutomaticKeepAlives: true,
                                         monthBuilder: (context, month, year) {
                                           return Column(
@@ -324,117 +328,7 @@ class CalendarPage extends StatelessWidget {
                                       ),
                                     )
                           : Expanded(
-                              child: Container(
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount:
-                                        provider.deviceCalendarEvent.length,
-                                    itemBuilder: (context, index) {
-                                      String currentMonth =
-                                          DateTimeHelper.getFullMonthByName(
-                                              // provider.deviceCalendarEvent[index]
-                                              //         .meetMeYou
-                                              //     ? provider
-                                              //         .deviceCalendarEvent[index]
-                                              //         .start
-                                              //     :
-                                              provider.deviceCalendarEvent[index]
-                                                  .start);
-                                      String month = index == 0
-                                          ? DateTimeHelper.getFullMonthByName(
-                                              // provider.deviceCalendarEvent[index]
-                                              //         .meetMeYou
-                                              //     ? provider
-                                              //         .deviceCalendarEvent[index]
-                                              //         .start
-                                              //     :
-                                              provider.deviceCalendarEvent[index]
-                                                  .start)
-                                          : DateTimeHelper.getFullMonthByName(
-                                              // provider
-                                              //         .deviceCalendarEvent[
-                                              //             index - 1]
-                                              //         .meetMeYou
-                                              //     ? provider
-                                              //         .deviceCalendarEvent[
-                                              //             index - 1]
-                                              //         .start
-                                              //     :
-                                              provider
-                                                  .deviceCalendarEvent[index - 1]
-                                                  .start);
-                                      String currentDay =
-                                          // provider
-                                          //         .deviceCalendarEvent[index]
-                                          //         .meetMeYou
-                                          //     ? provider.deviceCalendarEvent[index]
-                                          //         .start.day
-                                          //         .toString()
-                                          //     :
-                                          provider.deviceCalendarEvent[index]
-                                              .start.day
-                                              .toString();
-                                      String day = index == 0
-                                          ?
-                                          // provider.deviceCalendarEvent[index]
-                                          //             .meetMeYou
-                                          //         ? provider
-                                          //             .deviceCalendarEvent[index]
-                                          //             .start
-                                          //             .day
-                                          //             .toString()
-                                          //         :
-                                          provider.deviceCalendarEvent[index]
-                                              .start.day
-                                              .toString()
-                                          // : provider
-                                          //         .deviceCalendarEvent[index - 1]
-                                          //         .meetMeYou
-                                          //     ? provider
-                                          //         .deviceCalendarEvent[index - 1]
-                                          //         .start
-                                          //         .day
-                                          //         .toString()
-                                          : provider
-                                              .deviceCalendarEvent[index - 1]
-                                              .start
-                                              .day
-                                              .toString();
-                                      // String currentTitle = provider
-                                      //     .deviceCalendarEvent[index].title;
-                                      // String title = index == 0
-                                      //     ? provider
-                                      //         .deviceCalendarEvent[index].title
-                                      //     : provider
-                                      //         .deviceCalendarEvent[index - 1]
-                                      //         .title;
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          monthHeader(
-                                              context,
-                                              scaler,
-                                              month,
-                                              currentMonth,
-                                              index,
-                                              // provider.deviceCalendarEvent[index]
-                                              //         .meetMeYou
-                                              //     ? provider
-                                              //         .deviceCalendarEvent[index]
-                                              //         .start
-                                              //     :
-                                              provider
-                                                      .deviceCalendarEvent[index]
-                                                      .start,
-                                              provider.deviceCalendarEvent[index],
-                                              day,
-                                              currentDay),
-                                          SizedBox(height: scaler.getHeight(1.5))
-                                        ],
-                                      );
-                                    }),
-                              ),
+                              child: CalendarEventCardScreen(deviceCalendarEvent: provider.deviceCalendarEvent,),
                             )
                     ],
                   ),
@@ -454,70 +348,4 @@ class CalendarPage extends StatelessWidget {
             TextAlign.center));
   }
 
-  monthHeader(
-      BuildContext context,
-      ScreenScaler scaler,
-      String month,
-      String cMonth,
-      int index,
-      DateTime date,
-      CalendarEvent event,
-      String day,
-      String cDay) {
-    if (index == 0 ? true : (month != cMonth)) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(cMonth + "  " + event.start.year.toString()).mediumText(
-              ColorConstants.colorBlack,
-              scaler.getTextSize(11.5),
-              TextAlign.center),
-          Divider(
-              color: ColorConstants.primaryColor, thickness: 1.5, height: 10.0),
-          SizedBox(height: scaler.getHeight(0.2)),
-          dateAndEventTimeTitle(scaler, date, event, index, day, cDay, month, cMonth),
-        ],
-      );
-    } else {
-      return dateAndEventTimeTitle(scaler, date, event, index, day, cDay, month, cMonth);
-    }
-  }
-
-  Widget dateAndEventTimeTitle(ScreenScaler scaler, DateTime date,
-      CalendarEvent event, int index, String day, String cDay, String month,
-      String cMonth) {
-    if (index == 0 ? true : ((day != cDay) || (month != cMonth))) {
-      return Row(
-        children: [
-          Column(
-            children: [
-              Text(DateTimeHelper.getMonthByName(date).toString().toUpperCase())
-                  .mediumText(ColorConstants.colorBlack,
-                      scaler.getTextSize(10.0), TextAlign.center),
-              Text(date.day.toString()).mediumText(ColorConstants.colorBlack,
-                  scaler.getTextSize(12.5), TextAlign.center),
-            ],
-          ),
-          SizedBox(width: scaler.getWidth(2.0)),
-          CommonWidgets.eventTimeTitleCard(scaler, event)
-        ],
-      );
-    }
-    // else if (index == 0 ? true : (title != cTitle)) {
-    //   return Row(
-    //     children: [
-    //       SizedBox(width: scaler.getWidth(8.0)),
-    //       eventTimeTitleCard(scaler, event),
-    //     ],
-    //   );
-    // }
-    else {
-      return Row(
-        children: [
-          SizedBox(width: scaler.getWidth(8.0)),
-          CommonWidgets.eventTimeTitleCard(scaler, event)
-        ],
-      );
-    }
-  }
 }

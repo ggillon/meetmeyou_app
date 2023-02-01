@@ -76,7 +76,8 @@ dependencies:
   paged_vertical_calendar:
     git:
       url: https://github.com/deepakrana0011/vertical_calender.git
-      ref: main
+      ref: master
+
   share_plus: ^4.0.4
   uni_links: ^0.5.1
   firebase_dynamic_links: ^4.0.4
@@ -98,6 +99,7 @@ dependencies:
   video_player: ^2.4.7
   chewie: ^1.3.5
   gallery_saver: ^2.3.2
+  scroll_to_index: ^3.0.1
 dependency_overrides:
     firebase_messaging_platform_interface: 4.1.4
     firebase_crashlytics_platform_interface: 3.2.16
