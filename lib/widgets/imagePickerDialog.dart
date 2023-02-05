@@ -9,9 +9,11 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback galleryClick;
   final VoidCallback cameraClick;
   final VoidCallback cancelClick;
+  VoidCallback? videoClick;
+  bool? videoSelection;
 
   CustomDialog(
-      {required this.galleryClick, required this.cameraClick, required this.cancelClick});
+      {required this.galleryClick, required this.cameraClick, required this.cancelClick, this.videoClick, this.videoSelection});
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +38,27 @@ class CustomDialog extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       "choose_from".tr(),
-                    ).mediumText(ColorConstants.colorWhite, scaler.getTextSize(11), TextAlign.center)),
+                    ).mediumText(ColorConstants.colorWhite, scaler.getTextSize(12), TextAlign.center)),
               ),
             ),
             GestureDetector(
               onTap: galleryClick,
               child: Padding(
                 padding: scaler.getPaddingAll(8),
-                child: Text("phone_gallery".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(11),TextAlign.center),
+                child: Text(videoSelection == true ? "photo_gallery".tr() : "phone_gallery".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(12),TextAlign.center),
               ),
             ),
+            videoSelection == true ?   Divider(
+              height: 1.0,
+              color: Colors.black,
+            ) : Container(),
+            videoSelection == true ?  GestureDetector(
+              onTap: videoClick,
+              child: Padding(
+                padding: scaler.getPaddingAll(8),
+                child: Text("video_gallery".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(12),TextAlign.center),
+              ),
+            ) : Container(),
             Divider(
               height: 1.0,
               color: Colors.black,
@@ -54,7 +67,7 @@ class CustomDialog extends StatelessWidget {
               onTap: cameraClick,
               child: Padding(
                 padding: scaler.getPaddingAll(8),
-                child: Text("camera".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(11),TextAlign.center),
+                child: Text("camera".tr()).regularText(ColorConstants.primaryColor, scaler.getTextSize(12),TextAlign.center),
               ),
             ),
             Divider(
@@ -65,7 +78,7 @@ class CustomDialog extends StatelessWidget {
               onTap: cancelClick,
               child: Padding(
                 padding: scaler.getPaddingAll(8),
-                child: Text("cancel".tr()).regularText(ColorConstants.colorRed, scaler.getTextSize(11),TextAlign.center),
+                child: Text("cancel".tr()).regularText(ColorConstants.colorRed, scaler.getTextSize(12),TextAlign.center),
               ),
             ),
           ],
@@ -74,3 +87,4 @@ class CustomDialog extends StatelessWidget {
     );
   }
 }
+

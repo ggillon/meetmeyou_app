@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
@@ -12,6 +15,8 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactDescriptionProvider extends BaseProvider {
   MMYEngine? mmyEngine;
   UserDetail userDetail = locator<UserDetail>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  bool favouriteSwitch = false;
 
   makePhoneCall(BuildContext context) async {
     var url = 'tel://${userDetail.phone}';
@@ -68,5 +73,83 @@ class ContactDescriptionProvider extends BaseProvider {
 
     setState(ViewState.Idle);
     Navigator.of(context).pop();
+  }
+
+  launchMap(BuildContext context, lat, lng) async {
+    if (Platform.isAndroid) {
+      var url = "https://www.google.com/maps/search/?api=1&query=${lat},${lng}";
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
+    } else {
+      var urlAppleMaps = 'https://maps.apple.com/?q=$lat,$lng';
+      if (await canLaunch(urlAppleMaps)) {
+        await launch(urlAppleMaps);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
+    }
+  }
+
+  Contact? contactFromInvitation;
+  bool contact = false;
+
+  updateGetContact(bool val){
+    contact = val;
+    notifyListeners();
+  }
+
+  String? email;
+  Future getContact(BuildContext context, String contactId) async{
+
+    updateGetContact(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value =  await mmyEngine!.getContact(contactId).catchError((e){
+      updateGetContact(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if(value != null){
+      contactFromInvitation = value;
+      email = value.email;
+      setContactsValue(contactFromInvitation!, value.status == "Confirmed contact" ? false : true, contactFromInvitation!.cid);
+      updateGetContact(false);
+    }
+
+  }
+
+  setContactsValue(Contact contact, bool value, String cid) {
+    userDetail.firstName = contact.firstName;
+    userDetail.lastName = contact.lastName;
+    userDetail.email = contact.email;
+    userDetail.profileUrl = contact.photoURL;
+    userDetail.phone = contact.phoneNumber;
+    userDetail.countryCode = contact.countryCode;
+    userDetail.address = contact.addresses['Home'];
+    userDetail.checkForInvitation = value;
+    userDetail.cid = contact.cid;
+  }
+
+  bool favourite = false;
+
+  updateFavouriteStatus(bool val){
+    favourite = val;
+    notifyListeners();
+  }
+
+  Future addContactToFavourite(BuildContext context, String contactId) async{
+    updateFavouriteStatus(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    await mmyEngine!.addToFavourites(contactId).catchError((e){
+      updateFavouriteStatus(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+      updateFavouriteStatus(false);
+
   }
 }

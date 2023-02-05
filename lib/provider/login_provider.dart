@@ -4,11 +4,15 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/helper/shared_pref.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 
 class LoginProvider extends BaseProvider {
+  UserDetail userDetail = locator<UserDetail>();
+
   Future<void> login(
       BuildContext context, String? email, String? password) async {
     setState(ViewState.Busy);
@@ -20,7 +24,7 @@ class LoginProvider extends BaseProvider {
       setState(ViewState.Idle);
       SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
       Navigator.of(context).pushNamedAndRemoveUntil(
-          RoutesConstants.dashboardPage, (route) => false, arguments: true);
+          RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
     }
   }
 }

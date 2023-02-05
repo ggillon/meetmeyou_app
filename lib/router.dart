@@ -1,13 +1,20 @@
+import 'dart:io';
+
 import 'package:device_calendar/device_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
+import 'package:meetmeyou_app/view/add_event/create_announcement_screen/create_announcement_screen.dart';
 import 'package:meetmeyou_app/view/add_event/create_event_screen/createEventScreen.dart';
 import 'package:meetmeyou_app/view/add_event/default_photo_page/defaultPhotoPage.dart';
 import 'package:meetmeyou_app/view/add_event/event_attending_screen/eventAttendingScreen.dart';
 import 'package:meetmeyou_app/view/add_event/event_invite_friends_screen/eventInviteFriendsScreen.dart';
 import 'package:meetmeyou_app/view/add_event/multiple_date_time_screen/multipleDateTimeScreen.dart';
+import 'package:meetmeyou_app/view/add_event/public_location_create_event/public_location_create_event_screen.dart';
+import 'package:meetmeyou_app/view/add_event/publication_visibility/publication_visiibility.dart';
 import 'package:meetmeyou_app/view/calendar/calendarPage.dart';
 import 'package:meetmeyou_app/view/calendar/choose_event_screen/chooseEventScreen.dart';
 import 'package:meetmeyou_app/view/contacts/contactsScreen.dart';
@@ -19,9 +26,23 @@ import 'package:meetmeyou_app/view/contacts/group_description/GroupDescriptionSc
 import 'package:meetmeyou_app/view/contacts/search_profile/searchProfileScreen.dart';
 import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 import 'package:meetmeyou_app/view/edit_profile/editProfileScreen.dart';
+import 'package:meetmeyou_app/view/home/chats_screen/chats_screen.dart';
+import 'package:meetmeyou_app/view/home/check_attendance_screen/check_attendance_screen.dart';
 import 'package:meetmeyou_app/view/home/eventDetailScreen.dart';
 import 'package:meetmeyou_app/view/home/event_discussion_screen/eventDiscussionScreen.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
+import 'package:meetmeyou_app/view/home/event_gallery_page/event_gallery_page.dart';
+import 'package:meetmeyou_app/view/home/event_gallery_view_image/event_gallery_view_image.dart';
+import 'package:meetmeyou_app/view/home/group_image_view/group_image_view.dart';
 import 'package:meetmeyou_app/view/home/homePage.dart';
+import 'package:meetmeyou_app/view/home/notifications_history_screen/notifications_history_screen.dart';
+import 'package:meetmeyou_app/view/home/public_home_page/public_home_page.dart';
+import 'package:meetmeyou_app/view/home/see_all_events/see_all_events.dart';
+import 'package:meetmeyou_app/view/home/see_all_people/see_all_people.dart';
+import 'package:meetmeyou_app/view/home/video_player/video_player.dart';
+import 'package:meetmeyou_app/view/home/view_image_screen/view_image_screen.dart';
+import 'package:meetmeyou_app/view/home/view_replies_to_form_screen/view_replies_to_form_screen.dart';
+import 'package:meetmeyou_app/view/home/view_video_screen/view_video_screen.dart';
 import 'package:meetmeyou_app/view/introduction/introduction_page.dart';
 import 'package:meetmeyou_app/view/landing_page.dart';
 import 'package:meetmeyou_app/view/login/loginPage.dart';
@@ -31,11 +52,13 @@ import 'package:meetmeyou_app/view/settings/about/aboutPage.dart';
 import 'package:meetmeyou_app/view/settings/calendar_settings/calendarSettingsScreen.dart';
 import 'package:meetmeyou_app/view/settings/history/historyScreen.dart';
 import 'package:meetmeyou_app/view/settings/invite_friends/inviteFriendsScreen.dart';
+import 'package:meetmeyou_app/view/settings/notifcation_settings/notification_settings.dart';
 import 'package:meetmeyou_app/view/settings/privacy_policy_and_terms/privacyPolicyAndTerms.dart';
 import 'package:meetmeyou_app/view/settings/rejected_invites/rejectedInvitesScreen.dart';
 import 'package:meetmeyou_app/view/settings/rejected_invites_description/rejectedInvitesDescriptionScreen.dart';
 import 'package:meetmeyou_app/view/signup/signupPage.dart';
 import 'package:meetmeyou_app/view/verify_screen/verifyScreen.dart';
+import 'package:meetmeyou_app/widgets/image_cropper.dart';
 
 import 'widgets/autoCompletePlaces.dart';
 import 'constants/routes_constants.dart';
@@ -79,8 +102,8 @@ class Router {
             settings: settings);
 
       case RoutesConstants.dashboardPage:
-        return MaterialPageRoute(
-            builder: (_) => DashboardPage(isFromLogin: settings.arguments as bool), settings: settings);
+        final args = settings.arguments as DashboardPage;
+        return MaterialPageRoute(builder: (_) => DashboardPage(isFromLogin: null), settings: settings);
 
       case RoutesConstants.myAccountScreen:
         return MaterialPageRoute(
@@ -113,8 +136,10 @@ class Router {
             builder: (_) => CalendarSettingsScreen(), settings: settings);
 
       case RoutesConstants.contactDescription:
+        final args = settings.arguments as ContactDescriptionScreen;
         return MaterialPageRoute(
-            builder: (_) => ContactDescriptionScreen(),
+            builder: (_) => ContactDescriptionScreen(showEventScreen: args.showEventScreen, isFromNotification: args.isFromNotification, contactId: args.contactId,
+            isFavouriteContact: args.isFavouriteContact),
             settings: settings);
 
       case RoutesConstants.editContactScreen:
@@ -135,7 +160,7 @@ class Router {
 
       case RoutesConstants.groupDescriptionScreen:
         return MaterialPageRoute(
-            builder: (_) => GroupDescriptionScreen(), settings: settings);
+            builder: (_) => GroupDescriptionScreen(isGroupFavourite: settings.arguments as bool,), settings: settings);
 
       case RoutesConstants.createEditGroupScreen:
         return MaterialPageRoute(
@@ -151,7 +176,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => DefaultPhotoPage(), settings: settings);
 
       case RoutesConstants.eventInviteFriendsScreen:
-        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(), settings: settings);
+        final argument = settings.arguments as EventInviteFriendsScreen;
+        return MaterialPageRoute(builder: (_) => EventInviteFriendsScreen(fromDiscussion: argument.fromDiscussion , discussionId: argument.discussionId ?? "", fromChatDiscussion: argument.fromChatDiscussion,), settings: settings);
 
       case RoutesConstants.eventDetailScreen:
         return MaterialPageRoute(builder: (_) => EventDetailScreen(), settings: settings);
@@ -168,8 +194,67 @@ class Router {
       case RoutesConstants.eventDiscussionScreen:
         return MaterialPageRoute(builder: (_) => EventDiscussionScreen(), settings: settings);
 
+      case RoutesConstants.newEventDiscussionScreen:
+        final argument = settings.arguments as NewEventDiscussionScreen;
+        return MaterialPageRoute(builder: (_) => NewEventDiscussionScreen(fromContactOrGroup: argument.fromContactOrGroup , fromChatScreen:  argument.fromChatScreen, chatDid: argument.chatDid,), settings: settings);
+
       case RoutesConstants.multipleDateTimeScreen:
         return MaterialPageRoute(builder: (_) => MultipleDateTmeScreen(), settings: settings);
+
+      case RoutesConstants.chatsScreen:
+        return MaterialPageRoute(builder: (_) => ChatsScreen(), settings: settings);
+
+      case RoutesConstants.viewImageScreen:
+        return MaterialPageRoute(builder: (_) => ViewImageScreen(viewImageData: settings.arguments as ViewImageData), settings: settings);
+
+      case RoutesConstants.groupImageView:
+        return MaterialPageRoute(builder: (_) => GroupImageView(groupImageData: settings.arguments as GroupImageData,), settings: settings);
+
+      case RoutesConstants.seeAllPeople:
+        return MaterialPageRoute(builder: (_) => SeeAllPeople(contactsList: settings.arguments as List<Contact>), settings: settings);
+
+      case RoutesConstants.seeAllEvents:
+        final args = settings.arguments as SeeAllEvents;
+        return MaterialPageRoute(builder: (_) => SeeAllEvents(query: args.query, eventLists: args.eventLists,), settings: settings);
+
+      case RoutesConstants.notificationSettings:
+        return MaterialPageRoute(builder: (_) => NotificationSettings(), settings: settings);
+
+      case RoutesConstants.notificationsHistoryScreen:
+        return MaterialPageRoute(builder: (_) => NotificationsHistoryScreen(), settings: settings);
+
+      case RoutesConstants.publicLocationCreateEventScreen:
+        return MaterialPageRoute(builder: (_) => PublicLocationCreateEventScreen(), settings: settings);
+
+      case RoutesConstants.checkAttendanceScreen:
+        return MaterialPageRoute(builder: (_) => CheckAttendanceScreen(), settings: settings);
+
+      case RoutesConstants.imageCropper:
+        return MaterialPageRoute(builder: (_) => ImageCrop(image: settings.arguments as File), settings: settings);
+
+      case RoutesConstants.eventGalleryPage:
+        return MaterialPageRoute(builder: (_) => EventGalleryPage(), settings: settings);
+
+      case RoutesConstants.eventGalleryImageView:
+        return MaterialPageRoute(builder: (_) => EventGalleryImageView(mmyPhoto: settings.arguments as MMYPhoto), settings: settings);
+
+      case RoutesConstants.createAnnouncementScreen:
+        return MaterialPageRoute(builder: (_) => CreateAnnouncementScreen(), settings: settings);
+
+      case RoutesConstants.viewRepliesToFormScreen:
+        return MaterialPageRoute(builder: (_) => ViewRepliesToFormScreen(), settings: settings);
+
+      case RoutesConstants.publicationVisibility:
+        return MaterialPageRoute(builder: (_) => PublicationVisibility(), settings: settings);
+
+      case RoutesConstants.viewVideoScreen:
+        final args = settings.arguments as ViewVideoScreen;
+        return MaterialPageRoute(builder: (_) => ViewVideoScreen(viewVideoData: args.viewVideoData, fromChat: args.fromChat, format:  args.format,), settings: settings);
+
+      case RoutesConstants.videoPlayer:
+        final args = settings.arguments as VideoPlayer;
+        return MaterialPageRoute(builder: (_) => VideoPlayer(videoUrl: args.videoUrl, fromDiscussion:  args.fromDiscussion, aid: args.aid, pid: args.pid,
+        ownerId: args.ownerId,), settings: settings);
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

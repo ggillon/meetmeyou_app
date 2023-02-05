@@ -55,4 +55,9 @@ class ImageConstants {
   static const discussion_back_arrow = "images/ic_discussion_back_arrow.svg";
   static const eventFinalDateAlert_close = "images/ic_close_eventFinalDateAlert.svg";
   static const eventShare_icon = "images/ic_event_share.svg";
-}
+  static const speaker_icon = "images/ic_speaker.svg";
+  static const globe_icon = "images/ic_globe.svg";
+  static const booking_parameters_icon = "images/ic_booking_parameters.png";
+  static const stats_icon = "images/ic_stats.svg";
+  static const active_stats_icon = "images/ic_active_stats.svg";
+ }

@@ -46,19 +46,28 @@ class CalendarProvider extends BaseProvider {
 
     var value = await mmyEngine!.getCalendarEvents(context).catchError((e) {
       setState(ViewState.Idle);
-      //  DialogHelper.showMessage(context, "enable_calendar_permission".tr());
+      //  DialogHelper.showMessage(context, "error_message".tr());
       CommonWidgets.errorDialog(context, "enable_calendar_permission".tr());
     });
     if (value != null) {
-      deviceCalendarEvent = value;
+      // if(calendarDetail.calendarDisplay == false){
+      //   for(int i = 0 ; i < value.length ; i++){
+      //     if(value[i].meetMeYou == true){
+      //       deviceCalendarEvent.add(value[i]);
+      //     }
+      //   }
+      // } else{
+        deviceCalendarEvent = value;
+    //  }
       deviceCalendarEvent.sort((a, b) {
         return a.start.compareTo(b.start);
       });
       setState(ViewState.Idle);
-    } else {
-      setState(ViewState.Idle);
-      DialogHelper.showMessage(context, "enable_calendar_permission".tr());
     }
+    // else {
+    //   setState(ViewState.Idle);
+    //   DialogHelper.showMessage(context, "enable_calendar_permission".tr());
+    // }
   }
 
   bool val = false;

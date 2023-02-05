@@ -9,6 +9,7 @@ import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/auth/auth.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/services/mmy/profile.dart';
+import 'package:meetmeyou_app/view/dashboard/dashboardPage.dart';
 
 class VerifyProvider extends BaseProvider {
   bool _correctOtp = true;
@@ -70,6 +71,6 @@ class VerifyProvider extends BaseProvider {
   void moveToNextScreen(BuildContext context) {
     SharedPref.prefs?.setBool(SharedPref.IS_USER_LOGIN, true);
     Navigator.of(context)
-        .pushNamedAndRemoveUntil(RoutesConstants.dashboardPage, (route) => false, arguments: true);
+        .pushNamedAndRemoveUntil(RoutesConstants.dashboardPage, (route) => false, arguments: DashboardPage(isFromLogin: true));
   }
 }

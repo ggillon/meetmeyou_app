@@ -1,17 +1,24 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart';
 import 'package:meetmeyou_app/models/constants.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
 import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_chat_message.dart';
+import 'package:meetmeyou_app/models/photo.dart';
 import 'package:meetmeyou_app/models/profile.dart';
 import 'package:meetmeyou_app/models/event.dart';
 import 'package:meetmeyou_app/models/calendar_event.dart';
 import 'package:meetmeyou_app/services/database/database.dart';
-import 'package:meetmeyou_app/services/email/email.dart';
 import 'dart:io';
+import '../../models/discussion.dart';
+import '../../models/discussion_message.dart';
+import '../../models/mmy_notification.dart';
+import '../../models/photo_album.dart';
+import '../../models/search_result.dart';
+import 'mmy_admin.dart';
+import 'mmy_creator.dart';
 import 'profile.dart' as profileLib;
 import 'contact.dart' as contactLib;
 import 'event.dart' as eventLib;
@@ -20,9 +27,21 @@ import 'package:meetmeyou_app/services/calendar/calendar.dart' as calendarLib;
 import 'package:meetmeyou_app/services/storage/storage.dart' as storageLib;
 import 'event_chat_message.dart' as messageLib;
 import 'date_option.dart' as dateLib;
+import 'discussion.dart' as discussionLib;
+import 'search.dart' as searchLib;
+import 'notification.dart' as notificationLib;
+import 'photo_album.dart' as albumLib;
+import 'announcement.dart' as announcementLib;
+import 'calendar.dart' as calLib;
 
+const USER_TYPE_NORMAL = "Normal User";
+const USER_TYPE_PRO = "Pro User";
+const USER_TYPE_ADMIN = "Admin User";
 
 abstract class MMYEngine {
+
+  /// DEBUG MESSAGE
+  void debugMsg(String text, {Map? attachment});
 
   /// PROFILE ///
 
@@ -34,10 +53,18 @@ abstract class MMYEngine {
   Future<Profile> createUserProfile();
   /// Checks if profile exists
   Future<bool> isNew();
+  /// Apple Sign in profile creation
+  Future<Profile> appleFirstSignIn();
+  /// Apple Sign in profile creation
+  Future<bool> filledProfile();
   /// Update the profile Profile
   Future<Profile> updateProfilePicture(File file);
   /// Delete User - Cautious
   Future<void> deleteUser();
+  /// Set a parameter
+  Future<Profile> setUserParameter(String param, dynamic value);
+  /// Get a parameter
+  Future<dynamic> getUserParameter(String param,);
 
   /// CONTACT ///
 
@@ -58,9 +85,9 @@ abstract class MMYEngine {
   /// Number of unresponded invites
   Future<int> unrespondedInvites();
   /// Create a Group of contacts
-  Future<Contact> newGroupContact(String name, {String photoURL, String about, File? photoFile});
+  Future<Contact> newGroupContact(String name, {String photoURL, String about});
   /// Update a Group of contacts
-  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about});
+  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about});
   /// Add contact(s) to group
   Future<Contact> addContactsToGroup(String groupCID, {String? contactCID, List<String> contactsCIDs});
   /// Remove contact(s) from group
@@ -69,19 +96,31 @@ abstract class MMYEngine {
   Future<List<Contact>> searchProfiles(String searchText);
   /// Import phone Contacts
   Future<List<Contact>> getPhoneContacts();
+  /// Get phone Contacts for invite
+  Future<List<Contact>> getInvitePhoneContacts();
   /// Invite phone Contacts
   Future<void> invitePhoneContacts(List<Contact> contacts);
+  /// Add to favourites
+  Future<void> addToFavourites(String cid);
+  /// Get all favourite IDs
+  Future<List<String>> getAllFavourites();
 
   /// EVENT ///
 
   /// Get all Events where user is invited or organiser
-  Future<List<Event>> getUserEvents({List<String>? filters});
+  Future<List<Event>> getUserEvents({List<String>? filters, List<String>? selector});
+  /// Get all past Event where user was invited
+  Future<List<Event>> getPastEvents();
+  /// Get all Events where user is organiser
+  Future<List<Event>> getOrganisedEvents();
+  /// Get all Events where user is organiser
+  Future<List<Event>> getContactOrganisedEvents(String cid);
   /// Get a particular Event
   Future<Event> getEvent(String eid);
   /// Create an event
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions});
   /// Update an event
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,});
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, List<DateOption>? multipleDates});
   /// Get status of user
   Future<String> eventUserStatus(String eid);
   /// Cancel an event
@@ -108,6 +147,19 @@ abstract class MMYEngine {
   Future<void> replyToEvent(String eid, {required String response});
   /// Number of unresponded events
   Future<int> unrespondedEvents();
+  /// Set event parameter
+  Future<Event> setEventParam(String eid, {required String param, required dynamic value});
+  /// Get event parameter
+  Future<dynamic> getEventParam(String eid, {required String param, });
+  /// Create an Announcement
+  Future<Event> createAnnouncement({required String title, String? location, required String description, required String photoURL, DateTime? start, DateTime? end,});
+  /// Update an Announcement
+  Future<Event> updateAnnouncement(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, });
+  /// Event invite all contacts
+  Future<Event> inviteAllContacts(String eid);
+  /// Event invite all favourite contacts
+  Future<Event> inviteAllFavourites(String eid);
+
 
 
   /// Add a date option to event
@@ -117,7 +169,9 @@ abstract class MMYEngine {
   /// Get all dates options from an event (in date start order)
   Future<List<DateOption>> getDateOptionsFromEvent(String eid);
   /// Answer a date attendance for an event
-  Future<void> answerDateOption(String eid, String did, bool attend);
+  Future<Event> answerDateOption(String eid, String did, bool attend);
+  /// Answer dates attendance for an event
+  Future<Event> answerDatesOption(String eid, List<String> DIDs, bool attend);
   /// Get status of dateOption for an event date
   Future<bool> dateOptionStatus(String eid, String did);
   /// Get list of dates selected
@@ -131,6 +185,10 @@ abstract class MMYEngine {
   Future<Event> addQuestionToEvent(Event event, {required questionNum, required String text});
   ///  Reply to form to an event
   Future<EventAnswer> answerEventForm(String eid, {required Map answers});
+  ///  Get reply to form to an event
+  Future<EventAnswer> getAnswerEventForm(String eid, String uid);
+  ///  Get reply to form to an event
+  Future<List<EventAnswer>> getAnswersEventForm(String eid);
   ///  List answers to form
   Future<List<EventAnswer>> emailEventAnswers(String eid);
 
@@ -141,12 +199,62 @@ abstract class MMYEngine {
   Future<void> setCalendarParams({required bool sync, required bool display});
   /// Get the parameters for calendar
   Future<Map<String, dynamic>> getCalendarParams();
+  /// Sync calendars
+  Future<void> syncCalendar();
 
   /// Event Message functions
   /// Get all the chat messages from Event
   Future<List<EventChatMessage>> getEventChatMessages(String eid);
   /// Post a new mchat message to Event
   Future<EventChatMessage> postEventChatMessage(String eid, {required String text});
+
+  /// Discussion Functions
+  /// Retreive an discussion you're part of
+  Future<Discussion> getDiscussion(String did);
+  /// Access Discussion of Event (retreive or join it)
+  Future<Discussion> getEventDiscussion(String eid);
+  /// Post a message in a discussion
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, String? photoURL, String? replyMid});
+  /// Get List of discussion
+  Future<List<Discussion>> getUserDiscussions();
+  /// Start Discussion between contacts or a groups
+  Future<Discussion> startContactDiscussion(String cid);
+  /// Start Discussion between contacts or a groups
+  Future<Discussion> startGroupDiscussion(List<String> CIDs);
+  /// Leave a discussion
+  Future<void> leaveDiscussion(String did);
+  /// Add user to discussion
+  Future<void> addContactToDiscussion(String did, {required String cid});
+  /// Remove user from discussion
+  Future<void> removeContactFromDiscussion(String did, {required String cid});
+  /// Change title or photo of discussion
+  Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL});
+  /// Change title of discussion
+  Future<int> updatedDiscussions();
+
+  /// Search
+  Future<SearchResult> search(String searchText);
+
+  /// NOTIFICATION
+  Future<List<MMYNotification>> getUserNotification();
+
+  /// User Mode
+  Future<String> getUserType();
+  /// get Creator object if user allowed
+  Future<MMYCreator> getCreator();
+  /// get Creator object if user allowed
+  Future<MMYAdmin> getAdmin();
+
+  /// PHOTO ALBUM FUNCTIONS
+
+  /// Create an album for event
+  Future<MMYPhotoAlbum> createEventAlbum(String eid);
+  /// Get photo Album
+  Future<MMYPhotoAlbum> getPhotoAlbum(String aid);
+  /// Post photo
+  Future<void> postPhoto(String aid, String photoURL, {String type=PHOTO_TYPE_PHOTO});
+  /// Delete photo
+  Future<void> deletePhoto(String aid, String pid);
 
 }
 
@@ -156,9 +264,23 @@ class MMY implements MMYEngine {
   MMY(this._currentUser);
   final User _currentUser;
 
+  static Future<Event> getWebEvent(String eid) async {
+    User webUser = (await FirebaseAuth.instance.signInAnonymously()).user!;
+    return await eventLib.getEvent(webUser, eid);
+  }
+
   @override
-  Future<Profile> getUserProfile({bool user = true, String? uid}) {
-    return profileLib.getUserProfile(_currentUser, user: user, uid: uid);
+  void debugMsg(String text, {Map? attachment}) {
+    final db = FirestoreDB(uid: _currentUser.uid);
+    db.debugMsg(_currentUser.uid, text, attachment);
+  }
+
+  @override
+  Future<Profile> getUserProfile({bool user = true, String? uid}) async{
+    Profile profile = await profileLib.getUserProfile(_currentUser, user: user, uid: uid);
+    await notificationLib.setToken(_currentUser); // set token for notification
+    profileLib.cleanUpDb(_currentUser); // perform db cleanUp at start
+    return profile;
   }
 
   @override
@@ -188,16 +310,25 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, File? photoFile, String about = ''}) async {
-    if (photoFile!=null)
-      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
+  Future<Profile> setUserParameter(String param, dynamic value) async {
+    return await profileLib.setProfileParameter(_currentUser, param: param, value: value);
+  }
+
+  @override
+  Future<dynamic?> getUserParameter(String param,) async {
+    Profile user = await profileLib.getUserProfile(_currentUser);
+    return user.parameters[param];
+  }
+
+  @override
+  Future<Contact> newGroupContact(String name, {String photoURL = contactLib.GROUP_PHOTOURL, String about = ''}) async {
     final contact =  await contactLib.createNewGroupContact(_currentUser, displayName: name);
     return contactLib.updateGroupContact(_currentUser, contact.cid,photoURL: photoURL, about: about);
   }
 
   @override
-  Future<Contact> getContact(String cid) {
-    return contactLib.getContact(_currentUser, cid: cid);
+  Future<Contact> getContact(String cid) async {
+     return contactLib.getContact(_currentUser, cid: cid);
   }
 
   @override
@@ -246,13 +377,14 @@ class MMY implements MMYEngine {
   @override
   Future<void> inviteProfile(String uid) async {
     contactLib.inviteProfile(_currentUser, uid: uid);
+    notificationLib.notifyContactInvite(_currentUser, uid);
   }
 
   @override
-  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, File? photoFile, String? about}) async {
-    if (photoFile!=null)
-      photoURL = await storageLib.storeProfilePicture(photoFile, uid: _currentUser.uid);
-    return contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
+  Future<Contact> updateGroupContact(String cid, {String? displayName, String? photoURL, String? about}) async {
+    Contact contact = await contactLib.updateGroupContact(_currentUser, cid, displayName: displayName, photoURL: photoURL, about: about);
+    discussionLib.updateLinkedDiscussion(_currentUser, cid, title: displayName, photoURL: photoURL);
+    return contact;
   }
 
   @override
@@ -284,48 +416,70 @@ class MMY implements MMYEngine {
     List<String> contactListID = await getContactIDs(confirmedContacts: true);
     List<String> invitedListID = await getContactIDs(invitedContacts: true);
     for(Profile profile in await profileLib.searchProfiles(_currentUser, searchText: searchText)) {
-      Contact contact = contactLib.contactFromProfile(profile, uid: profile.uid);
-      if (contactListID.contains(contact.cid)) contact.status = CONTACT_CONFIRMED;
-      if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
-      searchList.add(contact);
+      if(profile.uid != _currentUser.uid) {
+        Contact contact = await contactLib.contactFromProfile(profile, _currentUser.uid);
+        if (contactListID.contains(contact.cid)) contact = await contactLib.getContact(_currentUser, cid: contact.cid);
+        if (invitedListID.contains(contact.cid)) contact.status = CONTACT_INVITED;
+        searchList.add(contact);
+      }
     }
     return searchList;
   }
 
   @override
   Future<List<Contact>> getPhoneContacts() async {
-    return contactLib.getPhoneContacts(_currentUser);
+    List<Contact> phoneContacts = await contactLib.getPhoneContacts(_currentUser);
+    return searchLib.matchContactsToDBProfiles(_currentUser, phoneContacts);
+  }
+
+  @override
+  Future<List<Contact>> getInvitePhoneContacts() async {
+    return await contactLib.getInvitePhoneContacts(_currentUser);
   }
 
   @override
   Future<void> invitePhoneContacts(List<Contact> contacts) async {
-    List<String> emails = [];
-    for(Contact contact in contacts) emails.add(contact.email);
-    sendInvitesEmail(emails);
+    for(Contact contact in contacts) inviteProfile(contact.cid);
   }
 
   @override
-  Future<List<Event>> getUserEvents({List<String>? filters}) {
-    return eventLib.getUserEvents(_currentUser, filters: filters);
+  Future<List<Event>> getUserEvents({List<String>? filters, List<String>? selector}) {
+    calLib.syncCalendars(_currentUser);
+    return eventLib.getUserEvents(_currentUser, filters: filters, selector: selector);
   }
 
   @override
-  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, File? photoFile, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions}) async {
+  Future<List<Event>> getPastEvents() {
+    return eventLib.getPastEvents(_currentUser,);
+  }
+
+  @override
+  Future<List<Event>> getOrganisedEvents() {
+    return eventLib.getUserEvents(_currentUser, filters: [EVENT_ORGANISER]);
+  }
+
+  @override
+  Future<List<Event>> getContactOrganisedEvents(String cid) {
+    return eventLib.getContactEvents(_currentUser, cid, filters: [EVENT_ORGANISER]);
+  }
+
+  @override
+  Future<Event> createEvent({required String title, required String location, required String description, required String photoURL, DateTime? start, DateTime? end, List<DateTime>? startDateOptions, List<DateTime>? endDateOptions}) async {
     Event event = await eventLib.updateEvent(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start ?? startDateOptions!.first, end: end ?? endDateOptions!.last);
     if(startDateOptions != null && endDateOptions != null) {
       for(int i=0; i<startDateOptions.length; i++) {
         await dateLib.addDateToEvent(_currentUser, event.eid, startDateOptions[i], endDateOptions[i]);
       }
-    }
-    if (photoFile!=null) {
-      photoURL = await storageLib.storeEventPicture(photoFile, eid: event.eid);
-      event = await updateEvent(event.eid, photoURL: photoURL);
+      startDateOptions.sort((a,b)=>a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch));
+      endDateOptions.sort((a,b)=>a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch));
+      await eventLib.updateEvent(_currentUser, event.eid,start: startDateOptions.first, end: endDateOptions.last);
     }
     return event;
   }
 
   @override
   Future<Event> cancelEvent(String eid) async {
+    notificationLib.notifyEventCanceled(_currentUser, eid);
     return await eventLib.cancelEvent(_currentUser, eid);
   }
 
@@ -336,7 +490,10 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> getEvent(String eid) async {
-    return await eventLib.getEvent(_currentUser, eid);
+    Event event = await eventLib.getEvent(_currentUser, eid);
+    if(!event.invitedContacts.containsKey(_currentUser.uid))
+      event = await inviteContactsToEvent(eid, CIDs: [_currentUser.uid]);
+    return event;
   }
 
   @override
@@ -346,6 +503,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> inviteContactsToEvent(String eid, {required List<String> CIDs}) async {
+    for(String cid in CIDs) notificationLib.notifyEventInvite(_currentUser, eid, cid);
     return await eventLib.updateInvitations(_currentUser, eid,
         eventLib.Invitations(CIDs: CIDs, inviteStatus: EVENT_INVITED));
   }
@@ -354,6 +512,7 @@ class MMY implements MMYEngine {
   Future<Event> inviteGroupsToEvent(String eid, {required List<String> CIDs}) async {
     for(String cid in CIDs) {
       (await contactLib.getContact(_currentUser, cid: cid)).group.forEach((key, value) async {
+        notificationLib.notifyEventInvite(_currentUser, eid, key);
         await eventLib.updateInvitations(_currentUser, eid,
             eventLib.Invitations(CIDs: [key], inviteStatus: EVENT_INVITED));
       });
@@ -389,6 +548,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Event> replyToEvent(String eid, {required String response}) async {
+    contactLib.linkEvent(_currentUser, eid: eid);
     return await eventLib.updateInvitations(_currentUser, eid,
         eventLib.Invitations(CIDs: [_currentUser.uid], inviteStatus: response));
   }
@@ -402,10 +562,13 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, File? photoFile, DateTime? start, DateTime? end,}) async {
-    if (photoFile!=null)
-      photoURL = await storageLib.storeEventPicture(photoFile, eid: eid);
-    return await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  Future<Event> updateEvent(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end, List<DateOption>? multipleDates}) async {
+    if(multipleDates != null)
+      dateLib.setEventDateOptions(_currentUser, eid, multipleDates);
+    discussionLib.updateLinkedDiscussion(_currentUser, eid, title: title, photoURL: photoURL);
+    Event result = await eventLib.updateEvent(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);;
+    notificationLib.notifyEventModified(_currentUser, result.eid,);
+    return result;
   }
 
   @override
@@ -427,7 +590,9 @@ class MMY implements MMYEngine {
 
   @override
   Future<List<CalendarEvent>> getCalendarEvents(BuildContext context) async {
-    return calendarLib.getCalendarEvents(context, _currentUser.uid);
+    Profile profile = await getUserProfile();
+ //   return calendarLib.getCalendarEvents(_currentUser.uid, display: profile.parameters['calendar_display']);
+    return calendarLib.getCalendarEvents(context, _currentUser.uid, display: profile.parameters['calendar_display'] == null ? true : profile.parameters['calendar_display']);
   }
 
   @override
@@ -438,7 +603,7 @@ class MMY implements MMYEngine {
 
   @override
   Future<Map<String, dynamic>> getCalendarParams() async {
-    Map<String, dynamic> params = Map<String, dynamic>();;
+    Map<String, dynamic> params = {};
     Profile profile = await profileLib.getUserProfile(_currentUser);
     params['calendar_sync'] = profile.parameters['calendar_sync'] ?? true;
     params['calendar_display'] = profile.parameters['calendar_display'] ?? true;
@@ -461,8 +626,18 @@ class MMY implements MMYEngine {
   }
 
   @override
+  Future<EventAnswer> getAnswerEventForm(String eid, String uid) async {
+    return answerLib.getAnswerEventForm(_currentUser, eid, uid);
+  }
+
+  @override
   Future<List<EventAnswer>> emailEventAnswers(String eid) async {
     return answerLib.emailEventAnswers(eid, _currentUser,);
+  }
+
+  @override
+  Future<List<EventAnswer>> getAnswersEventForm(String eid) {
+    return answerLib.getAnswersEventForm(_currentUser, eid);
   }
 
   @override
@@ -478,8 +653,21 @@ class MMY implements MMYEngine {
   }
 
   @override
-  Future<void> answerDateOption(String eid, String did, bool attend) async {
-    return dateLib.answerDateOption(_currentUser, eid, did, attend);
+  Future<Event> answerDateOption(String eid, String did, bool attend) async {
+    await dateLib.answerDateOption(_currentUser, eid, did, attend);
+    return await dateLib.updateEventStatus(_currentUser, eid,);
+  }
+
+  @override
+  Future<Event> answerDatesOption(String eid, List<String> DIDs, bool attend) async {
+    List<DateOption> dates = await getDateOptionsFromEvent(eid);
+    for(String did in DIDs)
+      await dateLib.answerDateOption(_currentUser, eid, did, attend);
+    for(DateOption date in dates) {
+      if(!DIDs.contains(date.did))
+        await dateLib.answerDateOption(_currentUser, eid, date.did, !attend);
+    }
+    return await dateLib.updateEventStatus(_currentUser, eid,);
   }
 
   @override
@@ -507,4 +695,190 @@ class MMY implements MMYEngine {
     return dateLib.getDateOptionsFromEvent(_currentUser, eid);
   }
 
+  @override
+  Future<Discussion> getDiscussion(String did) async {
+    return discussionLib.getDiscussion(_currentUser, did);
+  }
+
+  @override
+  Future<Discussion> getEventDiscussion(String eid) async {
+    return discussionLib.getDiscussion(_currentUser, eid, isEvent: true);
+  }
+
+  @override
+  Future<List<Discussion>> getUserDiscussions() async {
+    return discussionLib.getUserDiscussions(_currentUser);
+  }
+
+  @override
+  Future<void> postDiscussionMessage(String did, {String type=TEXT_MESSAGE, required String text, String? photoURL, String? replyMid}) async {
+    discussionLib.postMessage(_currentUser, did, type, text, photoURL, replyMid);
+    notificationLib.notifyDiscussionMessage(_currentUser, did);
+  }
+
+  @override
+  Future<Discussion> startContactDiscussion(String cid) async {
+    return await discussionLib.startContactDiscussion(_currentUser, cid: cid,);
+  }
+
+  @override
+  Future<void> leaveDiscussion(String did) async {
+    discussionLib.removeUserFromDiscussion(_currentUser, did, _currentUser.uid);
+  }
+
+  @override
+  Future<void> addContactToDiscussion(String did, {required String cid}) async {
+    await discussionLib.inviteUserToDiscussion(_currentUser, cid, did);
+  }
+
+  @override
+  Future<void> removeContactFromDiscussion(String did, {required String cid}) async {
+    discussionLib.removeUserFromDiscussion(_currentUser, did, cid);
+  }
+
+  @override
+  Future<Discussion> updateDiscussion(String did, {String? title, String? photoURL}) async {
+    return await discussionLib.updateDiscussion(_currentUser, did, title: title, photoURL: photoURL);
+  }
+
+  @override
+  Future<int> updatedDiscussions() async {
+    int count=0;
+    for (Discussion discussion in (await getUserDiscussions())) if (discussion.unread) count++;
+    return count;
+  }
+
+  @override
+  Future<SearchResult> search(String searchText) async {
+    return searchLib.search(_currentUser, searchText);
+  }
+
+  @override
+  Future<Discussion> startGroupDiscussion(List<String> CIDs) {
+    return discussionLib.startGroupDiscussion(_currentUser, CIDs: CIDs);
+  }
+
+  @override
+  Future<List<MMYNotification>> getUserNotification() {
+    return notificationLib.getUserNotifications(_currentUser);
+  }
+
+  @override
+  Future<MMYAdmin> getAdmin() async {
+    String userType = await getUserType();
+    if(userType == USER_TYPE_ADMIN) {
+      return MMYAdmin(_currentUser);
+    } else {
+      throw Error();
+    }
+  }
+
+  @override
+  Future<MMYCreator> getCreator() async {
+    String userType = await getUserType();
+    if(userType == USER_TYPE_ADMIN || userType == USER_TYPE_PRO) {
+      return MMYCreator(_currentUser);
+    } else {
+      throw Error();
+    }
+  }
+
+  @override
+  Future<String> getUserType() async {
+    return USER_TYPE_NORMAL; /// For this release only NORMAL USERS are needed
+    String userType = USER_TYPE_NORMAL;
+    try {
+      userType = (await getUserParameter('UserType')) ?? userType;
+    } catch(e) {}
+    if(userType == null)
+      userType = USER_TYPE_NORMAL;
+    return userType;
+  }
+
+  @override
+  Future<Profile> appleFirstSignIn() {
+    return profileLib.createAnonProfileFromUser(_currentUser);
+  }
+
+  @override
+  Future<bool> filledProfile() async {
+    bool output;
+    output = !((await profileLib.getUserProfile(_currentUser)).parameters['Anon']);
+    return output;
+  }
+
+  @override
+  Future<MMYPhotoAlbum> createEventAlbum(String eid) async {
+    return await albumLib.createEventAlbum(_currentUser, eid);
+  }
+
+  @override
+  Future<void> deletePhoto(String aid, String pid) async {
+    albumLib.deletePhoto(_currentUser, aid, pid);
+  }
+
+  @override
+  Future<MMYPhotoAlbum> getPhotoAlbum(String aid) async {
+    return await albumLib.getAlbum(_currentUser, aid);
+  }
+
+  @override
+  Future<void> postPhoto(String aid, String photoURL, {String type=PHOTO_TYPE_PHOTO}) async {
+    await albumLib.postPhoto(_currentUser, aid, photoURL, type);
+  }
+
+  @override
+  Future<dynamic> getEventParam(String eid, {required String param}) async {
+    return await eventLib.getParam(_currentUser, eid, param);
+  }
+
+  @override
+  Future<Event> setEventParam(String eid, {required String param, required value}) async {
+    return await eventLib.setParam(_currentUser, eid, param, value);
+  }
+
+  @override
+  Future<Event> createAnnouncement({required String title, String? location, required String description, required String photoURL, DateTime? start, DateTime? end,}) {
+    return announcementLib.updateAnnouncement(_currentUser, null, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  }
+
+  @override
+  Future<Event> updateAnnouncement(String eid, {String? title, String? location, String? description, String? photoURL, DateTime? start, DateTime? end,}) {
+    return announcementLib.updateAnnouncement(_currentUser, eid, title: title, location: location, description: description, photoURL: photoURL, start: start, end: end);
+  }
+
+  @override
+  Future<void> addToFavourites(String cid) async {
+    if((await contactLib.getContact(_currentUser, cid: cid)).status == CONTACT_GROUP) {
+      if ((await getContact(cid)).isFavourite) profileLib.removeUserFromFavourites(_currentUser, cid);
+      else profileLib.addGroupToFavourites(_currentUser, cid);
+    } else {
+      if ((await getContact(cid)).isFavourite) profileLib.removeUserFromFavourites(_currentUser, cid);
+      else profileLib.addUserToFavourites(_currentUser, cid);
+    }
+  }
+
+  @override
+  Future<List<String>> getAllFavourites() async {
+    return profileLib.getFavouriteIDs(_currentUser);
+  }
+
+  @override
+  Future<Event> inviteAllContacts(String eid) async {
+    List<String> CIDs = await contactLib.getContactsCIDs(_currentUser);
+    return await inviteContactsToEvent(eid, CIDs: CIDs);
+  }
+
+  @override
+  Future<Event> inviteAllFavourites(String eid) async {
+    List<String> CIDs = await profileLib.getFavouriteIDs(_currentUser);
+    return await inviteContactsToEvent(eid, CIDs: CIDs);
+  }
+
+  @override
+  Future<void> syncCalendar() async {
+    await calLib.syncCalendars(_currentUser);
+  }
+
 }
+

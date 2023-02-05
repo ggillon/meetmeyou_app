@@ -35,6 +35,22 @@ class EventDetail{
 
   int? eventListLength;
 
+  // past event
+  bool isPastEvent = false;
+
+  // announcement
+  bool? isAnnouncement;
+  
+  String? albumAdminId;
+
+  // used in event attending screen
+  List<String> nonAttendingProfileKeys = [];
+  List<String> invitedProfileKeys = [];
+
+  // used for creating event with contact or group
+  bool isFromContactOrGroupDescription = false;
+  List<String> contactIdsForEventCreation = [];
+
   EventDetail({this.eid, this.eventBtnStatus, this.textColor, this.btnBGColor, this.eventMapData, this.attendingProfileKeys, this.eventPhotoUrl, this.unRespondedEvent, this.allAttendingProfileKeys, this.organiserId, this.organiserName, this.eventListLength});
 
   EventDetail.editEvent({this.editEvent, this.photoUrlEvent, this.eventName, this.startDateAndTime, this.endDateAndTime, this.eventLocation, this.eventDescription, this.event, this.questionnaire});

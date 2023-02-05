@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screen_scaler/flutter_screen_scaler.dart';
 import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/constants/image_constants.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
@@ -31,7 +32,7 @@ class DialogHelper {
         return AlertDialog(
           title: Text(title, textAlign: TextAlign.center),
           content: Text(content, textAlign: TextAlign.center),
-          shape:  RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
           actions: <Widget>[
@@ -109,16 +110,17 @@ class DialogHelper {
 
   static PreferredSizeWidget appBarWithBack(
       ScreenScaler scaler, BuildContext context,
-      {showEdit = false, VoidCallback? editClick}) {
+      {showEdit = false, VoidCallback? editClick, bool message = false, VoidCallback? messageIconClick, bool back = true, VoidCallback? backIconClick, bool email = false, VoidCallback? onTapEmail,
+      VoidCallback? onTapEvent}) {
     return AppBar(
       elevation: 0,
       backgroundColor: ColorConstants.colorWhite,
       leadingWidth: 100,
       leading: InkWell(
-        onTap: () {
+        onTap: back == true ? () {
           hideKeyboard(context);
-          Navigator.pop(context);
-        },
+         Navigator.pop(context);
+        } : backIconClick,
         child: Padding(
           padding: scaler.getPaddingLTRB(2.5, 0.0, 0.0, 0.0),
           child: Row(
@@ -126,28 +128,55 @@ class DialogHelper {
               ImageView(path: ImageConstants.ic_back_arrow),
               SizedBox(width: scaler.getWidth(0.8)),
               Text("back".tr()).regularText(ColorConstants.primaryColor,
-                  scaler.getTextSize(10.5), TextAlign.left),
+                  scaler.getTextSize(11.5), TextAlign.left),
             ],
           ),
         ),
       ),
       actions: [
-        showEdit
-            ? InkWell(
-                onTap: editClick!,
-                child: Padding(
-                  padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
-                  child: ImageView(
-                      width: scaler.getWidth(4.5),
-                      height: scaler.getWidth(4.5),
-                      path: ImageConstants.ic_edit),
-                ))
-            : Container(),
+      email == true ?  GestureDetector(
+        onTap: onTapEmail,
+        child: Padding(
+            padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+            child: Icon(Icons.email_rounded,
+                color: ColorConstants.primaryColor, size: 28)),
+      ) : (showEdit
+            ? Padding(
+                        padding: scaler.getPaddingLTRB(0.0, 0.0, 2.5, 0.0),
+                        child: message == true
+                            ? Row(
+                              children: [
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: onTapEvent,
+                                  child: Icon(Icons.event,
+                                      color: ColorConstants.primaryColor, size: 28),
+                                ),
+                                SizedBox(width: scaler.getWidth(4.5)),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: messageIconClick,
+                                  child: Icon(Icons.message,
+                                  color: ColorConstants.primaryColor, size: 28),
+                                ),
+                              ],
+                            )
+                            : GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                              onTap: editClick,
+                              child: ImageView(
+                              width: scaler.getWidth(6.0),
+                              height: scaler.getWidth(6.0),
+                              path: ImageConstants.ic_edit),
+                            ),
+                      )
+            : Container())
       ],
     );
   }
 
- static Widget btnWidget(ScreenScaler scaler, BuildContext context, String txt, Color color,
+  static Widget btnWidget(
+      ScreenScaler scaler, BuildContext context, String txt, Color color,
       {Color? txtColor, VoidCallback? funOnTap}) {
     return GestureDetector(
       onTap: funOnTap,
@@ -157,12 +186,12 @@ class DialogHelper {
         child: CustomShape(
           child: Center(
             child: Text(txt).mediumText(txtColor ?? ColorConstants.colorWhite,
-                scaler.getTextSize(10), TextAlign.center),
+                scaler.getTextSize(11.2), TextAlign.center),
           ),
           bgColor: color,
           radius: scaler.getBorderRadiusCircular(10),
           width: MediaQuery.of(context).size.width,
-          height: scaler.getHeight(5),
+          height: scaler.getHeight(6.2),
         ),
       ),
     );

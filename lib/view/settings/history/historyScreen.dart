@@ -24,10 +24,10 @@ class HistoryScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text("history".tr()).boldText(
                     ColorConstants.colorBlack,
-                    scaler.getTextSize(16),
+                    scaler.getTextSize(17),
                     TextAlign.left),
               ),
-              SizedBox(height: scaler.getHeight(2)),
+              SizedBox(height: scaler.getHeight(2.5)),
             ],
           ),
         ),

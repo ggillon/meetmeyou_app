@@ -84,11 +84,11 @@ class _IntroductionPageState extends State<IntroductionPage> {
                       },
                       child: CustomShape(
                         child: Center(child: Text(provider.buttonText).mediumText(
-                            ColorConstants.colorWhite, scaler.getTextSize(10),
+                            ColorConstants.colorWhite, scaler.getTextSize(11),
                             TextAlign.center)),
                         bgColor: ColorConstants.primaryColor,
                         radius: BorderRadius.all(Radius.circular(10)),
-                        height: scaler.getHeight(4),
+                        height: scaler.getHeight(5.5),
                         width: MediaQuery
                             .of(context)
                             .size

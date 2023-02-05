@@ -23,12 +23,12 @@ class OrganizeEventCardProvider extends BaseProvider{
   List<Event> eventLists = [];
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
 
-  Future getUserEvents(BuildContext context, {List<String>? filters}) async {
+  Future getUserEvents(BuildContext context, String contactId, {List<String>? filters}) async {
     setState(ViewState.Busy);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
     var value =
-    await mmyEngine!.getUserEvents(filters: filters).catchError((e) {
+    await mmyEngine!.getContactOrganisedEvents(contactId).catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
@@ -44,7 +44,7 @@ class OrganizeEventCardProvider extends BaseProvider{
     }
   }
 
-  Future replyToEvent(BuildContext context, String eid, String response, {bool idle = true}) async {
+  Future replyToEvent(BuildContext context, String eid, String response, String contactId, {bool idle = true}) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.replyToEvent(eid, response: response).catchError((e) {
@@ -52,13 +52,13 @@ class OrganizeEventCardProvider extends BaseProvider{
       DialogHelper.showMessage(context, e.message);
     });
 
-    getUserEvents(context);
+    getUserEvents(context, contactId);
     unRespondedEventsApi(context);
 
     idle == true ?  setState(ViewState.Idle) : setState(ViewState.Busy);
   }
 
-  Future deleteEvent(BuildContext context, String eid) async {
+  Future deleteEvent(BuildContext context, String eid, String contactId) async {
     setState(ViewState.Busy);
 
     await mmyEngine!.deleteEvent(eid).catchError((e) {
@@ -66,12 +66,12 @@ class OrganizeEventCardProvider extends BaseProvider{
       DialogHelper.showMessage(context, e.message);
     });
 
-    getUserEvents(context);
+    getUserEvents(context, contactId);
 
     setState(ViewState.Idle);
   }
 
-  Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers) async{
+  Future answersToEventQuestionnaire(BuildContext context, String eid, Map answers, String contactId) async{
     setState(ViewState.Busy);
 
     await mmyEngine!.answerEventForm(eid, answers: answers).catchError((e) {
@@ -79,7 +79,7 @@ class OrganizeEventCardProvider extends BaseProvider{
       DialogHelper.showMessage(context, e.message);
     });
 
-    await replyToEvent(context, eid, EVENT_ATTENDING, idle: false);
+    await replyToEvent(context, eid, EVENT_ATTENDING, contactId, idle: false);
     setState(ViewState.Idle);
   }
 

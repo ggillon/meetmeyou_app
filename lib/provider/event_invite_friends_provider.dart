@@ -1,12 +1,20 @@
+import 'dart:io';
+
 import 'package:collection/src/list_extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/view/home/event_discussion_screen/new_event_discussion_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventInviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -85,6 +93,8 @@ class EventInviteFriendsProvider extends BaseProvider {
       });
       confirmContactList = confirmValue;
       value = List<bool>.filled(confirmContactList.length, false);
+      addRemoveUser = List<bool>.filled(confirmContactList.length, false);
+      addContactToGroupDiscussion = List<bool>.filled(confirmContactList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -110,6 +120,8 @@ class EventInviteFriendsProvider extends BaseProvider {
 
       groupList = groupValue;
       value = List<bool>.filled(groupList.length, false);
+      addRemoveUser = List<bool>.filled(groupList.length, false);
+      addContactGroupToGroupDiscussion = List<bool>.filled(groupList.length, false);
     } else {
       setState(ViewState.Idle);
     }
@@ -118,14 +130,12 @@ class EventInviteFriendsProvider extends BaseProvider {
   // for event invite friends
 
   bool contactCheckIsSelected(Contact contact) {
-    var value =
-        eventDetail.contactCIDs.any((element) => element == contact.cid);
+    var value = eventDetail.contactCIDs.any((element) => element == contact.cid);
     return value;
   }
 
   bool groupCheckIsSelected(int index) {
-    var value = eventDetail.groupIndexList
-        .any((element) => element == index.toString());
+    var value = eventDetail.groupIndexList.any((element) => element == index.toString());
     return value;
   }
 
@@ -288,8 +298,7 @@ class EventInviteFriendsProvider extends BaseProvider {
   }
 
   removeContactFromGroupCidList(int ind, Contact groupContact) {
-    var index = eventDetail.groupIndexList
-        .indexWhere((element) => element == ind.toString());
+    var index = eventDetail.groupIndexList.indexWhere((element) => element == ind.toString());
     if (index == -1) {
       eventDetail.groupIndexList.remove(ind);
     } else {
@@ -313,4 +322,183 @@ class EventInviteFriendsProvider extends BaseProvider {
     updateGroupValue(false);
     return value;
   }
+
+
+  // Add user to discussion
+
+  late List<bool> addRemoveUser = [];
+
+  updateAddRemoveUser(bool val, int index){
+    addRemoveUser[index] = val;
+    notifyListeners();
+  }
+  Future addContactToDiscussion(BuildContext context, String did, int index , {required String cid}) async{
+    updateAddRemoveUser(true, index);
+
+    await mmyEngine!.addContactToDiscussion(did, cid: cid).catchError((e){
+      updateAddRemoveUser(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+    eventDetail.contactCIDs.add(cid);
+    updateAddRemoveUser(false, index);
+  }
+
+  // Remove user from discussion
+
+  Future removeContactFromDiscussion(BuildContext context, String did, int index , {required String cid}) async{
+    updateAddRemoveUser(true, index);
+
+    await mmyEngine!.removeContactFromDiscussion(did, cid: cid).catchError((e){
+      updateAddRemoveUser(false, index);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    var i = eventDetail.contactCIDs.indexWhere((element) => element == cid);
+    eventDetail.contactCIDs.removeAt(i);
+
+    updateAddRemoveUser(false, index);
+  }
+
+
+  // create a group of users for discussion.
+
+  List<String> userKeysToInviteInGroup = [];
+
+  late List<bool> addContactToGroupDiscussion = [];
+
+   updateAddContactToGroupValue(bool val, int index) {
+    addContactToGroupDiscussion[index] = val;
+    notifyListeners();
+  }
+
+  late List<bool> addContactGroupToGroupDiscussion = [];
+
+  updateAddContactGroupToGroupValue(bool val, int index) {
+    addContactGroupToGroupDiscussion[index] = val;
+    notifyListeners();
+  }
+
+  bool startGroup = false;
+
+  updateStartGroup(bool val){
+    startGroup = val;
+    notifyListeners();
+  }
+
+  Future startGroupDiscussion(BuildContext context, List<String> CIDs) async{
+    updateStartGroup(true);
+
+  var value =   await mmyEngine?.startGroupDiscussion(CIDs).catchError((e){
+      updateStartGroup(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+  if(value != null){
+    updateStartGroup(false);
+    Navigator.pushNamed(context, RoutesConstants.newEventDiscussionScreen, arguments: NewEventDiscussionScreen(fromContactOrGroup: false, fromChatScreen: true, chatDid: value.did)).then((value){
+      Navigator.of(context).pop();
+    });
+
+  }
+
+  }
+
+  //tab bar for mmy contacts and phone contacts
+  TabController? tabController;
+
+  tabChangeEvent(BuildContext context) {
+    tabController?.addListener(() {
+      if(tabController!.index == 0){
+        getConfirmedContactsList(context);
+        contactsKeys.addAll(eventDetail.contactCIDs);
+      } else{
+        getInvitePhoneContacts(context);
+      }
+
+      notifyListeners();
+    });
+  }
+
+  List<Contact> allPhoneContactList = [];
+  Future<void> getInvitePhoneContacts(BuildContext context) async {
+    setState(ViewState.Busy);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value = await mmyEngine!.getInvitePhoneContacts().catchError((e) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    });
+    if (await Permission.contacts.request().isDenied) {
+      setState(ViewState.Idle);
+      return CommonWidgets.errorDialog(context, 'allow_contact_access'.tr());
+    } else if (await Permission.contacts.request().isPermanentlyDenied) {
+      setState(ViewState.Idle);
+      return CommonWidgets.errorDialog(
+          context,
+          'enable_contact_access_permission'.tr());
+    } else if (value != null) {
+      setState(ViewState.Idle);
+      value.sort((a, b) {
+        return a.displayName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.displayName.toString().toLowerCase());
+      });
+      allPhoneContactList = value;
+    } else {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
+    }
+  }
+
+  Future<void> eventMessage(BuildContext context, String phoneNumber, String msgBody) async {
+    final Uri launchUri = Uri(
+      scheme: 'sms',
+      path: phoneNumber,
+        queryParameters: {"body" : msgBody}
+    );
+
+    if (Platform.isAndroid) {
+      final uri = 'sms:$phoneNumber?body=$msgBody';
+      await launchUrl(Uri.parse(uri)).catchError((e){
+        DialogHelper.showMessage(context, "error_message".tr());
+      });
+    } else if (Platform.isIOS) {
+      // iOS
+      final uri = 'sms:$phoneNumber&body=$msgBody';
+      await launchUrl(Uri.parse(uri)).catchError((e){
+        DialogHelper.showMessage(context, "error_message".tr());
+      });
+    }
+  }
+
+  Future<void> eventMail(BuildContext context, String email, String emailBody) async {
+    final Uri launchUri = Uri(
+        scheme: 'mailto',
+        path: email,
+        query: 'subject=Event Invitation&body=${emailBody.toString()}',
+    //  queryParameters: {'subject': "Event Invitation", "body" : emailSubject}
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else{
+      DialogHelper.showMessage(context, "error_message".tr());
+    }
+  }
+
+  Future<void> eventWhatsApp(BuildContext context, phone, String message) async {
+    var whatsApp = phone;
+    var whatsAppURlAndroid =
+        "whatsapp://send?phone=" + whatsApp + "&text=$message";
+    var whatsAppURLIos = "https://wa.me/$phone/?text=${message}";
+    if(Platform.isIOS){
+      await launchUrl(Uri.parse(whatsAppURLIos)).catchError((e){
+        DialogHelper.showMessage(context, "whatsapp_not_installed".tr());
+      });
+    } else{
+      await launchUrl(Uri.parse(whatsAppURlAndroid)).catchError((e){
+        DialogHelper.showMessage(context, "whatsapp_not_installed".tr());
+      });
+    }
+  }
+
 }

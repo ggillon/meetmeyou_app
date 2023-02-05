@@ -1,6 +1,6 @@
 import 'dart:io';
-
-import 'package:meetmeyou_app/models/contact.dart';
+import 'package:contacts_service/contacts_service.dart' as phoneContact;
+import 'package:meetmeyou_app/services/mmy/mmy_creator.dart';
 
 class UserDetail {
   String? firstName;
@@ -25,6 +25,19 @@ class UserDetail {
   String? groupName;
   List<Contact>? groupConfirmContactList = [];
   String? groupCid;*/
+
+  Iterable<phoneContact.Contact> phoneContacts = [];
+
+  String? userType;
+
+  bool appleSignUpType = false;
+
+  //for checking contact screen first time
+  bool checkContactScreen = false;
+
+  // this is used in deep link , when user logout and login again
+  // to handle if user comes from deep link event not fetches again
+  bool loginAfterDeepLink = true;
 
   UserDetail(
       {this.firstName,

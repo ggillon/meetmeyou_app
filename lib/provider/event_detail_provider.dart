@@ -1,11 +1,20 @@
+import 'dart:io';
+
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:meetmeyou_app/constants/color_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/CommonEventFunction.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
+import 'package:meetmeyou_app/helper/dynamic_links_api.dart';
 import 'package:meetmeyou_app/locator.dart';
+import 'package:meetmeyou_app/models/announcement_detail.dart';
 import 'package:meetmeyou_app/models/calendar_detail.dart';
+import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/date_option.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event.dart';
+import 'package:meetmeyou_app/models/event_answer.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/multiple_date_option.dart';
 import 'package:meetmeyou_app/models/profile.dart';
@@ -15,6 +24,7 @@ import 'package:meetmeyou_app/provider/dashboard_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:meetmeyou_app/models/event.dart' as eventModel;
 import 'package:meetmeyou_app/services/storage/templates.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventDetailProvider extends BaseProvider {
   MMYEngine? mmyEngine;
@@ -26,6 +36,9 @@ class EventDetailProvider extends BaseProvider {
   List<String> eventAttendingKeysList = [];
   String? organiserKey;
   MultipleDateOption multipleDateOption = locator<MultipleDateOption>();
+  DynamicLinksApi dynamicLinksApi = locator<DynamicLinksApi>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
+  AnnouncementDetail announcementDetail = locator<AnnouncementDetail>();
 
   bool backValue = false;
 
@@ -54,13 +67,20 @@ class EventDetailProvider extends BaseProvider {
       valuesList.add(value);
     }
 
+    eventDetail.nonAttendingProfileKeys = [];
+    eventDetail.invitedProfileKeys = [];
     for (int i = 0; i < keysList.length; i++) {
       if (valuesList[i] == "Attending") {
         eventAttendingLength = eventAttendingLength + 1;
         eventAttendingKeysList.add(keysList[i]);
       } else if (valuesList[i] == "Organiser") {
         organiserKey = keysList[i];
+      } else if (valuesList[i] == "Not Attending") {
+        eventDetail.nonAttendingProfileKeys.add(keysList[i]);
+      } else if (valuesList[i] == "Invited") {
+        eventDetail.invitedProfileKeys.add(keysList[i]);
       }
+
     }
     return eventAttendingLength;
   }
@@ -110,7 +130,7 @@ class EventDetailProvider extends BaseProvider {
     });
 
     idle == true ? updateValue(false) : updateValue(true);
-    idle == true ? Navigator.of(context).pop() : Container();
+    idle == true ?  (calendarDetail.fromDeepLink == true ? Navigator.of(context).popUntil((route) => route.isFirst) : Navigator.of(context).pop()) : Container();
   }
 
   imageStackLength(int length) {
@@ -156,6 +176,8 @@ class EventDetailProvider extends BaseProvider {
     notifyListeners();
   }
 
+  bool mayBeEventDeleted = false;
+
   Future getEvent(BuildContext context, String eid) async {
     updateEventValue(true);
 
@@ -163,18 +185,19 @@ class EventDetailProvider extends BaseProvider {
 
     var value = await mmyEngine!.getEvent(eid).catchError((e) {
       updateEventValue(false);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showMessage(context, "error_message".tr());
     });
 
     if (value != null) {
       event = value;
-      updateEventValue(false);
-      eventDetail.eventBtnStatus = CommonEventFunction.getEventBtnStatus(
-          event!, userDetail.cid.toString());
+      eventDetail.eventBtnStatus = (event!.eventType == EVENT_TYPE_PRIVATE
+          ? CommonEventFunction.getEventBtnStatus(event!, auth.currentUser!.uid)
+          : CommonEventFunction.getAnnouncementBtnStatus(
+          event!, auth.currentUser!.uid));
       eventDetail.textColor = CommonEventFunction.getEventBtnColorStatus(
-          event!, userDetail.cid.toString());
+          event!, auth.currentUser!.uid);
       eventDetail.btnBGColor = CommonEventFunction.getEventBtnColorStatus(
-          event!, userDetail.cid.toString(),
+          event!, auth.currentUser!.uid,
           textColor: false);
       eventDetail.eventMapData = event!.invitedContacts;
       eventDetail.organiserId = event!.organiserID;
@@ -183,9 +206,32 @@ class EventDetailProvider extends BaseProvider {
       getOrganiserProfileUrl(context, eventDetail.organiserId!);
       getUsersProfileUrl(context);
       setEventValuesForEdit(event!);
+      await getEventParam(context, eventDetail.eid.toString(), "discussion", false);
+      await getEventParam(context, eventDetail.eid.toString(), "photoAlbum", true);
+      eventDetail.organiserId == auth.currentUser?.uid ? Container() : getOrganiserContact(context);
+
+        eventDetail.event = event!;
+        eventDetail.event?.multipleDates == true
+            ? getMultipleDateOptionsFromEvent(
+            context, eventDetail.eid!,
+            onBtnClick: false)
+            : Container();
+        eventDetail.event?.multipleDates == true
+            ? listOfDateSelected(context, eventDetail.eid!).then((value) {
+        })
+            : Container();
+        if(calendarDetail.fromDeepLink == true){
+          eventDetail.eventBtnStatus =
+          (calendarDetail.fromDeepLink == true && calendarDetail.fromAnotherPage == true && auth.currentUser!.uid.toString() == event!.organiserID)
+              ? "edit" : "respond";
+          eventDetail.btnBGColor = ColorConstants.primaryColor;
+          eventDetail.textColor = ColorConstants.colorWhite;
+        }
+    updateEventValue(false);
     } else {
       updateEventValue(false);
-      DialogHelper.showMessage(context, "ERROR! something wrong.");
+      mayBeEventDeleted = true;
+      DialogHelper.showMessage(context, "error_message".tr());
     }
   }
 
@@ -199,6 +245,10 @@ class EventDetailProvider extends BaseProvider {
     eventDetail.eventLocation = event.location;
     eventDetail.eventDescription = event.description;
     eventDetail.event = event;
+    setContactKeys(event);
+  }
+
+  setContactKeys(eventModel.Event event){
     List<String> valuesList = [];
     for (var value in event.invitedContacts.values) {
       valuesList.add(value);
@@ -216,7 +266,6 @@ class EventDetailProvider extends BaseProvider {
 
     eventDetail.contactCIDs = contactsKeys;
   }
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Future answersToEventQuestionnaire(
@@ -247,7 +296,7 @@ class EventDetailProvider extends BaseProvider {
       {bool onBtnClick = true}) async {
     onBtnClick ? updateGetMultipleDate(true) : updateStatusMultiDate(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-    onBtnClick ? Navigator.of(context).pop() : Container();
+ // onBtnClick ? Navigator.of(context).pop() : Container();
     var value = await mmyEngine!.getDateOptionsFromEvent(eid).catchError((e) {
       onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
       DialogHelper.showMessage(context, e.message);
@@ -260,20 +309,49 @@ class EventDetailProvider extends BaseProvider {
     }
   }
 
+  bool statusMultiDate = false;
+
+  updateStatusMultiDate(bool value) {
+    statusMultiDate = value;
+    notifyListeners();
+  }
+
+  Future listOfDateSelected(BuildContext context, String eid, {bool onBtnClick = true}) async {
+    onBtnClick ? updateGetMultipleDate(true) : updateStatusMultiDate(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    var value = await mmyEngine!.listDateSelected(eid).catchError((e) {
+      onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    if (value != null) {
+      //  didsOfMultiDateSelected = value;
+      multiDateDidsList = value;
+      onBtnClick ? updateGetMultipleDate(false) : updateStatusMultiDate(false);
+    }
+  }
+
   clearMultiDateOption() {
     // clear multi date and time lists
     multipleDateOption.startDate.clear();
-    //   multipleDateOption.endDate.clear();
+    multipleDateOption.endDate.clear();
     multipleDateOption.startTime.clear();
     multipleDateOption.endTime.clear();
     multipleDateOption.startDateTime.clear();
     multipleDateOption.endDateTime.clear();
+    multipleDateOption.invitedContacts.clear();
+    multipleDateOption.eventAttendingPhotoUrlLists.clear();
+    multipleDateOption.eventAttendingKeysList.clear();
   }
 
   bool attendDateBtnColor = false;
   String? selectedAttendDateDid;
   String? selectedAttendDateEid;
-  int? selectedMultiDateIndex;
+  int selectedMultiDateIndex = 0;
+  List<String> multiDateDidsList = [];
+  // this list used for attend = false
+  List<String> didsOfMultiDateSelected = [];
 
   bool answerMultiDate = false;
 
@@ -283,11 +361,11 @@ class EventDetailProvider extends BaseProvider {
   }
 
   Future answerMultiDateOption(
-      BuildContext context, String eid, String did, bool attend) async {
+      BuildContext context, String eid, List<String> did, bool attend) async {
     updateMultiDate(true);
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    await mmyEngine!.answerDateOption(eid, did, attend).catchError((e) {
+    await mmyEngine!.answerDatesOption(eid, did, attend).catchError((e) {
       updateMultiDate(false);
       DialogHelper.showMessage(context, e.message);
     });
@@ -295,41 +373,169 @@ class EventDetailProvider extends BaseProvider {
     updateMultiDate(false);
   }
 
-  bool statusMultiDate = false;
+  // Future dateOptionStatus(BuildContext context, String eid, String did) async {
+  //   updateStatusMultiDate(true);
+  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   var value = await mmyEngine!.dateOptionStatus(eid, did).catchError((e) {
+  //     updateStatusMultiDate(false);
+  //     DialogHelper.showMessage(context, e.message);
+  //   });
+  //
+  //   print(value);
+  //
+  //   updateStatusMultiDate(false);
+  // }
 
-  updateStatusMultiDate(bool value) {
-    statusMultiDate = value;
+
+  bool deepLink = false;
+
+  updateDeepLink(bool val){
+    deepLink = val;
     notifyListeners();
   }
 
-  Future dateOptionStatus(BuildContext context, String eid, String did) async {
-    updateStatusMultiDate(true);
+  Future inviteUrl(BuildContext context, var eid) async {
+    updateDeepLink(true);
+
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!.dateOptionStatus(eid, did).catchError((e) {
-      updateStatusMultiDate(false);
-      DialogHelper.showMessage(context, e.message);
+    await mmyEngine!.inviteURL(eid).catchError((e) {
+      updateDeepLink(false);
     });
 
-    print(value);
-
-    updateStatusMultiDate(false);
+    updateDeepLink(false);
   }
 
-  List<String> eidsOfMultiDateSelected = [];
+  //  Future<void> openMap(BuildContext context, double latitude, double longitude) async {
+  //   String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+  //   if (await canLaunch(googleUrl)) {
+  //     await launch(googleUrl);
+  //   } else {
+  //     DialogHelper.showMessage(context, "could_not_open_map".tr());
+  //   }
+  // }
 
-  Future listOfDateSelected(BuildContext context, String eid) async {
-    updateStatusMultiDate(true);
+  launchMap(BuildContext context, lat, lng) async {
+    if (Platform.isAndroid) {
+      var url = "https://www.google.com/maps/search/?api=1&query=${lat},${lng}";
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
+    } else {
+      var urlAppleMaps = 'https://maps.apple.com/?q=$lat,$lng';
+      //  url = "comgooglemaps://?saddr=&daddr=$lat,$lng&directionsmode=driving";
+      if (await canLaunch(urlAppleMaps)) {
+        await launch(urlAppleMaps);
+      } else {
+        DialogHelper.showMessage(context, "could_not_open_map".tr());
+      }
+    }
+  }
+
+  // for organiser card
+  Contact? organiserContact;
+  bool contact = false;
+
+  updateGetContact(bool val){
+    contact = val;
+    notifyListeners();
+  }
+
+  Future getOrganiserContact(BuildContext context) async{
+    updateGetContact(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  var value =  await mmyEngine!.getContactFromProfile(eventDetail.organiserId.toString()).catchError((e){
+      updateGetContact(false);
+      DialogHelper.showMessage(context, "Organiser fetching error!");
+    });
+
+  if(value != null){
+    organiserContact = value;
+    updateGetContact(false);
+  } else{
+    DialogHelper.showMessage(context, "Organiser fetching error!");
+  }
+
+  }
+
+  setContactsValue() {
+    userDetail.firstName = organiserContact?.firstName;
+    userDetail.lastName = organiserContact?.lastName;
+    userDetail.email = organiserContact?.email;
+    userDetail.profileUrl = organiserContact?.photoURL;
+    userDetail.phone = organiserContact?.phoneNumber;
+    userDetail.countryCode = organiserContact?.countryCode;
+    userDetail.address = organiserContact?.addresses['Home'];
+    userDetail.checkForInvitation = false;
+   // userDetail.cid = cid;
+  }
+
+  /// Get event parameter
+  // this fun is used to check photo gallery or discussion switch whether on or off.
+  bool photoGalleryEnable = false;
+  bool discussionEnable = false;
+  bool getParam = false;
+
+  updateGetParam(bool val){
+    getParam = val;
+    notifyListeners();
+  }
+
+  Future getEventParam(BuildContext context, String eid, String param, bool photoGallery) async{
+    updateGetParam(true);
+
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
-    var value = await mmyEngine!.listDateSelected(eid).catchError((e) {
-      updateStatusMultiDate(false);
+    var value =  await mmyEngine!.getEventParam(eid, param: param).catchError((e) {
+      updateGetParam(false);
       DialogHelper.showMessage(context, e.message);
     });
 
-    if (value != null) {
-      eidsOfMultiDateSelected = value;
-      updateStatusMultiDate(false);
+    if(value != null){
+      if(photoGallery){
+        photoGalleryEnable = value;
+      } else{
+        discussionEnable = value;
+      }
+      updateGetParam(false);
     }
+
+  }
+
+
+  setEventValuesForAnnouncementEdit(Event event) {
+    announcementDetail.editAnnouncement = true;
+    announcementDetail.announcementId = event.eid;
+    announcementDetail.announcementPhotoUrl = event.photoURL;
+    announcementDetail.announcementTitle = event.title;
+    announcementDetail.announcementStartDateAndTime = event.start;
+    announcementDetail.announcementLocation = event.location;
+    announcementDetail.announcementDescription = event.description;
+}
+
+  Map? eventAnswer;
+ bool getAnswerForm = false;
+
+  updateAnswerForm(bool val){
+    getAnswerForm = val;
+    notifyListeners();
+  }
+
+  Future getAnswerEventForm(BuildContext context, String eid, String uid) async{
+    updateAnswerForm(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+    var value =  await mmyEngine!.getAnswerEventForm(eid, uid).catchError((e){
+      updateAnswerForm(false);
+     // DialogHelper.showMessage(context, "error_in_getting_answer_form".tr());
+    });
+
+    if(value != null){
+      eventAnswer = value.answers;
+      updateAnswerForm(false);
+    }
+
   }
 }

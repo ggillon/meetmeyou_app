@@ -69,12 +69,18 @@ class DynamicLinksApi extends BaseProvider {
     dynamicLinks.onLink.listen((dynamicLinkData) {
         linkEid = dynamicLinkData.link.toString().split("=");
         // print(linkEid);
-        calendarDetail.fromCalendarPage = true;
+        calendarDetail.fromAnotherPage = true;
+        calendarDetail.fromDeepLink = true;
         eventDetail.eid = linkEid[1].toString();
-        inviteUrl(context, linkEid[1].toString());
-      Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
-        unRespondedEventsApi(context);
-      });
+        // inviteUrl(context, linkEid[1].toString()).then((value) {
+        //   Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+        //     unRespondedEventsApi(context);
+        //   });
+        // });
+        Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+          calendarDetail.fromDeepLink = false;
+          unRespondedEventsApi(context);
+        });
     }).onError((error) {
       // Handle errors
       return DialogHelper.showMessage(context, error.message);
@@ -85,32 +91,38 @@ class DynamicLinksApi extends BaseProvider {
     try {
       if (data != null) {
         linkEid = data.link.toString().split("=");
-        calendarDetail.fromCalendarPage = true;
+        calendarDetail.fromAnotherPage = true;
+        calendarDetail.fromDeepLink = true;
         eventDetail.eid = linkEid[1].toString();
-        inviteUrl(context, linkEid[1].toString());
+        // inviteUrl(context, linkEid[1].toString()).then((value) {
+        //   Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+        //     unRespondedEventsApi(context);
+        //   });
+        // });
         Navigator.pushNamed(context, RoutesConstants.eventDetailScreen).then((value)  {
+          calendarDetail.fromDeepLink = false;
           unRespondedEventsApi(context);
         });
       }
-      else{
-        return DialogHelper.showMessage(context, "No Link found!");
-      }
+      // else{
+      //   return DialogHelper.showMessage(context, "No Link found!");
+      // }
     } catch (e) {
       return DialogHelper.showMessage(context, "No Link found!");
     }
   }
 
-  Future inviteUrl(BuildContext context, var eid) async {
-    setState(ViewState.Busy);
-
-    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
-
-    await mmyEngine!.inviteURL(eid).catchError((e) {
-      setState(ViewState.Idle);
-    });
-
-    setState(ViewState.Idle);
-  }
+  // Future inviteUrl(BuildContext context, var eid) async {
+  //   setState(ViewState.Busy);
+  //
+  //   mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+  //
+  //   await mmyEngine!.inviteURL(eid).catchError((e) {
+  //     setState(ViewState.Idle);
+  //   });
+  //
+  //   setState(ViewState.Idle);
+  // }
 
   bool val = false;
 
@@ -121,6 +133,9 @@ class DynamicLinksApi extends BaseProvider {
 
   Future unRespondedEventsApi(BuildContext context) async {
     updateValue(true);
+
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
     eventDetail.unRespondedEvent1 =
     await mmyEngine!.unrespondedEvents().catchError((e) {
       updateValue(false);

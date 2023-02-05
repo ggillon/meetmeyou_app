@@ -59,11 +59,11 @@ class VerifyScreen extends StatelessWidget {
                                 children: [
                                   Text("verify_identity".tr()).semiBoldText(
                                       ColorConstants.colorBlack,
-                                      scaler.getTextSize(14),
+                                      scaler.getTextSize(15),
                                       TextAlign.start),
                                   Text("enter_code_email_address".tr())
                                       .regularText(ColorConstants.colorBlack,
-                                      scaler.getTextSize(10), TextAlign.start)
+                                      scaler.getTextSize(11), TextAlign.start)
                                 ],
                               ),
                             )
@@ -137,7 +137,7 @@ class VerifyScreen extends StatelessWidget {
                             ),
                             Text("incorrect_verification".tr()).regularText(
                                 ColorConstants.colorRed,
-                                scaler.getTextSize(8),
+                                scaler.getTextSize(9),
                                 TextAlign.center)
                           ],
                         ),
@@ -146,7 +146,7 @@ class VerifyScreen extends StatelessWidget {
                         ),
                         Text("not_receive_code".tr()).semiBoldText(
                             ColorConstants.colorBlack,
-                            scaler.getTextSize(9.5),
+                            scaler.getTextSize(10),
                             TextAlign.center),
                         SizedBox(
                           height: scaler.getHeight(25),
@@ -166,7 +166,7 @@ class VerifyScreen extends StatelessWidget {
                           },
                           child: Text("sign_in_different_account".tr())
                               .semiBoldText(ColorConstants.primaryColor,
-                              scaler.getTextSize(9.5), TextAlign.center),
+                              scaler.getTextSize(10.2), TextAlign.center),
                         ),
                       ],
                     ),

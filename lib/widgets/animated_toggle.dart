@@ -29,7 +29,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Container(
       width: double.infinity,
-      height: scaler.getHeight(3),
+      height: scaler.getHeight(4),
       margin: scaler.getMarginLTRB(2.2, 0.0, 2.2, 0.0),
       child: Stack(
         children: <Widget>[
@@ -60,7 +60,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
                           alignment: Alignment.center,
                           child: Text(widget.values[index]).semiBoldText(
                               ColorConstants.colorBlack,
-                              scaler.getTextSize(8.5),
+                              scaler.getTextSize(9.5),
                               TextAlign.center),
                         )),
               ),
@@ -72,7 +72,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
             alignment:
                 initialPosition ? Alignment.centerLeft : Alignment.centerRight,
             child: Container(
-              width: scaler.getWidth(40),
+              width: scaler.getWidth(45),
               height: scaler.getHeight(4),
               decoration: BoxDecoration(
                   color: widget.buttonColor,
@@ -83,7 +83,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
                   borderRadius: scaler.getBorderRadiusCircular(15)),
               child: Text(initialPosition ? widget.values[0] : widget.values[1])
                   .semiBoldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(8.5), TextAlign.center),
+                      scaler.getTextSize(9.5), TextAlign.center),
               alignment: Alignment.center,
             ),
           ),

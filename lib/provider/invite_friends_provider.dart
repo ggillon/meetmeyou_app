@@ -6,12 +6,15 @@ import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:contacts_service/contacts_service.dart' as phone;
 
 class InviteFriendsProvider extends BaseProvider {
   MMYEngine? mmyEngine;
+
 
   List<Contact> _contactList = [];
 
@@ -52,7 +55,7 @@ class InviteFriendsProvider extends BaseProvider {
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
     var value = await mmyEngine!.getPhoneContacts().catchError((e) {
       setState(ViewState.Idle);
-      DialogHelper.showMessage(context, e.message);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
     });
     if (await Permission.contacts.request().isDenied) {
       setState(ViewState.Idle);
@@ -62,7 +65,7 @@ class InviteFriendsProvider extends BaseProvider {
       return CommonWidgets.errorDialog(
           context,
           'enable_contact_access_permission'.tr());
-    } else if (value.isNotEmpty) {
+    } else if (value != null) {
       setState(ViewState.Idle);
       value.sort((a, b) {
         return a.displayName
@@ -74,20 +77,29 @@ class InviteFriendsProvider extends BaseProvider {
       isChecked = List<bool>.filled(contactList.length, false);
     } else {
       setState(ViewState.Idle);
+      DialogHelper.showMessage(context, "Error! while fetching contacts.");
     }
-    notifyListeners();
   }
 
 
-  Future onTapInviteBtn(BuildContext context) async {
+  Future onTapInviteBtn(BuildContext context, List<Contact> contact) async {
     updateValue(true);
-    await mmyEngine!.invitePhoneContacts(checkedContactList).catchError((e) {
+    await mmyEngine!.invitePhoneContacts(contact).catchError((e) {
       updateValue(false);
       DialogHelper.showMessage(context, e.message);
     });
-    updateValue(false);
-    Navigator.of(context).pop();
-    DialogHelper.showMessage(context, "Invited Successfully");
 
+    contact[0].status = 'Invited contact';
+    updateValue(false);
+  //  Navigator.of(context).pop();
+    DialogHelper.showMessage(context, "Invitation send Successfully");
+
+  }
+
+  bool loading = true;
+
+  updateLoadingStatus(bool val){
+    loading = val;
+    notifyListeners();
   }
 }

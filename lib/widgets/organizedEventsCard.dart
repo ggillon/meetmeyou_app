@@ -21,6 +21,8 @@ import 'package:meetmeyou_app/widgets/shimmer/organizedEventCardShimmer.dart';
 
 class OrganizedEventsCard extends StatelessWidget {
   final bool showEventRespondBtn;
+  final bool showEventScreen;
+  final String contactId;
   final answer1Controller = TextEditingController();
   final answer2Controller = TextEditingController();
   final answer3Controller = TextEditingController();
@@ -28,14 +30,14 @@ class OrganizedEventsCard extends StatelessWidget {
   final answer5Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  OrganizedEventsCard({Key? key, required this.showEventRespondBtn})
+  OrganizedEventsCard({Key? key, required this.showEventRespondBtn, required this.showEventScreen, required this.contactId})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return BaseView<OrganizeEventCardProvider>(onModelReady: (provider) {
-      provider.getUserEvents(context);
+      provider.getUserEvents(context, contactId);
     }, builder: (context, provider, _) {
       return provider.state == ViewState.Busy
           ? OrganizedEventCardShimmer(showEventRespondBtn: showEventRespondBtn)
@@ -47,7 +49,7 @@ class OrganizedEventsCard extends StatelessWidget {
                       padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
                       child: Text("organized_events".tr()).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11),
                           TextAlign.left),
                     ),
                     SizedBox(height: scaler.getHeight(1.5)),
@@ -58,27 +60,29 @@ class OrganizedEventsCard extends StatelessWidget {
                         itemBuilder: (BuildContext context, int index,
                             int pageViewIndex) {
                           return GestureDetector(
-                            onTap: showEventRespondBtn == true
+                            onTap: showEventScreen == true
                                 ? () {
                                     provider.homePageProvider
                                         .setEventValuesForEdit(
                                             provider.eventLists[index]);
                                     provider.eventDetail.eventBtnStatus =
-                                        CommonEventFunction.getEventBtnStatus(
-                                            provider.eventLists[index],
-                                            provider.userDetail.cid.toString());
+                                    provider.eventLists[index].eventType == EVENT_TYPE_PRIVATE
+                                        ?   CommonEventFunction.getEventBtnStatus(
+                                        provider.eventLists[index],
+                                        provider.auth.currentUser!.uid.toString())
+                                        :  CommonEventFunction.getEventBtnStatus(
+                                        provider.eventLists[index],
+                                        provider.auth.currentUser!.uid.toString());
                                     provider.eventDetail.textColor =
                                         CommonEventFunction
                                             .getEventBtnColorStatus(
                                                 provider.eventLists[index],
-                                                provider.userDetail.cid
-                                                    .toString());
+                                            provider.auth.currentUser!.uid.toString());
                                     provider.eventDetail.btnBGColor =
                                         CommonEventFunction
                                             .getEventBtnColorStatus(
                                                 provider.eventLists[index],
-                                                provider.userDetail.cid
-                                                    .toString(),
+                                            provider.auth.currentUser!.uid.toString(),
                                                 textColor: false);
                                     provider.eventDetail.eventMapData = provider
                                         .eventLists[index].invitedContacts;
@@ -89,12 +93,12 @@ class OrganizedEventsCard extends StatelessWidget {
                                     provider.eventDetail.organiserName =
                                         provider
                                             .eventLists[index].organiserName;
-                                    provider.calendarDetail.fromCalendarPage =
+                                    provider.calendarDetail.fromAnotherPage =
                                         false;
                                     Navigator.pushNamed(context,
                                             RoutesConstants.eventDetailScreen)
                                         .then((value) {
-                                      provider.getUserEvents(context);
+                                      provider.getUserEvents(context, contactId);
                                       provider.unRespondedEventsApi(context);
                                     });
                                   }
@@ -116,7 +120,7 @@ class OrganizedEventsCard extends StatelessWidget {
                           );
                         },
                         options: CarouselOptions(
-                          height: scaler.getHeight(30.5),
+                          height: scaler.getHeight(32.5),
                           enableInfiniteScroll: false,
                           // aspectRatio: 1.5,
                           viewportFraction: 0.9,
@@ -141,14 +145,14 @@ class OrganizedEventsCard extends StatelessWidget {
                   scaler.getBorderRadiusCircularLR(10.0, 10.0, 0.0, 0.0),
               child: eventList.photoURL == null
                   ? Container(
-                      height: scaler.getHeight(21),
+                      height: scaler.getHeight(24),
                       width: MediaQuery.of(context).size.width / 1.2,
                       color: ColorConstants.primaryColor,
                     )
                   : ImageView(
                       path: eventList.photoURL,
-                      fit: BoxFit.fill,
-                      height: scaler.getHeight(21),
+                      fit: BoxFit.cover,
+                      height: scaler.getHeight(24),
                       width: MediaQuery.of(context).size.width / 1.2,
                     ),
             ),
@@ -170,12 +174,12 @@ class OrganizedEventsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(eventList.title).boldText(ColorConstants.colorBlack,
-                        scaler.getTextSize(10), TextAlign.left,
+                        scaler.getTextSize(11.5), TextAlign.left,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
-                    //  SizedBox(height: scaler.getHeight(0.1)),
+                      SizedBox(height: scaler.getHeight(0.2)),
                     Text(eventList.description).regularText(
                         ColorConstants.colorGray,
-                        scaler.getTextSize(8.5),
+                        scaler.getTextSize(10.0),
                         TextAlign.left,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -183,11 +187,12 @@ class OrganizedEventsCard extends StatelessWidget {
                   ],
                 ),
               ),
-              showEventRespondBtn
+              showEventRespondBtn && showEventScreen
                   ? SizedBox(width: scaler.getWidth(1))
                   : SizedBox(width: scaler.getWidth(0)),
-              showEventRespondBtn
-                  ? eventRespondBtn(context, scaler, eventList, provider, index)
+              showEventRespondBtn && showEventScreen
+                  ? (eventList.eventType == EVENT_TYPE_PRIVATE ?
+                      eventRespondBtn(context, scaler, eventList, provider, index) : announcementRespondBtn(context, scaler, eventList, provider, index))
                   : Container()
             ],
           ),
@@ -206,19 +211,19 @@ class OrganizedEventsCard extends StatelessWidget {
           children: [
             Text(DateTimeHelper.getMonthByName(event.start)).regularText(
                 ColorConstants.colorBlack,
-                scaler.getTextSize(8.5),
+                scaler.getTextSize(9.8),
                 TextAlign.center),
             Text(event.start.day <= 9
                     ? "0" + event.start.day.toString()
                     : event.start.day.toString())
-                .boldText(ColorConstants.colorBlack, scaler.getTextSize(11),
+                .boldText(ColorConstants.colorBlack, scaler.getTextSize(12.2),
                     TextAlign.center)
           ],
         ),
         bgColor: ColorConstants.colorWhite,
         radius: scaler.getBorderRadiusCircular(8),
-        width: scaler.getWidth(10),
-        height: scaler.getHeight(4),
+        width: scaler.getWidth(11.2),
+        height: scaler.getHeight(5),
       ),
     );
   }
@@ -227,15 +232,50 @@ class OrganizedEventsCard extends StatelessWidget {
       OrganizeEventCardProvider provider, int index) {
     return GestureDetector(
       onTap: () {
-        if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
-            "respond") {
+        if (CommonEventFunction.getEventBtnStatus(event, provider.auth.currentUser!.uid.toString()) == "respond") {
           answer1Controller.clear();
           answer2Controller.clear();
           answer3Controller.clear();
           answer4Controller.clear();
           answer5Controller.clear();
-          CommonWidgets.respondToEventBottomSheet(context, scaler, going: () {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, multipleDate: event.multipleDates, multiDate: (){
+            Navigator.of(context).pop();
+            provider.homePageProvider
+                .setEventValuesForEdit(
+                provider.eventLists[index]);
+            provider.eventDetail.eventBtnStatus =
+                CommonEventFunction.getEventBtnStatus(
+                    provider.eventLists[index],
+                    provider.auth.currentUser!.uid.toString());
+            provider.eventDetail.textColor =
+                CommonEventFunction
+                    .getEventBtnColorStatus(
+                    provider.eventLists[index],
+                    provider.auth.currentUser!.uid.toString());
+            provider.eventDetail.btnBGColor =
+                CommonEventFunction
+                    .getEventBtnColorStatus(
+                    provider.eventLists[index],
+                    provider.auth.currentUser!.uid.toString(),
+                    textColor: false);
+            provider.eventDetail.eventMapData = provider
+                .eventLists[index].invitedContacts;
+            provider.eventDetail.eid =
+                provider.eventLists[index].eid;
+            provider.eventDetail.organiserId =
+                provider.eventLists[index].organiserID;
+            provider.eventDetail.organiserName =
+                provider
+                    .eventLists[index].organiserName;
+            provider.calendarDetail.fromAnotherPage =
+            false;
+            Navigator.pushNamed(context,
+                RoutesConstants.eventDetailScreen)
+                .then((value) {
+              provider.getUserEvents(context, contactId);
+              provider.unRespondedEventsApi(context);
+            });
+          },going: () {
             provider.homePageProvider.getUserDetail(context);
             // if (event.multipleDates == true) {
             //   provider
@@ -255,32 +295,32 @@ class OrganizedEventsCard extends StatelessWidget {
                     context, scaler, event, questionsList, provider);
               } else {
                 Navigator.of(context).pop();
-                provider.replyToEvent(context, event.eid, EVENT_ATTENDING);
+                provider.replyToEvent(context, event.eid, EVENT_ATTENDING, contactId);
               }
          //   }
           }, notGoing: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_ATTENDING, contactId);
           }, hide: () {
             Navigator.of(context).pop();
-            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED);
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, contactId);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+                event, provider.auth.currentUser!.uid.toString()) ==
             "edit") {
           provider.homePageProvider.setEventValuesForEdit(event);
           provider.homePageProvider.clearMultiDateOption();
           Navigator.pushNamed(context, RoutesConstants.createEventScreen)
               .then((value) {
-            provider.getUserEvents(context);
+            provider.getUserEvents(context, contactId);
           });
         } else if (CommonEventFunction.getEventBtnStatus(
-                event, provider.userDetail.cid.toString()) ==
+                event, provider.auth.currentUser!.uid.toString()) ==
             "cancelled") {
-          if (provider.userDetail.cid == event.organiserID) {
+          if (provider.auth.currentUser!.uid.toString() == event.organiserID) {
             CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
               Navigator.of(context).pop();
-              provider.deleteEvent(context, event.eid);
+              provider.deleteEvent(context, event.eid, contactId);
             });
           } else {
             Container();
@@ -304,7 +344,7 @@ class OrganizedEventsCard extends StatelessWidget {
                 .semiBoldText(
                     CommonEventFunction.getEventBtnColorStatus(
                         event, provider.auth.currentUser!.uid),
-                    scaler.getTextSize(9.5),
+                    scaler.getTextSize(10.5),
                     TextAlign.center)),
         bgColor: CommonEventFunction.getEventBtnColorStatus(
             event, provider.auth.currentUser!.uid,
@@ -312,8 +352,64 @@ class OrganizedEventsCard extends StatelessWidget {
         radius: BorderRadius.all(
           Radius.circular(12),
         ),
-        width: scaler.getWidth(20),
-        height: scaler.getHeight(3.5),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
+      ),
+    );
+  }
+
+  Widget announcementRespondBtn(BuildContext context,
+      ScreenScaler scaler,
+      Event event,
+      OrganizeEventCardProvider provider,
+      int index) {
+    return GestureDetector(
+      onTap: () {
+        if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.toString()) == "edit"){
+          if (provider.auth.currentUser!.uid == event.organiserID) {
+            provider.homePageProvider.setEventValuesForAnnouncementEdit(event);
+            Navigator.pushNamed(
+                context, RoutesConstants.createAnnouncementScreen)
+                .then((value) {
+              provider.getUserEvents(context, contactId);
+            });
+          }
+        } else if (CommonEventFunction.getAnnouncementBtnStatus(event, provider.auth.currentUser!.toString()) == "cancelled"){
+          if (provider.auth.currentUser!.uid == event.organiserID) {
+            CommonWidgets.eventCancelBottomSheet(context, scaler, delete: () {
+              Navigator.of(context).pop();
+              provider.deleteEvent(context, event.eid, contactId);
+            });
+          } else {
+            Container();
+          }
+        }
+        else {
+          CommonWidgets.respondToEventBottomSheet(context, scaler, hide: (){
+            Navigator.of(context).pop();
+            provider.replyToEvent(context, event.eid, EVENT_NOT_INTERESTED, contactId);
+          }, pastEventOrAnnouncement : true);
+        }
+      },
+      child: CustomShape(
+        child: Center(
+            child: Text(CommonEventFunction.getAnnouncementBtnStatus(
+                event, provider.auth.currentUser!.uid.toString())
+                .toString()
+                .tr())
+                .semiBoldText(
+                CommonEventFunction.getEventBtnColorStatus(
+                    event, provider.auth.currentUser!.uid.toString()),
+                scaler.getTextSize(10.5),
+                TextAlign.center)),
+        bgColor: CommonEventFunction.getEventBtnColorStatus(
+            event, provider.auth.currentUser!.uid.toString(),
+            textColor: false),
+        radius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        width: scaler.getWidth(24),
+        height: scaler.getHeight(4.5),
       ),
     );
   }
@@ -331,7 +427,7 @@ class OrganizedEventsCard extends StatelessWidget {
             width: double.infinity,
             child: AlertDialog(
                 title: Text("event_form_questionnaire".tr())
-                    .boldText(ColorConstants.colorBlack, 14.0, TextAlign.left),
+                    .boldText(ColorConstants.colorBlack, 15.0, TextAlign.left),
                 content: Container(
                   width: scaler.getWidth(75),
                   child: Form(
@@ -344,7 +440,7 @@ class OrganizedEventsCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("${index + 1}. ${questionsList[index]}")
-                                  .mediumText(ColorConstants.colorBlack, 12,
+                                  .mediumText(ColorConstants.colorBlack, 13,
                                       TextAlign.left,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis),
@@ -354,7 +450,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                     TextCapitalization.sentences,
                                 controller: answerController(index),
                                 style: ViewDecoration.textFieldStyle(
-                                    scaler.getTextSize(9.5),
+                                    scaler.getTextSize(10.5),
                                     ColorConstants.colorBlack),
                                 decoration:
                                     ViewDecoration.inputDecorationWithCurve(
@@ -396,7 +492,7 @@ class OrganizedEventsCard extends StatelessWidget {
                               };
                               Navigator.of(context).pop();
                               provider.answersToEventQuestionnaire(
-                                  context, event.eid, answersMap);
+                                  context, event.eid, answersMap, contactId);
                             }
                           },
                           child: Container(
@@ -407,7 +503,7 @@ class OrganizedEventsCard extends StatelessWidget {
                                       scaler.getBorderRadiusCircular(10.0)),
                               child: Text('submit_answers'.tr()).semiBoldText(
                                   ColorConstants.colorWhite,
-                                  12,
+                                  13,
                                   TextAlign.left))),
                       SizedBox(height: scaler.getHeight(0.5))
                     ],

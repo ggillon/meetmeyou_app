@@ -51,9 +51,9 @@ class MyAccountScreen extends StatelessWidget {
                     children: [
                       Text("my_account".tr()).boldText(
                           ColorConstants.colorBlack,
-                          scaler.getTextSize(16),
+                          scaler.getTextSize(16.5),
                           TextAlign.left),
-                      SizedBox(height: scaler.getHeight(2)),
+                      SizedBox(height: scaler.getHeight(2.2)),
                       CommonWidgets.userDetails(scaler,
                           profilePic: provider.userProfilePic,
                           firstName: provider.firstName.toString(),
@@ -83,7 +83,7 @@ class MyAccountScreen extends StatelessWidget {
                   ),
                 ),
                 OrganizedEventsCard(
-                  showEventRespondBtn: true,
+                  showEventRespondBtn: true, showEventScreen: true, contactId: provider.auth.currentUser!.uid.toString(),
                 ),
               ],
             ),

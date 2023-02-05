@@ -12,6 +12,7 @@ import 'package:meetmeyou_app/constants/string_constants.dart';
 import 'package:meetmeyou_app/constants/validations.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/common_used.dart';
+import 'package:meetmeyou_app/helper/common_widgets.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
 import 'package:meetmeyou_app/provider/signup_provider.dart';
@@ -22,6 +23,7 @@ import 'package:meetmeyou_app/widgets/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:meetmeyou_app/extensions/allExtensions.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SignUpPage extends StatelessWidget {
   final emailController = TextEditingController();
@@ -65,56 +67,83 @@ class SignUpPage extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           if (provider.userDetail.profileUrl == null) {
-                            var value = await provider.permissionCheck();
-                            if (value) {
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      CustomDialog(
-                                        cameraClick: () {
-                                          provider.getImage(context, 1);
-                                        },
-                                        galleryClick: () {
-                                          provider.getImage(context, 2);
-                                        },
-                                        cancelClick: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ));
+                            if (await Permission.storage.request().isGranted) {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                          cameraClick: () {
+                                            provider.getImage(context, 1);
+                                          },
+                                          galleryClick: () {
+                                            provider.getImage(context, 2).catchError((e){
+                                              CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                            });
+                                          },
+                                          cancelClick: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ));
+                            } else if(await Permission.storage.request().isDenied){
+                              Map<Permission, PermissionStatus> statuses = await [
+                                Permission.storage,
+                              ].request();
+
+                            } else if(await Permission.storage.request().isPermanentlyDenied){
+                              CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                             }
+                            // var value = await provider.permissionCheck();
+                            // if (value) {
+                            //   showDialog(
+                            //       barrierDismissible: false,
+                            //       context: context,
+                            //       builder: (BuildContext context) =>
+                            //           CustomDialog(
+                            //             cameraClick: () {
+                            //               provider.getImage(context, 1);
+                            //             },
+                            //             galleryClick: () {
+                            //               provider.getImage(context, 2);
+                            //             },
+                            //             cancelClick: () {
+                            //               Navigator.of(context).pop();
+                            //             },
+                            //           ));
+                            // }
                           }
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Stack(
                             children: [
-                              provider.image == null &&
-                                      signUpType != StringConstants.social
+                              provider.image == null
+                                  && signUpType != StringConstants.social
                                   ? Container(
                                       color: ColorConstants.primaryColor,
-                                      width: scaler.getWidth(20),
-                                      height: scaler.getWidth(20),
+                                      width: scaler.getWidth(21),
+                                      height: scaler.getWidth(21),
                                     )
-                                  : provider.userDetail.profileUrl != null
+                                  :
+                              provider.userDetail.profileUrl != null
                                       ? ImageView(
                                           path: provider.userDetail.profileUrl,
-                                          width: scaler.getWidth(20),
+                                          width: scaler.getWidth(21),
                                           fit: BoxFit.cover,
-                                          height: scaler.getWidth(20),
+                                          height: scaler.getWidth(21),
                                         )
                                       : provider.image == null
                                           ? Container(
                                               color:
                                                   ColorConstants.primaryColor,
-                                              width: scaler.getWidth(20),
-                                              height: scaler.getWidth(20),
+                                              width: scaler.getWidth(21),
+                                              height: scaler.getWidth(21),
                                             )
                                           : ImageView(
                                               file: provider.image,
-                                              width: scaler.getWidth(20),
+                                              width: scaler.getWidth(21),
                                               fit: BoxFit.cover,
-                                              height: scaler.getWidth(20),
+                                              height: scaler.getWidth(21),
                                             ),
                               Positioned(
                                 right: 5,
@@ -125,8 +154,8 @@ class SignUpPage extends StatelessWidget {
                                         child: ClipOval(
                                           child: Container(
                                             color: ColorConstants.colorWhite,
-                                            width: scaler.getWidth(5),
-                                            height: scaler.getHeight(5),
+                                            width: scaler.getWidth(5.5),
+                                            height: scaler.getHeight(5.5),
                                             child: Center(
                                               child: ImageView(
                                                 color:
@@ -149,17 +178,17 @@ class SignUpPage extends StatelessWidget {
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Text("first_name".tr()).boldText(Colors.black,
-                            scaler.getTextSize(9.5), TextAlign.center),
+                            scaler.getTextSize(10.5), TextAlign.center),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(0.2),
+                        height: scaler.getHeight(0.3),
                       ),
                       TextFormField(
-                        enabled: signUpType != StringConstants.social,
+                       // enabled: signUpType != StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: firstNameController,
                         style: ViewDecoration.textFieldStyle(
-                            scaler.getTextSize(9.5), ColorConstants.colorBlack),
+                            scaler.getTextSize(10.5), ColorConstants.colorBlack),
                         decoration: ViewDecoration.inputDecorationWithCurve(
                             "Cody", scaler, ColorConstants.primaryColor),
                         onFieldSubmitted: (data) {
@@ -177,22 +206,22 @@ class SignUpPage extends StatelessWidget {
                         },
                       ),
                       SizedBox(
-                        height: scaler.getHeight(1),
+                        height: scaler.getHeight(1.2),
                       ),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Text("last_name".tr()).boldText(Colors.black,
-                            scaler.getTextSize(9.5), TextAlign.center),
+                            scaler.getTextSize(10.5), TextAlign.center),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(0.2),
+                        height: scaler.getHeight(0.3),
                       ),
                       TextFormField(
-                        enabled: signUpType != StringConstants.social,
+                       // enabled: signUpType != StringConstants.social,
                         textCapitalization: TextCapitalization.sentences,
                         controller: lastNameController,
                         style: ViewDecoration.textFieldStyle(
-                            scaler.getTextSize(9.5), ColorConstants.colorBlack),
+                            scaler.getTextSize(10.5), ColorConstants.colorBlack),
                         decoration: ViewDecoration.inputDecorationWithCurve(
                             "Fisher", scaler, ColorConstants.primaryColor),
                         onFieldSubmitted: (data) {
@@ -215,16 +244,16 @@ class SignUpPage extends StatelessWidget {
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Text("email".tr()).boldText(Colors.black,
-                            scaler.getTextSize(9.5), TextAlign.center),
+                            scaler.getTextSize(10.5), TextAlign.center),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(0.2),
+                        height: scaler.getHeight(0.3),
                       ),
                       TextFormField(
-                        enabled: signUpType != StringConstants.social,
+                      //  enabled: signUpType != StringConstants.social,
                         controller: emailController,
                         style: ViewDecoration.textFieldStyle(
-                            scaler.getTextSize(9.5), ColorConstants.colorBlack),
+                            scaler.getTextSize(10.5), ColorConstants.colorBlack),
                         decoration: ViewDecoration.inputDecorationWithCurve(
                             "sample@gmail.com",
                             scaler,
@@ -250,22 +279,22 @@ class SignUpPage extends StatelessWidget {
                           : Column(
                               children: [
                                 SizedBox(
-                                  height: scaler.getHeight(1),
+                                  height: scaler.getHeight(1.2),
                                 ),
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text("password".tr()).boldText(
                                       Colors.black,
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       TextAlign.center),
                                 ),
                                 SizedBox(
-                                  height: scaler.getHeight(0.2),
+                                  height: scaler.getHeight(0.3),
                                 ),
                                 TextFormField(
                                   controller: passwordController,
                                   style: ViewDecoration.textFieldStyle(
-                                      scaler.getTextSize(9.5),
+                                      scaler.getTextSize(10.5),
                                       ColorConstants.colorBlack),
                                   decoration:
                                       ViewDecoration.inputDecorationWithCurve(
@@ -291,21 +320,24 @@ class SignUpPage extends StatelessWidget {
                               ],
                             ),
                       SizedBox(
-                        height: scaler.getHeight(1),
+                        height: scaler.getHeight(1.2),
                       ),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Text("phone_number".tr()).boldText(Colors.black,
-                            scaler.getTextSize(9.5), TextAlign.center),
+                            scaler.getTextSize(10.5), TextAlign.center),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(0.2),
+                        height: scaler.getHeight(0.3),
                       ),
                       Container(
                         child: TextFormField(
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           controller: phoneNumberController,
                           style: ViewDecoration.textFieldStyle(
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(10.5),
                               ColorConstants.colorBlack),
                           decoration: ViewDecoration.inputDecorationWithCurve(
                             "",
@@ -313,15 +345,15 @@ class SignUpPage extends StatelessWidget {
                             ColorConstants.primaryColor,
                             prefixIcon: CountryCodePicker(
                               onChanged: (value) {
-                                provider.countryCode = value.dialCode!;
+                                provider.countryCode = value.dialCode ?? "+1";
                               },
                               padding:
                                   scaler.getPaddingLTRB(0.0, 0.0, 0.0, 0.1),
                               textStyle: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               initialSelection: "US",
-                              favorite: ['+91', 'IND'],
+                            //  favorite: ['US', 'GB', 'BE', 'FR', 'LU', 'AN', '+49'],
                               showFlag: true,
                               showFlagDialog: true,
                               showCountryOnly: false,
@@ -337,25 +369,27 @@ class SignUpPage extends StatelessWidget {
                           validator: (value) {
                             if (value!.trim().isEmpty) {
                               return null;
-                            } else if (!Validations.validateMobile(
-                                value.trim())) {
-                              return "invalid_phone_number".tr();
-                            } else {
+                            }
+                            // else if (!Validations.validateMobile(
+                            //     value.trim())) {
+                            //   return "invalid_phone_number".tr();
+                            // }
+                            else {
                               return null;
                             }
                           },
                         ),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(1),
+                        height: scaler.getHeight(1.2),
                       ),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Text("address".tr()).boldText(Colors.black,
-                            scaler.getTextSize(9.5), TextAlign.center),
+                            scaler.getTextSize(10.5), TextAlign.center),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(0.2),
+                        height: scaler.getHeight(0.3),
                       ),
                       GestureDetector(
                         onTap: () async {
@@ -378,7 +412,7 @@ class SignUpPage extends StatelessWidget {
                           enabled: false,
                           controller: addressController,
                           style: ViewDecoration.textFieldStyle(
-                              scaler.getTextSize(9.5),
+                              scaler.getTextSize(10.5),
                               ColorConstants.colorBlack),
                           decoration: ViewDecoration.inputDecorationWithCurve(
                               "enter_address".tr(),
@@ -394,7 +428,7 @@ class SignUpPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: scaler.getHeight(5),
+                        height: scaler.getHeight(5.2),
                       ),
                       provider.state == ViewState.Idle
                           ? GestureDetector(
@@ -412,6 +446,7 @@ class SignUpPage extends StatelessWidget {
                                         addressController.text);
                                   } else {
                                     var userDetail = UserDetail();
+                                    userDetail.appleSignUpType = false;
                                     userDetail.email = emailController.text;
                                     userDetail.firstName =
                                         firstNameController.text;
@@ -438,11 +473,11 @@ class SignUpPage extends StatelessWidget {
                                 child: Center(
                                     child: Text("next".tr()).mediumText(
                                         ColorConstants.colorWhite,
-                                        scaler.getTextSize(10),
+                                        scaler.getTextSize(11),
                                         TextAlign.center)),
                                 bgColor: ColorConstants.primaryColor,
                                 radius: BorderRadius.all(Radius.circular(10)),
-                                height: scaler.getHeight(4),
+                                height: scaler.getHeight(5),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             )
@@ -450,7 +485,7 @@ class SignUpPage extends StatelessWidget {
                               child: CircularProgressIndicator(),
                             ),
                       SizedBox(
-                        height: scaler.getHeight(3),
+                        height: scaler.getHeight(3.2),
                       ),
                       Container(
                         width: scaler.getWidth(70),
@@ -467,7 +502,7 @@ class SignUpPage extends StatelessWidget {
                         },
                         child: Text("sign_in_different_account".tr())
                             .semiBoldText(ColorConstants.primaryColor,
-                                scaler.getTextSize(9.5), TextAlign.center),
+                                scaler.getTextSize(10.5), TextAlign.center),
                       )
                     ],
                   ),

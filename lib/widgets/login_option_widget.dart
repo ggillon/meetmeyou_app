@@ -28,13 +28,13 @@ class LoginOptionWidget extends StatelessWidget {
             width: scaler.getWidth(5),
           ),
           Text(title!).semiBoldText(ColorConstants.colorBlack,
-              scaler.getTextSize(11), TextAlign.center)
+              scaler.getTextSize(12), TextAlign.center)
         ],
       )),
       bgColor: Colors.transparent,
       strokeColor: ColorConstants.colorBlack,
       radius: BorderRadius.all(Radius.circular(10)),
-      height: scaler.getHeight(4),
+      height: scaler.getHeight(5),
       width: MediaQuery.of(context).size.width,
     );
   }

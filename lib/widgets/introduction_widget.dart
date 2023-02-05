@@ -29,10 +29,10 @@ class IntroductionWidget extends StatelessWidget {
         ),
         SizedBox(height: scaler.getHeight(2),),
         Text(title!).semiBoldText(ColorConstants.colorBlack,
-            scaler.getTextSize(16), TextAlign.center),
+            scaler.getTextSize(16.5), TextAlign.center),
         SizedBox(height: scaler.getHeight(0.4),),
         Text(subText!).regularText(ColorConstants.colorGray,
-            scaler.getTextSize(10), TextAlign.center)
+            scaler.getTextSize(11), TextAlign.center)
       ],
     );
   }

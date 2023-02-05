@@ -25,11 +25,11 @@ class CommonWidgets {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(field).boldText(ColorConstants.colorBlack,
-                  scaler.getTextSize(9.5), TextAlign.left),
+                  scaler.getTextSize(10.5), TextAlign.left),
               SizedBox(height: scaler.getHeight(0.3)),
               Text(countryCode ? cCode! + " " + value : value).regularText(
                   ColorConstants.colorGray,
-                  scaler.getTextSize(9.5),
+                  scaler.getTextSize(10.5),
                   TextAlign.left,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
@@ -53,7 +53,7 @@ class CommonWidgets {
           height: scaler.getWidth(22),
           child: ClipRRect(
             borderRadius: scaler.getBorderRadiusCircular(10.0),
-            child: profilePic == null || profilePic == ""
+            child: profilePic == null
                 ? Container(
                     color: ColorConstants.primaryColor,
                     width: scaler.getWidth(22),
@@ -104,14 +104,14 @@ class CommonWidgets {
       bool search = false,
       VoidCallback? addIconTapAction,
       VoidCallback? deleteIconTapAction,
-      bool invitation = false}) {
+      bool invitation = false, bool currentUser = false, bool? isFavouriteContact}) {
     return Column(children: [
       Card(
         color: invitation
             ? ColorConstants.primaryColor
-            : ColorConstants.colorWhite,
+            :  currentUser == true ? ColorConstants.colorNewGray.withOpacity(0.3) : ColorConstants.colorWhite,
         elevation: 3.0,
-        shadowColor: ColorConstants.colorWhite,
+        shadowColor: currentUser == true ? ColorConstants.colorNewGray.withOpacity(0.1) : ColorConstants.colorWhite,
         shape: RoundedRectangleBorder(
             borderRadius: scaler.getBorderRadiusCircular(12)),
         child: Padding(
@@ -120,13 +120,14 @@ class CommonWidgets {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               profileCardImageDesign(scaler, profileImg!),
-              SizedBox(width: scaler.getWidth(2.5)),
+              SizedBox(width: scaler.getWidth(3.0)),
               profileCardNameAndEmailDesign(scaler, contactName, email,
-                  search: true, searchStatus: searchStatus),
-              iconStatusCheck(scaler,
+                  search: true, searchStatus: searchStatus, isFavouriteContact: isFavouriteContact),
+              currentUser == true ? Container() : iconStatusCheck(scaler,
                   searchStatus: search ? searchStatus : "",
                   addIconTap: search ? addIconTapAction : () {},
-                  deleteIconTap: search ? deleteIconTapAction ?? () {} : () {})
+                  deleteIconTap: search ? deleteIconTapAction ?? () {} : () {}
+              )
             ],
           ),
         ),
@@ -144,17 +145,17 @@ class CommonWidgets {
             child: profileImg == null
                 ? Container(
                     color: ColorConstants.primaryColor,
-                    width: scaler.getWidth(10),
-                    height: scaler.getWidth(10),
+                    width: scaler.getWidth(11.5),
+                    height: scaler.getWidth(11.5),
                   )
                 : Container(
-                    width: scaler.getWidth(10),
-                    height: scaler.getWidth(10),
+                    width: scaler.getWidth(11.5),
+                    height: scaler.getWidth(11.5),
                     child: ImageView(
                       path: profileImg,
-                      width: scaler.getWidth(10),
-                      height: scaler.getWidth(10),
-                      fit: BoxFit.cover,
+                      width: scaler.getWidth(11.5),
+                      height: scaler.getWidth(11.5),
+                     // fit: BoxFit.contain,
                     ),
                   )),
         Positioned(
@@ -167,18 +168,23 @@ class CommonWidgets {
 
   static Widget profileCardNameAndEmailDesign(
       ScreenScaler scaler, String contactName, String email,
-      {bool search = false, String? searchStatus}) {
+      {bool search = false, String? searchStatus, bool? isFavouriteContact}) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(contactName.capitalize()).semiBoldText(ColorConstants.colorBlack,
-              scaler.getTextSize(9.8), TextAlign.left,
-              maxLines: 1, overflow: TextOverflow.ellipsis),
-          SizedBox(height: scaler.getHeight(0.2)),
+          Row(
+            children: [
+              Text(contactName.capitalize()).semiBoldText(ColorConstants.colorBlack,
+                  scaler.getTextSize(10.8), TextAlign.left,
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+              isFavouriteContact == true ?  Icon(Icons.star, color: ColorConstants.primaryColor, size: 20,) : Container()
+            ],
+          ),
+          SizedBox(height: scaler.getHeight(0.3)),
           Text(emailOrTextStatusCheck(searchStatus ?? "", email)).regularText(
               ColorConstants.colorBlackDown,
-              scaler.getTextSize(8.3),
+              scaler.getTextSize(9.3),
               TextAlign.left,
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
@@ -208,8 +214,9 @@ class CommonWidgets {
       );
     } else if (searchStatus == "Event Edit") {
       return GestureDetector(
-        onTap: deleteIconTap,
-        child: ImageView(path: ImageConstants.event_remove_icon),
+       // onTap: deleteIconTap,
+        child: ImageView(path: ImageConstants.contact_arrow_icon)
+        //ImageView(path: ImageConstants.event_remove_icon),
       );
     } else {
       return ImageView(path: ImageConstants.contact_arrow_icon);
@@ -228,29 +235,29 @@ class CommonWidgets {
     }
   }
 
-  static bottomSheet(
-      BuildContext context, ScreenScaler scaler, Widget bottomDesign) {
-    return showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: scaler.getBorderRadiusCircular(15),
-        ),
-        backgroundColor: Colors.transparent,
-        barrierColor: Color.fromARGB(1, 245, 245, 245),
-        context: context,
-        builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CustomShape(
-                child: bottomDesign,
-                bgColor: Colors.transparent,
-                radius: scaler.getBorderRadiusCircular(15.0),
-                width: MediaQuery.of(context).size.width,
-              )
-            ],
-          );
-        });
-  }
+  // static bottomSheet(
+  //     BuildContext context, ScreenScaler scaler, Widget bottomDesign) {
+  //   return showModalBottomSheet(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: scaler.getBorderRadiusCircular(15),
+  //       ),
+  //       backgroundColor: Colors.transparent,
+  //       barrierColor: Color.fromARGB(1, 245, 245, 245),
+  //       context: context,
+  //       builder: (context) {
+  //         return Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+  //             CustomShape(
+  //               child: bottomDesign,
+  //               bgColor: Colors.transparent,
+  //               radius: scaler.getBorderRadiusCircular(15.0),
+  //               width: MediaQuery.of(context).size.width,
+  //             )
+  //           ],
+  //         );
+  //       });
+  // }
 
   static Widget cancelBtn(
       ScreenScaler scaler, BuildContext context, double size,
@@ -267,7 +274,7 @@ class CommonWidgets {
           child: Center(
             child: Text("cancel".tr()).semiBoldText(
                 color ?? ColorConstants.primaryColor,
-                scaler.getTextSize(11),
+                scaler.getTextSize(12),
                 TextAlign.center),
           ),
           bgColor: Colors.transparent,
@@ -287,19 +294,19 @@ class CommonWidgets {
       child: CustomShape(
         child: Center(
           child: Text(txt)
-              .mediumText(txtColor, scaler.getTextSize(10), TextAlign.center),
+              .mediumText(txtColor, scaler.getTextSize(11.2), TextAlign.center),
         ),
         bgColor: bgColor,
         radius: scaler.getBorderRadiusCircular(10),
         width: MediaQuery.of(context).size.width,
-        height: scaler.getHeight(5),
+        height: scaler.getHeight(5.8),
       ),
     );
   }
 
   static Widget settingsPageCard(
       ScreenScaler scaler, BuildContext context, icon, String txt, bool val,
-      {VoidCallback? onTapCard}) {
+      {VoidCallback? onTapCard, bool isIcon = true}) {
     return GestureDetector(
       onTap: onTapCard,
       child: Card(
@@ -309,17 +316,17 @@ class CommonWidgets {
             borderRadius: scaler.getBorderRadiusCircular(10)),
         child: CustomShape(
           child: Padding(
-            padding: scaler.getPaddingAll(9.0),
+            padding: scaler.getPaddingAll(9.2),
             child: Row(
               children: [
-                ImageView(
+              isIcon == true ? ImageView(
                     path: icon,
                     height: 30,
                     width: 30,
-                    color: ColorConstants.colorBlack),
+                    color: ColorConstants.colorBlack) : Icon(Icons.person_outline, size: 30),
                 SizedBox(width: scaler.getWidth(2.5)),
                 Text(txt).mediumText(ColorConstants.colorBlack,
-                    scaler.getTextSize(9.5), TextAlign.left),
+                    scaler.getTextSize(10.5), TextAlign.left),
                 val
                     ? Expanded(
                         child: Container(
@@ -359,14 +366,14 @@ class CommonWidgets {
                   child: Center(
                       child: Text(btn1Text).mediumText(
                           ColorConstants.primaryColor,
-                          scaler.getTextSize(10),
+                          scaler.getTextSize(11),
                           TextAlign.center)),
                   bgColor: ColorConstants.primaryColor.withOpacity(0.2),
                   radius: BorderRadius.all(
                     Radius.circular(12),
                   ),
                   width: scaler.getWidth(40),
-                  height: scaler.getHeight(4.5),
+                  height: scaler.getHeight(5.8),
                 ),
               ),
             ),
@@ -379,13 +386,13 @@ class CommonWidgets {
               child: CustomShape(
                 child: Center(
                     child: Text(btn2Text).mediumText(ColorConstants.colorWhite,
-                        scaler.getTextSize(10), TextAlign.center)),
+                        scaler.getTextSize(11), TextAlign.center)),
                 bgColor: ColorConstants.primaryColor,
                 radius: BorderRadius.all(
                   Radius.circular(12),
                 ),
                 width: scaler.getWidth(40),
-                height: scaler.getHeight(4.5),
+                height: scaler.getHeight(5.8),
               ),
             )),
           ],
@@ -395,7 +402,7 @@ class CommonWidgets {
   }
 
   static respondToEventBottomSheet(BuildContext context, ScreenScaler scaler,
-      {VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide}) {
+      {bool? multipleDate, VoidCallback? multiDate, VoidCallback? going, VoidCallback? notGoing, VoidCallback? hide, bool pastEventOrAnnouncement = false, bool eventDetailMultiDate = false}) {
     return showModalBottomSheet(
         useRootNavigator: true,
         shape: RoundedRectangleBorder(
@@ -407,59 +414,100 @@ class CommonWidgets {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.8)),
                 Container(
                   decoration: BoxDecoration(
                       color: ColorConstants.colorMediumGray,
                       borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                  height: scaler.getHeight(0.4),
+                  height: scaler.getHeight(0.5),
                   width: scaler.getWidth(12),
                 ),
-                Column(
+               (pastEventOrAnnouncement == false) ? Column(
                   children: [
-                    SizedBox(height: scaler.getHeight(2)),
                     GestureDetector(
-                      onTap: going,
-                      child: Text("going_to_event".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: multipleDate == true ? multiDate : going,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(2.3)),
+                          Container(
+                            width: double.infinity,
+                            child: Text(eventDetailMultiDate ? "View_replies_to_form".tr() : (multipleDate == true ? "multi_date_select_which_work".tr() : "going_to_event".tr())).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12.2),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(1.3)),
+                        ],
+                      )
                     ),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     Divider(),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: notGoing,
-                      child: Text("not_going_to_event".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(1.3)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("not_going_to_event".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12.2),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(1.3)),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     Divider(),
-                    SizedBox(height: scaler.getHeight(0.9)),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: hide,
-                      child: Text("hide_event".tr()).regularText(
-                          ColorConstants.primaryColor,
-                          scaler.getTextSize(11),
-                          TextAlign.center),
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(1.3)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("hide_event".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12.2),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(2.4)),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: scaler.getHeight(2)),
                   ],
-                ),
+                ) : GestureDetector(
+                 behavior: HitTestBehavior.opaque,
+                 onTap: hide,
+                 child: Column(
+                   children: [
+                     SizedBox(height: scaler.getHeight(1.3)),
+                     Container(
+                       width: double.infinity,
+                       child: Text("hide_event".tr()).regularText(
+                           ColorConstants.primaryColor,
+                           scaler.getTextSize(12.2),
+                           TextAlign.center),
+                     ),
+                     SizedBox(height: scaler.getHeight(2.4)),
+                   ],
+                 ),
+               ),
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.of(context).pop();
                   },
                   child: Center(
                     child: Text("cancel".tr()).semiBoldText(
                         ColorConstants.colorRed,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12.2),
                         TextAlign.center),
                   ),
                 ),
-               // SizedBox(height: scaler.getHeight(0.5)),
+                SizedBox(height: scaler.getHeight(0.8)),
               ],
             ),
           );
@@ -478,25 +526,25 @@ class CommonWidgets {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: scaler.getHeight(0.5)),
+              SizedBox(height: scaler.getHeight(0.8)),
               Container(
                 decoration: BoxDecoration(
                     color: ColorConstants.colorMediumGray,
                     borderRadius: scaler.getBorderRadiusCircular(10.0)),
-                height: scaler.getHeight(0.4),
+                height: scaler.getHeight(0.5),
                 width: scaler.getWidth(12),
               ),
               Column(
                 children: [
-                  SizedBox(height: scaler.getHeight(0.9)),
+                  SizedBox(height: scaler.getHeight(1.3)),
                   GestureDetector(
                     onTap: delete,
                     child: Text("delete_event".tr()).regularText(
                         ColorConstants.primaryColor,
-                        scaler.getTextSize(11),
+                        scaler.getTextSize(12),
                         TextAlign.center),
                   ),
-                  SizedBox(height: scaler.getHeight(2)),
+                  SizedBox(height: scaler.getHeight(2.4)),
                 ],
               ),
               GestureDetector(
@@ -506,11 +554,11 @@ class CommonWidgets {
                 child: Center(
                   child: Text("cancel".tr()).semiBoldText(
                       ColorConstants.colorRed,
-                      scaler.getTextSize(11),
+                      scaler.getTextSize(12),
                       TextAlign.center),
                 ),
               ),
-              SizedBox(height: scaler.getHeight(1)),
+              SizedBox(height: scaler.getHeight(1.5)),
             ],
           );
         });
@@ -532,7 +580,7 @@ class CommonWidgets {
               ),
               child: Text(count.toString()).semiBoldText(
                 count == 0 ? Colors.transparent :  ColorConstants.colorWhite,
-                scaler.getTextSize(6.8),
+                scaler.getTextSize(7.2),
                 TextAlign.center,
               ),
             ),
@@ -567,17 +615,21 @@ class CommonWidgets {
             borderRadius: scaler.getBorderRadiusCircular(8.0),
           ),
           child: Padding(
-            padding: scaler.getPaddingLTRB(1.5, 1.4, 1.5, 1.4),
+            padding: scaler.getPaddingLTRB(1.5, 1.6, 1.5, 1.6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   width: scaler.getWidth(70.0),
-                  child: Text(event.title).semiBoldText(ColorConstants.colorBlack,
-                      scaler.getTextSize(9.5), TextAlign.left,
+                  child: event.start.toString().substring(0,10) == DateTime.now().toString().substring(0,10) ?
+                  Text(event.title).boldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(11.5), TextAlign.left,
+                      maxLines: 1, overflow: TextOverflow.ellipsis)
+                  : Text(event.title).semiBoldText(ColorConstants.colorBlack,
+                      scaler.getTextSize(10.5), TextAlign.left,
                       maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
-                SizedBox(height: scaler.getHeight(0.1)),
+                SizedBox(height: scaler.getHeight(0.5)),
                 Text(
                     event.meetMeYou
                     ?
@@ -594,7 +646,8 @@ class CommonWidgets {
                     : event.start.toString().substring(0, 11)
                 )
                     .regularText(ColorConstants.colorBlack,
-                    scaler.getTextSize(9.5), TextAlign.center),
+                    scaler.getTextSize(event.start.toString().substring(0,10) == DateTime.now().toString().substring(0,10) ? 11.0
+                    : 10.5), TextAlign.center),
               ],
             ),
           ),
@@ -606,9 +659,8 @@ class CommonWidgets {
 
   static gridViewOfMultiDateAlertDialog(ScreenScaler scaler, List<DateOption> multiDate, int index, {int? selectedIndex}){
     return  Container(
-      margin: scaler.getMarginLTRB(0.5, 0.5, 0.5, 0.5),
-      padding:
-      scaler.getPaddingLTRB(1.0, 0.5, 1.0, 0.5),
+      margin: scaler.getMarginLTRB(1.0, 0.5, 1.0, 0.5),
+      padding: scaler.getPaddingLTRB(1.5, 0.8, 1.5, 0.5),
       decoration: BoxDecoration(
           color: ColorConstants.colorLightGray,
           borderRadius:
@@ -619,8 +671,7 @@ class CommonWidgets {
                 spreadRadius: 1)
           ]),
       child: Column(
-        mainAxisAlignment:
-        MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
@@ -633,26 +684,26 @@ class CommonWidgets {
               .toString())
               .boldText(ColorConstants.colorBlack, 24.0,
               TextAlign.center),
-          SizedBox(height: scaler.getHeight(0.2)),
-          Text(DateTimeHelper.getWeekDay(multiDate[index].start))
-              .mediumText(ColorConstants.colorBlack, 10,
-              TextAlign.center),
-          SizedBox(height: scaler.getHeight(0.1)),
-          Container(
-            width: scaler.getWidth(20),
-            child: Text((multiDate[index].start
-                .toString()
-                .substring(0, 11)) ==
-                (multiDate[index].end
-                    .toString()
-                    .substring(0, 11))
-                ? "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))}"
-                : "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))} (${DateTimeHelper.dateConversion(multiDate[index].end, date: false)})")
-                .regularText(ColorConstants.colorGray,
-                8.5, TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis),
-          )
+          // SizedBox(height: scaler.getHeight(0.2)),
+          // Text(DateTimeHelper.getWeekDay(multiDate[index].start))
+          //     .mediumText(ColorConstants.colorBlack, 10,
+          //     TextAlign.center),
+          // SizedBox(height: scaler.getHeight(0.1)),
+          // Container(
+          //   width: scaler.getWidth(20),
+          //   child: Text((multiDate[index].start
+          //       .toString()
+          //       .substring(0, 11)) ==
+          //       (multiDate[index].end
+          //           .toString()
+          //           .substring(0, 11))
+          //       ? "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))}"
+          //       : "${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].start))} - ${DateTimeHelper.timeConversion(TimeOfDay.fromDateTime(multiDate[index].end))} (${DateTimeHelper.dateConversion(multiDate[index].end, date: false)})")
+          //       .regularText(ColorConstants.colorGray,
+          //       8.5, TextAlign.center,
+          //       maxLines: 2,
+          //       overflow: TextOverflow.ellipsis),
+          // )
         ],
       ),
     );
@@ -680,6 +731,208 @@ class CommonWidgets {
               TextAlign.center),
         ),
       ],
+    );
+  }
+
+  static notificationImage(ScreenScaler scaler, String photoUrl){
+  return  ClipRRect(
+        borderRadius: scaler.getBorderRadiusCircular(10.0),
+        child: photoUrl == null || photoUrl == ""
+            ? Container(
+          color: ColorConstants.primaryColor,
+          width: scaler.getWidth(13.5),
+          height: scaler.getWidth(13.5),
+        )
+            : Container(
+          width: scaler.getWidth(13.5),
+          height: scaler.getWidth(13.5),
+          child: ImageView(
+            path: photoUrl,
+            width: scaler.getWidth(13.5),
+            height: scaler.getWidth(13.5),
+             fit: BoxFit.cover,
+          ),
+        ));
+  }
+
+ static Widget loading(ScreenScaler scaler, {String? txt}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(child: CircularProgressIndicator()),
+        SizedBox(height: scaler.getHeight(1)),
+        Text(txt ?? "loading_event".tr()).mediumText(ColorConstants.primaryColor,
+            scaler.getTextSize(11), TextAlign.left),
+      ],
+    );
+  }
+
+  static Widget noEventFoundText(ScreenScaler scaler) {
+    return Center(
+      child: Text("sorry_no_event_found".tr()).mediumText(
+          ColorConstants.primaryColor, scaler.getTextSize(11), TextAlign.left),
+    );
+  }
+
+ static Widget selectImageCard(BuildContext context, ScreenScaler scaler) {
+    return Container(
+      padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 0.0),
+      width: double.infinity,
+      child: Column(
+        children: [
+          SizedBox(height: scaler.getHeight(4.5)),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+                alignment: Alignment.centerRight,
+                child: ImageView(path: ImageConstants.close_icon)),
+          ),
+          SizedBox(height: scaler.getHeight(0.5)),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              ImageView(path: ImageConstants.image_border_icon),
+              Positioned(
+                  child: ImageView(path: ImageConstants.image_frame_icon))
+            ],
+          ),
+          SizedBox(height: scaler.getHeight(1)),
+          Text("select_image".tr()).regularText(ColorConstants.primaryColor,
+              scaler.getTextSize(10.5), TextAlign.left),
+          SizedBox(height: scaler.getHeight(3)),
+        ],
+      ),
+    );
+  }
+
+  static selectImageBottomSheet(
+      BuildContext context, ScreenScaler scaler,
+      {VoidCallback? takePhotoTap, VoidCallback? choosePhotoTap, VoidCallback? defaultPhotoTap}) {
+    return showModalBottomSheet(
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: scaler.getBorderRadiusCircularLR(25.0, 25.0, 0.0, 0.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: scaler.getHeight(0.5)),
+              Container(
+                decoration: BoxDecoration(
+                    color: ColorConstants.colorMediumGray,
+                    borderRadius: scaler.getBorderRadiusCircular(10.0)),
+                height: scaler.getHeight(0.5),
+                width: scaler.getWidth(12),
+              ),
+              Column(
+                children: [
+
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: takePhotoTap,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(2)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("take_a_photo".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(1.1)),
+                        ],
+                      )
+                  ),
+                  Divider(),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: choosePhotoTap,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(0.9)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("choose_photo".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(1.1)),
+                        ],
+                      )
+                  ),
+                  Divider(),
+                  GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: defaultPhotoTap,
+                      child: Column(
+                        children: [
+                          SizedBox(height: scaler.getHeight(1.1)),
+                          Container(
+                            width: double.infinity,
+                            child: Text("sample_photos".tr()).regularText(
+                                ColorConstants.primaryColor,
+                                scaler.getTextSize(12),
+                                TextAlign.center),
+                          ),
+                          SizedBox(height: scaler.getHeight(2.2)),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Center(
+                    child: Container(
+                      child: Text("cancel".tr()).semiBoldText(
+                          ColorConstants.colorRed,
+                          scaler.getTextSize(12),
+                          TextAlign.center),
+                    )
+                ),
+              ),
+              SizedBox(height: scaler.getHeight(1.8)),
+            ],
+          );
+        });
+  }
+
+ static Widget inviteMoreFriends(BuildContext context, ScreenScaler scaler, {VoidCallback? onTap}){
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment:
+        MainAxisAlignment.spaceBetween,
+        crossAxisAlignment:
+        CrossAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomLeft,
+            child:
+            Text("invite_more_friends".tr())
+                .boldText(
+                ColorConstants
+                    .primaryColor,
+                scaler.getTextSize(11.5),
+                TextAlign.center),
+          ),
+          ImageView(
+              path:
+              ImageConstants.small_arrow_icon,
+              color: ColorConstants.primaryColor)
+        ],
+      ),
     );
   }
 }

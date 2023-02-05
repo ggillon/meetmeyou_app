@@ -34,11 +34,11 @@ class RejectedInvitesScreen extends StatelessWidget {
                 children: [
                   Text("rejected_invites".tr()).semiBoldText(
                       ColorConstants.colorBlack,
-                      scaler.getTextSize(16),
+                      scaler.getTextSize(17),
                       TextAlign.left),
-                  SizedBox(height: scaler.getHeight(1)),
+                  SizedBox(height: scaler.getHeight(1.2)),
                   searchBar(scaler, provider),
-                  SizedBox(height: scaler.getHeight(1)),
+                  SizedBox(height: scaler.getHeight(1.2)),
                   provider.state == ViewState.Busy
                       ? Expanded(
                           child: Column(
@@ -49,7 +49,7 @@ class RejectedInvitesScreen extends StatelessWidget {
                               SizedBox(height: scaler.getHeight(1)),
                               Text("loading_rejected_contacts".tr()).mediumText(
                                   ColorConstants.primaryColor,
-                                  scaler.getTextSize(10),
+                                  scaler.getTextSize(11),
                                   TextAlign.left),
                             ],
                           ),
@@ -59,7 +59,7 @@ class RejectedInvitesScreen extends StatelessWidget {
                               child: Center(
                                 child: Text("no__rejected_contacts_found".tr())
                                     .mediumText(ColorConstants.primaryColor,
-                                        scaler.getTextSize(11), TextAlign.left),
+                                        scaler.getTextSize(12), TextAlign.left),
                               ),
                             )
                           : contactList(scaler, provider)
@@ -80,7 +80,7 @@ class RejectedInvitesScreen extends StatelessWidget {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {
@@ -137,7 +137,7 @@ class RejectedInvitesScreen extends StatelessWidget {
         children: [
           Container(
             child: Text(cHeader).semiBoldText(ColorConstants.colorBlack,
-                scaler.getTextSize(9.8), TextAlign.left),
+                scaler.getTextSize(10.8), TextAlign.left),
           ),
           contactProfileCard(context, scaler, provider, index),
         ],

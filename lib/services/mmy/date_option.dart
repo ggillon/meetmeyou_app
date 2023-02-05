@@ -111,3 +111,31 @@ List<DateOption> sortDateOptions(List<DateOption> dateList) {
   return dateList;
 }
 
+Future<void> setEventDateOptions(User currentUser, String eid, List<DateOption> dateList,) async {
+  final db = FirestoreDB(uid: currentUser.uid);
+  Event event = await db.getEvent(eid);
+  final dates = await db.getAllDateOptions(eid);
+  for(DateOption date in dates) {
+    await db.deleteDateOption(eid, date.did);
+  }
+  for(DateOption new_date in dateList) {
+    if(new_date.invitedContacts == null)
+      new_date.invitedContacts = event.invitedContacts; // need to replace with propper function
+    await db.setDateOption(eid, new_date);
+  }
+}
+
+Future<Event> updateEventStatus(User currentUser, String eid,) async {
+  Event event;
+  bool attend=false;
+  String uid = currentUser.uid;
+  final db = FirestoreDB(uid: currentUser.uid);
+  final dateList = await db.getAllDateOptions(eid);
+  event = await db.getEvent(eid);
+  for(DateOption date in dateList) {
+    if(date.invitedContacts[uid] == EVENT_ATTENDING) attend = true;
+  }
+  event.invitedContacts[uid] = attend ? EVENT_ATTENDING : EVENT_NOT_ATTENDING;
+  await db.setEvent(event);
+  return event;
+}

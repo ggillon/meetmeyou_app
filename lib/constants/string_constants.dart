@@ -8,4 +8,9 @@ class StringConstants {
   static const introductionSubText2 = "Share events with your contacts all around the world.";
   static const social = "social";
   static const simple = "simple";
+  static const newEvent = "New Event";
+  static const eventCancelled = "Event canceled";
+  static const eventModified  = "Event modified";
+  static const newMessage = "New message";
+  static const newInvitation = "New contact invitation";
 }

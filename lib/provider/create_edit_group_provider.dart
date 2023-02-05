@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meetmeyou_app/constants/routes_constants.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -10,6 +11,7 @@ import 'package:meetmeyou_app/models/contact.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/provider/base_provider.dart';
 import 'package:meetmeyou_app/services/mmy/mmy.dart';
+import 'package:meetmeyou_app/services/storage/storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CreateEditGroupProvider extends BaseProvider {
@@ -58,12 +60,24 @@ class CreateEditGroupProvider extends BaseProvider {
     Navigator.of(context).pop();
     if (type == 1) {
       final pickedFile = await picker.pickImage(source: ImageSource.camera, imageQuality: 90, maxHeight: 720);
-      image = File(pickedFile!.path);
-      notifyListeners();
+      if (pickedFile != null) {
+         // image = File(pickedFile.path);
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          image = value;
+          notifyListeners();
+        });
+          notifyListeners();
+      }
     } else {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90, maxHeight: 720);
-      image = File(pickedFile!.path);
-      notifyListeners();
+      if (pickedFile != null) {
+        //  image = File(pickedFile.path);
+        Navigator.pushNamed(context, RoutesConstants.imageCropper, arguments: File(pickedFile.path)).then((dynamic value) async {
+          image = value;
+          notifyListeners();
+        });
+          notifyListeners();
+      }
     }
   }
 
@@ -102,11 +116,18 @@ class CreateEditGroupProvider extends BaseProvider {
     }
     mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
 
+    if(image != null){
+      groupDetail.groupPhotoUrl = await storeFile(image!, path: StoragePath.contactGroupPhoto(auth.currentUser!.uid.toString(), groupCid)).catchError((e) {
+        setState(ViewState.Idle);
+        DialogHelper.showMessage(context, e.message);
+      });
+    }
+
     var value = await mmyEngine!
         .updateGroupContact(groupCid,
             displayName: groupName,
             about: about ?? "",
-            photoFile: back ? image : photoFile,
+          //  photoFile: back ? image : photoFile,
             photoURL: groupDetail.groupPhotoUrl)
         .catchError((e) {
       setState(ViewState.Idle);
@@ -123,4 +144,25 @@ class CreateEditGroupProvider extends BaseProvider {
     }
   }
 
+  //Future<void> deleteContact(String cid);
+  bool groupDelete = false;
+
+  updateGroup(bool val){
+    groupDelete = val;
+    notifyListeners();
+  }
+
+  Future deleteGroup(BuildContext context) async{
+    Navigator.of(context).pop();
+    updateGroup(true);
+    mmyEngine = locator<MMYEngine>(param1: auth.currentUser);
+
+    mmyEngine!.deleteContact(groupDetail.groupCid.toString()).catchError((e) {
+      updateGroup(false);
+      DialogHelper.showMessage(context, e.message);
+    });
+
+    Navigator.of(context).pop(true);
+    updateGroup(false);
+  }
 }

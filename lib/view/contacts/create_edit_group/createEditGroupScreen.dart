@@ -17,6 +17,7 @@ import 'package:meetmeyou_app/view/base_view.dart';
 import 'package:meetmeyou_app/widgets/custom_shape.dart';
 import 'package:meetmeyou_app/widgets/imagePickerDialog.dart';
 import 'package:meetmeyou_app/widgets/image_view.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CreateEditGroupScreen extends StatelessWidget {
   CreateEditGroupScreen({Key? key}) : super(key: key);
@@ -24,21 +25,22 @@ class CreateEditGroupScreen extends StatelessWidget {
   final groupNameController = TextEditingController();
   final descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     ScreenScaler scaler = new ScreenScaler()..init(context);
     return Scaffold(
+      key: _scaffoldKey,
         backgroundColor: ColorConstants.colorWhite,
         appBar: DialogHelper.appBarWithBack(scaler, context),
         body: BaseView<CreateEditGroupProvider>(onModelReady: (provider) {
           groupNameController.text = provider.groupDetail.createGroup ?? false
               ? ""
               : provider.groupDetail.groupName ?? "";
-          descriptionController.text =
-              provider.groupDetail.createGroup ?? false
-                  ? ""
-                  : provider.groupDetail.about ?? "";
+          descriptionController.text = provider.groupDetail.createGroup ?? false
+              ? ""
+              : provider.groupDetail.about ?? "";
         }, builder: (context, provider, _) {
           return SafeArea(
             child: LayoutBuilder(builder: (context, constraint) {
@@ -49,7 +51,7 @@ class CreateEditGroupScreen extends StatelessWidget {
                     child: Form(
                       key: _formKey,
                       child: Padding(
-                        padding: scaler.getPaddingLTRB(2.5, 1.0, 2.5, 1.0),
+                        padding: scaler.getPaddingLTRB(3.0, 1.0, 3.0, 1.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,24 +59,49 @@ class CreateEditGroupScreen extends StatelessWidget {
                             Center(
                               child: GestureDetector(
                                 onTap: () async {
-                                  var value = await provider.permissionCheck();
-                                  if (value) {
+                                  if (await Permission.storage.request().isGranted) {
                                     showDialog(
                                         barrierDismissible: false,
                                         context: context,
                                         builder: (BuildContext context) =>
                                             CustomDialog(
                                               cameraClick: () {
-                                                provider.getImage(context, 1);
+                                                provider.getImage(_scaffoldKey.currentContext!, 1);
                                               },
                                               galleryClick: () {
-                                                provider.getImage(context, 2);
+                                                provider.getImage(_scaffoldKey.currentContext!, 2).catchError((e){
+                                                  CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
+                                                });
                                               },
                                               cancelClick: () {
                                                 Navigator.of(context).pop();
                                               },
                                             ));
+                                  } else if(await Permission.storage.request().isDenied){
+                                    Map<Permission, PermissionStatus> statuses = await [
+                                      Permission.storage,
+                                    ].request();
+                                  } else if(await Permission.storage.request().isPermanentlyDenied){
+                                    CommonWidgets.errorDialog(context, "enable_storage_permission".tr());
                                   }
+                                  // var value = await provider.permissionCheck();
+                                  // if (value) {
+                                  //   showDialog(
+                                  //       barrierDismissible: false,
+                                  //       context: context,
+                                  //       builder: (BuildContext context) =>
+                                  //           CustomDialog(
+                                  //             cameraClick: () {
+                                  //               provider.getImage(context, 1);
+                                  //             },
+                                  //             galleryClick: () {
+                                  //               provider.getImage(context, 2);
+                                  //             },
+                                  //             cancelClick: () {
+                                  //               Navigator.of(context).pop();
+                                  //             },
+                                  //           ));
+                                  // }
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
@@ -85,38 +112,38 @@ class CreateEditGroupScreen extends StatelessWidget {
                                                       .groupPhotoUrl !=
                                                   null
                                               ? Container(
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                   child: ImageView(
                                                     path: provider.groupDetail
                                                         .groupPhotoUrl,
-                                                    width: scaler.getWidth(20),
+                                                    width: scaler.getWidth(22),
                                                     fit: BoxFit.cover,
-                                                    height: scaler.getWidth(20),
+                                                    height: scaler.getWidth(22),
                                                   ),
                                                 )
                                               : Container(
                                                   color: ColorConstants
                                                       .primaryColor,
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                 )
                                           : provider.image != null
                                               ? Container(
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                   child: ImageView(
                                                     file: provider.image,
-                                                    width: scaler.getWidth(20),
+                                                    width: scaler.getWidth(22),
                                                     fit: BoxFit.cover,
-                                                    height: scaler.getWidth(20),
+                                                    height: scaler.getWidth(22),
                                                   ),
                                                 )
                                               : Container(
                                                   color: ColorConstants
                                                       .primaryColor,
-                                                  width: scaler.getWidth(20),
-                                                  height: scaler.getWidth(20),
+                                                  width: scaler.getWidth(22),
+                                                  height: scaler.getWidth(22),
                                                 ),
                                       Positioned(
                                           right: 5,
@@ -127,8 +154,8 @@ class CreateEditGroupScreen extends StatelessWidget {
                                               child: Container(
                                                 color:
                                                     ColorConstants.colorWhite,
-                                                width: scaler.getWidth(5),
-                                                height: scaler.getHeight(5),
+                                                width: scaler.getWidth(5.5),
+                                                height: scaler.getHeight(5.5),
                                                 child: Center(
                                                   child: ImageView(
                                                     color: ColorConstants
@@ -145,20 +172,20 @@ class CreateEditGroupScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: scaler.getHeight(2)),
+                            SizedBox(height: scaler.getHeight(2.5)),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text("name".tr()).boldText(Colors.black,
-                                  scaler.getTextSize(9.5), TextAlign.center),
+                                  scaler.getTextSize(10.5), TextAlign.center),
                             ),
                             SizedBox(
-                              height: scaler.getHeight(0.2),
+                              height: scaler.getHeight(0.3),
                             ),
                             TextFormField(
                               textCapitalization: TextCapitalization.sentences,
                               controller: groupNameController,
                               style: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               decoration:
                                   ViewDecoration.inputDecorationWithCurve(
@@ -180,27 +207,27 @@ class CreateEditGroupScreen extends StatelessWidget {
                               },
                             ),
                             SizedBox(
-                              height: scaler.getHeight(1),
+                              height: scaler.getHeight(1.5),
                             ),
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text("description".tr()).boldText(
                                   Colors.black,
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   TextAlign.center),
                             ),
                             SizedBox(
-                              height: scaler.getHeight(0.2),
+                              height: scaler.getHeight(0.3),
                             ),
                             TextFormField(
                               textCapitalization: TextCapitalization.sentences,
                               controller: descriptionController,
                               style: ViewDecoration.textFieldStyle(
-                                  scaler.getTextSize(9.5),
+                                  scaler.getTextSize(10.5),
                                   ColorConstants.colorBlack),
                               decoration:
                                   ViewDecoration.inputDecorationWithCurve(
-                                      "random@random.com",
+                                      "enter_description_of_group".tr(),
                                       scaler,
                                       ColorConstants.primaryColor),
                               onFieldSubmitted: (data) {
@@ -247,46 +274,53 @@ class CreateEditGroupScreen extends StatelessWidget {
                             SizedBox(height: scaler.getHeight(2)),
                             provider.groupDetail.createGroup ?? false
                                 ? Container()
-                                : Expanded(
-                                    child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      child: DialogHelper.btnWidget(
-                                          scaler,
-                                          context,
-                                          "delete_group".tr(),
-                                          ColorConstants.colorRed,
-                                          funOnTap: () {
-                                        DialogHelper.showDialogWithTwoButtons(
-                                            context,
-                                            "Delete Group",
-                                            "Are you sure you want to delete this group?");
-                                      }),
-                                    ),
-                                  ),
+                                : provider.groupDelete == true
+                                    ? Center(
+                                        child: CircularProgressIndicator())
+                                    : Expanded(
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: DialogHelper.btnWidget(
+                                              scaler,
+                                              context,
+                                              "delete_group".tr(),
+                                              ColorConstants.colorRed,
+                                              funOnTap: ()  {
+                                            DialogHelper.showDialogWithTwoButtons(
+                                                context,
+                                                "Delete Group",
+                                                "Are you sure you want to delete this group?", positiveButtonPress: (){
+                                               provider.deleteGroup(context);
+                                            });
+                                          }),
+                                        ),
+                                      ),
                             SizedBox(height: scaler.getHeight(1)),
                             provider.groupDetail.createGroup ?? false
                                 ? provider.state == ViewState.Busy
                                     ? Expanded(
-                                      child: Container(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              CircularProgressIndicator(),
-                                              SizedBox(
-                                                  height: scaler.getHeight(1)),
-                                            ],
-                                          )),
-                                    )
+                                        child: Container(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                CircularProgressIndicator(),
+                                                SizedBox(
+                                                    height:
+                                                        scaler.getHeight(1)),
+                                              ],
+                                            )),
+                                      )
                                     : Expanded(
-                                      child: CommonWidgets.expandedRowButton(
-                                          context,
-                                          scaler,
-                                          "discard".tr(),
-                                          "save_changes".tr(), onTapBtn2: () {
+                                        child: CommonWidgets.expandedRowButton(
+                                            context,
+                                            scaler,
+                                            "discard".tr(),
+                                            "save_changes".tr(), onTapBtn2: () {
                                           hideKeyboard(context);
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
                                             provider.groupDetail.createGroup!
                                                 ? provider.update
                                                     ? provider.updateGroupContact(
@@ -297,25 +331,30 @@ class CreateEditGroupScreen extends StatelessWidget {
                                                         groupName:
                                                             groupNameController
                                                                 .text,
-                                                        about: descriptionController
-                                                            .text)
+                                                        about:
+                                                            descriptionController
+                                                                .text)
                                                     : provider.createNewGroupContact(
                                                         context,
-                                                        groupNameController.text,
+                                                        groupNameController
+                                                            .text,
                                                         // groupImg: provider.groupDetail.groupPhotoUrl,
-                                                        about: descriptionController
-                                                            .text)
+                                                        about:
+                                                            descriptionController
+                                                                .text)
                                                 : provider.updateGroupContact(
                                                     context,
-                                                    provider.groupDetail.groupCid ??
+                                                    provider.groupDetail
+                                                            .groupCid ??
                                                         "",
                                                     groupName:
-                                                        groupNameController.text,
+                                                        groupNameController
+                                                            .text,
                                                     about: descriptionController
                                                         .text);
                                           }
                                         }),
-                                    )
+                                      )
                                 : provider.state == ViewState.Busy
                                     ? Container(
                                         alignment: Alignment.bottomCenter,

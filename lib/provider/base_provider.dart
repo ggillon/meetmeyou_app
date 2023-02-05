@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/locator.dart';
@@ -11,12 +13,57 @@ class BaseProvider extends ChangeNotifier {
   ViewState get state => _state;
   AuthBase auth = locator<AuthBase>();
   //Api api = locator<Api>();
-
+  bool _disposed = false;
 
   void setState(ViewState viewState) {
     _state = viewState;
+    if (!_disposed) {
+      notifyListeners();
+    }
+  }
+
+  StreamSubscription? eventsNotifyEvent;
+  StreamSubscription? messageNotifyEvent;
+  StreamSubscription? ContactInvitationNotifyEvent;
+  StreamSubscription? calendarPermissionEvent;
+
+  // this is used for deep link
+  StreamSubscription? sub;
+
+  // this is when user comes from deeplink
+  StreamSubscription? eventInviteFromLink;
+
+  @override
+  void dispose() {
+    eventsNotifyEvent?.cancel();
+    messageNotifyEvent?.cancel();
+    ContactInvitationNotifyEvent?.cancel();
+    eventInviteFromLink?.cancel();
+    calendarPermissionEvent?.cancel();
+    sub?.cancel();
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
+  bool loading = false;
+
+  updateLoadingStatus(bool val){
+    loading = val;
     notifyListeners();
   }
 
+  bool status = false;
+
+  updatingStatus(bool val){
+    status = val;
+    notifyListeners();
+  }
 }
 

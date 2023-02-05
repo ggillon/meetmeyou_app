@@ -80,12 +80,32 @@ class DateTimeHelper {
   }
 
   static dateTimeFormat(DateTime date, TimeOfDay time) {
-    String dateTimeString =
-        date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
-    DateTime tempDate =
-    new DateFormat("yyyy-MM-dd hh:mm").parse(dateTimeString);
-    // print(dateTimeString);
-    // print(tempDate);
+    String dateTimeString = date.toString().substring(0, 11) + DateTimeHelper.timeConversion(time);
+    DateTime tempDate = DateTime.parse(dateTimeString);
+     // print(dateTimeString);
+     // print(tempDate);
     return tempDate;
+  }
+
+  static notificationDateFormat(DateTime date){
+    int day = date.day;
+
+    int month = date.month;
+    String mon = MONTHS[month - 1];
+
+    int year = date.year;
+
+    return "${day} ${mon} ${year}";
+  }
+
+  static chatHeaderDateFormat(DateTime date, bool currentYear){
+    int day = date.day;
+
+    int month = date.month;
+    String mon = MONTHS[month - 1];
+
+    int year = date.year;
+
+    return currentYear == true ? "${getWeekDay(date).toString().substring(0,3)} ${day} ${mon.substring(0,3)}" : "${getWeekDay(date).toString().substring(0,3)} ${day} ${mon.substring(0,3)} ${year}";
   }
 }

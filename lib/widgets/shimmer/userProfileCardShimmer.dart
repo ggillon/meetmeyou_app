@@ -26,8 +26,8 @@ class UserProfileCardShimmer extends StatelessWidget {
                   borderRadius: scaler.getBorderRadiusCircular(10.0),
                   child: Container(
                     color: Colors.white,
-                    width: scaler.getWidth(22),
-                    height: scaler.getWidth(22),
+                    width: scaler.getWidth(24),
+                    height: scaler.getWidth(24),
                   )),
               SizedBox(width: scaler.getWidth(2.5)),
               Expanded(
@@ -38,7 +38,7 @@ class UserProfileCardShimmer extends StatelessWidget {
                       color: Colors.white,
                       height: scaler.getWidth(4),
                     ),
-                    Padding(padding: scaler.getPaddingByHeight(0.3)),
+                    Padding(padding: scaler.getPaddingByHeight(0.5)),
                     Container(
                       color: Colors.white,
                       height: scaler.getWidth(2),

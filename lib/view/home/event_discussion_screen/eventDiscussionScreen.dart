@@ -208,7 +208,7 @@ class EventDiscussionScreen extends StatelessWidget {
                   context, messageController.text, messageController);
         },
         textInputAction: TextInputAction.send,
-        keyboardType: TextInputType.name,
+        keyboardType: TextInputType.text,
       ),
     );
   }

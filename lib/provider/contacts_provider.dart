@@ -3,6 +3,8 @@ import 'package:meetmeyou_app/enum/view_state.dart';
 import 'package:meetmeyou_app/helper/dialog_helper.dart';
 import 'package:meetmeyou_app/locator.dart';
 import 'package:meetmeyou_app/models/contact.dart';
+import 'package:meetmeyou_app/models/discussion.dart';
+import 'package:meetmeyou_app/models/discussion_detail.dart';
 import 'package:meetmeyou_app/models/event_detail.dart';
 import 'package:meetmeyou_app/models/group_detail.dart';
 import 'package:meetmeyou_app/models/user_detail.dart';
@@ -15,6 +17,7 @@ class ContactsProvider extends BaseProvider {
   UserDetail userDetail = locator<UserDetail>();
   GroupDetail groupDetail = locator<GroupDetail>();
   EventDetail eventDetail = locator<EventDetail>();
+  DiscussionDetail discussionDetail = locator<DiscussionDetail>();
   int _toggle = 0;
 
   int get toggle => _toggle;
@@ -153,11 +156,12 @@ class ContactsProvider extends BaseProvider {
       BuildContext context, DashboardProvider dashboardProvider) async {
     setState(ViewState.Busy);
     userDetail.unRespondedInvites1 =
-    await mmyEngine!.unrespondedInvites().catchError((e) {
+        await mmyEngine!.unrespondedInvites().catchError((e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.message);
     });
-    if (userDetail.unRespondedInvites! >  userDetail.unRespondedInvites1!.toInt()) {
+    if (userDetail.unRespondedInvites! >
+        userDetail.unRespondedInvites1!.toInt()) {
       dashboardProvider.updateInvitesNotificationCount();
     }
     setState(ViewState.Idle);

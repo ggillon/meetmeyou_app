@@ -30,5 +30,23 @@ class RoutesConstants {
   static const chooseEventScreen = "chooseEventScreen";
   static const calendarScreen = "calendarScreen";
   static const eventDiscussionScreen = "eventDiscussionScreen";
+  static const newEventDiscussionScreen = "newEventDiscussionScreen";
   static const multipleDateTimeScreen = "multipleDateTimeScreen";
+  static const chatsScreen = "chatsScreen";
+  static const viewImageScreen = "viewImageScreen";
+  static const groupImageView = "groupImageView";
+  static const seeAllPeople = "seeAllPeople";
+  static const seeAllEvents = "seeAllEvents";
+  static const notificationSettings = "notificationSettings";
+  static const notificationsHistoryScreen = "notificationsHistoryScreen";
+  static const publicLocationCreateEventScreen = "publicLocationCreateEventScreen";
+  static const checkAttendanceScreen = "checkAttendanceScreen";
+  static const imageCropper = "imageCropper";
+  static const eventGalleryPage = "eventGalleryPage";
+  static const eventGalleryImageView = "eventGalleryImageView";
+  static const createAnnouncementScreen = "createAnnouncementScreen";
+  static const viewRepliesToFormScreen = "viewRepliesToFormScreen";
+  static const publicationVisibility = "publicationVisibility";
+  static const viewVideoScreen = "viewVideoScreen";
+  static const videoPlayer = "videoPlayer";
 }

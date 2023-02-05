@@ -31,17 +31,17 @@ class GroupContactsScreen extends StatelessWidget {
         }, builder: (builder, provider, _) {
           return SafeArea(
             child: Padding(
-              padding: scaler.getPaddingLTRB(2.5, 0.0, 2.5, 2),
+              padding: scaler.getPaddingLTRB(3.0, 0.0, 3.0, 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("group_contacts".tr()).boldText(
                       ColorConstants.colorBlack,
-                      scaler.getTextSize(16),
+                      scaler.getTextSize(16.5),
                       TextAlign.left),
-                  SizedBox(height: scaler.getHeight(1)),
+                  SizedBox(height: scaler.getHeight(1.2)),
                   searchBar(scaler, provider),
-                  SizedBox(height: scaler.getHeight(1)),
+                  SizedBox(height: scaler.getHeight(1.2)),
                   provider.state == ViewState.Busy
                       ? Expanded(
                           child: Column(
@@ -52,7 +52,7 @@ class GroupContactsScreen extends StatelessWidget {
                               SizedBox(height: scaler.getHeight(1)),
                               Text("loading_contacts".tr()).mediumText(
                                   ColorConstants.primaryColor,
-                                  scaler.getTextSize(10),
+                                  scaler.getTextSize(11),
                                   TextAlign.left),
                             ],
                           ),
@@ -62,7 +62,7 @@ class GroupContactsScreen extends StatelessWidget {
                               child: Center(
                                 child: Text("sorry_no_contacts_found".tr())
                                     .mediumText(ColorConstants.primaryColor,
-                                        scaler.getTextSize(10), TextAlign.left),
+                                        scaler.getTextSize(11), TextAlign.left),
                               ),
                             )
                           : contactList(scaler, provider)
@@ -83,7 +83,7 @@ class GroupContactsScreen extends StatelessWidget {
       child: TextFormField(
         controller: searchBarController,
         style: ViewDecoration.textFieldStyle(
-            scaler.getTextSize(12), ColorConstants.colorBlack),
+            scaler.getTextSize(13), ColorConstants.colorBlack),
         decoration: ViewDecoration.inputDecorationForSearchBox(
             "search_field_name".tr(), scaler),
         onFieldSubmitted: (data) {},
